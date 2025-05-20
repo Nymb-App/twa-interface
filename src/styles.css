@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -37,7 +38,6 @@ code {
 }
 
 @layer utilities {
-
   .gradient-card {
     position: relative;
   }
@@ -59,6 +59,7 @@ code {
 }
 
 @theme inline {
+  --font-inter: 'Inter', sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -166,7 +167,6 @@ code {
 }
 
 @layer base {
-
   *,
   *::before,
   *::after {
@@ -186,16 +186,15 @@ code {
   }
 }
 
-
 @theme {
   /* Breakpoints */
   --breakpoint-*: initial;
-  --breakpoint-3xs: 20;     /* 320px */
-  --breakpoint-2xs: 22.5;   /* 360px */
-  --breakpoint-xs: 23.438;  /* 375px */
-  --breakpoint-sm: 24.375;  /* 390px */
-  --breakpoint-md: 25.75;   /* 412px */
-  --breakpoint-lg: 26.875;  /* 430px */
+  --breakpoint-3xs: 20; /* 320px */
+  --breakpoint-2xs: 22.5; /* 360px */
+  --breakpoint-xs: 23.438; /* 375px */
+  --breakpoint-sm: 24.375; /* 390px */
+  --breakpoint-md: 25.75; /* 412px */
+  --breakpoint-lg: 26.875; /* 430px */
 
   /* 450px - для всех начиная от `xl` */
   --breakpoint-xl: 28.125;
@@ -205,7 +204,6 @@ code {
   --breakpoint-5xl: 28.125;
   --breakpoint-6xl: 28.125;
   --breakpoint-7xl: 28.125;
-
 
   /* Основная анимация без задержки */
   --animate-slide-up-fade: slide-up-fade 0.5s ease-out 0s forwards;
@@ -228,7 +226,6 @@ code {
       transform: translateY(0);
     }
   }
-
 
   --animate-dot-reveal: dot-reveal 5s ease-in-out infinite;
 
@@ -264,11 +261,9 @@ code {
     /* назад в центр */
   }
 
-
   --animate-flicker: flicker 2.5s ease-in-out infinite;
 
   @keyframes flicker {
-
     0%,
     100% {
       opacity: 1;
@@ -286,8 +281,8 @@ code {
     }
 
     50% {
-      opacity: 0.90;
-      filter: brightness(0.90);
+      opacity: 0.9;
+      filter: brightness(0.9);
     }
 
     65% {
@@ -300,7 +295,6 @@ code {
       filter: brightness(0.97);
     }
   }
-
 
   --animate-icon-pop: icon-pop 6s ease-in-out infinite;
   --animate-delay-pop-0: icon-pop 4s ease-in-out infinite;
@@ -348,7 +342,6 @@ code {
 }
 
 @layer utilities {
-
   /* Утилиты для применения анимаций по CSS-переменным */
   .animate-slide-up-fade {
     animation: var(--animate-slide-up-fade);
@@ -391,4 +384,12 @@ body {
   overscroll-behavior: none;
   /* для WebKit (iOS Safari) */
   -webkit-overflow-scrolling: auto;
+}
+
+.rfm-child {
+  margin-left: 23px;
+}
+
+.my-gradient-border {
+  background: url('../public/home-bg.png') no-repeat bottom;
 }

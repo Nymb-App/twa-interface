@@ -11,9 +11,44 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TasksImport } from './routes/tasks'
+import { Route as StarBoardImport } from './routes/star-board'
+import { Route as HomeImport } from './routes/home'
+import { Route as GateImport } from './routes/gate'
+import { Route as FriendsImport } from './routes/friends'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const TasksRoute = TasksImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const StarBoardRoute = StarBoardImport.update({
+  id: '/star-board',
+  path: '/star-board',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const HomeRoute = HomeImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GateRoute = GateImport.update({
+  id: '/gate',
+  path: '/gate',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FriendsRoute = FriendsImport.update({
+  id: '/friends',
+  path: '/friends',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +67,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/friends': {
+      id: '/friends'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof FriendsImport
+      parentRoute: typeof rootRoute
+    }
+    '/gate': {
+      id: '/gate'
+      path: '/gate'
+      fullPath: '/gate'
+      preLoaderRoute: typeof GateImport
+      parentRoute: typeof rootRoute
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeImport
+      parentRoute: typeof rootRoute
+    }
+    '/star-board': {
+      id: '/star-board'
+      path: '/star-board'
+      fullPath: '/star-board'
+      preLoaderRoute: typeof StarBoardImport
+      parentRoute: typeof rootRoute
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +109,64 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/friends': typeof FriendsRoute
+  '/gate': typeof GateRoute
+  '/home': typeof HomeRoute
+  '/star-board': typeof StarBoardRoute
+  '/tasks': typeof TasksRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/friends': typeof FriendsRoute
+  '/gate': typeof GateRoute
+  '/home': typeof HomeRoute
+  '/star-board': typeof StarBoardRoute
+  '/tasks': typeof TasksRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/friends': typeof FriendsRoute
+  '/gate': typeof GateRoute
+  '/home': typeof HomeRoute
+  '/star-board': typeof StarBoardRoute
+  '/tasks': typeof TasksRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/friends' | '/gate' | '/home' | '/star-board' | '/tasks'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/friends' | '/gate' | '/home' | '/star-board' | '/tasks'
+  id:
+    | '__root__'
+    | '/'
+    | '/friends'
+    | '/gate'
+    | '/home'
+    | '/star-board'
+    | '/tasks'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FriendsRoute: typeof FriendsRoute
+  GateRoute: typeof GateRoute
+  HomeRoute: typeof HomeRoute
+  StarBoardRoute: typeof StarBoardRoute
+  TasksRoute: typeof TasksRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FriendsRoute: FriendsRoute,
+  GateRoute: GateRoute,
+  HomeRoute: HomeRoute,
+  StarBoardRoute: StarBoardRoute,
+  TasksRoute: TasksRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +179,31 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/friends",
+        "/gate",
+        "/home",
+        "/star-board",
+        "/tasks"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/friends": {
+      "filePath": "friends.tsx"
+    },
+    "/gate": {
+      "filePath": "gate.tsx"
+    },
+    "/home": {
+      "filePath": "home.tsx"
+    },
+    "/star-board": {
+      "filePath": "star-board.tsx"
+    },
+    "/tasks": {
+      "filePath": "tasks.tsx"
     }
   }
 }
