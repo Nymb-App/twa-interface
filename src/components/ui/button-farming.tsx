@@ -3,7 +3,7 @@ import { Button } from './button'
 import { ButtonFillProgress } from './button-fill-progress'
 import { ButtonFarmingActive } from './button-farming-active'
 
-const DURATION = 2000 // длительность в секундах
+const DURATION = 20 // длительность в секундах
 
 const zeroPad = (num: number) =>
   num < 10 ? String(num).padStart(2, '0') : String(num)
@@ -78,7 +78,7 @@ const ButtonFarming = () => {
           </span>
         </Button>
       ) : (
-        <div className="relative">
+        <div className="relative overflow-hidden rounded-[16px]">
           <ButtonFarmingActive
             elapsedHours={elapsedHours}
             elapsedMinutes={elapsedMinutes}
