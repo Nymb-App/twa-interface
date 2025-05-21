@@ -1,4 +1,5 @@
 import { isAndroid } from 'react-device-detect'
+import { Link } from '@tanstack/react-router'
 import { BattleCard } from '../battle-card'
 import { GameCard } from '../game-card'
 import { SwipeCard } from '../swipe-card'
@@ -7,7 +8,6 @@ import SwipeAnimationLottie from '@/assets/lottie/swipe2.json'
 import { TasksIcon } from '@/assets/icons/tasks'
 import { StatisticsIcon } from '@/assets/icons/statistics'
 import { SocialIcon } from '@/assets/icons/social'
-import { Link } from '@tanstack/react-router'
 
 export function HeroSection() {
   return (

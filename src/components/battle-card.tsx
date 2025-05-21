@@ -54,12 +54,12 @@ export const BattleCard = ({
 
         {/* Description section */}
         <div>
-          <h3 className="mt-3 text-center text-base font-semibold">{title}</h3>
-          <p className="mt-1 font-light text-xs text-white/50 text-center leading-3">
+          <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
+          <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
             {description}
           </p>
           {subdescription && (
-            <p className="font-light text-xs text-white/50 text-center">
+            <p className="font-light text-xs text-white/50 text-center tracking-[0.3px] font-inter">
               {subdescription}
             </p>
           )}
