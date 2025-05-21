@@ -46,6 +46,9 @@ export default defineConfig({
     }
 },
   server: {
-    allowedHosts: ['utc-publishing-customize-shelf.trycloudflare.com'],
+    allowedHosts: [
+      'utc-publishing-customize-shelf.trycloudflare.com',
+      'nymb-interface.vercel.app'
+    ],
   },
 })
