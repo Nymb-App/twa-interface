@@ -1,5 +1,3 @@
-'use client'
-
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { io } from 'socket.io-client'
 import type { Socket } from 'socket.io-client'
@@ -20,7 +18,7 @@ type MethodName =
   | 'CONNECT' // Установка туннеля (обычно для прокси)
 
 export function useApi() {
-  const { authToken } = useAuth()
+  const { authToken } = useAuth();
 
   const fetchData = useCallback(
     async (method: MethodName, url: string, body?: unknown) => {

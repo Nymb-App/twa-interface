@@ -7,6 +7,7 @@ import SwipeAnimationLottie from '@/assets/lottie/swipe2.json'
 import { TasksIcon } from '@/assets/icons/tasks'
 import { StatisticsIcon } from '@/assets/icons/statistics'
 import { SocialIcon } from '@/assets/icons/social'
+import { Link } from '@tanstack/react-router'
 
 export function HeroSection() {
   return (
@@ -14,6 +15,8 @@ export function HeroSection() {
       <h2 className="font-pixel text-center animate-slide-up-fade-0">
         WHAT AWAITS YOU
       </h2>
+
+      <Link to='/minigames/slide' className='text-white z-50 text-5xl'>Minigames</Link>
 
       <div className="inline-flex justify-between gap-2 w-full mt-7 animate-slide-up-fade-1">
         {isAndroid ? (

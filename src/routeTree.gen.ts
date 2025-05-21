@@ -17,6 +17,8 @@ import { Route as HomeImport } from './routes/home'
 import { Route as GateImport } from './routes/gate'
 import { Route as FriendsImport } from './routes/friends'
 import { Route as IndexImport } from './routes/index'
+import { Route as MinigamesSlideImport } from './routes/minigames/slide'
+import { Route as MinigamesBattleImport } from './routes/minigames/battle'
 
 // Create/Update Routes
 
@@ -53,6 +55,18 @@ const FriendsRoute = FriendsImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MinigamesSlideRoute = MinigamesSlideImport.update({
+  id: '/minigames/slide',
+  path: '/minigames/slide',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MinigamesBattleRoute = MinigamesBattleImport.update({
+  id: '/minigames/battle',
+  path: '/minigames/battle',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +116,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TasksImport
       parentRoute: typeof rootRoute
     }
+    '/minigames/battle': {
+      id: '/minigames/battle'
+      path: '/minigames/battle'
+      fullPath: '/minigames/battle'
+      preLoaderRoute: typeof MinigamesBattleImport
+      parentRoute: typeof rootRoute
+    }
+    '/minigames/slide': {
+      id: '/minigames/slide'
+      path: '/minigames/slide'
+      fullPath: '/minigames/slide'
+      preLoaderRoute: typeof MinigamesSlideImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -114,6 +142,8 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
+  '/minigames/battle': typeof MinigamesBattleRoute
+  '/minigames/slide': typeof MinigamesSlideRoute
 }
 
 export interface FileRoutesByTo {
@@ -123,6 +153,8 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
+  '/minigames/battle': typeof MinigamesBattleRoute
+  '/minigames/slide': typeof MinigamesSlideRoute
 }
 
 export interface FileRoutesById {
@@ -133,13 +165,31 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
+  '/minigames/battle': typeof MinigamesBattleRoute
+  '/minigames/slide': typeof MinigamesSlideRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/friends' | '/gate' | '/home' | '/star-board' | '/tasks'
+  fullPaths:
+    | '/'
+    | '/friends'
+    | '/gate'
+    | '/home'
+    | '/star-board'
+    | '/tasks'
+    | '/minigames/battle'
+    | '/minigames/slide'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/friends' | '/gate' | '/home' | '/star-board' | '/tasks'
+  to:
+    | '/'
+    | '/friends'
+    | '/gate'
+    | '/home'
+    | '/star-board'
+    | '/tasks'
+    | '/minigames/battle'
+    | '/minigames/slide'
   id:
     | '__root__'
     | '/'
@@ -148,6 +198,8 @@ export interface FileRouteTypes {
     | '/home'
     | '/star-board'
     | '/tasks'
+    | '/minigames/battle'
+    | '/minigames/slide'
   fileRoutesById: FileRoutesById
 }
 
@@ -158,6 +210,8 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   StarBoardRoute: typeof StarBoardRoute
   TasksRoute: typeof TasksRoute
+  MinigamesBattleRoute: typeof MinigamesBattleRoute
+  MinigamesSlideRoute: typeof MinigamesSlideRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -167,6 +221,8 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   StarBoardRoute: StarBoardRoute,
   TasksRoute: TasksRoute,
+  MinigamesBattleRoute: MinigamesBattleRoute,
+  MinigamesSlideRoute: MinigamesSlideRoute,
 }
 
 export const routeTree = rootRoute
@@ -184,7 +240,9 @@ export const routeTree = rootRoute
         "/gate",
         "/home",
         "/star-board",
-        "/tasks"
+        "/tasks",
+        "/minigames/battle",
+        "/minigames/slide"
       ]
     },
     "/": {
@@ -204,6 +262,12 @@ export const routeTree = rootRoute
     },
     "/tasks": {
       "filePath": "tasks.tsx"
+    },
+    "/minigames/battle": {
+      "filePath": "minigames/battle.tsx"
+    },
+    "/minigames/slide": {
+      "filePath": "minigames/slide.tsx"
     }
   }
 }

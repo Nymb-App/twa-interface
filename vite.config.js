@@ -2,8 +2,10 @@ import { resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import svgr from 'vite-plugin-svgr';
 
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,6 +13,16 @@ export default defineConfig({
     TanStackRouterVite({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),
+    svgr({
+      svgoConfig: {
+        plugins: [
+          {
+            name: 'removeViewBox',
+            active: false,
+          },
+        ],
+      },
+    }),
   ],
   test: {
     globals: true,
@@ -21,10 +33,19 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
+  optimizeDeps: {
+    esbuildOptions: {
+        define: {
+            global: 'globalThis'
+        },
+        plugins: [
+            NodeGlobalsPolyfillPlugin({
+                buffer: true
+            })
+        ]
+    }
+},
   server: {
-    allowedHosts: [
-      'suited-mounts-introduced-exchange.trycloudflare.com',
-      '8db8-37-1-204-162.ngrok-free.app',
-    ],
+    allowedHosts: ['utc-publishing-customize-shelf.trycloudflare.com'],
   },
 })

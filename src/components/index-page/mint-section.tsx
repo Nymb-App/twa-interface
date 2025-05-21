@@ -1,8 +1,47 @@
-import { Card } from '../ui/card'
-import { MintButton } from '../ui/mint-button'
-import { LazyVideo } from './lazy-video'
+import { useTonAddress } from '@tonconnect/ui-react';
+import { Card } from '../ui/card';
+import { ConnectButton, DisconnectButton, MintButton } from '../ui/mint-button';
+import { LazyVideo } from './lazy-video';
+import { useMint } from '@/hooks/use-mint';
+import { useEffect, useState } from 'react';
 
 export function MintSection() {
+  const address = useTonAddress();
+  const { mintProgress } = useMint();
+
+  const [isConnectHidden, setConnectHidden] = useState<boolean>(false);
+  const [isDisconnectHidden, setDisconnectHidden] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (mintProgress && mintProgress.isEarlyAccessMinted) {
+      setConnectHidden(true);
+    } else {
+      if (address) {
+        setConnectHidden(false);
+      } else {
+        setConnectHidden(true);
+      }
+    }
+  }, [
+    mintProgress,
+    address,
+  ]);
+
+  useEffect(() => {
+    if (mintProgress && mintProgress.isEarlyAccessMinted) {
+      setDisconnectHidden(true);
+    } else {
+      if (!address) {
+        setDisconnectHidden(true);
+      } else {
+        setDisconnectHidden(false);
+      }
+    }
+  }, [
+    mintProgress,
+    address,
+  ]);
+
   return (
     <section className="relative text-white px-3">
       <div className="animate-slide-up-fade-3">
@@ -36,8 +75,17 @@ export function MintSection() {
             </div>
           </div>
 
-          <MintButton minted className="mt-6 w-[80%] mx-auto z-10" />
-          <span className="mt-3 text-white/60 mx-auto z-10">
+          {isConnectHidden 
+            ? <MintButton className="mt-6 w-[80%] mx-auto" /> 
+            : <ConnectButton className="mt-6 w-[80%] mx-auto" />
+          }
+          
+          {!isDisconnectHidden &&
+            <DisconnectButton
+              className="mt-2 w-[80%] mx-auto"
+            />
+          }
+          <span className="mt-3 text-white/60 mx-auto">
             One for the wallet
           </span>
         </Card>

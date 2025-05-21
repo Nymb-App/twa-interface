@@ -1,4 +1,10 @@
-export function BombIcon({ className }: { className?: string }) {
+export function BombIcon({
+  className,
+  style,
+}: {
+  className?: string,
+  style?: React.CSSProperties,
+}) {
   return (
     <svg
       className={className}
@@ -7,6 +13,7 @@ export function BombIcon({ className }: { className?: string }) {
       viewBox="0 0 41 41"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={style}
     >
       <rect
         x="23.9371"

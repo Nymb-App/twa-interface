@@ -1,15 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { isTMA } from '@telegram-apps/sdk'
-import { useEffect, useState } from 'react'
-import { useAuth } from '@/hooks/use-api'
-// import { useRive } from '@rive-app/react-canvas';
-import { cn } from '@/utils'
-// import { GameCard } from '@/components/game-card';
+import { useEffect, useState } from 'react';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useAuth } from '@/hooks/use-api';
+import { cn } from '@/utils';
 
-// icons
 
-// Lotte animations
-// import BattleAnimationLottie from '@/assets/lottie/battle.json';
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { HeroSection } from '@/components/index-page/hero-section'
 import { MintSection } from '@/components/index-page/mint-section'
@@ -28,10 +22,12 @@ function App() {
   const { isAuthTokenValid, authorize } = useAuth()
 
   useEffect(() => {
-    if (isAuthTokenValid) return
-    ;(async () => {
-      await authorize()
-    })()
+    if (isAuthTokenValid) return;
+    
+    (async () => {
+      await authorize();
+    })();
+
   }, [authorize, isAuthTokenValid])
 
   useEffect(() => {
@@ -41,8 +37,6 @@ function App() {
     const timerId1 = setTimeout(() => {
       setAnimationCountdownCooldownFinished(true)
     }, 5500)
-
-    console.log(isTMA(), 'isTMA?')
 
     return () => {
       clearTimeout(timerId0)

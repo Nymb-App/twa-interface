@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "fuser -k 3000/tcp && vite --port 3000",
+    "dev": "vite --port 3000",
     "start": "vite --port 3000",
     "build": "vite build && tsc",
     "preview": "fuser -k 3000/tcp && vite preview --host 0.0.0.0 --port 3000",
@@ -13,6 +13,7 @@
     "format": "prettier --write"
   },
   "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "@radix-ui/react-avatar": "^1.1.9",
     "@radix-ui/react-slot": "^1.2.2",
@@ -24,6 +25,7 @@
     "@tanstack/react-router-devtools": "^1.114.3",
     "@tanstack/router-plugin": "^1.114.3",
     "@telegram-apps/sdk": "^3.9.2",
+    "@tonconnect/ui-react": "^2.1.0",
     "add": "^2.0.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -41,7 +43,8 @@
     "remove": "^0.1.5",
     "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.2.0",
-    "tailwindcss": "^4.0.6"
+    "tailwindcss": "^4.0.6",
+    "ton-core": "^0.53.0"
   },
   "devDependencies": {
     "@tanstack/eslint-config": "^0.1.0",
@@ -55,6 +58,7 @@
     "prettier": "^3.5.3",
     "tw-animate-css": "^1.2.9",
     "typescript": "^5.7.2",
+    "vconsole": "^3.15.1",
     "vite": "^6.1.0",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.0.5",
