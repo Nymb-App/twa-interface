@@ -73,8 +73,8 @@ const ButtonFarming = () => {
               </clipPath>
             </defs>
           </svg>
-          <span className="uppercase text-[#020115] font-pixel">
-            start farming
+          <span className="text-[#020115] font-pixel">
+            START FARMING
           </span>
         </Button>
       ) : (

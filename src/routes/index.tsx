@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useAuth } from '@/hooks/use-api';
 import { cn } from '@/utils';
 
@@ -7,6 +7,7 @@ import { cn } from '@/utils';
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { HeroSection } from '@/components/index-page/hero-section'
 import { MintSection } from '@/components/index-page/mint-section'
+import { PageLayout } from '@/components/ui/page-layout';
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -45,7 +46,7 @@ function App() {
   }, [])
 
   return (
-    <div className="w-full max-w-[450px] min-h-screen mx-auto bg-[#121312] overflow-x-hidden relative pb-6">
+    <PageLayout useFooter={false}>
       <div
         className={cn(
           'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)] duration-500',
@@ -98,6 +99,6 @@ function App() {
           <MintSection />
         </div>
       )}
-    </div>
+    </ PageLayout>
   )
 }

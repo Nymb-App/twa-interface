@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
-import { Layout } from '@/components/layout'
 import ButtonFarming from '@/components/ui/button-farming'
 import { CardContent } from '@/components/ui/card-content'
 import { SwipeCard } from '@/components/swipe-card'
@@ -9,6 +8,7 @@ import ProgressSection from '@/components/home-page/progress-section'
 import { Container } from '@/components/ui/container'
 import { GameCard } from '@/components/game-card'
 import SwipeAnimationLottie from '@/assets/lottie/swipe2.json'
+import { PageLayout } from '@/components/ui/page-layout'
 
 export const Route = createFileRoute('/home')({
   component: RouteComponent,
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/home')({
 
 function RouteComponent() {
   return (
-    <Layout>
+    <PageLayout>
       <ProgressSection />
       <Container>
         <div className="grid grid-cols-2 gap-2">
@@ -51,6 +51,6 @@ function RouteComponent() {
         </div>
         <ButtonFarming />
       </Container>
-    </Layout>
+    </ PageLayout>
   )
 }

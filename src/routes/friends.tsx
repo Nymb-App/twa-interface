@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Layout } from '@/components/layout'
+import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/components/ui/page-layout';
 
 export const Route = createFileRoute('/friends')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <Layout>Hello "/friends"!</Layout>
+  return <PageLayout>Hello "/friends"!</PageLayout>
 }

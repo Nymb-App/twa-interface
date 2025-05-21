@@ -1,24 +1,27 @@
 'use client'
 
+import { useMatches, useRouter } from '@tanstack/react-router';
 import {
-  // backButton,
+  backButton,
   closingBehavior,
   init,
   isTMA,
   miniApp,
   swipeBehavior,
   viewport,
-} from '@telegram-apps/sdk'
-import { useEffect } from 'react'
-import type { ReactNode } from 'react'
+} from '@telegram-apps/sdk';
+import { useEffect } from 'react';
+import type { ReactNode } from 'react';
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter()
+  const pathnames = useMatches();
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       if (isTMA()) {
         init()
         miniApp.mountSync()
@@ -57,32 +60,32 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   /** ***************************************************************/
   /*                        TWA Back Button                        */
   /** ***************************************************************/
-  // useEffect(() => {
-  //     (async () => {
-  //         if (await isTMA()) {
-  //             if (backButton.mount.isAvailable()) {
-  //                 await backButton.mount();
-  //             }
+  useEffect(() => {
+    (async () => {
+      if (await isTMA()) {
+        if (backButton.mount.isAvailable()) {
+          await backButton.mount();
+        }
 
-  //             if (
-  //                 (pathname === '/' || pathname === '/auth' || pathname === '/dashboard') &&
-  //                 backButton.hide.isAvailable()
-  //             ) {
-  //                 await backButton.hide();
-  //             } else {
-  //                 if (backButton.show.isAvailable()) {
-  //                     await backButton.show();
-  //                 }
-  //             }
+        if (
+          (pathnames[1].pathname === '/' || pathnames[1].pathname === '/home') &&
+          backButton.hide.isAvailable()
+        ) {
+          await backButton.hide();
+        } else {
+          if (backButton.show.isAvailable()) {
+            await backButton.show();
+          }
+        }
 
-  //             if (backButton.onClick.isAvailable()) {
-  //                 backButton.onClick(() => {
-  //                     router.back();
-  //                 });
-  //             }
-  //         }
-  //     })();
-  // }, [pathname]);
+        if (backButton.onClick.isAvailable()) {
+          backButton.onClick(() => {
+            router.history.back();
+          });
+        }
+      }
+    })();
+  }, [pathnames]);
 
   return children
 }
