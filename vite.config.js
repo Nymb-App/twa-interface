@@ -24,7 +24,7 @@ export default defineConfig({
   server: {
     allowedHosts: [
       'suited-mounts-introduced-exchange.trycloudflare.com',
-      '16b7-37-1-204-162.ngrok-free.app',
+      '158f-37-1-204-162.ngrok-free.app',
     ],
   },
 })

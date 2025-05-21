@@ -391,7 +391,7 @@ body {
 }
 
 .my-gradient-border {
-  background: url('../public/home-bg.png') no-repeat bottom;
+  background: url('/home-bg.png') no-repeat bottom;
 }
 
 div[data-state='indeterminate'] {
@@ -419,4 +419,18 @@ div[data-state='indeterminate'] {
       rgba(18,  19,  18, 0) 0%,
       rgba(18,  19,  18, 1) 100%
     );
+}
+
+.starboard-result-block-bg {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 100%);
+}
+
+.navigation-menu-bg {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  border-top: 1px solid var(--border-general, rgba(255, 255, 255, 0.12));
+  backdrop-filter: blur(12px);
+  background: linear-gradient(0deg, rgba(18, 19, 18, 0.9) 31%, rgba(18, 19, 18, 0) 100%);
 }

@@ -6,7 +6,7 @@ export const NavigationMenu = () => {
   const isActiveLink = useMatches()
   return (
     <nav>
-      <ul className="py-4 px-3 flex justify-between items-center rounded-t-4xl border border-b-[#121312B2]/70 border-r-[#121312B2]/70 border-l-[#121312B2]/70 border-t-[#FFFFFF1F]">
+      <ul className="navigation-menu-bg py-4 px-3 flex justify-between items-center rounded-t-4xl pb-8 border border-b-[#121312B2]/70 border-r-[#121312B2]/70 border-l-[#121312B2]/70 border-t-[#FFFFFF1F]">
         {navItems.map(({ to, label, icon: Icon, isLocked }) => (
           <li
             key={to}

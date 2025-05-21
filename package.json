@@ -17,6 +17,7 @@
     "@radix-ui/react-avatar": "^1.1.9",
     "@radix-ui/react-progress": "^1.1.6",
     "@radix-ui/react-slot": "^1.2.2",
+    "@radix-ui/react-tabs": "^1.1.12",
     "@rive-app/canvas-advanced": "^2.27.2",
     "@rive-app/react-canvas": "^4.19.0",
     "@tailwindcss/vite": "^4.0.6",
