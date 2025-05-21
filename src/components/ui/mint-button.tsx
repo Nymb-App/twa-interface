@@ -4,7 +4,6 @@ import { useMint } from '@/hooks/use-mint';
 import { cn } from '@/utils';
 import { useTransferTon } from '@/hooks/use-transfer-ton';
 import { TextWithAppearingDots } from './appearing-dots';
-import { on } from '@telegram-apps/sdk';
 
 
 export function MintButton({

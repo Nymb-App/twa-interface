@@ -248,8 +248,8 @@ export default function BombField({ thresholdPercent = 80 }: { thresholdPercent?
                     </div>
                 )
             })}
-
-            <style jsx>
+            
+            <style>
                 {`
                     @keyframes rise {
                         from {

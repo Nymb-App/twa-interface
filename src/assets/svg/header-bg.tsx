@@ -14,9 +14,8 @@ export default function HeaderBg({
         >
             <foreignObject x="-8" y="-8" width="406" height="72">
                 <div
-                    xmlns="http://www.w3.org/1999/xhtml"
                     className="w-full h-full backdrop-blur-sm [clip-path:url(#bgblur_0_51_31625_clip_path)]"
-                ></div>
+                />
             </foreignObject>
             <path
                 data-figma-bg-blur-radius="8"
