@@ -381,9 +381,9 @@ code {
 html,
 body {
   /* Отключаем «резиновый» эффект при скролле по всей странице */
-  overscroll-behavior: none;
+  overscroll-behavior: none !important;
   /* для WebKit (iOS Safari) */
-  -webkit-overflow-scrolling: auto;
+  -webkit-overflow-scrolling: auto !important;
 }
 
 .rfm-child {
@@ -392,4 +392,31 @@ body {
 
 .my-gradient-border {
   background: url('../public/home-bg.png') no-repeat bottom;
+}
+
+div[data-state='indeterminate'] {
+  div {
+    background-color: transparent;
+    /* background: linear-gradient(
+      to right,
+      #adfa4b,
+      #b6ff00
+    );
+    border-radius: 16px; */
+  }
+}
+
+.bg-line-gradient {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(182, 255, 0, 0)     0%,
+      rgba(182, 255, 0, 0.14) 50%,
+      rgba(182, 255, 0, 0)   100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(18,  19,  18, 0) 0%,
+      rgba(18,  19,  18, 1) 100%
+    );
 }

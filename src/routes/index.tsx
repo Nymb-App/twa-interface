@@ -74,6 +74,7 @@ function App() {
           autoResize={!isAnimationCountdownFinished}
           width={450}
         />
+
         <div
           className={cn(
             'absolute size-full bg-gradient-to-b from-transparent from-50% to-[#121312]',

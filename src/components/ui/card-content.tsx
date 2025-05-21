@@ -41,8 +41,12 @@ export const CardContent = ({ isLocked = true }: { isLocked?: boolean }) => {
               />
             </svg>
           )}
-          {!isLocked && <h2 className="font-pixel text-white">shop</h2>}
-          <p className="text-sm font-[300]">
+          {!isLocked && (
+            <h2 className="font-pixel text-[#FFFFFF] font-[400] text-[18px] leading-[24px]">
+              shop
+            </h2>
+          )}
+          <p className="text-[12px] font-inter tracking-[0.3px] font-[300] text-[#FFFFFF66] leading-[16px]">
             {!isLocked ? 'Speed you up' : 'Coming soon'}
           </p>
         </div>

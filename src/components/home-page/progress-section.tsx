@@ -1,6 +1,7 @@
 import Countdown from 'react-countdown'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { LevelsList } from './levels-list'
+import { cn } from '@/utils'
 
 const Completionist = () => <span>You are good to go!</span>
 
@@ -29,7 +30,7 @@ const renderer = ({
     const getColorClass = (value: number) =>
       value === 0
         ? 'text-[#FFFFFF]/40 font-[400] text-[30px]'
-        : 'font-[400] text-[30px] text-[#B6FF00] relative before:content-[""] before:absolute before:inset-0 before:rounded-full before:blur-[16px] before:opacity-35 before:z-[-1] before:bg-[#B6FF00]'
+        : 'font-[400] text-[30px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]'
     return (
       <div className="text-center">
         <div className="flex justify-center gap-6">
@@ -42,18 +43,22 @@ const renderer = ({
           ].map((item, index) => (
             <div
               key={item.label}
-              className={`flex flex-col items-center relative  ${
+              className={`w-[50px] relative ${
                 index !== 0 &&
-                'before:content-[":"] before:text-[30px] before:absolute before:-left-[22px] before:top-[18px] before:-translate-y-1/2 before:text-gray-500'
+                'before:content-[":"] before:text-[30px] before:absolute before:-left-[25px] before:top-[22px] before:-translate-y-1/2 before:text-gray-500'
               }`}
             >
-              <p className={`leading-[120%] mb-2 ${getColorClass(item.value)}`}>
+              <p
+                className={cn(
+                  item.value >= 1 && item.value <= 19 && 'pr-3',
+                  `leading-[120%] mb-2 ${getColorClass(item.value)}`,
+                )}
+              >
                 {zeroPad(item.value)}
               </p>
-
-              <span className="text-[10px] font-[400] uppercase text-[#FFFFFF]/40">
+              <p className="text-[10px] font-[400] uppercase text-[#FFFFFF]/40">
                 {item.label}
-              </span>
+              </p>
             </div>
           ))}
         </div>
@@ -66,7 +71,7 @@ const ProgressSection = () => {
   return (
     <div className="font-pixel mb-6 border-[#1D1F1D] pb-4 my-gradient-border">
       <div className="flex justify-between items-center px-3">
-        <div className="flex items-center bg-[#1D1F1D] py-2 px-3 rounded-[16px]">
+        <div className="flex items-center bg-[#1D1F1D] py-2 px-3 rounded-[16px] h-[40px]">
           <svg
             className="!w-[24px] !h-[24px]"
             width="36"
@@ -83,8 +88,8 @@ const ProgressSection = () => {
           <span className="text-sm">1000</span>
         </div>
         <h1 className="text-[24px] uppercase">home</h1>
-        <div className="flex items-center bg-[#1D1F1D] py-2 px-3 rounded-[16px] gap-2">
-          <Avatar>
+        <div className="flex items-center bg-[#1D1F1D] py-2 px-3 rounded-[16px] gap-2 h-[40px]">
+          <Avatar className="rounded-[12px]">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
