@@ -34,7 +34,7 @@ export default defineConfig({
   server: {
     // только для vite dev
     allowedHosts: [
-      'utc-publishing-customize-shelf.trycloudflare.com',
+      'bobby-karma-malaysia-sodium.trycloudflare.com',
       'nymb-interface.vercel.app'
     ],
   },
