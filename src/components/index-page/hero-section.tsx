@@ -23,7 +23,7 @@ export function HeroSection() {
       </div>
 
       <div className="inline-flex justify-between gap-2 w-full mt-7 animate-slide-up-fade-1">
-        {!isAndroid ? (
+        {isAndroid ? (
           <SwipeCard
             className="w-full"
             classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"

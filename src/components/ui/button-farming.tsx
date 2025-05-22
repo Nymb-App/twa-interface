@@ -182,7 +182,7 @@ function FarmingProgressButton({
       )}
     >
       <div
-        className="absolute inset-0 bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] transition-[width] ease-linear duration-1000"
+        className="absolute inset-0 rounded-[16px] bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] transition-[width] ease-linear duration-1000"
         style={{ width: `${progressPercent}%` }}
       />
       <div className="relative z-10 inline-flex items-center gap-1 active:text-[#B6FF00] mix-blend-difference">

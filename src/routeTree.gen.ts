@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as TasksImport } from './routes/tasks'
 import { Route as StarBoardImport } from './routes/star-board'
+import { Route as SendGiftImport } from './routes/send-gift'
 import { Route as HomeImport } from './routes/home'
 import { Route as GateImport } from './routes/gate'
 import { Route as FrensImport } from './routes/frens'
@@ -31,6 +32,12 @@ const TasksRoute = TasksImport.update({
 const StarBoardRoute = StarBoardImport.update({
   id: '/star-board',
   path: '/star-board',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SendGiftRoute = SendGiftImport.update({
+  id: '/send-gift',
+  path: '/send-gift',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeImport
       parentRoute: typeof rootRoute
     }
+    '/send-gift': {
+      id: '/send-gift'
+      path: '/send-gift'
+      fullPath: '/send-gift'
+      preLoaderRoute: typeof SendGiftImport
+      parentRoute: typeof rootRoute
+    }
     '/star-board': {
       id: '/star-board'
       path: '/star-board'
@@ -140,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
+  '/send-gift': typeof SendGiftRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
   '/minigames/battle': typeof MinigamesBattleRoute
@@ -151,6 +166,7 @@ export interface FileRoutesByTo {
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
+  '/send-gift': typeof SendGiftRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
   '/minigames/battle': typeof MinigamesBattleRoute
@@ -163,6 +179,7 @@ export interface FileRoutesById {
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
+  '/send-gift': typeof SendGiftRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
   '/minigames/battle': typeof MinigamesBattleRoute
@@ -176,6 +193,7 @@ export interface FileRouteTypes {
     | '/frens'
     | '/gate'
     | '/home'
+    | '/send-gift'
     | '/star-board'
     | '/tasks'
     | '/minigames/battle'
@@ -186,6 +204,7 @@ export interface FileRouteTypes {
     | '/frens'
     | '/gate'
     | '/home'
+    | '/send-gift'
     | '/star-board'
     | '/tasks'
     | '/minigames/battle'
@@ -196,6 +215,7 @@ export interface FileRouteTypes {
     | '/frens'
     | '/gate'
     | '/home'
+    | '/send-gift'
     | '/star-board'
     | '/tasks'
     | '/minigames/battle'
@@ -208,6 +228,7 @@ export interface RootRouteChildren {
   FrensRoute: typeof FrensRoute
   GateRoute: typeof GateRoute
   HomeRoute: typeof HomeRoute
+  SendGiftRoute: typeof SendGiftRoute
   StarBoardRoute: typeof StarBoardRoute
   TasksRoute: typeof TasksRoute
   MinigamesBattleRoute: typeof MinigamesBattleRoute
@@ -219,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   FrensRoute: FrensRoute,
   GateRoute: GateRoute,
   HomeRoute: HomeRoute,
+  SendGiftRoute: SendGiftRoute,
   StarBoardRoute: StarBoardRoute,
   TasksRoute: TasksRoute,
   MinigamesBattleRoute: MinigamesBattleRoute,
@@ -239,6 +261,7 @@ export const routeTree = rootRoute
         "/frens",
         "/gate",
         "/home",
+        "/send-gift",
         "/star-board",
         "/tasks",
         "/minigames/battle",
@@ -256,6 +279,9 @@ export const routeTree = rootRoute
     },
     "/home": {
       "filePath": "home.tsx"
+    },
+    "/send-gift": {
+      "filePath": "send-gift.tsx"
     },
     "/star-board": {
       "filePath": "star-board.tsx"

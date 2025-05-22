@@ -49,7 +49,6 @@ function RouteComponent() {
           <CardContent isLocked={false} />
           <CardContent />
         </div>
-        {/* <ButtonFarming /> */}
         <FarmingButton className="w-full" />
       </Container>
     </PageLayout>
