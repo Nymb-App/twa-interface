@@ -391,10 +391,6 @@ body {
   margin-left: 23px;
 }
 
-.my-gradient-border {
-  background: url('/home-bg.png') no-repeat bottom;
-}
-
 div[data-state='indeterminate'] {
   div {
     background-color: transparent;
