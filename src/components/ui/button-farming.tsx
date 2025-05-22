@@ -73,9 +73,7 @@ const ButtonFarming = () => {
               </clipPath>
             </defs>
           </svg>
-          <span className="text-[#020115] font-pixel">
-            START FARMING
-          </span>
+          <span className="text-[#020115] font-pixel">START FARMING</span>
         </Button>
       ) : (
         <div className="relative overflow-hidden rounded-[16px]">

@@ -1,9 +1,9 @@
 import { useTonAddress } from '@tonconnect/ui-react';
+import { useEffect, useState } from 'react';
 import { Card } from '../ui/card';
 import { ConnectButton, DisconnectButton, MintButton } from '../ui/mint-button';
 import { LazyVideo } from './lazy-video';
 import { useMint } from '@/hooks/use-mint';
-import { useEffect, useState } from 'react';
 
 export function MintSection() {
   const address = useTonAddress();

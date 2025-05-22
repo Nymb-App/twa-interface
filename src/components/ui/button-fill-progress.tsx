@@ -31,7 +31,12 @@ export const ButtonFillProgress = ({
         width: `${progress}%`,
       }}
     >
-      <div className="absolute top-[9px] left-0 right-0 bottom-0 w-[369px]">
+      <div
+        className="absolute top-[9px] left-0 right-0 bottom-0`"
+        style={{
+          width: `${window.innerWidth > 450 ? '426px' : `${window.innerWidth - 24}px`}`,
+        }}
+      >
         <div className="flex gap-2 justify-center items-center mb-1">
           <div className="text-[#020115] text-[18px] font-[400] font-pixel leading-[24px] uppercase">
             farming

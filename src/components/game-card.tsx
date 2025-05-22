@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import lottie from 'lottie-web'
+import { Link } from '@tanstack/react-router'
 import type { AnimationItem } from 'lottie-web'
 import { cn } from '@/utils'
 
@@ -73,51 +74,53 @@ export const GameCard = ({
   }, [loadLottie, isVisible, animationData])
 
   return (
-    <div
-      className={cn(
-        'rounded-2xl w-full h-max p-[1.3px] overflow-hidden bg-gradient-to-b from-white/20 to-transparent',
-      )}
-    >
+    <Link to="/minigames/slide" className="w-full">
       <div
         className={cn(
-          'rounded-2xl w-full h-full pb-5 bg-[#161715] relative overflow-hidden',
-          className,
+          'rounded-2xl w-full h-max p-[1.3px] overflow-hidden bg-gradient-to-b from-white/20 to-transparent',
         )}
       >
-        <div className="w-full relative overflow-hidden max-h-[250px] min-h-[160px] h-full">
-          {classNameBg && (
+        <div
+          className={cn(
+            'rounded-2xl w-full h-full pb-5 bg-[#161715] relative overflow-hidden',
+            className,
+          )}
+        >
+          <div className="w-full relative overflow-hidden max-h-[250px] min-h-[160px] h-full">
+            {classNameBg && (
+              <div
+                className={cn(
+                  'absolute left-1/2 -top-[30%] -translate-x-1/2 w-full h-full',
+                  classNameBg,
+                )}
+              />
+            )}
+            {/* Плейсхолдер-картинка до готовности Lottie */}
+            {!lottieReady && (
+              <img
+                src={placeholderSrc}
+                alt="animation placeholder"
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full"
+              />
+            )}
             <div
-              className={cn(
-                'absolute left-1/2 -top-[30%] -translate-x-1/2 w-full h-full',
-                classNameBg,
-              )}
+              ref={containerRef}
+              className="absolute left-1/2 top-1/2 w-[110%] h-[110%] -translate-x-1/2 -translate-y-1/2"
             />
-          )}
-          {/* Плейсхолдер-картинка до готовности Lottie */}
-          {!lottieReady && (
-            <img
-              src={placeholderSrc}
-              alt="animation placeholder"
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full"
-            />
-          )}
-          <div
-            ref={containerRef}
-            className="absolute left-1/2 top-1/2 w-[110%] h-[110%] -translate-x-1/2 -translate-y-1/2"
-          />
-        </div>
-        <div>
-          <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
-          <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
-            {description}
-          </p>
-          {subdescription && (
-            <p className="font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
-              {subdescription}
+          </div>
+          <div>
+            <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
+            <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
+              {description}
             </p>
-          )}
+            {subdescription && (
+              <p className="font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
+                {subdescription}
+              </p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

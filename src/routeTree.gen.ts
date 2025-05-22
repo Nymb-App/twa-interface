@@ -15,7 +15,7 @@ import { Route as TasksImport } from './routes/tasks'
 import { Route as StarBoardImport } from './routes/star-board'
 import { Route as HomeImport } from './routes/home'
 import { Route as GateImport } from './routes/gate'
-import { Route as FriendsImport } from './routes/friends'
+import { Route as FrensImport } from './routes/frens'
 import { Route as IndexImport } from './routes/index'
 import { Route as MinigamesSlideImport } from './routes/minigames/slide'
 import { Route as MinigamesBattleImport } from './routes/minigames/battle'
@@ -46,9 +46,9 @@ const GateRoute = GateImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const FriendsRoute = FriendsImport.update({
-  id: '/friends',
-  path: '/friends',
+const FrensRoute = FrensImport.update({
+  id: '/frens',
+  path: '/frens',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,11 +81,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/friends': {
-      id: '/friends'
-      path: '/friends'
-      fullPath: '/friends'
-      preLoaderRoute: typeof FriendsImport
+    '/frens': {
+      id: '/frens'
+      path: '/frens'
+      fullPath: '/frens'
+      preLoaderRoute: typeof FrensImport
       parentRoute: typeof rootRoute
     }
     '/gate': {
@@ -137,7 +137,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/friends': typeof FriendsRoute
+  '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
   '/star-board': typeof StarBoardRoute
@@ -148,7 +148,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/friends': typeof FriendsRoute
+  '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
   '/star-board': typeof StarBoardRoute
@@ -160,7 +160,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/friends': typeof FriendsRoute
+  '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
   '/star-board': typeof StarBoardRoute
@@ -173,7 +173,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/friends'
+    | '/frens'
     | '/gate'
     | '/home'
     | '/star-board'
@@ -183,7 +183,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/friends'
+    | '/frens'
     | '/gate'
     | '/home'
     | '/star-board'
@@ -193,7 +193,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/friends'
+    | '/frens'
     | '/gate'
     | '/home'
     | '/star-board'
@@ -205,7 +205,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  FriendsRoute: typeof FriendsRoute
+  FrensRoute: typeof FrensRoute
   GateRoute: typeof GateRoute
   HomeRoute: typeof HomeRoute
   StarBoardRoute: typeof StarBoardRoute
@@ -216,7 +216,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  FriendsRoute: FriendsRoute,
+  FrensRoute: FrensRoute,
   GateRoute: GateRoute,
   HomeRoute: HomeRoute,
   StarBoardRoute: StarBoardRoute,
@@ -236,7 +236,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/friends",
+        "/frens",
         "/gate",
         "/home",
         "/star-board",
@@ -248,8 +248,8 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "index.tsx"
     },
-    "/friends": {
-      "filePath": "friends.tsx"
+    "/frens": {
+      "filePath": "frens.tsx"
     },
     "/gate": {
       "filePath": "gate.tsx"

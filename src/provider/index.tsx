@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { TelegramProvider } from './telegram'
 import { TonConnectUIProvider } from '@tonconnect/ui-react'
+import { TelegramProvider } from './telegram'
 
 const queryClient = new QueryClient()
 export const Provider = ({ children }: { children: React.ReactNode }) => {

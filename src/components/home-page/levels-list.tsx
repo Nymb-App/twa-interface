@@ -1,14 +1,9 @@
-import { FlickeringGrid } from '../magicui/flickering-grid'
-import { Carousel, CarouselContent } from '../ui/carousel'
 // import MarqueeArrows from './marquee-arrows'
 // import { LevelsListItem } from './levels-list-item'
-import Marquee from "react-fast-marquee";
-import { Link } from '@tanstack/react-router'
-import { CarouselItem } from '../ui/carousel'
+import Marquee from 'react-fast-marquee'
+import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 import { cn } from '@/utils'
-import { LockIcon } from '@/assets/icons/lock';
-
-
+import { LockIcon } from '@/assets/icons/lock'
 
 const levels = [
   { num: 12, isLocked: false, isCurrentLevel: true, isNewUnlocked: false },
@@ -27,7 +22,7 @@ const levels = [
 
 export const LevelsList = () => {
   return (
-    <div className='w-full overflow-hidden px-6'>
+    <div className="w-full overflow-hidden px-6 my-4">
       <Carousel
         className="w-full h-[48px]"
         opts={{
@@ -35,7 +30,7 @@ export const LevelsList = () => {
           align: 'center',
         }}
       >
-        <CarouselContent className='h-[48px]'>
+        <CarouselContent className="h-[48px]">
           {levels.map((level, index) => (
             <CarouselLvlItem
               key={level.num}
@@ -44,10 +39,16 @@ export const LevelsList = () => {
             />
           ))}
         </CarouselContent>
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-[70px] bg-gradient-to-l from-[#121312] to-transparent "
-        />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-[70px] bg-gradient-to-l from-[#121312] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-[-68px] w-[70px] bg-gradient-to-l from-[#121312] to-transparent" />
       </Carousel>
+      {/* <FlickeringGrid
+        className="absolute z-[-1] h-[110px] min-w-[1600px] left-0 right-0 bottom-0 top-[10px]"
+        squareSize={2}
+        gridGap={18}
+        color="#b7ff01"
+        flickerChance={0.3}
+      /> */}
     </div>
   )
 }
@@ -55,32 +56,41 @@ export const LevelsList = () => {
 function CarouselLvlItem({
   lvl,
   isLocked = true,
-}:{
-  lvl: number,
-  isLocked?: boolean,
+}: {
+  lvl: number
+  isLocked?: boolean
 }) {
   return (
     // [&:nth-child(4n+1)]:pl-4 pl-0 last:flex-none last:w-12
-    <CarouselItem className="basis-1/4 relative h-full [&:nth-child(4n+1)]:pl-4 pl-0 last:flex-none last:w-12">
-      <div className={cn('bg-[#171815] border border-[#323331] rounded-xl h-full aspect-square text-center absolute z-10 top-1/2 -translate-y-1/2 ', isLocked && 'h-[32px]')}>
-        {isLocked 
-        ?
-          <LockIcon className='absolute left-1/2 top-1/2 -translate-1/2' />
-        :
-          <span className={cn('leading-[48px]', lvl.toString()[0] === '1' && 'mr-2')}>
+    <CarouselItem className="flex justify-center basis-1/4 relative h-full [&:nth-child(4n+1)]:pl-4 pl-0 last:flex-none last:w-12">
+      <div
+        className={cn(
+          'bg-[#171815] border border-[#323331] rounded-xl h-full aspect-square text-center absolute z-10 top-1/2 -translate-y-1/2 ',
+          isLocked && 'h-[32px]',
+        )}
+      >
+        {isLocked ? (
+          <LockIcon className="absolute left-1/2 top-1/2 -translate-1/2" />
+        ) : (
+          <span
+            className={cn(
+              'leading-[48px]',
+              lvl.toString()[0] === '1' && 'mr-2',
+            )}
+          >
             {lvl}
           </span>
-        }
+        )}
       </div>
       <Marquee
-        className='absolute top-1/2 -translate-y-1/2'
+        className="absolute top-1/2 -translate-y-1/2"
         autoFill
-        direction='right'
+        direction="right"
       >
         <ArrowIcon />
       </Marquee>
     </CarouselItem>
-  );
+  )
 }
 
 // export const LevelsListItem = ({
@@ -128,12 +138,7 @@ function CarouselLvlItem({
 //   )
 // }
 
-
-const ArrowIcon = ({
-  className,
-}:{
-  className?: string,
-}) => (
+const ArrowIcon = ({ className }: { className?: string }) => (
   <svg
     width="6"
     height="9"

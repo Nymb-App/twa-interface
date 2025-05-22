@@ -51,6 +51,6 @@ function RouteComponent() {
         </div>
         <ButtonFarming />
       </Container>
-    </ PageLayout>
+    </PageLayout>
   )
 }
