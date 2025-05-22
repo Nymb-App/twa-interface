@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from './button'
 import { ButtonFillProgress } from './button-fill-progress'
 import { ButtonFarmingActive } from './button-farming-active'
+import { WatchesIcon } from '@/assets/icons/watches'
+import { cn } from '@/utils'
+
 
 const DURATION = 20 // длительность в секундах
 
@@ -101,3 +104,129 @@ const ButtonFarming = () => {
 }
 
 export default ButtonFarming
+
+// TODO: Менять кнопки в зависимости от состояния таймера
+// Порядок такой:
+// 1) FarmingDefaultButton
+// 2) FarmingProgressButton
+// 2) FarmingClaimButton
+// 
+// Сделать рабочие таймеры используя `Contdown` из react-countdown 
+// Примеры есть в коде можешь поискать
+// 
+// TODO: оптимизация запросов
+// Сохранять время завершения таймера в local storage
+// Переменную назови `nymb-farming-finishat`
+// проверяй на наличие переменной если её нет или время `nymb-farming-finishat`
+// меньше Date.now() в секундах то делаешь запрос на бэк (когда будет апи) 
+export function FarmingButton({
+  className
+}:{
+  className?: string
+}) {
+  const claimTimeInSeconds = (3600 * 6);
+  return (
+    <>
+      <FarmingDefaultButton className={className} />
+      <FarmingProgressButton className={className} />
+      <FarmingClaimButton claimTime={claimTimeInSeconds} className={className} />
+    </>
+  );
+}
+
+function FarmingDefaultButton({
+  className
+}:{
+  className?: string
+}) {
+  return (
+    <button className={cn(
+        'p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-xl bg-gradient-to-b cursor-pointer from-[#ADFA4B] to-[#B6FF00] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+        className,
+      )}
+    >
+      <WatchesIcon
+        className='mix-blend-difference'
+        fill="#B6FF00"
+      />
+      <span className='mix-blend-difference'>
+        START FARMING
+      </span>
+    </button>
+  );
+}
+
+function FarmingClaimButton({
+  claimTime,
+  className,
+}:{
+  claimTime: number,
+  className?: string
+}) {
+  const time = useMemo(() => {
+    const hours   = Math.floor(claimTime / 3600);
+    const minutes = Math.floor((claimTime % 3600) / 60);
+    const seconds = claimTime % 60;
+
+    // Превращаем в строки и дополняем ведущим нулём до 2 цифр
+    const hh = String(hours).padStart(2, '0');
+    const mm = String(minutes).padStart(2, '0');
+    const ss = String(seconds).padStart(2, '0');
+
+    return `${hh}:${mm}:${ss}`;
+  }, [claimTime]); 
+
+  return (
+    <button className={cn(
+        'p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-xl bg-gradient-to-b cursor-pointer from-[#ADFA4B] to-[#B6FF00] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+        className,
+      )}
+    >
+      <span className='mix-blend-difference'>
+        CLAIM
+      </span>
+      <WatchesIcon
+        className='mix-blend-difference'
+        fill="#B6FF00"
+      />
+      <span className='mix-blend-difference'>
+        {time}
+      </span>
+    </button>
+  );
+}
+
+function FarmingProgressButton({
+  className
+}:{
+  className?: string
+}) {
+  return (
+    <button 
+      disabled
+      className={cn(
+      'relative overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-xl bg-[#222a13] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+      className,
+    )}
+    >
+      {/* Progress background */}
+      <div
+        className='absolute h-full left-0 rounded-xl bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] transition-all'
+        style={{
+          width: '50%'
+        }}
+      />
+      <div className='inline-flex items-center gap-1'>
+        <span className='mix-blend-difference'>FARMING</span>
+        <WatchesIcon
+          className='#121312 mix-blend-difference'
+          fill="#B6FF00"
+        />
+        <span className='mix-blend-difference'>02:22:22</span>
+      </div>
+      <span className='font-inter text-[10px] mix-blend-difference mr-2 -mt-1 mb-1 opacity-50'>
+        01:04:56
+      </span>
+    </button>
+  );
+}
