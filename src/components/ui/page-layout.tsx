@@ -1,92 +1,96 @@
-import type { ReactNode } from 'react';
-import { Link, useMatches } from '@tanstack/react-router';
-import { cn } from '@/utils';
+import { Link, useMatches } from '@tanstack/react-router'
+import { isMobile } from 'react-device-detect'
+import type { ReactNode } from 'react'
+import type { JSX } from 'react/jsx-runtime'
+import { cn } from '@/utils'
 
 // SVG Icons
-import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon';
-import { HomeIcon } from '@/assets/icons/menu-icons/home-icon';
-import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon';
-import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon';
-import { isMobile } from 'react-device-detect';
-import type { JSX } from 'react/jsx-runtime';
+import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
+import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
+import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
+import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
 
 export const PageLayout = ({
-    children,
-    useFooter = true,
+  children,
+  useFooter = true,
 }: {
-    children: ReactNode,
-    useFooter?: boolean,
+  children: ReactNode
+  useFooter?: boolean
 }) => {
-    const linkItems = [
-        { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
-        { to: '/tasks', label: 'Tasks', icon: TasksIcon },
-        { to: '/home', label: 'Home', icon: HomeIcon },
-        { to: '/friends', label: 'Frens', icon: FriendsIcon },
-        { to: '/locked', label: 'Blured', icon: FriendsIcon, isLocked: true },
-    ];
+  const linkItems = [
+    { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
+    { to: '/tasks', label: 'Tasks', icon: TasksIcon },
+    { to: '/home', label: 'Home', icon: HomeIcon },
+    { to: '/frens', label: 'Frens', icon: FriendsIcon },
+    { to: '/locked', label: 'Blured', icon: FriendsIcon, isLocked: true },
+  ]
 
-    return (
-        <div className=" relative top-28 pb-6 w-full max-w-[450px] min-h-[calc(100vh-10rem)] mx-auto bg-[#121312] overflow-x-hidden text-white">
-            {children}
-
-            {useFooter && (
-                <NavigationMenu linkItems={linkItems} />
-            )}
-        </div>
-    )
+  return (
+    <div className="relative top-28 pb-6 w-full max-w-[450px] min-h-[calc(100vh-10rem)] mx-auto bg-[#121312] overflow-x-hidden text-white">
+      <main className={cn(useFooter && 'pb-[5rem]')}>{children}</main>
+      {useFooter && <NavigationMenu linkItems={linkItems} />}
+    </div>
+  )
 }
-
 
 const NavigationMenu = ({
-    className,
-    linkItems
+  className,
+  linkItems,
 }: {
-    className?: string,
-    linkItems: {
-        to: string,
-        label: string,
-        icon: Icon,
-        isLocked?: boolean
-    }[]
+  className?: string
+  linkItems: Array<{
+    to: string
+    label: string
+    icon: Icon
+    isLocked?: boolean
+  }>
 }) => {
-    const isActiveLink = useMatches();
+  const isActiveLink = useMatches()
 
-    return (
-        <nav className={cn('fixed bottom-0 w-full max-w-[450px] rounded-t-4xl h-20 z-50 border-t-2 border-[#2f302e] backdrop-blur-[12px] bg-[linear-gradient(0deg,rgba(18,19,18,0.9)_31%,rgba(18,19,18,0)_100%)]', className)}>
-            <ul className="inline-flex justify-between w-full h-12">
-                {linkItems.map(({ to, label, icon: Icon, isLocked }, index) => (
-                    <li
-                        key={`nav-item-${index}`}
-                        className={cn(
-                            'flex flex-col items-center justify-center w-1/5 h-full text-xs transition-colors pt-2',
-                        )}
-                    >
-                        <Link
-                            to={to}
-                            disabled={isLocked}
-                            aria-disabled={isLocked}
-                            activeOptions={{ exact: true }}
-                            className={cn(
-                                'relative group flex flex-col items-center gap-1 text-white/60 transition-colors',
-                                (!isMobile && isActiveLink[1].pathname !== to) && 'duration-200 hover:text-white',
-                                isLocked && 'blur-[5px] hover:text-white/60',
-                                (isActiveLink[1].pathname === to) && 'text-[#B6FF00] before:content-[""] before:absolute before:inset-0 before:mx-auto before:my-auto before:bg-[#B6FF00] before:filter before:blur-[30px] before:opacity-60',
-                            )}
-                        >
-                            <Icon
-                                fill="currentColor"
-                                fillOpacity="1"
-                            />
-                            {label}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </nav>
-    )
+  return (
+    <nav
+      className={cn(
+        'fixed bottom-0 w-full max-w-[450px] rounded-t-4xl h-20 z-50 border-t-2 border-[#2f302e] backdrop-blur-[12px] bg-[linear-gradient(0deg,rgba(18,19,18,0.9)_31%,rgba(18,19,18,0)_100%)]',
+        className,
+      )}
+    >
+      <ul className="inline-flex justify-between w-full h-12">
+        {linkItems.map(({ to, label, icon: Icon, isLocked }, index) => (
+          <li
+            key={`nav-item-${index}`}
+            className={cn(
+              'flex flex-col items-center justify-center w-1/5 h-full text-xs transition-colors pt-2',
+            )}
+          >
+            <Link
+              to={to}
+              disabled={isLocked}
+              aria-disabled={isLocked}
+              activeOptions={{ exact: true }}
+              className={cn(
+                'relative group flex flex-col items-center gap-1 text-white/60 transition-colors',
+                !isMobile &&
+                  isActiveLink[1].pathname !== to &&
+                  'duration-200 hover:text-white',
+                isLocked && 'blur-[5px] hover:text-white/60',
+                isActiveLink[1].pathname === to &&
+                  'text-[#B6FF00] before:content-[""] before:absolute before:inset-0 before:mx-auto before:my-auto before:bg-[#B6FF00] before:filter before:blur-[30px] before:opacity-60',
+              )}
+            >
+              <Icon fill="currentColor" fillOpacity="1" />
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
 }
 
-type Icon = ({ fill, fillOpacity, }: {
-    fill?: string;
-    fillOpacity?: string;
-}) => JSX.Element;
+type Icon = ({
+  fill,
+  fillOpacity,
+}: {
+  fill?: string
+  fillOpacity?: string
+}) => JSX.Element

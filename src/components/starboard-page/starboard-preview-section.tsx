@@ -13,10 +13,10 @@ export const StarboardPreviewSection = () => {
         alt="preview-image"
         width={191}
         height={155}
-        className="-mt-[20px]"
+        className="-mt-[20px] animate-[wiggle_3s_ease-in-out_infinite]"
       />
       <FlickeringGrid
-        className="absolute inset-0 z-[-1] mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
+        className="absolute inset-0 mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
         squareSize={2}
         gridGap={12}
         color="#b7ff01"

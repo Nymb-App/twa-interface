@@ -1,21 +1,19 @@
-import { FlickeringGrid } from '../magicui/flickering-grid'
-import { Carousel, CarouselContent } from '../ui/carousel'
 // import MarqueeArrows from './marquee-arrows'
 // import { LevelsListItem } from './levels-list-item'
-import Marquee from "react-fast-marquee";
+import Marquee from 'react-fast-marquee'
 import { Link } from '@tanstack/react-router'
-import { CarouselItem } from '../ui/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
+import { FlickeringGrid } from '../magicui/flickering-grid'
 import { cn } from '@/utils'
-import { LockIcon } from '@/assets/icons/lock';
+import { LockIcon } from '@/assets/icons/lock'
 
-export const LevelsList = ({className}:{className?: string}) => {
-  const MAX_LVL = 12;
-  const lvlArray = Array.from({length: MAX_LVL});
+export const LevelsList = ({ className }: { className?: string }) => {
+  const MAX_LVL = 12
+  const lvlArray = Array.from({ length: MAX_LVL })
 
   return (
     <div className={cn('w-full px-6', className)}>
-      <FlickeringGrid
-      />
+      <FlickeringGrid />
       <Carousel
         className="w-full h-[48px]"
         opts={{
@@ -23,23 +21,32 @@ export const LevelsList = ({className}:{className?: string}) => {
           align: 'center',
         }}
       >
-        <div
-          className="pointer-events-none absolute top-1/2 -translate-y-1/2 h-5 w-1/2 bg-[radial-gradient(ellipse_250px_4px_at_left,_rgba(182,255,0,0.3)_0%,_transparent_100%)]"
-        />
-        <CarouselContent className='h-[48px]'>
+        <div className="pointer-events-none absolute top-1/2 -translate-y-1/2 h-5 w-1/2 bg-[radial-gradient(ellipse_250px_4px_at_left,_rgba(182,255,0,0.3)_0%,_transparent_100%)]" />
+        <CarouselContent className="h-[48px]">
           {lvlArray.map((_, index) => (
             <CarouselLvlItem
               key={`lvl-${index}`}
               lvl={MAX_LVL - index}
-              lockStatus={index === 0 ? 'unlocked' : index === 1 ? 'ready-to-unlock' : undefined}
+              lockStatus={
+                index === 0
+                  ? 'unlocked'
+                  : index === 1
+                    ? 'ready-to-unlock'
+                    : undefined
+              }
             />
           ))}
         </CarouselContent>
-        
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-[70px] bg-gradient-to-l from-[#121312] to-transparent "
-        />
+
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-[70px] bg-gradient-to-l from-[#121312] to-transparent " />
       </Carousel>
+      {/* <FlickeringGrid
+        className="absolute z-[-1] h-[110px] min-w-[1600px] left-0 right-0 bottom-0 top-[10px]"
+        squareSize={2}
+        gridGap={18}
+        color="#b7ff01"
+        flickerChance={0.3}
+      /> */}
     </div>
   )
 }
@@ -48,52 +55,50 @@ function CarouselLvlItem({
   lvl,
   lockStatus = 'locked',
 }: {
-  lvl: number,
-  lockStatus?: 'locked' | 'unlocked' | 'ready-to-unlock',
+  lvl: number
+  lockStatus?: 'locked' | 'unlocked' | 'ready-to-unlock'
 }) {
   return (
     <CarouselItem className="basis-1/4 relative h-full [&:nth-child(4n+1)]:pl-4 pl-0 last:flex-none last:w-12">
       <Link to="/gate">
-        <div className={cn(
+        <div
+          className={cn(
             'bg-[#171815] border border-[#323331] rounded-xl h-full aspect-square text-center absolute z-10 top-1/2 -translate-y-1/2 ',
-            (lockStatus === 'locked' || lockStatus === 'ready-to-unlock') && 'h-[32px]',
-            lockStatus === 'ready-to-unlock' && 'border-[#B6FF00] text-[#B6FF00] rounded-xl shadow-[0_0px_10px_#B6FF00]/60'
+            (lockStatus === 'locked' || lockStatus === 'ready-to-unlock') &&
+              'h-[32px]',
+            lockStatus === 'ready-to-unlock' &&
+              'border-[#B6FF00] text-[#B6FF00] rounded-xl shadow-[0_0px_10px_#B6FF00]/60',
           )}
         >
-          {lockStatus === 'locked'
-            ?
-            <LockIcon className='absolute left-1/2 top-1/2 -translate-1/2' />
-            :
-            <span className={cn(
+          {lockStatus === 'locked' ? (
+            <LockIcon className="absolute left-1/2 top-1/2 -translate-1/2" />
+          ) : (
+            <span
+              className={cn(
                 'leading-[48px]',
                 lvl.toString()[0] === '1' && 'mr-2',
-                lockStatus === 'ready-to-unlock' && 'leading-[30px]'
+                lockStatus === 'ready-to-unlock' && 'leading-[30px]',
               )}
             >
               {lvl}
             </span>
-          }
+          )}
         </div>
-        {lvl > 1 &&
+        {lvl > 1 && (
           <Marquee
-            className='absolute top-1/2 -translate-y-1/2 '
+            className="absolute top-1/2 -translate-y-1/2 "
             autoFill
-            direction='right'
+            direction="right"
           >
             <ArrowIcon />
           </Marquee>
-        }
+        )}
       </Link>
     </CarouselItem>
-  );
+  )
 }
 
-
-const ArrowIcon = ({
-  className,
-}: {
-  className?: string,
-}) => (
+const ArrowIcon = ({ className }: { className?: string }) => (
   <svg
     width="6"
     height="9"

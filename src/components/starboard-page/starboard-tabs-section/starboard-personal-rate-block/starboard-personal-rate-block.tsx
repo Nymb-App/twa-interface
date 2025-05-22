@@ -2,7 +2,13 @@ import Countdown from 'react-countdown'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
 
-export const StarboardPersonalRateBlock = () => {
+export const StarboardPersonalRateBlock = ({
+  gateCurrentUserData,
+}: {
+  gateCurrentUserData:
+    | { gate: number; ratePosition: number; time: number }
+    | undefined
+}) => {
   return (
     <div className="relative flex gap-4 items-center rounded-[14px] py-[13px] px-[16px] starboard-result-block-bg">
       <Avatar className="rounded-[12px]">
@@ -15,7 +21,7 @@ export const StarboardPersonalRateBlock = () => {
           tevial
         </span>
         <Countdown
-          date={Date.now() + 61000}
+          date={Number(Date.now() + (gateCurrentUserData?.time ?? 0))}
           intervalDelay={10}
           precision={3}
           renderer={(props: any) => <CountdownTimerDisplay {...props} />}
@@ -24,10 +30,10 @@ export const StarboardPersonalRateBlock = () => {
 
       <div className="flex flex-col text-right">
         <p className="text-[#FFFFFF99] font-pixel font-[400] text-[12px] leading-[120%] uppercase">
-          12 gate
+          {gateCurrentUserData?.gate ?? '??'} gate
         </p>
         <span className="font-inter text-[#FFFFFF66] font-[400] leading-[140%]">
-          #9156
+          #{gateCurrentUserData?.ratePosition ?? '??'}
         </span>
       </div>
     </div>

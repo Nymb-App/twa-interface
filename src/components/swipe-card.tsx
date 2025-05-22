@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { Link } from '@tanstack/react-router'
 import { cn } from '@/utils'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { BombIcon } from '@/assets/icons/bomb'
@@ -17,53 +18,55 @@ export const SwipeCard = ({
   classNameBg?: string
 }) => {
   return (
-    <div
-      className={cn(
-        'rounded-2xl w-full h-max p-[1.3px] overflow-hidden bg-gradient-to-b from-white/20 to-transparent relative',
-      )}
-    >
-      {classNameBg && (
-        <div
-          className={cn(
-            'absolute left-1/2 -top-[30%] -translate-x-1/2 w-full h-[50px] z-10',
-            classNameBg,
-          )}
-        />
-      )}
+    <Link to="/minigames/slide" className="w-full">
       <div
         className={cn(
-          'rounded-2xl w-full h-full pb-5 bg-[#161715] relative overflow-hidden',
-          className,
+          'rounded-2xl w-full h-max p-[1.3px] overflow-hidden bg-gradient-to-b from-white/20 to-transparent relative',
         )}
       >
-        {/* Dots pattern background */}
-        <div className="w-full h-[160px] overflow-hidden relative [mask-image:radial-gradient(140px_circle_at_center,white,transparent)]">
-          <DotBackground />
-        </div>
-        <div className="w-full h-[160px] overflow-hidden absolute top-0">
-          <WatchesIcon className="absolute top-[40%] left-[40%] -rotate-45 animate-delay-pop-0" />
-          <WatchesIcon className="absolute top-[12%] right-[8%] -rotate-[80deg] animate-delay-pop-1" />
-          <WatchesIcon className="absolute -bottom-[15%] left-[50%] rotate-0 animate-delay-pop-2" />
-
-          <BombIcon className="absolute top-[15%] left-[25%] -rotate-6 animate-delay-pop-3" />
-          <BombIcon className="absolute bottom-[0%] left-[10%] rotate-12 animate-delay-pop-4" />
-          <BombIcon className="absolute top-[50%] left-[85%] -rotate-12 animate-delay-pop-5" />
-        </div>
-
-        {/* Description section */}
-        <div>
-          <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
-          <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
-            {description}
-          </p>
-          {subdescription && (
-            <p className="font-light text-xs text-white/50 text-center font-inter tracking-[0.3px]">
-              {subdescription}
-            </p>
+        {classNameBg && (
+          <div
+            className={cn(
+              'absolute left-1/2 -top-[30%] -translate-x-1/2 w-full h-[50px] z-10',
+              classNameBg,
+            )}
+          />
+        )}
+        <div
+          className={cn(
+            'rounded-2xl w-full h-full pb-5 bg-[#161715] relative overflow-hidden',
+            className,
           )}
+        >
+          {/* Dots pattern background */}
+          <div className="w-full h-[160px] overflow-hidden relative [mask-image:radial-gradient(140px_circle_at_center,white,transparent)]">
+            <DotBackground />
+          </div>
+          <div className="w-full h-[160px] overflow-hidden absolute top-0">
+            <WatchesIcon className="absolute top-[40%] left-[40%] -rotate-45 animate-delay-pop-0" />
+            <WatchesIcon className="absolute top-[12%] right-[8%] -rotate-[80deg] animate-delay-pop-1" />
+            <WatchesIcon className="absolute -bottom-[15%] left-[50%] rotate-0 animate-delay-pop-2" />
+
+            <BombIcon className="absolute top-[15%] left-[25%] -rotate-6 animate-delay-pop-3" />
+            <BombIcon className="absolute bottom-[0%] left-[10%] rotate-12 animate-delay-pop-4" />
+            <BombIcon className="absolute top-[50%] left-[85%] -rotate-12 animate-delay-pop-5" />
+          </div>
+
+          {/* Description section */}
+          <div>
+            <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
+            <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
+              {description}
+            </p>
+            {subdescription && (
+              <p className="font-light text-xs text-white/50 text-center font-inter tracking-[0.3px]">
+                {subdescription}
+              </p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

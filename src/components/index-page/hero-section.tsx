@@ -16,12 +16,8 @@ export function HeroSection() {
         WHAT AWAITS YOU
       </h2>
 
-      <div className='flex flex-col gap-2'>
-
-        <Link to='/minigames/slide' className='text-white z-50 text-xl'>
-          Minigames
-        </Link>
-        <Link to='/home' className='text-white z-50 text-xl'>
+      <div className="flex flex-col gap-2">
+        <Link to="/home" className="text-white z-50 text-xl">
           Home
         </Link>
       </div>

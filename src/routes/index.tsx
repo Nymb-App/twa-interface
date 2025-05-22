@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
-import { useAuth } from '@/hooks/use-api';
-import { cn } from '@/utils';
-
+import { useEffect, useState } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+import { useAuth } from '@/hooks/use-api'
+import { cn } from '@/utils'
 
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { HeroSection } from '@/components/index-page/hero-section'
 import { MintSection } from '@/components/index-page/mint-section'
-import { PageLayout } from '@/components/ui/page-layout';
+import { PageLayout } from '@/components/ui/page-layout'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -23,12 +22,10 @@ function App() {
   const { isAuthTokenValid, authorize } = useAuth()
 
   useEffect(() => {
-    if (isAuthTokenValid) return;
-    
-    (async () => {
-      await authorize();
-    })();
-
+    if (isAuthTokenValid) return
+    ;(async () => {
+      await authorize()
+    })()
   }, [authorize, isAuthTokenValid])
 
   useEffect(() => {
@@ -99,6 +96,6 @@ function App() {
           <MintSection />
         </div>
       )}
-    </ PageLayout>
+    </PageLayout>
   )
 }

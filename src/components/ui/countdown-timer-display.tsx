@@ -1,56 +1,143 @@
-import React from 'react'
+import { cn } from '@/utils'
 
-const zeroPad = (num: number, length = 2) => String(num).padStart(length, '0')
+const zeroPad = (num: number) => String(num).padStart(2, '0')
 
 const formatTimeParts = (
-  days: number,
+  totalDays: number,
   minutes: number,
   seconds: number,
-  milliseconds: number,
-) => {
-  const weeks = Math.floor(days / 7)
-  const remDays = days % 7
-  const mins = minutes % 60
-  const ms = Math.floor(milliseconds / 10) // сотые миллисекунды
-  return [weeks, remDays, mins, seconds, ms]
+) => [
+  Math.floor(totalDays / 365),
+  Math.floor((totalDays % 365) / 30),
+  Math.floor((totalDays % 30) / 7),
+  totalDays % 7,
+  minutes % 60,
+  seconds % 60,
+]
+
+const CountdownBlock = ({
+  label,
+  value,
+  isFirst,
+}: {
+  label: string
+  value: number
+  isFirst: boolean
+}) => {
+  const colorClass =
+    value === 0
+      ? 'text-[#FFFFFF]/40 font-[400] text-[30px]'
+      : 'font-[400] text-[30px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]'
+
+  return (
+    <div
+      className={`w-[50px] relative ${
+        !isFirst &&
+        'before:content-[":"] before:text-[30px] before:absolute before:-left-[25px] before:top-[22px] before:-translate-y-1/2 before:text-gray-500'
+      }`}
+    >
+      <p
+        className={cn(
+          'leading-[120%] mb-2',
+          colorClass,
+          value > 9 && value <= 19 && 'pr-3',
+        )}
+      >
+        {zeroPad(value)}
+      </p>
+      <p className="text-[10px] font-[400] uppercase text-[#FFFFFF]/40">
+        {label}
+      </p>
+    </div>
+  )
 }
 
-type CountdownTimerDisplayProps = {
-  days: number
-  minutes: number
-  seconds: number
-  milliseconds: number
-  completed: boolean
-}
-
-export const CountdownTimerDisplay: React.FC<CountdownTimerDisplayProps> = ({
+export const CountdownTimerDisplay = ({
+  isCountdownHeaderView = false,
   days,
+  hours,
   minutes,
   seconds,
-  milliseconds,
   completed,
+}: {
+  isCountdownHeaderView?: boolean
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+  completed: boolean
 }) => {
   if (completed) {
-    return (
+    const blocks = [
+      { label: 'Weeks', value: 0 },
+      { label: 'Days', value: 0 },
+      { label: 'Hours', value: 0 },
+      { label: 'Minutes', value: 0 },
+      { label: 'Seconds', value: 0 },
+    ]
+    return isCountdownHeaderView ? (
+      <div className="text-center">
+        <div className="flex justify-center gap-6">
+          {blocks.map((item, index) => (
+            <CountdownBlock
+              key={item.label}
+              label={item.label}
+              value={item.value}
+              isFirst={index === 0}
+            />
+          ))}
+        </div>
+      </div>
+    ) : (
       <div className="font-pixel font-[400] text-[12px] leading-[120%] mt-1 text-[#FFFFFF99]">
-        00:00:00:00:00
+        00:00:00:00:00:00
       </div>
     )
   }
 
-  const timeParts = formatTimeParts(days, minutes, seconds, milliseconds)
+  if (isCountdownHeaderView) {
+    const computedWeeks = Math.floor(days / 7)
+    const remainingDays = days % 7
+    const blocks = [
+      { label: 'Weeks', value: computedWeeks },
+      { label: 'Days', value: remainingDays },
+      { label: 'Hours', value: hours },
+      { label: 'Minutes', value: minutes },
+      { label: 'Seconds', value: seconds },
+    ]
 
-  return (
-    <div className="font-pixel font-[400] text-[12px] leading-[120%] mt-1">
-      {timeParts.map((val, i) => (
-        <span
-          key={i}
-          className={val > 0 ? 'text-[#B6FF00]' : 'text-[#FFFFFF99]'}
-        >
-          {zeroPad(val)}
-          {i !== timeParts.length - 1 && ':'}
-        </span>
-      ))}
-    </div>
-  )
+    return (
+      <div className="text-center">
+        <div className="flex justify-center gap-6">
+          {blocks.map((item, index) => (
+            <CountdownBlock
+              key={item.label}
+              label={item.label}
+              value={item.value}
+              isFirst={index === 0}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  } else {
+    const parts = formatTimeParts(days, minutes + hours * 60, seconds)
+    let foundNonZero = false
+
+    return (
+      <div className="font-pixel font-[400] text-[12px] leading-[120%] mt-1">
+        {parts.map((val, i) => {
+          if (val !== 0) foundNonZero = true
+          const color = foundNonZero ? 'text-[#B6FF00]' : 'text-[#FFFFFF99]'
+
+          return (
+            <span key={i} className={color}>
+              {zeroPad(val)}
+              {i < parts.length - 1 && ':'}
+            </span>
+          )
+        })}
+      </div>
+    )
+  }
 }
