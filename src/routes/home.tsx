@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
-import ButtonFarming, { FarmingButton } from '@/components/ui/button-farming'
+import { FarmingButton } from '@/components/ui/button-farming'
 import { CardContent } from '@/components/ui/card-content'
 import { SwipeCard } from '@/components/swipe-card'
 import { BattleCard } from '@/components/battle-card'
@@ -50,7 +50,7 @@ function RouteComponent() {
           <CardContent />
         </div>
         {/* <ButtonFarming /> */}
-        <FarmingButton className='w-full' />
+        <FarmingButton className="w-full" />
       </Container>
     </PageLayout>
   )
