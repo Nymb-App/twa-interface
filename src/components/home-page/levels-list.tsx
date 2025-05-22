@@ -8,26 +8,14 @@ import { CarouselItem } from '../ui/carousel'
 import { cn } from '@/utils'
 import { LockIcon } from '@/assets/icons/lock';
 
+export const LevelsList = ({className}:{className?: string}) => {
+  const MAX_LVL = 12;
+  const lvlArray = Array.from({length: MAX_LVL});
 
-
-const levels = [
-  { num: 12, isLocked: false, isCurrentLevel: true, isNewUnlocked: false },
-  { num: 11, isLocked: true, isCurrentLevel: false, isNewUnlocked: true },
-  { num: 10, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 9, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 8, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 7, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 6, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 5, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 4, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 3, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 2, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 1, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-]
-
-export const LevelsList = () => {
   return (
-    <div className='w-full overflow-hidden px-6'>
+    <div className={cn('w-full px-6', className)}>
+      <FlickeringGrid
+      />
       <Carousel
         className="w-full h-[48px]"
         opts={{
@@ -35,15 +23,19 @@ export const LevelsList = () => {
           align: 'center',
         }}
       >
+        <div
+          className="pointer-events-none absolute top-1/2 -translate-y-1/2 h-5 w-1/2 bg-[radial-gradient(ellipse_250px_4px_at_left,_rgba(182,255,0,0.3)_0%,_transparent_100%)]"
+        />
         <CarouselContent className='h-[48px]'>
-          {levels.map((level, index) => (
+          {lvlArray.map((_, index) => (
             <CarouselLvlItem
-              key={level.num}
-              lvl={12 - index}
-              isLocked={index !== 0}
+              key={`lvl-${index}`}
+              lvl={MAX_LVL - index}
+              lockStatus={index === 0 ? 'unlocked' : index === 1 ? 'ready-to-unlock' : undefined}
             />
           ))}
         </CarouselContent>
+        
         <div
           className="pointer-events-none absolute inset-y-0 right-0 w-[70px] bg-gradient-to-l from-[#121312] to-transparent "
         />
@@ -54,84 +46,52 @@ export const LevelsList = () => {
 
 function CarouselLvlItem({
   lvl,
-  isLocked = true,
-}:{
+  lockStatus = 'locked',
+}: {
   lvl: number,
-  isLocked?: boolean,
+  lockStatus?: 'locked' | 'unlocked' | 'ready-to-unlock',
 }) {
   return (
-    // [&:nth-child(4n+1)]:pl-4 pl-0 last:flex-none last:w-12
     <CarouselItem className="basis-1/4 relative h-full [&:nth-child(4n+1)]:pl-4 pl-0 last:flex-none last:w-12">
-      <div className={cn('bg-[#171815] border border-[#323331] rounded-xl h-full aspect-square text-center absolute z-10 top-1/2 -translate-y-1/2 ', isLocked && 'h-[32px]')}>
-        {isLocked 
-        ?
-          <LockIcon className='absolute left-1/2 top-1/2 -translate-1/2' />
-        :
-          <span className={cn('leading-[48px]', lvl.toString()[0] === '1' && 'mr-2')}>
-            {lvl}
-          </span>
+      <Link to="/gate">
+        <div className={cn(
+            'bg-[#171815] border border-[#323331] rounded-xl h-full aspect-square text-center absolute z-10 top-1/2 -translate-y-1/2 ',
+            (lockStatus === 'locked' || lockStatus === 'ready-to-unlock') && 'h-[32px]',
+            lockStatus === 'ready-to-unlock' && 'border-[#B6FF00] text-[#B6FF00] rounded-xl shadow-[0_0px_10px_#B6FF00]/60'
+          )}
+        >
+          {lockStatus === 'locked'
+            ?
+            <LockIcon className='absolute left-1/2 top-1/2 -translate-1/2' />
+            :
+            <span className={cn(
+                'leading-[48px]',
+                lvl.toString()[0] === '1' && 'mr-2',
+                lockStatus === 'ready-to-unlock' && 'leading-[30px]'
+              )}
+            >
+              {lvl}
+            </span>
+          }
+        </div>
+        {lvl > 1 &&
+          <Marquee
+            className='absolute top-1/2 -translate-y-1/2 '
+            autoFill
+            direction='right'
+          >
+            <ArrowIcon />
+          </Marquee>
         }
-      </div>
-      <Marquee
-        className='absolute top-1/2 -translate-y-1/2'
-        autoFill
-        direction='right'
-      >
-        <ArrowIcon />
-      </Marquee>
+      </Link>
     </CarouselItem>
   );
 }
 
-// export const LevelsListItem = ({
-//   level,
-// }: {
-//   level: {
-//     num: number
-//     isLocked: boolean
-//     isCurrentLevel: boolean
-//     isNewUnlocked: boolean
-//   }
-// }) => {
-//   return (
-//     <CarouselItem className="basis-1/4 h-[80px] flex items-center justify-center">
-//       <>
-//         {!level.isLocked ? (
-//           <div className="flex justify-center">
-//             <Link
-//               to="/tasks"
-//               className={cn(
-//                 'inline-flex items-center w-[32px] h-[32px] font-[400] text-sm justify-center border rounded-[12px] p-2 border-[#FFFFFF1F] bg-[#121312]',
-//                 level.isCurrentLevel &&
-//                   'border-[#FFFFFF1F] w-[48px] h-[48px] rounded-[18px] shadow-none bg-[#161816]',
-//                 level.isNewUnlocked &&
-//                   'shadow-[0px_0px_20px_rgba(182,255,0,0.4)] text-[#B6FF00] border-[#B6FF00]',
-//               )}
-//             >
-//               <span
-//                 className={cn(
-//                   level.num > 20 && 'mr-0',
-//                   level.num >= 1 && level.num <= 19 && 'mr-1.5',
-//                 )}
-//               >
-//                 {level.num}
-//               </span>
-//             </Link>
-//           </div>
-//         ) : (
-//           <div className="flex justify-center" key={level.num}>
-//             <LockIcon />
-//           </div>
-//         )}
-//       </>
-//     </CarouselItem>
-//   )
-// }
-
 
 const ArrowIcon = ({
   className,
-}:{
+}: {
   className?: string,
 }) => (
   <svg

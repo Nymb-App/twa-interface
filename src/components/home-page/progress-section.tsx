@@ -3,8 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { LevelsList } from './levels-list'
 import { cn } from '@/utils'
 import EnergyIcon from '@/assets/icons/energy'
-
-const Completionist = () => <span>You are good to go!</span>
+import { FlickeringGrid } from '../magicui/flickering-grid'
 
 const zeroPad = (num: number) =>
   num === 0 ? String(num).padStart(2, '0') : num
@@ -23,7 +22,7 @@ const renderer = ({
   completed: boolean
 }) => {
   if (completed) {
-    return <Completionist />
+    return <span>00:00:00:00</span>
   } else {
     // Render a countdown
     const computedWeeks = Math.floor(days / 7)
@@ -70,7 +69,7 @@ const renderer = ({
 
 const ProgressSection = () => {
   return (
-    <header className="relative w-full font-pixel px-3 my-gradient-border">
+    <header className="relative w-full font-pixel px-3">
       {/* Top part */}
       <div className='inline-flex justify-between w-full'>
         {/* Left card */}
@@ -91,10 +90,31 @@ const ProgressSection = () => {
         </div>
       </div>
 
-      <LevelsList />
-      {/* <Countdown date={Date.now() + 150234100} renderer={renderer}>
-        <Completionist />
-      </Countdown> */}
+      <FlickeringGrid
+        className="absolute mask-[radial-gradient(ellipse_250px_80px_at_center,black,transparent)]"
+        squareSize={2}
+        gridGap={12}
+        color="#B6FF00"
+        maxOpacity={0.6}
+        flickerChance={0.4}
+        autoResize={false}
+        width={450}
+        height={100}
+      />
+      <LevelsList className='my-4' />
+
+      <div className='relative'>
+        <Countdown
+          date={Date.now() + 150234100}
+          renderer={renderer}
+          intervalDelay={1000}
+        />
+
+        <img
+          src='home-bg.png'
+          className='absolute w-full min-w-[105%] -top-[10px] left-1/2 -translate-x-1/2'
+        />
+      </div>
     </ header>
   )
 }
