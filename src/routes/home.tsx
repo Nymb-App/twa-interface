@@ -18,7 +18,7 @@ function RouteComponent() {
   return (
     <PageLayout>
       <ProgressSection />
-      <Container>
+      <Container className="mt-5">
         <div className="grid grid-cols-2 gap-2">
           {isAndroid ? (
             <SwipeCard

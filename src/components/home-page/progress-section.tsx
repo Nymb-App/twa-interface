@@ -2,6 +2,7 @@ import Countdown from 'react-countdown'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { LevelsList } from './levels-list'
 import { cn } from '@/utils'
+import EnergyIcon from '@/assets/icons/energy'
 
 const Completionist = () => <span>You are good to go!</span>
 
@@ -69,40 +70,32 @@ const renderer = ({
 
 const ProgressSection = () => {
   return (
-    <div className="font-pixel mb-6 border-[#1D1F1D] pb-4 my-gradient-border">
-      <div className="flex justify-between items-center px-3">
-        <div className="flex items-center bg-[#1D1F1D] py-2 px-3 rounded-[16px] h-[40px]">
-          <svg
-            className="!w-[24px] !h-[24px]"
-            width="36"
-            height="36"
-            viewBox="0 0 36 36"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M13.5 28.5H15V30H12V27H13.5V28.5ZM16.5 28.5H15V27H16.5V28.5ZM15 27H13.5V24H15V27ZM18 27H16.5V25.5H18V27ZM19.5 25.5H18V24H19.5V25.5ZM16.5 24H15V21H16.5V24ZM21 24H19.5V22.5H21V24ZM22.5 22.5H21V21H22.5V22.5ZM10.5 18H18V21H16.5V19.5H9V16.5H10.5V18ZM24 21H22.5V19.5H24V21ZM25.5 19.5H24V18H25.5V19.5ZM19.5 15H27V18H25.5V16.5H18V12H19.5V15ZM12 16.5H10.5V15H12V16.5ZM13.5 15H12V13.5H13.5V15ZM15 13.5H13.5V12H15V13.5ZM16.5 12H15V10.5H16.5V12ZM21 12H19.5V9H21V12ZM18 10.5H16.5V9H18V10.5ZM19.5 9H18V7.5H19.5V9ZM22.5 9H21V7.5H19.5V6H22.5V9Z"
-              fill="#B6FF00"
-            />
-          </svg>
-          <span className="text-sm">1000</span>
+    <header className="relative w-full font-pixel px-3 my-gradient-border">
+      {/* Top part */}
+      <div className='inline-flex justify-between w-full'>
+        {/* Left card */}
+        <div className='inline-flex items-center justify-between bg-[#1D1F1D] rounded-2xl h-[40px] pl-2 pr-3'>
+          <EnergyIcon className='size-[28px]'/>
+          <span className="text-base">1000</span>
         </div>
-        <h1 className="text-[24px] uppercase">home</h1>
-        <div className="flex items-center bg-[#1D1F1D] py-2 px-3 rounded-[16px] gap-2 h-[40px]">
-          <Avatar className="rounded-[12px]">
+        
+        <h1 className="text-2xl">HOME</h1>
+
+        {/* Right card */}
+        <div className='inline-flex items-center justify-between gap-2 bg-[#1D1F1D] rounded-2xl h-[40px] pl-2 pr-3'>
+          <Avatar className="rounded-lg size-[28px]">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <span className="text-sm font-inter lowercase font-semibold">
-            tevial
-          </span>
+          <span className=" font-inter text-base font-semibold">unknown</span>
         </div>
       </div>
+
       <LevelsList />
-      <Countdown date={Date.now() + 150234100} renderer={renderer}>
+      {/* <Countdown date={Date.now() + 150234100} renderer={renderer}>
         <Completionist />
-      </Countdown>
-    </div>
+      </Countdown> */}
+    </ header>
   )
 }
 
