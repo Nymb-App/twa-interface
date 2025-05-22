@@ -12,7 +12,7 @@ export function FarmingButton({ className }: { className?: string }) {
   const [isComplete, setIsComplete] = useState(false)
   const [startAt, setStartAt] = useState<number | null>(null)
   const [showDefaultButton, setShowDefaultButton] = useState(false)
-  const [isPendingStart, setIsPendingStart] = useState(false)
+  const [_, setIsPendingStart] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY)
