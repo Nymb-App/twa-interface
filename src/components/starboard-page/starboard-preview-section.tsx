@@ -1,4 +1,3 @@
-import { motion } from 'motion/react'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import StarBoardImage from '/starboard-img.png'
 
@@ -9,17 +8,12 @@ export const StarboardPreviewSection = () => {
         star board <br />
         12 gate
       </h1>
-      <motion.img
+      <img
         src={StarBoardImage}
         alt="preview-image"
         width={191}
         height={155}
-        className="-mt-[20px]"
-        animate={{
-          y: [0, -10, 0],
-          rotate: [0, 0, 0],
-        }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+        className="-mt-[20px] animate-[wiggle_3s_ease-in-out_infinite]"
       />
       <FlickeringGrid
         className="absolute inset-0 mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"

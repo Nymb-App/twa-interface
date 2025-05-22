@@ -340,6 +340,16 @@ code {
       filter: none;
     }
   }
+
+  @keyframes wiggle {
+    0%, 100% {
+      transform: rotate(-3deg) translateY(5px);
+    }
+    50% {
+      transform: rotate(3deg) translateY(-5px);
+    }
+  }
+  
 }
 
 @layer utilities {
