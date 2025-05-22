@@ -11,6 +11,8 @@ export function FarmingButton({ className }: { className?: string }) {
   const [finishAt, setFinishAt] = useState<number | null>(null)
   const [isComplete, setIsComplete] = useState(false)
   const [startAt, setStartAt] = useState<number | null>(null)
+  const [showDefaultButton, setShowDefaultButton] = useState(false)
+  const [isPendingStart, setIsPendingStart] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY)
@@ -33,6 +35,7 @@ export function FarmingButton({ className }: { className?: string }) {
     setFinishAt(endTime)
     setStartAt(now)
     setIsComplete(false)
+    setIsPendingStart(false)
   }, [])
 
   const handleComplete = useCallback(() => {
@@ -47,7 +50,14 @@ export function FarmingButton({ className }: { className?: string }) {
     setFinishAt(null)
     setStartAt(null)
     setIsComplete(true)
+    setShowDefaultButton(false)
   }, [startAt])
+
+  const handleClaimClick = useCallback(() => {
+    setShowDefaultButton(true)
+    setIsPendingStart(true)
+    localStorage.removeItem(LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY)
+  }, [])
 
   const renderButton = useCallback(
     (timeStr: string, completed: boolean) => {
@@ -71,6 +81,10 @@ export function FarmingButton({ className }: { className?: string }) {
     [className, handleStart, finishAt],
   )
 
+  if (showDefaultButton) {
+    return <FarmingDefaultButton className={className} onClick={handleStart} />
+  }
+
   if (isComplete) {
     const savedDuration = localStorage.getItem(
       LOCAL_STORAGE_SAVED_COMPLETED_TIME_KEY,
@@ -91,7 +105,7 @@ export function FarmingButton({ className }: { className?: string }) {
       <FarmingClaimButton
         time={timeStr}
         className={className}
-        onClick={handleStart}
+        onClick={handleClaimClick}
       />
     )
   }
