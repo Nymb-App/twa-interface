@@ -1,9 +1,9 @@
-// import MarqueeArrows from './marquee-arrows'
-// import { LevelsListItem } from './levels-list-item'
 import Marquee from 'react-fast-marquee'
 import { Link } from '@tanstack/react-router'
-import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 import { FlickeringGrid } from '../magicui/flickering-grid'
+import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
+// import MarqueeArrows from './marquee-arrows'
+// import { LevelsListItem } from './levels-list-item'
 import { cn } from '@/utils'
 import { LockIcon } from '@/assets/icons/lock'
 
@@ -40,13 +40,6 @@ export const LevelsList = ({ className }: { className?: string }) => {
 
         <div className="pointer-events-none absolute inset-y-0 right-0 w-[70px] bg-gradient-to-l from-[#121312] to-transparent " />
       </Carousel>
-      {/* <FlickeringGrid
-        className="absolute z-[-1] h-[110px] min-w-[1600px] left-0 right-0 bottom-0 top-[10px]"
-        squareSize={2}
-        gridGap={18}
-        color="#b7ff01"
-        flickerChance={0.3}
-      /> */}
     </div>
   )
 }

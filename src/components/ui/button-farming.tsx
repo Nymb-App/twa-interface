@@ -35,6 +35,7 @@ export function FarmingButton({ className }: { className?: string }) {
     setFinishAt(endTime)
     setStartAt(now)
     setIsComplete(false)
+    setShowDefaultButton(false)
     setIsPendingStart(false)
   }, [])
 
@@ -66,7 +67,7 @@ export function FarmingButton({ className }: { className?: string }) {
           <FarmingClaimButton
             time={timeStr}
             className={className}
-            onClick={handleStart}
+            onClick={handleClaimClick}
           />
         )
       }
@@ -78,10 +79,10 @@ export function FarmingButton({ className }: { className?: string }) {
         />
       )
     },
-    [className, handleStart, finishAt],
+    [className, finishAt, handleClaimClick],
   )
 
-  if (showDefaultButton) {
+  if (showDefaultButton && isPendingStart) {
     return <FarmingDefaultButton className={className} onClick={handleStart} />
   }
 
