@@ -19,13 +19,18 @@ const CountdownBlock = ({
   label,
   value,
   isFirst,
+  minutesValue,
 }: {
   label: string
   value: number
   isFirst: boolean
+  minutesValue?: number
 }) => {
+  const forceGreenForSeconds =
+    label === 'Seconds' && minutesValue && minutesValue !== 0
+
   const colorClass =
-    value === 0
+    value === 0 && !forceGreenForSeconds
       ? 'text-[#FFFFFF]/40 font-[400] text-[30px]'
       : 'font-[400] text-[30px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]'
 
@@ -115,6 +120,7 @@ export const CountdownTimerDisplay = ({
               label={item.label}
               value={item.value}
               isFirst={index === 0}
+              minutesValue={minutes}
             />
           ))}
         </div>

@@ -28,14 +28,16 @@ const ProgressSection = () => {
       </div>
 
       <LevelsList />
-      <Countdown
-        date={Number(Date.now() + 4345)}
-        intervalDelay={10}
-        precision={3}
-        renderer={(props: any) => (
-          <CountdownTimerDisplay isCountdownHeaderView {...props} />
-        )}
-      />
+      <div>
+        <Countdown
+          date={Number(Date.now() + 505000)}
+          intervalDelay={10}
+          precision={3}
+          renderer={(props: any) => (
+            <CountdownTimerDisplay isCountdownHeaderView {...props} />
+          )}
+        />
+      </div>
     </header>
   )
 }
