@@ -4,6 +4,13 @@ import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { cn } from '@/utils'
 
+// import Marquee from 'react-fast-marquee'
+// import { Link } from '@tanstack/react-router'
+// import { FlickeringGrid } from '../magicui/flickering-grid'
+// import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
+// import { cn } from '@/utils'
+// import { LockIcon } from '@/assets/icons/lock'
+
 const levels = [
   { num: 12, isLocked: false, isCurrentLevel: true, isNewUnlocked: false },
   { num: 11, isLocked: false, isCurrentLevel: false, isNewUnlocked: true },
@@ -155,13 +162,6 @@ const Arrow = () => (
     />
   </svg>
 )
-
-// import Marquee from 'react-fast-marquee'
-// import { Link } from '@tanstack/react-router'
-// import { FlickeringGrid } from '../magicui/flickering-grid'
-// import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
-// import { cn } from '@/utils'
-// import { LockIcon } from '@/assets/icons/lock'
 
 // export const LevelsList = ({ className }: { className?: string }) => {
 //   const MAX_LVL = 12

@@ -1,14 +1,15 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
-import { motion } from 'motion/react'
-import { useState } from 'react'
+import { animate, motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
 import { Container } from '@/components/ui/container'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/ui/copy-button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { cn } from '@/utils'
+import { cn, convertTimestampToLargestUnit } from '@/utils'
+import { TimeCountup } from '@/components/ui/countup-timer-display'
 
 export const Route = createFileRoute('/frens')({
   component: RouteComponent,
@@ -20,6 +21,10 @@ function RouteComponent() {
     { code: 'TSADSAJF', percentageRatio: [10, 90], members: 0 },
   ])
   const [isToastActive, setIsToastActive] = useState(false)
+  const [isClaimStart, setIsClaimStart] = useState(false)
+  const [isClaimEnd, setIsClaimEnd] = useState(false)
+
+  const totalEarnings = 610043543
 
   return (
     <PageLayout>
@@ -30,17 +35,35 @@ function RouteComponent() {
         <p className="font-inter text-center text-[14px] text-[#FFFFFF99] leading-[140%] mb-2">
           Total Earnings:
         </p>
-        <Countdown
-          date={Number(Date.now() + 443345)}
-          intervalDelay={10}
-          precision={3}
-          renderer={(props: any) => (
-            <CountdownTimerDisplay isCountdownHeaderView {...props} />
-          )}
-        />
+        {!isClaimStart ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Countdown
+              date={totalEarnings + Date.now()}
+              intervalDelay={10}
+              precision={3}
+              renderer={(props: any) => (
+                <CountdownTimerDisplay isCountdownHeaderView {...props} />
+              )}
+            />
+          </motion.div>
+        ) : (
+          <TimeCountup
+            targetTimestamp={totalEarnings + Date.now()}
+            isClaimStart={isClaimStart}
+            setIsClaimEnd={setIsClaimEnd}
+          />
+        )}
       </header>
       <Container>
-        <TotalEarningsBlock />
+        <TotalEarningsBlock
+          totalEarnings={!isClaimEnd ? totalEarnings : 0}
+          setIsClaimStart={setIsClaimStart}
+        />
         <ReferralsLevelsBlock />
         <RefferalsCodeList
           referralsCodesData={referralsCodesData}
@@ -54,9 +77,15 @@ function RouteComponent() {
   )
 }
 
-const totalEarnings = { errings: 2 }
+const TotalEarningsBlock = ({
+  totalEarnings,
+  setIsClaimStart,
+}: {
+  totalEarnings: number
+  setIsClaimStart: (value: boolean) => void
+}) => {
+  const displayTime = convertTimestampToLargestUnit(totalEarnings)
 
-const TotalEarningsBlock = () => {
   return (
     <div
       className="font-pixel font-[400] mt-2 flex items-center justify-between p-4 starboard-result-block-bg rounded-[14px]
@@ -69,7 +98,7 @@ backdrop-blur-[8px]"
             width="25"
             height="24"
             viewBox="0 0 25 24"
-            fill={`${totalEarnings.errings > 0 ? '#B6FF00' : '#FFFFFF99'}`}
+            fill={`${displayTime.time > 0 ? '#B6FF00' : '#FFFFFF99'}`}
             xmlns="http://www.w3.org/2000/svg"
           >
             <g clip-path="url(#clip0_51_17272)">
@@ -85,20 +114,22 @@ backdrop-blur-[8px]"
             <span
               className={cn(
                 'text-[24px] leading-[32px] tracking-[0.3px]',
-                totalEarnings.errings &&
+                displayTime.time > 0 &&
                   '[text-shadow:0px_0px_20px_rgba(182,255,0,1)] text-[#B6FF00]',
               )}
             >
-              {totalEarnings.errings
-                ? String(totalEarnings.errings).padStart(2, '0')
-                : '00'}
+              {displayTime.time}
             </span>
-            <span className="ml-1 text-[#FFFFFF66]">d</span>
+            <span className="ml-1 text-[#FFFFFF66]">{displayTime.label}</span>
           </div>
         </div>
       </div>
       <div>
-        <Button className="w-[106px] h-[40px] rounded-[12px] uppercase bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00]">
+        <Button
+          disabled={!totalEarnings}
+          onClick={() => setIsClaimStart(true)}
+          className="w-[106px] h-[40px] rounded-[12px] uppercase bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00]"
+        >
           <svg
             width="17"
             height="16"
@@ -195,13 +226,26 @@ const ReferralsBlock = ({
   label: string
   members: number
 }) => {
+  const [elapsed, setElapsed] = useState(0)
+
+  useEffect(() => {
+    const animation = animate(0, members, {
+      duration: 2,
+      ease: 'easeOut',
+      onUpdate: (latest) => {
+        setElapsed(Math.floor(latest))
+      },
+    })
+    return () => animation.stop()
+  }, [members])
+
   return (
     <div className="font-pixel font-[400] flex flex-col items-center justify-center gap-3 px-4 py-2 starboard-result-block-bg backdrop-blur-[16px] rounded-[14px] min-h-[92px]">
       <p className="font-inter text-sm leading-[140%]">{label}</p>
       <div className="flex gap-3 items-center">
         {icon}
         <span className="text-[24px] leading-[32px] tracking-[0.3px]">
-          {members}
+          {elapsed}
         </span>
       </div>
     </div>
@@ -244,7 +288,9 @@ const RefferalsCodeList = ({
                 setIsToastActive(true)
                 const { toast } = await import('sonner')
                 toast.error('You can add up to 5 referral codes only', {
-                  duration: 3000,
+                  duration: 5000,
+                  className:
+                    '!font-inter !text-[#FFFFFF] !font-[400] leading-[20px] !text-[16px] border !rounded-[12px] !p-4 border-[#FFFFFF1F] !bg-[#171914]',
                   invert: true,
                   onAutoClose: () => setIsToastActive(false),
                   onDismiss: () => setIsToastActive(false),

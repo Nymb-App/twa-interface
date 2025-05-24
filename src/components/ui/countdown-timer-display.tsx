@@ -1,19 +1,5 @@
-import { cn } from '@/utils'
-
-const zeroPad = (num: number) => String(num).padStart(2, '0')
-
-const formatTimeParts = (
-  totalDays: number,
-  minutes: number,
-  seconds: number,
-) => [
-  Math.floor(totalDays / 365),
-  Math.floor((totalDays % 365) / 30),
-  Math.floor((totalDays % 30) / 7),
-  totalDays % 7,
-  minutes % 60,
-  seconds % 60,
-]
+import { zeroPad } from 'react-countdown'
+import { cn, formatTimeParts } from '@/utils'
 
 const CountdownBlock = ({
   label,

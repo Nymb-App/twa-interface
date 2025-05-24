@@ -1,4 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+import { motion } from 'motion/react'
 import { gatesCurrentUserData, gatesUsersData, levelsList } from './data'
 import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
 import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
@@ -46,9 +47,16 @@ export const StarboardTabsSection = () => {
               className="flex flex-col gap-2"
             >
               {gateCurrentUserData ? (
-                <StarboardPersonalRateBlock
-                  gateCurrentUserData={gateCurrentUserData}
-                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <StarboardPersonalRateBlock
+                    gateCurrentUserData={gateCurrentUserData}
+                  />
+                </motion.div>
               ) : (
                 <StarboardPersonalRateBlock gateCurrentUserData={undefined} />
               )}
@@ -57,13 +65,20 @@ export const StarboardTabsSection = () => {
                   <h2 className="font-pixel uppercase font-[400] text-[18px] leading-[24px] mt-6 mb-2">
                     top 100 users
                   </h2>
-                  {gateUserData.users.map((gateData, gateUserIdx) => (
-                    <StarboardTopRateBlock
-                      key={idx}
-                      idx={gateUserIdx}
-                      gateUserData={gateData}
-                    />
-                  ))}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 1 }}
+                  >
+                    {gateUserData.users.map((gateData, gateUserIdx) => (
+                      <StarboardTopRateBlock
+                        key={idx}
+                        idx={gateUserIdx}
+                        gateUserData={gateData}
+                      />
+                    ))}
+                  </motion.div>
                 </>
               ) : (
                 <div className="h-[246px] flex flex-col items-center justify-center font-pixel mt-4">

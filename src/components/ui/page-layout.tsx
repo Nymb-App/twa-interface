@@ -1,5 +1,6 @@
 import { Link, useMatches } from '@tanstack/react-router'
 import { isMobile } from 'react-device-detect'
+import { Toaster } from 'sonner'
 import type { ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
 import { cn } from '@/utils'
@@ -29,6 +30,7 @@ export const PageLayout = ({
     <div className="relative top-28 pb-6 w-full max-w-[450px] min-h-[calc(100vh-10rem)] mx-auto bg-[#121312] overflow-x-hidden text-white">
       <main className={cn(useFooter && 'pb-[5rem]')}>{children}</main>
       {useFooter && <NavigationMenu linkItems={linkItems} />}
+      <Toaster className="!mb-18" />
     </div>
   )
 }

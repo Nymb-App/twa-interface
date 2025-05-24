@@ -231,9 +231,7 @@ function BombField({
           y = e.clientY
         }
 
-        if (type === 'bomb') {
-          dotPatternInteractiveRef.current?.triggerWave({ x, y })
-        }
+        dotPatternInteractiveRef.current?.triggerWave({ x, y })
         hapticFeedback.notificationOccurred('error')
       } else {
         if (hapticFeedback.impactOccurred.isAvailable()) {

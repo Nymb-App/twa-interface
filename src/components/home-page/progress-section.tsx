@@ -1,4 +1,5 @@
 import Countdown from 'react-countdown'
+import { motion } from 'motion/react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CountdownTimerDisplay } from '../ui/countdown-timer-display'
 import { LevelsList } from './levels-list'
@@ -26,9 +27,20 @@ const ProgressSection = () => {
           <span className=" font-inter text-base font-semibold">tevil</span>
         </div>
       </div>
-
-      <LevelsList />
-      <div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 2.5 }}
+      >
+        <LevelsList />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.5 }}
+      >
         <Countdown
           date={Number(Date.now() + 505000)}
           intervalDelay={10}
@@ -37,7 +49,7 @@ const ProgressSection = () => {
             <CountdownTimerDisplay isCountdownHeaderView {...props} />
           )}
         />
-      </div>
+      </motion.div>
     </header>
   )
 }
