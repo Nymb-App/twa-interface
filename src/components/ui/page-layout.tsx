@@ -1,6 +1,7 @@
 import { Link, useMatches } from '@tanstack/react-router'
 import { isMobile } from 'react-device-detect'
 import { Toaster } from 'sonner'
+import { SendGiftButton } from './send-gift-button'
 import type { ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
 import { cn } from '@/utils'
@@ -14,9 +15,19 @@ import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
 export const PageLayout = ({
   children,
   useFooter = true,
+  useSendButton = false,
+  setIsStartRoulette,
+  className,
+  periodCounter,
+  selected,
 }: {
   children: ReactNode
   useFooter?: boolean
+  useSendButton?: boolean
+  className?: string
+  setIsStartRoulette?: (value: boolean) => void
+  periodCounter?: number
+  selected?: string
 }) => {
   const linkItems = [
     { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
@@ -27,9 +38,28 @@ export const PageLayout = ({
   ]
 
   return (
-    <div className="relative top-28 pb-6 w-full max-w-[450px] min-h-[calc(100vh-10rem)] mx-auto bg-[#121312] overflow-x-hidden text-white">
-      <main className={cn(useFooter && 'pb-[5rem]')}>{children}</main>
+    <div
+      className={cn(
+        'relative top-28 pb-6 w-full max-w-[450px] min-h-[calc(100vh-10rem)] mx-auto bg-[#121312] overflow-x-hidden text-white',
+        className,
+      )}
+    >
+      <main
+        className={cn(
+          useFooter && 'pb-[5rem]',
+          useSendButton && 'pb-[5rem] mb-[5rem]',
+        )}
+      >
+        {children}
+      </main>
       {useFooter && <NavigationMenu linkItems={linkItems} />}
+      {useSendButton && periodCounter && setIsStartRoulette && selected && (
+        <SendGiftButton
+          setIsStartRoulette={setIsStartRoulette}
+          periodCounter={periodCounter}
+          selected={selected}
+        />
+      )}
       <Toaster className="!mb-18" />
     </div>
   )

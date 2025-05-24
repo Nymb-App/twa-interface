@@ -431,3 +431,7 @@ div[data-state='indeterminate'] {
 .starboard-result-block-bg {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 100%);
 }
+
+.roulette-pro-prize-list.with-animation.horizontal, .roulette-pro-prize-list.horizontal {
+  gap: 8px;
+}

@@ -62,6 +62,7 @@ function RouteComponent() {
       <Container>
         <TotalEarningsBlock
           totalEarnings={!isClaimEnd ? totalEarnings : 0}
+          isClaimStart={isClaimStart}
           setIsClaimStart={setIsClaimStart}
         />
         <ReferralsLevelsBlock />
@@ -79,9 +80,11 @@ function RouteComponent() {
 
 const TotalEarningsBlock = ({
   totalEarnings,
+  isClaimStart,
   setIsClaimStart,
 }: {
   totalEarnings: number
+  isClaimStart: boolean
   setIsClaimStart: (value: boolean) => void
 }) => {
   const displayTime = convertTimestampToLargestUnit(totalEarnings)
@@ -126,7 +129,7 @@ backdrop-blur-[8px]"
       </div>
       <div>
         <Button
-          disabled={!totalEarnings}
+          disabled={!totalEarnings || isClaimStart}
           onClick={() => setIsClaimStart(true)}
           className="w-[106px] h-[40px] rounded-[12px] uppercase bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00]"
         >
@@ -290,7 +293,7 @@ const RefferalsCodeList = ({
                 toast.error('You can add up to 5 referral codes only', {
                   duration: 5000,
                   className:
-                    '!font-inter !text-[#FFFFFF] !font-[400] leading-[20px] !text-[16px] border !rounded-[12px] !p-4 border-[#FFFFFF1F] !bg-[#171914]',
+                    '!font-inter !text-[#FFFFFF] !font-[400] !leading-[20px] !text-[16px] !border !rounded-[12px] !p-4 !border-[#FFFFFF1F] !bg-[#171914]',
                   invert: true,
                   onAutoClose: () => setIsToastActive(false),
                   onDismiss: () => setIsToastActive(false),

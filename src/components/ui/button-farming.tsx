@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import Countdown from 'react-countdown'
+import { ActionButton } from './action-button'
 import { cn } from '@/utils'
 import { WatchesIcon } from '@/assets/icons/watches'
 
@@ -135,16 +136,10 @@ function FarmingDefaultButton({
   onClick?: () => void
 }) {
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-xl bg-gradient-to-b cursor-pointer from-[#ADFA4B] to-[#B6FF00]',
-        className,
-      )}
-    >
+    <ActionButton onClick={onClick} className={cn(className)}>
       <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
       <span className="mix-blend-difference">START FARMING</span>
-    </button>
+    </ActionButton>
   )
 }
 

@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'bobby-karma-malaysia-sodium.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'a0ce-37-1-204-162.ngrok-free.app',
+      '7507-37-1-204-162.ngrok-free.app',
     ],
   },
 
