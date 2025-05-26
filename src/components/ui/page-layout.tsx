@@ -13,9 +13,11 @@ import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
 export const PageLayout = ({
   children,
   useFooter = true,
+  className,
 }: {
-  children: ReactNode
-  useFooter?: boolean
+  children: ReactNode,
+  useFooter?: boolean,
+  className?: string,
 }) => {
   const linkItems = [
     { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
@@ -27,7 +29,7 @@ export const PageLayout = ({
 
   return (
     <div className="relative top-28 pb-6 w-full max-w-[450px] min-h-[calc(100vh-10rem)] mx-auto bg-[#121312] overflow-x-hidden text-white">
-      <main className={cn(useFooter && 'pb-[5rem]')}>{children}</main>
+      <main className={cn(useFooter && 'pb-[5rem] size-full', className)}>{children}</main>
       {useFooter && <NavigationMenu linkItems={linkItems} />}
     </div>
   )

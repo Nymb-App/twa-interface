@@ -43,7 +43,7 @@ export default defineConfig({
 
   server: {
     allowedHosts: [
-      'bobby-karma-malaysia-sodium.trycloudflare.com',
+      'vector-transport-skirt-wa.trycloudflare.com',
       'nymb-interface.vercel.app'
     ],
   },
