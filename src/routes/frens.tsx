@@ -1,7 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
-import { animate, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { PageLayout } from '@/components/ui/page-layout'
 import { Container } from '@/components/ui/container'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
@@ -36,21 +36,14 @@ function RouteComponent() {
           Total Earnings:
         </p>
         {!isClaimStart ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Countdown
-              date={totalEarnings + Date.now()}
-              intervalDelay={10}
-              precision={3}
-              renderer={(props: any) => (
-                <CountdownTimerDisplay isCountdownHeaderView {...props} />
-              )}
-            />
-          </motion.div>
+          <Countdown
+            date={totalEarnings + Date.now()}
+            intervalDelay={10}
+            precision={3}
+            renderer={(props: any) => (
+              <CountdownTimerDisplay isCountdownHeaderView {...props} />
+            )}
+          />
         ) : (
           <TimeCountup
             targetTimestamp={totalEarnings + Date.now()}
@@ -229,26 +222,13 @@ const ReferralsBlock = ({
   label: string
   members: number
 }) => {
-  const [elapsed, setElapsed] = useState(0)
-
-  useEffect(() => {
-    const animation = animate(0, members, {
-      duration: 2,
-      ease: 'easeOut',
-      onUpdate: (latest) => {
-        setElapsed(Math.floor(latest))
-      },
-    })
-    return () => animation.stop()
-  }, [members])
-
   return (
     <div className="font-pixel font-[400] flex flex-col items-center justify-center gap-3 px-4 py-2 starboard-result-block-bg backdrop-blur-[16px] rounded-[14px] min-h-[92px]">
       <p className="font-inter text-sm leading-[140%]">{label}</p>
       <div className="flex gap-3 items-center">
         {icon}
         <span className="text-[24px] leading-[32px] tracking-[0.3px]">
-          {elapsed}
+          {members}
         </span>
       </div>
     </div>

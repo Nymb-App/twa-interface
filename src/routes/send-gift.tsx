@@ -1,12 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { RouletteAnimation } from '@/components/ui/roulette-animation'
 import { PageLayout } from '@/components/ui/page-layout'
-import SendGiftImage from '/send-gift.png'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { Container } from '@/components/ui/container'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/utils'
+import { SendGift } from '@/assets/icons/send-gift'
+import { AppContext } from '@/context/app-context'
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
@@ -18,71 +19,57 @@ function RouteComponent() {
   }, [])
 
   const [isStartRoulette, setIsStartRoulette] = useState(false)
-  const [isShowSendButton, setIsShowSendButton] = useState(true)
-
-  const [periodCounter, setPeriodCounter] = useState(24)
-  const [selected, setSelected] = useState('weeks')
+  const [isShowSendGiftButton, setIsShowSendGiftButton] = useState(true)
+  const [isShowSendGiftActionButtons, setIsShowSendGiftActionButtons] =
+    useState(false)
 
   return (
     <PageLayout
       className="bg-[#151317]"
       useFooter={false}
-      useSendButton={isShowSendButton}
+      useSendButton={isShowSendGiftButton}
+      useSendGiftActionButtons={isShowSendGiftActionButtons}
+      setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
       setIsStartRoulette={setIsStartRoulette}
-      periodCounter={periodCounter}
-      selected={selected}
     >
       {isStartRoulette ? (
         <RouletteAnimation
           isStartRoulette={isStartRoulette}
-          setIsStartRoulette={setIsStartRoulette}
-          setIsShowSendButton={setIsShowSendButton}
+          isShowSendGiftActionButtons={isShowSendGiftActionButtons}
+          setIsShowSendGiftButton={setIsShowSendGiftButton}
+          setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
       ) : (
         <Container className="mb-5">
-          <SendGiftHeader
-            periodCounter={periodCounter}
-            setPeriodCounter={setPeriodCounter}
-            selected={selected}
-            setSelected={setSelected}
-          />
+          <SendGiftHeader />
         </Container>
       )}
     </PageLayout>
   )
 }
 
-const SendGiftHeader = ({
-  periodCounter,
-  setPeriodCounter,
-  selected,
-  setSelected,
-}: {
-  periodCounter: number
-  selected: string
-  setPeriodCounter: (value: number) => void
-  setSelected: (value: string) => void
-}) => {
+const SendGiftHeader = () => {
+  const {
+    giftCountValue,
+    giftPeriodRadioValue,
+    setGiftPeriodRadioValue,
+    setGiftCountValue,
+  } = useContext(AppContext)
+
   return (
     <>
       <div className="flex flex-col items-center relative">
-        <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase">
+        <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase mb-[115px]">
           enter the <br />
           prize amount
         </h1>
-        <img
-          src={SendGiftImage}
-          alt="send-gift-image"
-          width={120}
-          height={120}
-          className="-mt-[20px] animate-[wiggle_3s_ease-in-out_infinite]"
-        />
+        <SendGift className="animate-[wiggle_3s_ease-in-out_infinite] absolute top-[60px] z-1" />
         <FlickeringGrid
           className="absolute inset-0 h-[350px] mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
           squareSize={2}
           gridGap={12}
           color="#aa73f9"
-          maxOpacity={0.5}
+          maxOpacity={1}
           flickerChance={0.3}
           autoResize={false}
           width={450}
@@ -94,8 +81,8 @@ const SendGiftHeader = ({
           <div className="flex justify-between items-center py-[9px] px-4">
             <button
               onClick={() => {
-                if (periodCounter > 1) {
-                  setPeriodCounter(periodCounter - 1)
+                if (giftCountValue > 1) {
+                  setGiftCountValue(giftCountValue - 1)
                 }
               }}
               className="p-2 bg-[#8C35FB29] rounded-[14px] h-[40px] w-[40px]"
@@ -114,12 +101,12 @@ const SendGiftHeader = ({
               </svg>
             </button>
             <span className="text-[#8633F1] font-[400] text-[48px] leading-[120%] [text-shadow:0px_0px_60px_#A55EFF]">
-              {periodCounter}
+              {giftCountValue}
             </span>
             <button
               onClick={() => {
-                if (periodCounter < 100) {
-                  setPeriodCounter(periodCounter + 1)
+                if (giftCountValue < 100) {
+                  setGiftCountValue(giftCountValue + 1)
                 }
               }}
               className="p-2 bg-[#8C35FB29] rounded-[14px] h-[40px] w-[40px]"
@@ -141,8 +128,10 @@ const SendGiftHeader = ({
           <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
           <RadioGroup
             defaultValue="weeks"
-            value={selected}
-            onValueChange={(value) => setSelected(value)}
+            value={giftPeriodRadioValue}
+            onValueChange={(value) => {
+              setGiftPeriodRadioValue(value)
+            }}
             className="flex gap-4 justify-center"
           >
             {['days', 'weeks', 'years'].map((option) => (
@@ -155,8 +144,8 @@ const SendGiftHeader = ({
                 <label
                   htmlFor={option}
                   className={cn(
-                    'backdrop-blur-[8px] py-1.5 px-5 rounded-[8px] transition-colors duration-500 cursor-pointer leading-[120%] text-[12px] font-[400] uppercase',
-                    selected === option
+                    'backdrop-blur-[8px] py-1.5 px-5 rounded-[8px] cursor-pointer leading-[120%] text-[12px] font-[400] uppercase',
+                    giftPeriodRadioValue === option
                       ? 'border border-[#8C35FB] text-[#8633F1]'
                       : 'border border-transparent starboard-result-block-bg text-[#FFFFFF66]',
                   )}

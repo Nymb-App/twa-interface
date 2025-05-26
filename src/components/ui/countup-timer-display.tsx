@@ -102,20 +102,6 @@ export const TimeCountup = ({
     },
   }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
-    show: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: 'spring',
-        stiffness: 300,
-        damping: 24,
-      },
-    },
-  }
-
   const blocks = [
     { label: 'Weeks', value: weeks },
     { label: 'Days', value: days },
@@ -132,13 +118,12 @@ export const TimeCountup = ({
       animate="show"
     >
       {blocks.map((item, idx) => (
-        <motion.div key={item.label} variants={itemVariants}>
-          <CountupDisplayBlock
-            label={item.label}
-            value={item.value}
-            isFirst={idx === 0}
-          />
-        </motion.div>
+        <CountupDisplayBlock
+          key={idx}
+          label={item.label}
+          value={item.value}
+          isFirst={idx === 0}
+        />
       ))}
     </motion.div>
   )

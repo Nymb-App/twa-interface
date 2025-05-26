@@ -354,6 +354,7 @@ code {
 
 @layer utilities {
   /* Утилиты для применения анимаций по CSS-переменным */
+
   .animate-slide-up-fade {
     animation: var(--animate-slide-up-fade);
   }
@@ -433,5 +434,24 @@ div[data-state='indeterminate'] {
 }
 
 .roulette-pro-prize-list.with-animation.horizontal, .roulette-pro-prize-list.horizontal {
-  gap: 8px;
+  gap: 16px;
 }
+
+/* .roulette-pro-wrapper {
+  ul {
+    li {
+      transform: scale(1.5);
+    }
+  }
+} */
+
+
+.roulette-pro-wrapper {
+  ul li:nth-child(25) { 
+    opacity: 0.6; 
+    /* scale: 2;  */
+    /* height: 160px;  */
+    /* width: 150px;  */
+    } 
+}
+    

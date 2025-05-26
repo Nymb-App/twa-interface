@@ -2,6 +2,7 @@ import { Link, useMatches } from '@tanstack/react-router'
 import { isMobile } from 'react-device-detect'
 import { Toaster } from 'sonner'
 import { SendGiftButton } from './send-gift-button'
+import { SendGiftActionButtons } from './send-gift-action-buttons'
 import type { ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
 import { cn } from '@/utils'
@@ -16,18 +17,18 @@ export const PageLayout = ({
   children,
   useFooter = true,
   useSendButton = false,
+  useSendGiftActionButtons = false,
   setIsStartRoulette,
+  setIsShowSendGiftActionButtons,
   className,
-  periodCounter,
-  selected,
 }: {
   children: ReactNode
   useFooter?: boolean
   useSendButton?: boolean
+  useSendGiftActionButtons?: boolean
   className?: string
   setIsStartRoulette?: (value: boolean) => void
-  periodCounter?: number
-  selected?: string
+  setIsShowSendGiftActionButtons?: (value: boolean) => void
 }) => {
   const linkItems = [
     { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
@@ -53,11 +54,12 @@ export const PageLayout = ({
         {children}
       </main>
       {useFooter && <NavigationMenu linkItems={linkItems} />}
-      {useSendButton && periodCounter && setIsStartRoulette && selected && (
-        <SendGiftButton
-          setIsStartRoulette={setIsStartRoulette}
-          periodCounter={periodCounter}
-          selected={selected}
+      {useSendButton && (
+        <SendGiftButton setIsStartRoulette={setIsStartRoulette} />
+      )}
+      {useSendGiftActionButtons && (
+        <SendGiftActionButtons
+          setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
       )}
       <Toaster className="!mb-18" />
