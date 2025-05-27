@@ -44,7 +44,8 @@ export default defineConfig({
   server: {
     allowedHosts: [
       'vector-transport-skirt-wa.trycloudflare.com',
-      'nymb-interface.vercel.app'
+      'nymb-interface.vercel.app',
+      '9231-37-1-204-162.ngrok-free.app',
     ],
   },
 

@@ -18,9 +18,9 @@ export const PageLayout = ({
   useFooter = true,
   useSendButton = false,
   useSendGiftActionButtons = false,
+  className,
   setIsStartRoulette,
   setIsShowSendGiftActionButtons,
-  className,
 }: {
   children: ReactNode
   useFooter?: boolean
@@ -37,7 +37,6 @@ export const PageLayout = ({
     { to: '/frens', label: 'Frens', icon: FriendsIcon },
     { to: '/locked', label: 'Blured', icon: FriendsIcon, isLocked: true },
   ]
-
   return (
     <div
       className={cn(
