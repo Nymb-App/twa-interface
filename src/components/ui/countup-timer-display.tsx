@@ -9,17 +9,21 @@ const CountupDisplayBlock = ({
   value,
   isFirst,
   minutesValue,
+  hoursValue,
 }: {
   label: string
   value: number
   isFirst: boolean
   minutesValue?: number
+  hoursValue?: number
 }) => {
-  const forceGreenForSeconds =
-    label === 'Seconds' && (minutesValue === undefined || minutesValue !== 0)
+  const forceGreenForSecondsAndMinutes =
+    (label === 'Seconds' &&
+      (minutesValue === undefined || minutesValue !== 0)) ||
+    (label === 'Minutes' && (hoursValue === undefined || hoursValue !== 0))
 
   const colorClass =
-    value === 0 && !forceGreenForSeconds
+    value === 0 && !forceGreenForSecondsAndMinutes
       ? 'text-[#FFFFFF]/40 font-[400] text-[30px]'
       : 'font-[400] text-[30px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]'
 

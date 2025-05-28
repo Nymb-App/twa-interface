@@ -32,7 +32,7 @@ function RouteComponent() {
     Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)),
   )
 
-  const totalEarnings = 610000
+  const totalEarnings = 1610000
 
   const { finishAt, loading } = useFarming()
 
