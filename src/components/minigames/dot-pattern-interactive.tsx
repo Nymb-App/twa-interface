@@ -7,6 +7,13 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
  * -------------------------------------------------- */
 export interface DotPatternHandle {
     triggerWave: (pointer: { x: number; y: number }) => void;
+    setWaveParams?: (params: {
+        waveStrength?: number;
+        waveThickness?: number;
+        waveDuration?: number;
+        waveReach?: number;
+        waveColor?: string;
+    }) => void;
 }
 export interface DotPatternProps {
     gap?: number;
@@ -34,37 +41,38 @@ export interface DotPatternProps {
     className?: string;
     /** Новый пропс: сколько одновременных указателей разрешить */
     maxPointers?: number;
+
+    onPointerUp?: () => void;
 }
 
-export const DotPatternInteractive = forwardRef(function (
-    {
-        className,
-        gap = 40,
-        baseRadius = 2,
-        maxRadius = 6,
-        reach = 150,
-        blur = 0,
-        staticColor = "#64748b",
-        activeColor = "#38bdf8",
-        trailing = false,
-        trailLength = 20,
-        minTrailLength = 1,
-        trailingLifetime = 50,
-        trailingRadius,
-        trailingColor,
-        trailingGradient,
-        animate = "on-hover",
-        drawEffect = "normal",
-        waveOnPointerUp = true,
-        waveStrength = 0.15,
-        waveThickness = 0.3,
-        waveDuration = 1,
-        waveReach,
-        waveColor,
-        maxPointers = 1,          // по умолчанию — 1 указатель
-    }: DotPatternProps,
-    ref: Ref<DotPatternHandle>
-) {
+export const DotPatternInteractive = forwardRef<DotPatternHandle, DotPatternProps>(({
+    className,
+    gap = 40,
+    baseRadius = 2,
+    maxRadius = 4,
+    reach = 80,
+    blur = 0,
+    staticColor = "#969695",
+    activeColor = "#B6FF00",
+    trailing = true,
+    trailLength = 30,
+    minTrailLength = 1,
+    trailingLifetime = 50,
+    trailingRadius = 8,
+    trailingColor = "#B6FF00",
+    trailingGradient,
+    animate = "on-hover",
+    drawEffect = "normal",
+    waveOnPointerUp = false,
+    waveStrength = 0.15,
+    waveThickness = 0.3,
+    waveDuration = 1,
+    waveReach = reach,
+    waveColor = activeColor,
+    maxPointers = 1,
+
+    onPointerUp,
+}, ref) => {
     const MAX_TOUCH_SUPPORT = 5; // внутренний абсолютный максимум
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -93,6 +101,22 @@ export const DotPatternInteractive = forwardRef(function (
         )},${Math.round(ab + (bb - ab) * t)})`;
     }, []);
 
+    // Wave parameter states with default values
+    const [currentWaveStrength, setCurrentWaveStrength] = useState(waveStrength);
+    const [currentWaveThickness, setCurrentWaveThickness] = useState(waveThickness);
+    const [currentWaveDuration, setCurrentWaveDuration] = useState(waveDuration);
+    const [currentWaveReach, setCurrentWaveReach] = useState(waveReach);
+    const [currentWaveColor, setCurrentWaveColor] = useState(waveColor);
+
+    // Update states when props change
+    useEffect(() => {
+        setCurrentWaveStrength(waveStrength);
+        setCurrentWaveThickness(waveThickness);
+        setCurrentWaveDuration(waveDuration);
+        setCurrentWaveReach(waveReach);
+        setCurrentWaveColor(waveColor);
+    }, [waveStrength, waveThickness, waveDuration, waveReach, waveColor]);
+
     // Рисование
     const draw = useCallback(() => {
         const cvs = canvasRef.current;
@@ -120,16 +144,16 @@ export const DotPatternInteractive = forwardRef(function (
                     let waveDx = 0, waveDy = 0, blend = 0;
                     waves.current.forEach((w) => {
                         const dt = now - w.start;
-                        const tTime = dt / (waveDuration * 1000);
+                        const tTime = dt / (currentWaveDuration * 1000);
                         if (tTime > 1) return;
                         const waveRadius = tTime * waveReachPx;
                         const dist = Math.hypot(xx - w.x, yy - w.y);
                         const diff = dist - waveRadius;
-                        const widthPx = waveReachPx * waveThickness;
+                        const widthPx = waveReachPx * currentWaveThickness;
                         if (Math.abs(diff) <= widthPx) {
                             const amp = Math.exp(-(diff * diff) / (2 * widthPx * widthPx));
                             const ease = 1 - tTime;
-                            const factor = waveReachPx * waveStrength;
+                            const factor = waveReachPx * currentWaveStrength;
                             waveDx += ((xx - w.x) / (dist || 1)) * amp * factor * ease;
                             waveDy += ((yy - w.y) / (dist || 1)) * amp * factor * ease;
                             blend = Math.max(blend, amp * ease);
@@ -137,7 +161,7 @@ export const DotPatternInteractive = forwardRef(function (
                     });
                     if (blend > 0) {
                         dx = waveDx; dy = waveDy;
-                        color = lerpColor(staticColor, waveColor ?? activeColor, blend);
+                        color = lerpColor(staticColor, currentWaveColor ?? activeColor, blend);
                     }
                 }
 
@@ -194,7 +218,8 @@ export const DotPatternInteractive = forwardRef(function (
         dpr, gap, baseRadius, maxRadius, reach, blur,
         staticColor, activeColor, drawEffect,
         trailing, trailingRadius, trailingColor, trailingGradient,
-        waveStrength, waveThickness, waveDuration, waveReach, waveColor,
+        currentWaveStrength, currentWaveThickness, currentWaveDuration,
+        currentWaveReach, currentWaveColor,
         lerpColor
     ]);
 
@@ -307,6 +332,7 @@ export const DotPatternInteractive = forwardRef(function (
             }
             pointerMap.current.delete(e.pointerId);
             draw();
+            onPointerUp?.();
         };
 
         const handleCancel = (e: PointerEvent) => {
@@ -329,7 +355,7 @@ export const DotPatternInteractive = forwardRef(function (
         };
     }, [
         dpr, draw, trailing, trailLength, minTrailLength, trailingLifetime,
-        animate, drawEffect, waveOnPointerUp, startWaveLoop, maxPointers
+        animate, drawEffect, waveOnPointerUp, startWaveLoop, maxPointers, onPointerUp
     ]);
 
     useImperativeHandle(ref, () => ({
@@ -342,6 +368,13 @@ export const DotPatternInteractive = forwardRef(function (
             waves.current.push({ x: cx, y: cy, start: Date.now() });
             startWaveLoop();
         },
+        setWaveParams: (params) => {
+            if (params.waveStrength !== undefined) setCurrentWaveStrength(params.waveStrength);
+            if (params.waveThickness !== undefined) setCurrentWaveThickness(params.waveThickness);
+            if (params.waveDuration !== undefined) setCurrentWaveDuration(params.waveDuration);
+            if (params.waveReach !== undefined) setCurrentWaveReach(params.waveReach);
+            if (params.waveColor !== undefined) setCurrentWaveColor(params.waveColor);
+        }
     }), [startWaveLoop, dpr]);
 
     return (

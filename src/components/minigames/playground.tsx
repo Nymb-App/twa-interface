@@ -34,11 +34,14 @@ interface Item {
 }
 
 interface BombFieldProps {
+    winAmount?: number;
+
     gridGap?: number;
     bombCount?: number;
     timerCount?: number;
     onInteractionEnter?: (p: { item: ItemType; posX: number; posY: number }) => void;
     onGameFinished?: () => void;
+    onPointerUp?: () => void;
 
     colliderPx?: number;
     bombRadiusPx?: number;
@@ -79,6 +82,8 @@ interface BombFieldProps {
     waveColor?: string;
 
     gameDuration?: number;
+    startCooldown?: number;
+    isForcePause?: boolean;
 
     className?: string;
     showPlayground?: boolean;
@@ -88,16 +93,18 @@ interface BombFieldProps {
    component
 ────────────────────────────── */
 export default function BombField({
+    winAmount = 2,
+    
     /* базовые дефолты */
     gridGap = 10,
-    bombCount = 4,
+    bombCount = 3,
     timerCount = 16,
 
     colliderPx = 56,
     bombRadiusPx = 200,
 
     lifeMin = 1000,
-    lifeMax = 3000,
+    lifeMax = 2000,
     groupCount = 4,
     autoExitMs = 200,
     autoSpawnDelayMs = 2000,
@@ -136,12 +143,15 @@ export default function BombField({
 
     /* раунд */
     gameDuration = 31_000,
+    startCooldown = 3000,
+    isForcePause = false,
 
     /* ui */
     className,
     showPlayground = false,
     onInteractionEnter,
     onGameFinished,
+    onPointerUp,
 }: BombFieldProps) {
     /* refs / state */
     const containerRef = useRef<HTMLDivElement>(null);
@@ -151,9 +161,10 @@ export default function BombField({
     const timersRef = useRef<Map<string, number[]>>(new Map());
     const manualRem = useRef<Set<string>>(new Set());
     const itemsRef = useRef<Item[]>([]);
+    const gameStartedRef = useRef(false);
 
     /* двойной флаг конца раунда */
-    const gameEndedRef = useRef(false);            // для таймеров
+    const gameEndedRef = useRef(false);
     const [gameEnded, setGameEnded] = useState(false); // для UI
 
     const cellTotal = gridGap * gridGap;
@@ -161,6 +172,9 @@ export default function BombField({
 
     const [items, setItems] = useState<Item[]>([]);
     const [threshold, setThreshold] = useState(0);
+    const [countdown, setCountdown] = useState<number | null>(null);
+
+    const [trailLength, setTrailLength] = useState(30);
 
     /* ── helpers ───────────────────────────────────────────── */
     const clearTimers = (id: string) => {
@@ -208,7 +222,7 @@ export default function BombField({
             return survivors.every(it => {
                 const ipx = rect.left + (it.left / 100) * rect.width;
                 const ipy = rect.top + (it.top / 100) * rect.height;
-                return Math.hypot(ipx - xp, ipy - yp) >= threshold;
+                return Math.hypot(ipx - xp, ipy - yp) >= Math.max(threshold * 1.5, bombRadiusPx * 0.4);
             });
         });
 
@@ -218,7 +232,9 @@ export default function BombField({
 
     /* ── scheduleAuto ───────────────────────────────────────── */
     const scheduleAuto = useCallback((it: Item) => {
-        if (gameEndedRef.current) return;
+        if (gameEndedRef.current || isForcePause) {
+            return;
+        }
 
         clearTimers(it.id);
 
@@ -235,7 +251,7 @@ export default function BombField({
                 timersRef.current.delete(it.id);
                 const survivors = cur.filter(x => x.id !== it.id);
 
-                if (gameEndedRef.current) return survivors;
+                if (gameEndedRef.current || isForcePause) return survivors;
                 if (it.type === "x2") return survivors;
 
                 const limit = it.type === "bomb" ? bombCount : timerCount;
@@ -254,31 +270,120 @@ export default function BombField({
         }, life + autoExitMs + autoSpawnDelayMs);
 
         timersRef.current.set(it.id, [t1 as unknown as number, t2 as unknown as number]);
-    }, [lifeMin, lifeMax, groupCount, autoExitMs, autoSpawnDelayMs]);
+    }, [lifeMin, lifeMax, groupCount, autoExitMs, autoSpawnDelayMs, isForcePause]);
 
     /* ── начальная генерация поля ──────────────────────────── */
     useEffect(() => {
-        const start: Item[] = [];
+        if (isForcePause || gameEndedRef.current) {
+            return;
+        }
 
-        Array.from({ length: bombCount }).forEach(() => {
-            const cell = Math.floor(Math.random() * cellTotal);
-            takenCells.current.add(cell);
-            start.push(makeItem("bomb", cell));
-        });
+        if (startCooldown <= 0) {
+            gameStartedRef.current = true;
+            return;
+        }
 
-        Array.from({ length: timerCount }).forEach(() => {
-            const cell = Math.floor(Math.random() * cellTotal);
-            takenCells.current.add(cell);
-            start.push(makeItem("time", cell));
-        });
+        // Начинаем отсчет с 3
+        setCountdown(3);
+        
+        // Обновляем отсчет каждую секунду
+        const countdownInterval = setInterval(() => {
+            setCountdown(prev => {
+                if (prev === null || prev <= 1) {
+                    clearInterval(countdownInterval);
+                    return null;
+                }
+                return prev - 1;
+            });
+        }, 1000);
 
-        /* запускаем жизнь */
-        start.forEach(scheduleAuto);
+        // Показываем GO! и начинаем игру
+        const goTimer = setTimeout(() => {
+            setCountdown(-1); // Используем -1 для показа "GO!"
+            
+            // Убираем "GO!" и запускаем игру через секунду
+            const startGameTimer = setTimeout(() => {
+                if (isForcePause || gameEndedRef.current) {
+                    return;
+                }
 
-        itemsRef.current = start;
-        setItems(start);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+                setCountdown(null);
+                gameStartedRef.current = true;
+
+                // Начинаем спавн айтемов
+                const initialSpawnCount = 5;
+                const spawnInterval = 800;
+                const start: Item[] = [];
+                let spawnQueue: Array<() => Item | null> = [];
+
+                // Prepare spawn functions for all items
+                Array.from({ length: bombCount }).forEach(() => {
+                    spawnQueue.push(() => {
+                        if (isForcePause || gameEndedRef.current) return null;
+                        const cell = pickSafeCell(itemsRef.current);
+                        if (cell === null) return null;
+                        takenCells.current.add(cell);
+                        return makeItem("bomb", cell);
+                    });
+                });
+
+                Array.from({ length: timerCount }).forEach(() => {
+                    spawnQueue.push(() => {
+                        if (isForcePause || gameEndedRef.current) return null;
+                        const cell = pickSafeCell(itemsRef.current);
+                        if (cell === null) return null;
+                        takenCells.current.add(cell);
+                        return makeItem("time", cell);
+                    });
+                });
+
+                // Shuffle spawn queue for random initial selection
+                spawnQueue = spawnQueue.sort(() => Math.random() - 0.5);
+
+                // Initial spawn
+                for (let i = 0; i < Math.min(initialSpawnCount, spawnQueue.length); i++) {
+                    if (isForcePause || gameEndedRef.current) break;
+                    const item = spawnQueue[i]();
+                    if (item) {
+                        start.push(item);
+                        scheduleAuto(item);
+                    }
+                }
+
+                // Set initial items
+                itemsRef.current = start;
+                setItems(start);
+
+                // Schedule remaining spawns
+                let currentIndex = initialSpawnCount;
+                const spawnTimer = setInterval(() => {
+                    if (isForcePause || gameEndedRef.current || currentIndex >= spawnQueue.length) {
+                        clearInterval(spawnTimer);
+                        return;
+                    }
+
+                    const item = spawnQueue[currentIndex]();
+                    if (item) {
+                        setItems(current => {
+                            const newItems = [...current, item];
+                            itemsRef.current = newItems;
+                            scheduleAuto(item);
+                            return newItems;
+                        });
+                    }
+                    currentIndex++;
+                }, spawnInterval);
+
+            }, 1000);
+
+            return () => clearTimeout(startGameTimer);
+        }, startCooldown - 1000);
+
+        return () => {
+            clearInterval(countdownInterval);
+            clearTimeout(goTimer);
+        };
+    }, [startCooldown, bombCount, timerCount, scheduleAuto, isForcePause]);
 
     useEffect(() => { itemsRef.current = items; }, [items]);
 
@@ -289,8 +394,7 @@ export default function BombField({
 
     /* ── x2-бонус ───────────────────────────────────────────── */
     useEffect(() => {
-        if (!x2Enabled) return;
-        if (gameEndedRef.current) return;
+        if (!x2Enabled || gameEndedRef.current || isForcePause) return;
 
         const MAX = 5;
         const FORCE = 15_000;
@@ -326,27 +430,58 @@ export default function BombField({
         const iv = setInterval(tick, x2SpawnIntervalMs);
         const fo = setTimeout(() => { if (spawned === 0) spawn(); }, FORCE);
         return () => { clearInterval(iv); clearTimeout(fo); };
-    }, [x2Enabled, x2SpawnIntervalMs, x2SpawnProbability, scheduleAuto]);
+    }, [x2Enabled, x2SpawnIntervalMs, x2SpawnProbability, scheduleAuto, isForcePause]);
 
     /* ── завершение раунда ─────────────────────────────────── */
     useEffect(() => {
-        if (!gameDuration) return;
+        let gameTimer: NodeJS.Timeout | null = null;
 
-        const to = setTimeout(() => {
+        const handleGameEnd = () => {
             if (gameEndedRef.current) return;    // защита от повторов
+
+            // Очищаем таймер игры если он есть
+            if (gameTimer) {
+                clearTimeout(gameTimer);
+                gameTimer = null;
+            }
 
             gameEndedRef.current = true;
             setGameEnded(true);                  // отключит трейлинг в UI
 
+            // Очищаем все таймеры
             timersRef.current.forEach(arr => arr.forEach(clearTimeout));
             timersRef.current.clear();
 
+            // Помечаем все существующие айтемы как исчезающие
             setItems(cur => cur.map(i => ({ ...i, isDisappearing: true, isManual: false })));
-            onGameFinished?.();                  // коллбек
-        }, gameDuration);
 
-        return () => clearTimeout(to);
-    }, [gameDuration, onGameFinished]);
+            // Очищаем все занятые ячейки
+            takenCells.current.clear();
+
+            // Через время анимации исчезновения удаляем все айтемы
+            setTimeout(() => {
+                setItems([]);
+            }, autoExitMs);
+
+            onGameFinished?.();                  // коллбек
+        };
+
+        // Обработка принудительной паузы
+        if (isForcePause) {
+            handleGameEnd();
+            return;
+        }
+
+        // Запускаем таймер игры только если нет принудительной паузы
+        gameTimer = setTimeout(handleGameEnd, gameDuration);
+
+        return () => {
+            if (gameTimer) {
+                clearTimeout(gameTimer);
+                gameTimer = null;
+            }
+        };
+    }, [gameDuration, onGameFinished, isForcePause, autoExitMs]);
 
     /* ── взрыв бомб ─────────────────────────────────────────── */
     const explode = useCallback((triggerId: string, x: number, y: number) => {
@@ -398,7 +533,7 @@ export default function BombField({
     /* ── глобальный onMove ──────────────────────────────────── */
     useEffect(() => {
         const onMove = (e: TouchEvent | PointerEvent) => {
-            if (gameEndedRef.current) return;
+            if (!gameStartedRef.current || gameEndedRef.current || isForcePause) return;
 
             e.preventDefault();
             const { clientX: x, clientY: y } = "touches" in e
@@ -434,7 +569,7 @@ export default function BombField({
                             timersRef.current.delete(old.id);
                             const survivors = cur.filter(x => x.id !== id);
 
-                            if (!gameEndedRef.current &&
+                            if (!gameEndedRef.current && !isForcePause &&
                                 survivors.filter(x => x.type === "bomb").length < bombCount) {
                                 const cell = pickSafeCell(survivors);
                                 if (cell !== null) {
@@ -448,6 +583,16 @@ export default function BombField({
                         });
                         manualRem.current.delete(id);
                     }, manualDelay + manualExitMs);
+                }
+
+                if (dotRef.current?.setWaveParams) {
+                    dotRef.current.setWaveParams({
+                        waveReach: waveReach,
+                        waveStrength: waveStrength,
+                        waveThickness: waveThickness,
+                        waveDuration: waveDuration,
+                        waveColor: waveColor,
+                    });
                 }
 
                 dotRef.current?.triggerWave({ x, y });
@@ -473,7 +618,7 @@ export default function BombField({
                         timersRef.current.delete(old.id);
                         const survivors = cur.filter(x => x.id !== id);
 
-                        if (!gameEndedRef.current) {
+                        if (!gameEndedRef.current && !isForcePause) {
                             const limit = old.type === "time" ? timerCount : x2Count;
                             const current = survivors.filter(x => x.type === old.type).length;
                             if (current < limit) {
@@ -497,6 +642,18 @@ export default function BombField({
             }
             if (type === "x2" && hapticFeedback.notificationOccurred.isAvailable()) {
                 hapticFeedback.notificationOccurred("success");
+                dotRef.current?.triggerWave({ x, y });
+                if (dotRef.current?.setWaveParams) {
+                    dotRef.current.setWaveParams({
+                        waveColor: '#B6FF00',
+                        waveStrength: 0.1,
+                        waveThickness: 0.1,
+                        waveDuration: 1,
+                        waveReach: 80,
+                    });
+                }
+                explode(id, x, y);
+                setTrailLength(50);
             }
         };
 
@@ -515,6 +672,7 @@ export default function BombField({
         manualExitMs,
         explode,
         scheduleAuto,
+        isForcePause,
     ]);
 
     /* ── JSX ───────────────────────────────────────────────── */
@@ -530,17 +688,17 @@ export default function BombField({
             {/* точки-фон */}
             <DotPatternInteractive
                 ref={dotRef}
-                className="absolute inset-0 mask-[radial-gradient(ellipse_250px_400px_at_center,black,transparent)]"
+                className="absolute inset-0 mask-[radial-gradient(ellipse_380px_500px_at_center,black,transparent)]"
                 gap={patternGap}
                 baseRadius={baseRadius}
                 maxRadius={maxRadius}
                 reach={reach}
-                staticColor={staticColor}
-                activeColor={activeColor}
+                staticColor={'#414241'}
+                activeColor={'#B6FF00'}
                 trailing={!gameEnded}   /* ← UI-флаг */
-                trailLength={20}
-                minTrailLength={minTrailLength}
-                trailingLifetime={trailingLifetime}
+                trailLength={trailLength}
+                minTrailLength={1}
+                trailingLifetime={50}
                 trailingRadius={trailingRadius}
                 trailingColor={trailingColor}
                 waveReach={waveReach}
@@ -550,12 +708,13 @@ export default function BombField({
                 waveDuration={waveDuration}
                 waveColor={waveColor}
                 drawEffect={drawEffect}
+                onPointerUp={onPointerUp}
             />
 
             {/* айтемы */}
             {items.map(it => {
                 const Icon = it.type === "bomb" ? BombIcon : it.type === "time" ? WatchesIcon : X2Icon;
-                const label = it.type === "bomb" ? "-10%" : it.type === "time" ? "+2" : "x2";
+                const label = it.type === "bomb" ? "-10%" : it.type === "time" ? `+${winAmount}` : "x2";
 
                 return (
                     <div
