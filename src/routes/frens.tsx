@@ -78,11 +78,6 @@ function RouteComponent() {
 
         {isClaimStart && !isClaimEnd && (
           <TimeCountup
-            // targetTimestamp={totalEarnings + Date.now()}
-            // targetTimestamp={
-            //   totalEarnings +
-            //   Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY))
-            // }
             initialFinishAtValue={initialFinishAtValue}
             totalEarnings={totalEarnings}
             targetTimestamp={Number(
@@ -167,22 +162,9 @@ backdrop-blur-[8px]"
           disabled={!totalEarnings || isClaimStart}
           onClick={() => {
             setIsClaimStart(true)
-            // setFinishAt(
-            //   displayTime.roundedTimestamp +
-            //     Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)),
-            // )
-
-            //  console.log(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY), 'ls')
-            // localStorage.setItem(
-            //   NYMB_FARMING_FINISHAT_LS_KEY,
-            //   String(Date.now() + FARMING_DURATION),
-            // )
             if (
               Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0
             ) {
-              // setFinishAt(
-              //   Number(Date.now() + 1000 + displayTime.roundedTimestamp),
-              // )
               setFinishAt(
                 Number(Date.now() + displayTime.roundedTimestamp) +
                   ANIMATION_DURATION_COUNTUP +

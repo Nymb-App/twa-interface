@@ -16,7 +16,7 @@ const CountupDisplayBlock = ({
   minutesValue?: number
 }) => {
   const forceGreenForSeconds =
-    label === 'Seconds' && minutesValue && minutesValue !== 0
+    label === 'Seconds' && (minutesValue === undefined || minutesValue !== 0)
 
   const colorClass =
     value === 0 && !forceGreenForSeconds
