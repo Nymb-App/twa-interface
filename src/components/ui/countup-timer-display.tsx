@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { animate, motion } from 'framer-motion'
 import { zeroPad } from 'react-countdown'
 import { cn } from '@/utils'
+import { ANIMATION_DURATION_COUNTUP } from '@/context/farming-context'
 
 const CountupDisplayBlock = ({
   label,
@@ -64,30 +65,44 @@ function formatTime(msElapsed: number) {
 }
 
 export const TimeCountup = ({
+  initialFinishAtValue,
+  totalEarnings,
   targetTimestamp,
   isClaimStart,
   setIsClaimEnd,
 }: {
+  initialFinishAtValue: number
+  totalEarnings: number
   targetTimestamp: number
   isClaimStart: boolean
   setIsClaimEnd: (value: boolean) => void
 }) => {
-  const [elapsed, setElapsed] = useState(0)
+  const now = Date.now()
+  const initialRemaining =
+    initialFinishAtValue > 0
+      ? targetTimestamp - now - totalEarnings > 0
+        ? targetTimestamp - now - totalEarnings
+        : 0
+      : 0
+  const totalDurationMs = targetTimestamp - now
+
+  const [elapsed, setElapsed] = useState(initialRemaining)
 
   useEffect(() => {
-    const now = Date.now()
-    const totalDurationMs = targetTimestamp - now
-
-    const animation = animate(0, totalDurationMs, {
-      duration: 2,
-      ease: 'easeOut',
-      onUpdate: (latest) => {
-        setElapsed(latest)
+    const animation = animate(
+      initialRemaining,
+      totalDurationMs - ANIMATION_DURATION_COUNTUP,
+      {
+        duration: ANIMATION_DURATION_COUNTUP / 1000,
+        ease: 'linear',
+        onUpdate: (latest) => {
+          setElapsed(latest)
+        },
+        onComplete: () => {
+          setIsClaimEnd(true)
+        },
       },
-      onComplete: () => {
-        setIsClaimEnd(true)
-      },
-    })
+    )
     return () => animation.stop()
   }, [isClaimStart])
 

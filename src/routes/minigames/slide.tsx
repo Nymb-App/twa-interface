@@ -1,8 +1,8 @@
+import { createFileRoute } from '@tanstack/react-router';
+import Countdown from 'react-countdown';
 import { WatchesIcon } from '@/assets/icons/watches';
 import EnergyIcon from '@/assets/icons/energy';
 import HeaderBg from '@/assets/svg/header-bg';
-import { createFileRoute } from '@tanstack/react-router';
-import Countdown from 'react-countdown';
 import BombField from '@/components/minigames/playground';
 import { PageLayout } from '@/components/ui/page-layout';
 // import { SettingsPanel } from './settings-pannel';

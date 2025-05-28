@@ -210,7 +210,6 @@ export function RussianRoulette({
           style={{ gap, transform: 'translateX(0)' }}
         >
           {extended.map((node, i) => {
-            console.log('node', node)
             return (
               <div>
                 <div

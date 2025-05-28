@@ -41,7 +41,6 @@ const prizes: Array<TUser> | any = [
 // }
 
 // const repeatedPrizes = repeatItems(prizes, 25) // больше повторений — меньше шансов увидеть пустоту
-// console.log(repeatedPrizes)
 
 const N = prizes.length
 
@@ -75,7 +74,6 @@ const prizeList = reproducedPrizeList.map((prize) => ({
       ? crypto.randomUUID()
       : generateId(),
 }))
-console.log(prizeList[winPrizeIndex])
 
 export const RouletteAnimation = ({
   isStartRoulette,

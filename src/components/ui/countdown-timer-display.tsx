@@ -1,5 +1,6 @@
 import { zeroPad } from 'react-countdown'
 import { cn, formatTimeParts } from '@/utils'
+import { NYMB_FARMING_FINISHAT_LS_KEY } from '@/context/farming-context'
 
 const CountdownBlock = ({
   label,
@@ -56,7 +57,7 @@ export const CountdownTimerDisplay = ({
   hours: number
   minutes: number
   seconds: number
-  completed: boolean
+  completed?: boolean
 }) => {
   if (completed) {
     const blocks = [
@@ -66,6 +67,7 @@ export const CountdownTimerDisplay = ({
       { label: 'Minutes', value: 0 },
       { label: 'Seconds', value: 0 },
     ]
+    localStorage.setItem(NYMB_FARMING_FINISHAT_LS_KEY, String(0))
     return isCountdownHeaderView ? (
       <div className="text-center">
         <div className="flex justify-center gap-6">

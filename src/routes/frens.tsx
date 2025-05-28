@@ -10,6 +10,11 @@ import { CopyButton } from '@/components/ui/copy-button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn, convertTimestampToLargestUnit } from '@/utils'
 import { TimeCountup } from '@/components/ui/countup-timer-display'
+import {
+  ANIMATION_DURATION_COUNTUP,
+  NYMB_FARMING_FINISHAT_LS_KEY,
+  useFarming,
+} from '@/context/farming-context'
 
 export const Route = createFileRoute('/frens')({
   component: RouteComponent,
@@ -23,8 +28,13 @@ function RouteComponent() {
   const [isToastActive, setIsToastActive] = useState(false)
   const [isClaimStart, setIsClaimStart] = useState(false)
   const [isClaimEnd, setIsClaimEnd] = useState(false)
+  const [initialFinishAtValue, _] = useState(
+    Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)),
+  )
 
-  const totalEarnings = 610043543
+  const totalEarnings = 610000
+
+  const { finishAt, loading } = useFarming()
 
   return (
     <PageLayout>
@@ -35,18 +45,49 @@ function RouteComponent() {
         <p className="font-inter text-center text-[14px] text-[#FFFFFF99] leading-[140%] mb-2">
           Total Earnings:
         </p>
-        {!isClaimStart ? (
+        {loading && <div>loading...</div>}
+        {finishAt > 0 && !isClaimStart && (
           <Countdown
-            date={totalEarnings + Date.now()}
+            date={finishAt}
             intervalDelay={10}
             precision={3}
             renderer={(props: any) => (
               <CountdownTimerDisplay isCountdownHeaderView {...props} />
             )}
           />
-        ) : (
+        )}
+        {!loading && !finishAt && !isClaimStart && (
+          <CountdownTimerDisplay
+            isCountdownHeaderView
+            days={0}
+            hours={0}
+            minutes={0}
+            seconds={0}
+          />
+        )}
+        {finishAt > 0 && isClaimEnd && (
+          <Countdown
+            date={finishAt}
+            intervalDelay={10}
+            precision={3}
+            renderer={(props: any) => (
+              <CountdownTimerDisplay isCountdownHeaderView {...props} />
+            )}
+          />
+        )}
+
+        {isClaimStart && !isClaimEnd && (
           <TimeCountup
-            targetTimestamp={totalEarnings + Date.now()}
+            // targetTimestamp={totalEarnings + Date.now()}
+            // targetTimestamp={
+            //   totalEarnings +
+            //   Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY))
+            // }
+            initialFinishAtValue={initialFinishAtValue}
+            totalEarnings={totalEarnings}
+            targetTimestamp={Number(
+              localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY),
+            )}
             isClaimStart={isClaimStart}
             setIsClaimEnd={setIsClaimEnd}
           />
@@ -80,7 +121,8 @@ const TotalEarningsBlock = ({
   isClaimStart: boolean
   setIsClaimStart: (value: boolean) => void
 }) => {
-  const displayTime = convertTimestampToLargestUnit(totalEarnings)
+  const displayTime = convertTimestampToLargestUnit(totalEarnings, true)
+  const { setFinishAt } = useFarming()
 
   return (
     <div
@@ -123,7 +165,37 @@ backdrop-blur-[8px]"
       <div>
         <Button
           disabled={!totalEarnings || isClaimStart}
-          onClick={() => setIsClaimStart(true)}
+          onClick={() => {
+            setIsClaimStart(true)
+            // setFinishAt(
+            //   displayTime.roundedTimestamp +
+            //     Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)),
+            // )
+
+            //  console.log(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY), 'ls')
+            // localStorage.setItem(
+            //   NYMB_FARMING_FINISHAT_LS_KEY,
+            //   String(Date.now() + FARMING_DURATION),
+            // )
+            if (
+              Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0
+            ) {
+              // setFinishAt(
+              //   Number(Date.now() + 1000 + displayTime.roundedTimestamp),
+              // )
+              setFinishAt(
+                Number(Date.now() + displayTime.roundedTimestamp) +
+                  ANIMATION_DURATION_COUNTUP +
+                  1000,
+              )
+            } else {
+              setFinishAt(
+                Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) +
+                  displayTime.roundedTimestamp +
+                  ANIMATION_DURATION_COUNTUP,
+              )
+            }
+          }}
           className="w-[106px] h-[40px] rounded-[12px] uppercase bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00]"
         >
           <svg
@@ -150,7 +222,7 @@ backdrop-blur-[8px]"
               </clipPath>
             </defs>
           </svg>
-          <span className="text-[#121312]">claim</span>
+          <span className="text-[#121312] uppercase">claim</span>
         </Button>
       </div>
     </div>
