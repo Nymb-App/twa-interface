@@ -1,10 +1,30 @@
 import Countdown from 'react-countdown'
+import { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CountdownTimerDisplay } from '../ui/countdown-timer-display'
+import { TimeCountup } from '../ui/countup-timer-display'
 import { LevelsList } from './levels-list'
 import EnergyIcon from '@/assets/icons/energy'
+import {
+  FARMING_DURATION,
+  NYMB_FARMING_FINISHAT_LS_KEY,
+  useFarming,
+} from '@/context/farming-context'
 
-const ProgressSection = () => {
+const ProgressSection = ({
+  isClaimStart,
+  isClaimEnd,
+  setIsClaimEnd,
+}: {
+  isClaimStart?: boolean
+  isClaimEnd?: boolean
+  setIsClaimEnd: (value: boolean) => void
+}) => {
+  const { finishAt, loading } = useFarming()
+  const [initialFinishAtValue, _] = useState(
+    Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)),
+  )
+
   return (
     <header className="relative w-full font-pixel px-3 bg-[url('/home-bg.png')] bg-no-repeat bg-bottom pb-6">
       {/* Top part */}
@@ -27,14 +47,48 @@ const ProgressSection = () => {
         </div>
       </div>
       <LevelsList />
-      <Countdown
-        date={Number(Date.now() + 505000)}
-        intervalDelay={10}
-        precision={3}
-        renderer={(props: any) => (
-          <CountdownTimerDisplay isCountdownHeaderView {...props} />
-        )}
-      />
+      {loading && <div>loading...</div>}
+      {finishAt > 0 && !isClaimStart && !isClaimEnd && (
+        <Countdown
+          date={finishAt}
+          intervalDelay={10}
+          precision={3}
+          renderer={(props: any) => (
+            <CountdownTimerDisplay isCountdownHeaderView {...props} />
+          )}
+        />
+      )}
+      {!loading && !finishAt && !isClaimStart && !isClaimEnd && (
+        <CountdownTimerDisplay
+          isCountdownHeaderView
+          days={0}
+          hours={0}
+          minutes={0}
+          seconds={0}
+        />
+      )}
+      {finishAt > 0 && isClaimEnd && (
+        <Countdown
+          date={finishAt}
+          intervalDelay={10}
+          precision={3}
+          renderer={(props: any) => (
+            <CountdownTimerDisplay isCountdownHeaderView {...props} />
+          )}
+        />
+      )}
+
+      {isClaimStart && !isClaimEnd && (
+        <TimeCountup
+          initialFinishAtValue={initialFinishAtValue}
+          totalEarnings={FARMING_DURATION}
+          targetTimestamp={Number(
+            localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY),
+          )}
+          isClaimStart={isClaimStart}
+          setIsClaimEnd={setIsClaimEnd}
+        />
+      )}
     </header>
   )
 }

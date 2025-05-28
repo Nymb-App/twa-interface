@@ -1,64 +1,91 @@
 import { useCallback, useEffect, useState } from 'react'
 import Countdown from 'react-countdown'
+import {
+  ANIMATION_DURATION_COUNTUP,
+  FARMING_DURATION,
+  NYMB_FARMING_FINISHAT_LS_KEY,
+  useFarming,
+} from '../../context/farming-context'
 import { ActionButton } from './action-button'
 import { cn } from '@/utils'
 import { WatchesIcon } from '@/assets/icons/watches'
+import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
 
-const LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY = 'nymb-farming-finishat'
-const LOCAL_STORAGE_SAVED_COMPLETED_TIME_KEY = 'nymb-farming-duration'
-const FARMING_DURATION = 20 * 1000
-
-export function FarmingButton({ className }: { className?: string }) {
-  const [finishAt, setFinishAt] = useState<number | null>(null)
+export function FarmingButton({
+  className,
+  setIsClaimStart,
+  setIsClaimEnd,
+}: {
+  className?: string
+  setIsClaimStart?: (value: boolean) => void
+  setIsClaimEnd?: (value: boolean) => void
+}) {
+  const [finishClaimAt, setFinishClaimAt] = useState<number | null>(null)
   const [isComplete, setIsComplete] = useState(false)
-  const [startAt, setStartAt] = useState<number | null>(null)
-  const [showDefaultButton, setShowDefaultButton] = useState(false)
-  const [isPendingStart, setIsPendingStart] = useState(false)
+  const [showDefaultButton, setShowDefaultButton] = useState(true)
+
+  const { setFinishAt } = useFarming()
 
   useEffect(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY)
-    const savedTime = saved ? Number(saved) : null
-    if (savedTime && savedTime > Date.now()) {
-      setFinishAt(savedTime)
-      setStartAt(savedTime - FARMING_DURATION)
-    } else if (savedTime) {
-      setIsComplete(true)
+    const savedFinishAt = localStorage.getItem(NYMB_FARMING_CLAIM_TIME_KEY)
+    const savedTime = savedFinishAt ? Number(savedFinishAt) : null
+
+    if (savedTime) {
+      if (savedTime > Date.now()) {
+        // Таймер еще активен
+        setFinishClaimAt(savedTime)
+        setShowDefaultButton(false)
+        setIsComplete(false)
+        setIsClaimStart?.(false)
+        setIsClaimEnd?.(false)
+      } else {
+        // Таймер завершен
+        setIsComplete(true)
+        setShowDefaultButton(false)
+      }
     }
   }, [])
 
   const handleStart = useCallback(() => {
     const now = Date.now()
     const endTime = now + FARMING_DURATION
-    localStorage.setItem(
-      LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY,
-      endTime.toString(),
-    )
-    setFinishAt(endTime)
-    setStartAt(now)
+    localStorage.setItem(NYMB_FARMING_CLAIM_TIME_KEY, endTime.toString())
+    setFinishClaimAt(endTime)
     setIsComplete(false)
     setShowDefaultButton(false)
-    setIsPendingStart(false)
+    setIsClaimStart?.(false)
+    setIsClaimEnd?.(false)
   }, [])
 
   const handleComplete = useCallback(() => {
-    if (startAt) {
-      const duration = Date.now() - startAt
-      localStorage.setItem(
-        LOCAL_STORAGE_SAVED_COMPLETED_TIME_KEY,
-        duration.toString(),
-      )
-    }
-    localStorage.removeItem(LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY)
-    setFinishAt(null)
-    setStartAt(null)
+    setFinishClaimAt(null)
     setIsComplete(true)
     setShowDefaultButton(false)
-  }, [startAt])
+    setIsClaimStart?.(false)
+    setIsClaimEnd?.(false)
+  }, [])
 
   const handleClaimClick = useCallback(() => {
     setShowDefaultButton(true)
-    setIsPendingStart(true)
-    localStorage.removeItem(LOCAL_STORAGE_CURRENT_TIMER_COUNT_KEY)
+    setIsClaimStart?.(true)
+    setIsClaimEnd?.(false)
+    if (Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0) {
+      setFinishAt(
+        Number(
+          Date.now() + FARMING_DURATION + ANIMATION_DURATION_COUNTUP + 1000,
+        ),
+      )
+      // setFinishAt(
+      //   Number(Date.now() + FARMING_DURATION) + ANIMATION_DURATION_COUNTUP,
+      // )
+    } else {
+      setFinishAt(
+        Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) +
+          FARMING_DURATION +
+          ANIMATION_DURATION_COUNTUP,
+      )
+    }
+    localStorage.removeItem(NYMB_FARMING_CLAIM_TIME_KEY)
   }, [])
 
   const renderButton = useCallback(
@@ -76,33 +103,29 @@ export function FarmingButton({ className }: { className?: string }) {
         <FarmingProgressButton
           time={timeStr}
           className={className}
-          finishAt={finishAt!}
+          finishAt={finishClaimAt!}
         />
       )
     },
-    [className, finishAt, handleClaimClick],
+    [className, finishClaimAt, handleClaimClick],
   )
 
-  if (showDefaultButton && isPendingStart) {
+  // if (showDefaultButton && isPendingStart) {
+  if (showDefaultButton) {
     return <FarmingDefaultButton className={className} onClick={handleStart} />
   }
 
   if (isComplete) {
-    const savedDuration = localStorage.getItem(
-      LOCAL_STORAGE_SAVED_COMPLETED_TIME_KEY,
-    )
-    const duration = savedDuration ? Number(savedDuration) : 0
-    const hours = String(Math.floor(duration / 3600000)).padStart(2, '0')
-    const minutes = String(Math.floor((duration % 3600000) / 60000)).padStart(
-      2,
-      '0',
-    )
-    const seconds = String(Math.floor((duration % 60000) / 1000)).padStart(
-      2,
-      '0',
-    )
-    const timeStr = `${hours}:${minutes}:${seconds}`
+    const actualDuration = FARMING_DURATION
 
+    const hours = String(Math.floor(actualDuration / 3600000)).padStart(2, '0')
+    const minutes = String(
+      Math.floor((actualDuration % 3600000) / 60000),
+    ).padStart(2, '0')
+    const seconds = String(
+      Math.floor((actualDuration % 60000) / 1000),
+    ).padStart(2, '0')
+    const timeStr = `${hours}:${minutes}:${seconds}`
     return (
       <FarmingClaimButton
         time={timeStr}
@@ -112,13 +135,13 @@ export function FarmingButton({ className }: { className?: string }) {
     )
   }
 
-  if (!finishAt) {
+  if (!finishClaimAt) {
     return <FarmingDefaultButton className={className} onClick={handleStart} />
   }
 
   return (
     <Countdown
-      date={finishAt}
+      date={finishClaimAt}
       onComplete={handleComplete}
       renderer={({ hours, minutes, seconds, completed }) => {
         const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`

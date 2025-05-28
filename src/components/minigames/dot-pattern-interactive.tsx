@@ -1,5 +1,6 @@
+import {  forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import type {Ref} from "react";
 import { cn } from "@/utils";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 
 /* --------------------------------------------------
  * 1. DotPatternInteractive — configurable canvas background
@@ -80,11 +81,11 @@ export const DotPatternInteractive = forwardRef<DotPatternHandle, DotPatternProp
 
     // Maps для работы с несколькими указателями
     const pointerMap = useRef<Map<number, { x: number; y: number }>>(new Map());
-    const trailMap = useRef<Map<number, { x: number; y: number }[]>>(new Map());
+    const trailMap = useRef<Map<number, Array<{ x: number; y: number }>>>(new Map());
     const lastMoveMap = useRef<Map<number, number>>(new Map());
 
     // Волны для эффекта "wave"
-    const waves = useRef<{ x: number; y: number; start: number }[]>([]);
+    const waves = useRef<Array<{ x: number; y: number; start: number }>>([]);
     const active = useRef<boolean>(animate === "on-hover");
 
     const lerpColor = useCallback((a: string, b: string, t: number) => {

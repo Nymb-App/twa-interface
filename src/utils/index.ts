@@ -21,6 +21,7 @@ export const formatTimeParts = (
 
 export const convertTimestampToLargestUnit = (
   timestamp: number,
+  roundToUnit: boolean = true,
 ): any | number => {
   if (timestamp < 0) return { time: 0, label: 'd' }
   let delta = Math.floor(timestamp / 1000)
@@ -39,6 +40,14 @@ export const convertTimestampToLargestUnit = (
   for (const unit of timeUnits) {
     const amount = Math.floor(delta / unit.value)
     if (amount > 0) {
+      if (roundToUnit) {
+        // Округляем timestamp до выбранной единицы
+        return {
+          time: amount,
+          label: unit.label,
+          roundedTimestamp: amount * unit.value * 1000, // Возвращаем округленное значение
+        }
+      }
       return { time: amount, label: unit.label }
     }
   }

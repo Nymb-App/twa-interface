@@ -1,17 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useContext, useEffect, useState } from 'react'
-import { RouletteAnimation } from '@/components/ui/roulette-animation'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { Container } from '@/components/ui/container'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/utils'
 import { SendGift } from '@/assets/icons/send-gift'
 import { AppContext } from '@/context/app-context'
+import { Container } from '@/components/ui/container'
 import { RussianRoulette } from '@/components/ui/russian-roullete'
-import RoulettePro from 'react-roulette-pro'
-import { SendGiftActionButtons } from '@/components/ui/send-gift-action-buttons'
-import { SendGiftButton } from '@/components/ui/send-gift-button'
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
@@ -22,13 +18,24 @@ function RouteComponent() {
     document.body.style.backgroundColor = '#151317'
   }, [])
 
-  const [isStartRoulette, setIsStartRoulette] = useState(false)
+  // const { isShowSendGiftButton, isShowSendGiftActionButtons, isStartRoulette } =
+  //   useContext(AppContext)
+
   const [isShowSendGiftButton, setIsShowSendGiftButton] = useState(true)
-  const [isShowSendGiftActionButtons, setIsShowSendGiftActionButtons] = useState(false)
+  const [isShowSendGiftActionButtons, setIsShowSendGiftActionButtons] =
+    useState(false)
+  const [isStartRoulette, setIsStartRoulette] = useState(false)
 
   return (
-    <PageLayout useFooter={false} className="bg-[#151317]">
-      <div className='mt-10'>
+    <PageLayout
+      className="bg-[#151317]"
+      useFooter={false}
+      useSendButton={isShowSendGiftButton}
+      useSendGiftActionButtons={isShowSendGiftActionButtons}
+      setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
+      setIsStartRoulette={setIsStartRoulette}
+    >
+      {isStartRoulette ? (
         <RussianRoulette
           isStartRoulette={isStartRoulette}
           items={participants}
@@ -36,34 +43,38 @@ function RouteComponent() {
           duration={4500}
           gap={20}
           loops={4}
-          onFinish={() => {
-            // TODO: обработка окончания анимации
-          }}
+          onFinish={() => {}}
+          setIsShowSendGiftButton={setIsShowSendGiftButton}
+          isShowSendGiftActionButtons={isShowSendGiftActionButtons}
+          setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
-      </div>
-
-      <SendGiftButton setIsStartRoulette={setIsStartRoulette} />
+      ) : (
+        <Container className="mb-5">
+          <SendGiftHeader />
+        </Container>
+      )}
     </PageLayout>
-  );
+  )
 }
 
-const AvatarCard = ({ src }: { src: string }) => (
-  <div className='relative size-22'>
+const AvatarCard = ({ src, label }: { src: string; label: string }) => (
+  <div className="relative size-22">
     <img
       src={src}
-      className="size-full object-cover rounded-full shadow-lg"  // ← ОДИНАКОВО для всех
+      className="size-full object-cover rounded-full shadow-lg" // ← ОДИНАКОВО для всех
     />
-    <span className='absolute left-1/2 top-1/2 -translate-1/2 font-pixel text-2xl'>NA</span>
+    <span className="absolute left-1/2 top-1/2 -translate-1/2 font-pixel text-2xl">
+      {label || 'NA'}
+    </span>
   </div>
-);
+)
 
 const participants = [
-  <AvatarCard src="/roulette-icons/user-1.png" />,
-  <AvatarCard src="/roulette-icons/user-2.png" />,
-  <AvatarCard src="/roulette-icons/user-3.png" />,
-  <AvatarCard src="/roulette-icons/user-1.png" />,
-  /* …до X элементов… */
-];
+  <AvatarCard src="/roulette-icons/user-1.png" label="IM" />,
+  <AvatarCard src="/roulette-icons/user-2.png" label="AJ" />,
+  <AvatarCard src="/roulette-icons/user-3.png" label="MP" />,
+  <AvatarCard src="/roulette-icons/user-2.png" label="JS" />,
+]
 
 const SendGiftHeader = () => {
   const {
@@ -177,35 +188,3 @@ const SendGiftHeader = () => {
     </>
   )
 }
-
-
-// <PageLayout
-    //   className="bg-[#151317]"
-    //   useFooter={false}
-    //   useSendButton={isShowSendGiftButton}
-    //   useSendGiftActionButtons={isShowSendGiftActionButtons}
-    //   setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
-    //   setIsStartRoulette={setIsStartRoulette}
-    // >
-      
-      // <SendGiftButton setIsStartRoulette={setIsStartRoulette} />
-      {/* {isStartRoulette ? (
-        <RouletteAnimation
-          isStartRoulette={isStartRoulette}
-          isShowSendGiftActionButtons={isShowSendGiftActionButtons}
-          setIsShowSendGiftButton={setIsShowSendGiftButton}
-          setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
-        />
-        <PrizeRoulette
-          items={participants}
-          winnerIndex={2}    // узнали от сервера
-          duration={4500}    // ≥ 3000
-          itemWidth={140}    // подгоняем под верстку
-          onFinish={() => console.log("Финиш!")}
-        />
-      ) : (
-        <Container className="mb-5">
-          <SendGiftHeader />
-        </Container>
-      )} */}
-    {/* </PageLayout> */}

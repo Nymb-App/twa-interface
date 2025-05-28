@@ -1,22 +1,26 @@
 import { zeroPad } from 'react-countdown'
 import { cn, formatTimeParts } from '@/utils'
+import { NYMB_FARMING_FINISHAT_LS_KEY } from '@/context/farming-context'
 
 const CountdownBlock = ({
   label,
   value,
   isFirst,
   minutesValue,
+  hoursValue,
 }: {
   label: string
   value: number
   isFirst: boolean
   minutesValue?: number
+  hoursValue?: number
 }) => {
-  const forceGreenForSeconds =
-    label === 'Seconds' && minutesValue && minutesValue !== 0
+  const forceGreenForSecondsAndMinutes =
+    (label === 'Seconds' && minutesValue && minutesValue !== 0) ||
+    (label === 'Minutes' && hoursValue && hoursValue !== 0)
 
   const colorClass =
-    value === 0 && !forceGreenForSeconds
+    value === 0 && !forceGreenForSecondsAndMinutes
       ? 'text-[#FFFFFF]/40 font-[400] text-[30px]'
       : 'font-[400] text-[30px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]'
 
@@ -56,7 +60,7 @@ export const CountdownTimerDisplay = ({
   hours: number
   minutes: number
   seconds: number
-  completed: boolean
+  completed?: boolean
 }) => {
   if (completed) {
     const blocks = [
@@ -66,6 +70,7 @@ export const CountdownTimerDisplay = ({
       { label: 'Minutes', value: 0 },
       { label: 'Seconds', value: 0 },
     ]
+    localStorage.setItem(NYMB_FARMING_FINISHAT_LS_KEY, String(0))
     return isCountdownHeaderView ? (
       <div className="text-center">
         <div className="flex justify-center gap-6">
@@ -107,6 +112,7 @@ export const CountdownTimerDisplay = ({
               value={item.value}
               isFirst={index === 0}
               minutesValue={minutes}
+              hoursValue={hours}
             />
           ))}
         </div>

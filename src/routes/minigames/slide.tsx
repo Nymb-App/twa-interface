@@ -1,13 +1,14 @@
+import { createFileRoute } from '@tanstack/react-router';
+import Countdown from 'react-countdown';
 import { WatchesIcon } from '@/assets/icons/watches';
 import EnergyIcon from '@/assets/icons/energy';
 import HeaderBg from '@/assets/svg/header-bg';
-import { createFileRoute } from '@tanstack/react-router';
-import Countdown from 'react-countdown';
 import BombField from '@/components/minigames/playground';
 import { PageLayout } from '@/components/ui/page-layout';
 import { cn } from '@/lib/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActionButton } from '@/components/ui/action-button';
+import { shareURL } from '@telegram-apps/sdk';
 // import { SettingsPanel } from './settings-pannel';
 
 export const Route = createFileRoute('/minigames/slide')({
@@ -218,7 +219,12 @@ export function RouteComponent() {
           minutesWinned={minutesWinned}
           useRestart={energy > 0}
           onRestart={resetGame}
-          onShare={() => {}}
+          onShare={() => {
+            if (shareURL.isAvailable()) {
+              const telegramLink = import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://telegram-apps.com'
+              shareURL(telegramLink, `Check out my score in the game! ${minutesWinned} in 30 seconds. I'm playing with @nymb_bot`)
+            }
+          }}
         />
       }
 

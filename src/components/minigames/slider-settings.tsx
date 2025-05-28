@@ -1,5 +1,5 @@
-import { cn } from "@/utils";
 import { useState } from "react";
+import { cn } from "@/utils";
 
 interface SettingsPanelProps {
   // Field & dot–pattern

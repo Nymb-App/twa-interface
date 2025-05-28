@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
+import { useState } from 'react'
 import { FarmingButton } from '@/components/ui/button-farming'
 import { CardContent } from '@/components/ui/card-content'
 import { SwipeCard } from '@/components/swipe-card'
@@ -15,9 +16,16 @@ export const Route = createFileRoute('/home')({
 })
 
 function RouteComponent() {
+  const [isClaimStart, setIsClaimStart] = useState(false)
+  const [isClaimEnd, setIsClaimEnd] = useState(false)
+
   return (
     <PageLayout>
-      <ProgressSection />
+      <ProgressSection
+        isClaimStart={isClaimStart}
+        isClaimEnd={isClaimEnd}
+        setIsClaimEnd={setIsClaimEnd}
+      />
       <Container className="mt-5">
         <div className="grid grid-cols-2 gap-2">
           {isAndroid ? (
@@ -49,7 +57,11 @@ function RouteComponent() {
           <CardContent isLocked={false} />
           <CardContent />
         </div>
-        <FarmingButton className="w-full" />
+        <FarmingButton
+          className="w-full"
+          setIsClaimStart={setIsClaimStart}
+          setIsClaimEnd={setIsClaimEnd}
+        />
       </Container>
     </PageLayout>
   )
