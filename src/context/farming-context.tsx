@@ -41,8 +41,8 @@ export const FarmingProvider: React.FC<{ children: React.ReactNode }> = ({
           localStorage.removeItem(NYMB_FARMING_FINISHAT_LS_KEY)
         }
       } else {
-        // setFinishAtFromLocalStorage(Number(Date.now() + 2005000))
-        setFinishAtFromLocalStorage(Number(Date.now() + 150000))
+        setFinishAtFromLocalStorage(Number(Date.now() + 2005000))
+        // setFinishAtFromLocalStorage(Number(Date.now() + 150000))
         // setFinishAtFromLocalStorage(Number(Date.now() + 0))
         // Если нет в localStorage, делаем API запрос
         try {

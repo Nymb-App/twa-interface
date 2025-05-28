@@ -89,7 +89,7 @@ export const TimeCountup = ({
         : 0
       : 0
   const totalDurationMs = targetTimestamp - now
-
+  // TODO:FIX
   const [elapsed, setElapsed] = useState(initialRemaining)
 
   useEffect(() => {

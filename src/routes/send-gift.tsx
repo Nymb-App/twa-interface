@@ -188,38 +188,3 @@ const SendGiftHeader = () => {
     </>
   )
 }
-
-// <PageLayout
-//   className="bg-[#151317]"
-//   useFooter={false}
-//   useSendButton={isShowSendGiftButton}
-//   useSendGiftActionButtons={isShowSendGiftActionButtons}
-//   setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
-//   setIsStartRoulette={setIsStartRoulette}
-// >
-
-// <SendGiftButton setIsStartRoulette={setIsStartRoulette} />
-{
-  /* {isStartRoulette ? (
-        <RouletteAnimation
-          isStartRoulette={isStartRoulette}
-          isShowSendGiftActionButtons={isShowSendGiftActionButtons}
-          setIsShowSendGiftButton={setIsShowSendGiftButton}
-          setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
-        />
-        <PrizeRoulette
-          items={participants}
-          winnerIndex={2}    // узнали от сервера
-          duration={4500}    // ≥ 3000
-          itemWidth={140}    // подгоняем под верстку
-          onFinish={() => console.log("Финиш!")}
-        />
-      ) : (
-        <Container className="mb-5">
-          <SendGiftHeader />
-        </Container>
-      )} */
-}
-{
-  /* </PageLayout> */
-}

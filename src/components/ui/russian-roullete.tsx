@@ -1,11 +1,12 @@
 // components/PrizeRoulette.tsx  — winner-zoom edition
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useRive } from '@rive-app/react-canvas'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from './electric-lines'
 import type { CSSProperties, ReactNode } from 'react'
 import { cn } from '@/utils'
-import { SendGift } from '@/assets/icons/send-gift'
 import { AppContext } from '@/context/app-context'
+import { SendGift } from '@/assets/icons/send-gift'
 
 /* ──────────────────── props ───────────────────── */
 export interface PrizeRouletteProps {
@@ -55,6 +56,7 @@ export function RussianRoulette({
   const [isFinishRoulette, setIsFinishRoulette] = useState(false)
   const { giftCountValue, giftPeriodRadioValue } = useContext(AppContext)
   const [isWinner, setIsWinner] = useState(false)
+  const [startRiveAnimation, setIsStartRiveAnimation] = useState(false)
 
   /* 1. измеряем карточку + viewport */
   useLayoutEffect(() => {
@@ -64,6 +66,9 @@ export function RussianRoulette({
 
     const measure = () => {
       const card = cardRef.current!.getBoundingClientRect().width // без gap
+      setTimeout(() => {
+        setIsStartRiveAnimation(true)
+      }, 1500)
       const viewport =
         reelRef.current!.parentElement!.getBoundingClientRect().width
       if (card && viewport) setSizes({ card, viewport })
@@ -113,7 +118,9 @@ export function RussianRoulette({
       /* выделяем победителя */
       winRef.current?.classList.add('roulette-winner')
       setIsFinishRoulette(true)
-      setIsShowSendGiftActionButtons?.(true)
+      setTimeout(() => {
+        setIsShowSendGiftActionButtons?.(true)
+      }, 4500)
       onFinish?.()
       setIsWinner(true)
     }
@@ -144,10 +151,56 @@ export function RussianRoulette({
   }
   const extended = Array.from({ length: copies }, () => items).flat()
 
-  /* JSX */
+  const { RiveComponent, rive } = useRive({
+    src: '/riveAnimations/gift-freinds.riv',
+    autoplay: true,
+  })
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      rive?.pause()
+    }, 1150)
+    return () => clearTimeout(timer)
+  }, [isFinishRoulette])
+
   return (
     <div className="flex flex-col items-center">
-      {!isFinishRoulette ? (
+      <div className="flex flex-col items-center relative">
+        <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase mb-[230px]">
+          send a gift <br />
+          for frend
+        </h1>
+        {isShowSendGiftActionButtons && (
+          <div className="font-pixel font-400 text-center -mt-[20px] absolute top-[145px]">
+            <span className="text-[64px] leading-[120%] [text-shadow:0px_0px_60px_#A55EFF] bg-gradient-to-b from-[#BE8CFF] to-[#8C35FB] bg-clip-text text-transparent">
+              {giftCountValue}
+            </span>
+            <p className="text-[20px] leading-[24px] mt-2 uppercase">
+              {giftPeriodRadioValue} gets
+            </p>
+          </div>
+        )}
+        {isShowSendGiftActionButtons && <ElectricLines />}
+        {!startRiveAnimation && (
+          <SendGift className="-mt-[20px] absolute top-[145px] animate-[wiggle_3s_ease-in-out_infinite] z-1" />
+        )}
+        {startRiveAnimation && !isShowSendGiftActionButtons && (
+          <RiveComponent className="w-[460px] h-[460px] absolute -top-[45px] z-0" />
+        )}
+        <FlickeringGrid
+          className="absolute top-0 w-[450px] h-[445px]
+      mask-[radial-gradient(ellipse_215px_215px_at_center,black,transparent)]"
+          squareSize={2}
+          gridGap={12}
+          color="#aa73f9"
+          maxOpacity={1}
+          flickerChance={0.3}
+          autoResize={false}
+          width={450}
+          height={450}
+        />
+      </div>
+      {/* {!isFinishRoulette ? (
         <div className="flex flex-col items-center relative">
           <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase mb-[270px]">
             send a gift <br />
@@ -195,7 +248,7 @@ export function RussianRoulette({
             height={450}
           />
         </div>
-      )}
+      )} */}
       <div
         className={cn(
           'relative w-full mt-[40px]',
