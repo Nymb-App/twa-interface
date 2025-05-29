@@ -1,137 +1,135 @@
-import { useState } from "react";
-import { cn } from "@/utils";
+import { useState } from 'react'
+import { cn } from '@/utils'
 
-interface SettingsPanelProps {
-  // Field & dot–pattern
-  gridGap: number;
-  setGridGap: (v: number) => void;
-  thresholdPercent: number;
-  setThresholdPercent: (v: number) => void;
-  baseRadius: number;
-  setBaseRadius: (v: number) => void;
-  maxRadius: number;
-  setMaxRadius: (v: number) => void;
-  reach: number;
-  setReach: (v: number) => void;
-  blur: number;
-  setBlur: (v: number) => void;
-  staticColor: string;
-  setStaticColor: (v: string) => void;
-  activeColor: string;
-  setActiveColor: (v: string) => void;
-  // Trail
-  trailing: boolean;
-  setTrailing: (v: boolean) => void;
-  trailLength: number;
-  setTrailLength: (v: number) => void;
-  minTrailLength: number;
-  setMinTrailLength: (v: number) => void;
-  trailingLifetime: number;
-  setTrailingLifetime: (v: number) => void;
-  trailingRadius: number;
-  setTrailingRadius: (v: number) => void;
-  trailingColor: string;
-  setTrailingColor: (v: string) => void;
-  trailingGradientFrom: string;
-  setTrailingGradientFrom: (v: string) => void;
-  trailingGradientTo: string;
-  setTrailingGradientTo: (v: string) => void;
-  // Items
-  bombCount: number;
-  setBombCount: (v: number) => void;
-  bombRadiusPx: number;
-  setBombRadiusPx: (v: number) => void;
-  timerCount: number;
-  setTimerCount: (v: number) => void;
-  // Explosion / Collider
-  colliderPx: number;
-  setColliderPx: (v: number) => void;
-  // Lifetime chunks
-  lifeMin: number;
-  setLifeMin: (v: number) => void;
-  lifeMax: number;
-  setLifeMax: (v: number) => void;
-  groupCount: number;
-  setGroupCount: (v: number) => void;
-  // Timings
-  autoExitMs: number;
-  setAutoExitMs: (v: number) => void;
-  manualExitMs: number;
-  setManualExitMs: (v: number) => void;
-  manualDelay: number;
-  setManualDelay: (v: number) => void;
-  // Waves
-  waveOnPointerUp: boolean;
-  setWaveOnPointerUp: (v: boolean) => void;
-  waveOnPointerMove: boolean;
-  setWaveOnPointerMove: (v: boolean) => void;
-  waveReach: number;
-  setWaveReach: (v: number) => void;
-  waveStrength: number;
-  setWaveStrength: (v: number) => void;
-  waveThickness: number;
-  setWaveThickness: (v: number) => void;
-  waveDuration: number;
-  setWaveDuration: (v: number) => void;
-  waveColor: string;
-  setWaveColor: (v: string) => void;
-}
+// interface SettingsPanelProps {
+//   // Field & dot–pattern
+//   gridGap: number;
+//   setGridGap: (v: number) => void;
+//   thresholdPercent: number;
+//   setThresholdPercent: (v: number) => void;
+//   baseRadius: number;
+//   setBaseRadius: (v: number) => void;
+//   maxRadius: number;
+//   setMaxRadius: (v: number) => void;
+//   reach: number;
+//   setReach: (v: number) => void;
+//   blur: number;
+//   setBlur: (v: number) => void;
+//   staticColor: string;
+//   setStaticColor: (v: string) => void;
+//   activeColor: string;
+//   setActiveColor: (v: string) => void;
+//   // Trail
+//   trailing: boolean;
+//   setTrailing: (v: boolean) => void;
+//   trailLength: number;
+//   setTrailLength: (v: number) => void;
+//   minTrailLength: number;
+//   setMinTrailLength: (v: number) => void;
+//   trailingLifetime: number;
+//   setTrailingLifetime: (v: number) => void;
+//   trailingRadius: number;
+//   setTrailingRadius: (v: number) => void;
+//   trailingColor: string;
+//   setTrailingColor: (v: string) => void;
+//   trailingGradientFrom: string;
+//   setTrailingGradientFrom: (v: string) => void;
+//   trailingGradientTo: string;
+//   setTrailingGradientTo: (v: string) => void;
+//   // Items
+//   bombCount: number;
+//   setBombCount: (v: number) => void;
+//   bombRadiusPx: number;
+//   setBombRadiusPx: (v: number) => void;
+//   timerCount: number;
+//   setTimerCount: (v: number) => void;
+//   // Explosion / Collider
+//   colliderPx: number;
+//   setColliderPx: (v: number) => void;
+//   // Lifetime chunks
+//   lifeMin: number;
+//   setLifeMin: (v: number) => void;
+//   lifeMax: number;
+//   setLifeMax: (v: number) => void;
+//   groupCount: number;
+//   setGroupCount: (v: number) => void;
+//   // Timings
+//   autoExitMs: number;
+//   setAutoExitMs: (v: number) => void;
+//   manualExitMs: number;
+//   setManualExitMs: (v: number) => void;
+//   manualDelay: number;
+//   setManualDelay: (v: number) => void;
+//   // Waves
+//   waveOnPointerUp: boolean;
+//   setWaveOnPointerUp: (v: boolean) => void;
+//   waveOnPointerMove: boolean;
+//   setWaveOnPointerMove: (v: boolean) => void;
+//   waveReach: number;
+//   setWaveReach: (v: number) => void;
+//   waveStrength: number;
+//   setWaveStrength: (v: number) => void;
+//   waveThickness: number;
+//   setWaveThickness: (v: number) => void;
+//   waveDuration: number;
+//   setWaveDuration: (v: number) => void;
+//   waveColor: string;
+//   setWaveColor: (v: string) => void;
+// }
 
-export function SettingsPanel(
-  // {
-  // Field & dot–pattern
-  // gridGap, setGridGap,
-  // thresholdPercent, setThresholdPercent,
-  // baseRadius, setBaseRadius,
-  // maxRadius, setMaxRadius,
-  // reach, setReach,
-  // blur, setBlur,
-  // staticColor, setStaticColor,
-  // activeColor, setActiveColor,
-  // // Trail
-  // trailing, setTrailing,
-  // trailLength, setTrailLength,
-  // minTrailLength, setMinTrailLength,
-  // trailingLifetime, setTrailingLifetime,
-  // trailingRadius, setTrailingRadius,
-  // trailingColor, setTrailingColor,
-  // trailingGradientFrom, setTrailingGradientFrom,
-  // trailingGradientTo, setTrailingGradientTo,
-  // // Items
-  // bombCount, setBombCount,
-  // bombRadiusPx, setBombRadiusPx,
-  // timerCount, setTimerCount,
-  // // Explosion / Collider
-  // colliderPx, setColliderPx,
-  // // Lifetime chunks
-  // lifeMin, setLifeMin,
-  // lifeMax, setLifeMax,
-  // groupCount, setGroupCount,
-  // // Timings
-  // autoExitMs, setAutoExitMs,
-  // manualExitMs, setManualExitMs,
-  // manualDelay, setManualDelay,
-  // // Waves
-  // waveOnPointerUp, setWaveOnPointerUp,
-  // waveOnPointerMove, setWaveOnPointerMove,
-  // waveReach, setWaveReach,
-  // waveStrength, setWaveStrength,
-  // waveThickness, setWaveThickness,
-  // waveDuration, setWaveDuration,
-  // waveColor, setWaveColor,
-  // }: SettingsPanelProps
-) {
-  const [dotsGap, setDotsGap] = useState(12);
-  const [trailingLength, setTrailingLength] = useState(20);
-
+export function SettingsPanel() {
+// {
+// Field & dot–pattern
+// gridGap, setGridGap,
+// thresholdPercent, setThresholdPercent,
+// baseRadius, setBaseRadius,
+// maxRadius, setMaxRadius,
+// reach, setReach,
+// blur, setBlur,
+// staticColor, setStaticColor,
+// activeColor, setActiveColor,
+// // Trail
+// trailing, setTrailing,
+// trailLength, setTrailLength,
+// minTrailLength, setMinTrailLength,
+// trailingLifetime, setTrailingLifetime,
+// trailingRadius, setTrailingRadius,
+// trailingColor, setTrailingColor,
+// trailingGradientFrom, setTrailingGradientFrom,
+// trailingGradientTo, setTrailingGradientTo,
+// // Items
+// bombCount, setBombCount,
+// bombRadiusPx, setBombRadiusPx,
+// timerCount, setTimerCount,
+// // Explosion / Collider
+// colliderPx, setColliderPx,
+// // Lifetime chunks
+// lifeMin, setLifeMin,
+// lifeMax, setLifeMax,
+// groupCount, setGroupCount,
+// // Timings
+// autoExitMs, setAutoExitMs,
+// manualExitMs, setManualExitMs,
+// manualDelay, setManualDelay,
+// // Waves
+// waveOnPointerUp, setWaveOnPointerUp,
+// waveOnPointerMove, setWaveOnPointerMove,
+// waveReach, setWaveReach,
+// waveStrength, setWaveStrength,
+// waveThickness, setWaveThickness,
+// waveDuration, setWaveDuration,
+// waveColor, setWaveColor,
+// }: SettingsPanelProps
+  const [dotsGap, setDotsGap] = useState(12)
+  const [trailingLength, setTrailingLength] = useState(20)
 
   return (
-    <aside className={cn(
-      'absolute w-full h-[calc(100%-126px)] top-16 overflow-y-auto z-[50] border-2 border-white/50 bg-white/20 p-3 font-pixel text-white'
-    )}>
-      <h2 className="text-2xl mb-6 text-center">
-        Настройки
-      </h2>
+    <aside
+      className={cn(
+        'absolute w-full h-[calc(100%-126px)] top-16 overflow-y-auto z-[50] border-2 border-white/50 bg-white/20 p-3 font-pixel text-white',
+      )}
+    >
+      <h2 className="text-2xl mb-6 text-center">Настройки</h2>
 
       {/* Настройки заднего фона */}
       <SettingsSection title="Настройки бэкграунда">
@@ -143,7 +141,7 @@ export function SettingsPanel(
           step={1}
           value={dotsGap}
           containerClassName="mt-6 pr-4"
-          onChange={e => setDotsGap(Number(e.target.value))}
+          onChange={(e) => setDotsGap(Number(e.target.value))}
         />
 
         <RangeField
@@ -154,7 +152,7 @@ export function SettingsPanel(
           step={1}
           value={trailingLength}
           containerClassName="pr-4"
-          onChange={e => setTrailingLength(Number(e.target.value))}
+          onChange={(e) => setTrailingLength(Number(e.target.value))}
         />
       </SettingsSection>
 
@@ -167,7 +165,7 @@ export function SettingsPanel(
           step={1}
           value={dotsGap}
           containerClassName="mt-6 pr-4"
-          onChange={e => setDotsGap(Number(e.target.value))}
+          onChange={(e) => setDotsGap(Number(e.target.value))}
         />
 
         <RangeField
@@ -178,20 +176,20 @@ export function SettingsPanel(
           step={1}
           value={trailingLength}
           containerClassName="pr-4"
-          onChange={e => setTrailingLength(Number(e.target.value))}
+          onChange={(e) => setTrailingLength(Number(e.target.value))}
         />
       </SettingsSection>
     </aside>
-  );
+  )
 }
 
 export interface RangeFieldProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   /** Дополнительный класс для контейнера */
-  containerClassName?: string,
+  containerClassName?: string
   /** Класс для лейбла (отображает текущее значение) */
-  labelClassName?: string,
-  title?: string,
+  labelClassName?: string
+  title?: string
 }
 
 export function RangeField({
@@ -199,41 +197,43 @@ export function RangeField({
   id,
   value,
   onChange,
-  containerClassName = "",
-  labelClassName = "",
-  className,      // позволим прокинуть свои классы
+  containerClassName = '',
+  labelClassName = '',
+  className, // позволим прокинуть свои классы
   ...inputProps
 }: RangeFieldProps) {
   // приведём value к числу
   const numericValue =
-    typeof value === "string" ? Number(value) : (value as number);
+    typeof value === 'string' ? Number(value) : (value as number)
 
   return (
     <div className={cn(containerClassName)}>
-      <span className="[text-shadow:0_2px_8px_rgba(0,0,0,0.7)]">
-        {title}
-      </span>
-      <div className='inline-flex items-center justify-between w-full'>
+      <span className="[text-shadow:0_2px_8px_rgba(0,0,0,0.7)]">{title}</span>
+      <div className="inline-flex items-center justify-between w-full">
         <input
           id={id}
           type="range"
           value={numericValue}
           onChange={onChange}
-          className={cn('flex-1 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-auto [&::-moz-range-thumb]:appearance-auto [&::-ms-thumb]:appearance-auto', className)}
+          className={cn(
+            'flex-1 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-auto [&::-moz-range-thumb]:appearance-auto [&::-ms-thumb]:appearance-auto',
+            className,
+          )}
           {...inputProps}
         />
         {id && (
           <label
             htmlFor={id}
-            className={`ml-4 text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.7)] ${labelClassName || ""
-              }`}
+            className={`ml-4 text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.7)] ${
+              labelClassName || ''
+            }`}
           >
             {numericValue}
           </label>
         )}
       </div>
     </div>
-  );
+  )
 }
 
 function SettingsSection({
@@ -242,9 +242,9 @@ function SettingsSection({
   className,
   useAction,
 }: {
-  title: string,
-  children: React.ReactNode,
-  className?: string,
+  title: string
+  children: React.ReactNode
+  className?: string
   useAction?: boolean
 }) {
   return (
@@ -261,16 +261,14 @@ function SettingsSection({
       </h3>
       {children}
 
-      {useAction && 
+      {useAction && (
         <button className="bg-black px-3 py-2 rounded-lg cursor-pointer">
           Применить
         </button>
-      }
+      )}
     </section>
-  );
+  )
 }
-
-
 
 // {/* 2. Трейл (вся настройка) */}
 // <section className={sectionBg}>

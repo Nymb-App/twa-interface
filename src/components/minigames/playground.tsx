@@ -120,11 +120,11 @@ export default function BombField({
   baseRadius = 2,
   maxRadius = 4,
   reach = 80,
-  blur = 0,
+  // blur = 0,
   staticColor = '#969695',
   activeColor = '#B6FF00',
 
-  trailing = true,
+  // trailing = true,
   minTrailLength = 1,
   trailingLifetime = 50,
   trailingRadius = 8,

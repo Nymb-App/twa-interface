@@ -56,7 +56,8 @@ export function RussianRoulette({
   const [isFinishRoulette, setIsFinishRoulette] = useState(false)
   const { giftCountValue, giftPeriodRadioValue } = useContext(AppContext)
   const [isWinner, setIsWinner] = useState(false)
-  const [startRiveAnimation, setIsStartRiveAnimation] = useState(false)
+  const [startRiveAnimation, setStartRiveAnimation] = useState(false)
+  const [placeholderRiveAnimation, setPlaceholderRiveAnimation] = useState(true)
 
   /* 1. измеряем карточку + viewport */
   useLayoutEffect(() => {
@@ -66,9 +67,6 @@ export function RussianRoulette({
 
     const measure = () => {
       const card = cardRef.current!.getBoundingClientRect().width // без gap
-      setTimeout(() => {
-        setIsStartRiveAnimation(true)
-      }, 1500)
       const viewport =
         reelRef.current!.parentElement!.getBoundingClientRect().width
       if (card && viewport) setSizes({ card, viewport })
@@ -89,6 +87,7 @@ export function RussianRoulette({
     const reel = reelRef.current!
 
     /* стоп - если isStartRoulette = false */
+    // if (isStartRoulette) {
     if (!isStartRoulette) {
       reel.style.transition = 'none'
       reel.style.transform = 'translateX(0)'
@@ -118,9 +117,9 @@ export function RussianRoulette({
       /* выделяем победителя */
       winRef.current?.classList.add('roulette-winner')
       setIsFinishRoulette(true)
-      setTimeout(() => {
-        setIsShowSendGiftActionButtons?.(true)
-      }, 4500)
+      // setTimeout(() => {
+      //   setIsShowSendGiftActionButtons?.(true)
+      // }, 4500)
       onFinish?.()
       setIsWinner(true)
     }
@@ -154,14 +153,43 @@ export function RussianRoulette({
   const { RiveComponent, rive } = useRive({
     src: '/riveAnimations/gift-freinds.riv',
     autoplay: true,
+    onLoad: () => {
+      // setStartRiveAnimation(true)
+    },
+    onPlay: () => {
+      // setTimeout(() => {
+      //   setStartRiveAnimation(true)
+      //   setPlaceholderRiveAnimation(false)
+      // }, 2000)
+    },
+    // onStateChange: () => {
+    //   rive?.stop()
+    // },
+    onStop: () => {
+      setStartRiveAnimation(false)
+      setIsShowSendGiftActionButtons?.(true)
+    },
   })
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      rive?.pause()
-    }, 1150)
-    return () => clearTimeout(timer)
+    rive?.pause()
+  }, [startRiveAnimation])
+
+  useEffect(() => {
+    rive?.play()
   }, [isFinishRoulette])
+
+  useEffect(() => {
+    if (!rive) return
+    const interval = setInterval(() => {
+      if (rive.activeArtboard) {
+        setStartRiveAnimation(true)
+        setPlaceholderRiveAnimation(false)
+        clearInterval(interval)
+      }
+    }, 100)
+    return () => clearInterval(interval)
+  }, [rive])
 
   return (
     <div className="flex flex-col items-center">
@@ -181,12 +209,33 @@ export function RussianRoulette({
           </div>
         )}
         {isShowSendGiftActionButtons && <ElectricLines />}
-        {!startRiveAnimation && (
+        {/* {!startRiveAnimation && (
           <SendGift className="-mt-[20px] absolute top-[145px] animate-[wiggle_3s_ease-in-out_infinite] z-1" />
         )}
         {startRiveAnimation && !isShowSendGiftActionButtons && (
           <RiveComponent className="w-[460px] h-[460px] absolute -top-[45px] z-0" />
-        )}
+        )} */}
+        {/* {!startRiveAnimation && ( */}
+        <SendGift
+          className={cn(
+            '-mt-[20px] absolute top-[145px] animate-[wiggle_3s_ease-in-out_infinite] z-1',
+            !placeholderRiveAnimation && 'hidden',
+          )}
+        />
+        {/* <SendGift className="-mt-[20px] top-[145px] z-1 absolute animate-[wiggle_3s_ease-in-out_infinite] send-gift-rive-icon" /> */}
+        {/* )} */}
+        {/* {!isShowSendGiftActionButtons && ( */}
+        <RiveComponent
+          className={cn(
+            'w-[499px] h-[499px] absolute -top-[42px] -left-[150px] z-1 transform rotate-18',
+            !startRiveAnimation && 'hidden',
+            !rive?.isPlaying &&
+              !isWinner &&
+              'animate-[wiggle_3s_ease-in-out_infinite]',
+          )}
+        />
+        {/* // #8C35FB // #B6FE01 */}
+        {/* )} */}
         <FlickeringGrid
           className="absolute top-0 w-[450px] h-[445px]
       mask-[radial-gradient(ellipse_215px_215px_at_center,black,transparent)]"
