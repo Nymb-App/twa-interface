@@ -117,21 +117,21 @@ export default function BombField({
     x2SpawnIntervalMs = 30_000,
     x2SpawnProbability = 10,
 
-    /* точки-фон */
-    patternGap = 40,
-    baseRadius = 2,
-    maxRadius = 4,
-    reach = 80,
-    blur = 0,
-    staticColor = "#969695",
-    activeColor = "#B6FF00",
+  /* точки-фон */
+  patternGap = 40,
+  baseRadius = 2,
+  maxRadius = 4,
+  reach = 80,
+  // blur = 0,
+  staticColor = '#969695',
+  activeColor = '#B6FF00',
 
-    trailing = true,
-    minTrailLength = 1,
-    trailingLifetime = 50,
-    trailingRadius = 8,
-    trailingColor = "#B6FF00",
-    drawEffect = "wave",
+  // trailing = true,
+  minTrailLength = 1,
+  trailingLifetime = 50,
+  trailingRadius = 8,
+  trailingColor = '#B6FF00',
+  drawEffect = 'wave',
 
     /* волна */
     waveOnPointerUp = false,

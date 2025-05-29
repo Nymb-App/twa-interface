@@ -43,8 +43,9 @@ export default defineConfig({
 
   server: {
     allowedHosts: [
-      'directory-file-lone-tea.trycloudflare.com',
-      'nymb-interface.vercel.app'
+      'vector-transport-skirt-wa.trycloudflare.com',
+      'nymb-interface.vercel.app',
+      '80e0-37-1-204-162.ngrok-free.app',
     ],
   },
 
