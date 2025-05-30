@@ -17,6 +17,7 @@ import { Route as SendGiftImport } from './routes/send-gift'
 import { Route as HomeImport } from './routes/home'
 import { Route as GateImport } from './routes/gate'
 import { Route as FrensImport } from './routes/frens'
+import { Route as CheckInImport } from './routes/check-in'
 import { Route as IndexImport } from './routes/index'
 import { Route as MinigamesSlideImport } from './routes/minigames/slide'
 import { Route as MinigamesBattleImport } from './routes/minigames/battle'
@@ -59,6 +60,12 @@ const FrensRoute = FrensImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CheckInRoute = CheckInImport.update({
+  id: '/check-in',
+  path: '/check-in',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
@@ -86,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/check-in': {
+      id: '/check-in'
+      path: '/check-in'
+      fullPath: '/check-in'
+      preLoaderRoute: typeof CheckInImport
       parentRoute: typeof rootRoute
     }
     '/frens': {
@@ -151,6 +165,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
@@ -163,6 +178,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
@@ -176,6 +192,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
@@ -190,6 +207,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/check-in'
     | '/frens'
     | '/gate'
     | '/home'
@@ -201,6 +219,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/check-in'
     | '/frens'
     | '/gate'
     | '/home'
@@ -212,6 +231,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/check-in'
     | '/frens'
     | '/gate'
     | '/home'
@@ -225,6 +245,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckInRoute: typeof CheckInRoute
   FrensRoute: typeof FrensRoute
   GateRoute: typeof GateRoute
   HomeRoute: typeof HomeRoute
@@ -237,6 +258,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckInRoute: CheckInRoute,
   FrensRoute: FrensRoute,
   GateRoute: GateRoute,
   HomeRoute: HomeRoute,
@@ -258,6 +280,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/check-in",
         "/frens",
         "/gate",
         "/home",
@@ -270,6 +293,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/check-in": {
+      "filePath": "check-in.tsx"
     },
     "/frens": {
       "filePath": "frens.tsx"

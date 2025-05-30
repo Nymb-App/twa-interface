@@ -41,7 +41,7 @@ export const LevelsList = () => {
         className="relative z-10 h-[90px]"
         opts={{ slidesToScroll: 4, align: 'center' }}
       >
-        <CarouselContent className="">
+        <CarouselContent>
           <MarqueeArrows />
           {levels.map((level) => (
             <CarouselLvlItem key={level.num} level={level} />
