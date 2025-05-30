@@ -43,7 +43,7 @@ export default defineConfig({
 
   server: {
     allowedHosts: [
-      'directory-file-lone-tea.trycloudflare.com',
+      'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app'
     ],
   },
