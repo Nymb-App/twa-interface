@@ -11,7 +11,7 @@ export const SendGiftButton = ({
   const { giftCountValue, giftPeriodRadioValue } = useContext(AppContext)
 
   return (
-    <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 px-3 bg-[#151317]">
+    <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 px-4 bg-[#151317]">
       <p className="mb-4 font-[400] text-[14px] leading-[140%] text-center text-[#FFFFFF66]">
         A frend will be randomly selected
       </p>

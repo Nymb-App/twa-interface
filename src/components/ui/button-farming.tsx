@@ -179,7 +179,7 @@ function FarmingClaimButton({
     <button
       onClick={onClick}
       className={cn(
-        'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-xl bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]',
+        'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]',
         className,
       )}
     >
@@ -210,7 +210,7 @@ function FarmingProgressButton({
     <button
       disabled
       className={cn(
-        'relative h-[56px] overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-xl bg-[#222a13] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+        'relative h-[56px] overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
         className,
       )}
     >
