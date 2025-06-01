@@ -10,16 +10,11 @@ export const Route = createFileRoute('/gate')({
 })
 
 function RouteComponent() {
-  const currentLevel = 12
   return (
-    <PageLayout
-      useFooter={false}
-      useJumpToTheNextGateLockedButton={true}
-      useJumpToTheNextGateButton={false}
-    >
+    <PageLayout useFooter={false} useJumpToTheNextGateButton={true}>
       <Container>
         <GateHeader />
-        <GateStatisticsSection currentLevel={currentLevel} />
+        <GateStatisticsSection />
       </Container>
     </PageLayout>
   )

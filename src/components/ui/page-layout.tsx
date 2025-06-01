@@ -4,7 +4,6 @@ import { Toaster } from 'sonner'
 import { SendGiftButton } from './send-gift-button'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
 import { CheckInButton } from './check-in-button'
-import { JumpToTheNextLockedGateButton } from './jump-to-the-next-gate-locked-button'
 import { JumpToTheNextGateButton } from './jump-to-the-next-gate-button'
 import type { ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
@@ -22,7 +21,6 @@ export const PageLayout = ({
   useSendButton = false,
   useSendGiftActionButtons = false,
   useCheckInButton = false,
-  useJumpToTheNextGateLockedButton = false,
   useJumpToTheNextGateButton = false,
   className,
   setIsStartRoulette,
@@ -33,7 +31,6 @@ export const PageLayout = ({
   useSendButton?: boolean
   useSendGiftActionButtons?: boolean
   useCheckInButton?: boolean
-  useJumpToTheNextGateLockedButton?: boolean
   useJumpToTheNextGateButton?: boolean
   className?: string
   setIsStartRoulette?: (value: boolean) => void
@@ -71,7 +68,6 @@ export const PageLayout = ({
         />
       )}
       {useCheckInButton && <CheckInButton />}
-      {useJumpToTheNextGateLockedButton && <JumpToTheNextLockedGateButton />}
       {useJumpToTheNextGateButton && <JumpToTheNextGateButton />}
       <Toaster className="!mb-18" />
     </div>

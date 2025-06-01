@@ -1,14 +1,20 @@
 import { zeroPad } from 'react-countdown'
+import { useContext } from 'react'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import type { ReactNode } from 'react'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { TicketIcon } from '@/assets/icons/ticket'
 import { cn } from '@/utils'
 import { LockIcon } from '@/assets/icons/lock'
+import { ArrowIcon } from '@/assets/icons/arrow'
+import { GateContext } from '@/context/gate-context'
 
 export function GateHeader() {
+  const { year, ticket, currentLevel, isLockedNewGate } =
+    useContext(GateContext)
   return (
     <header className="relative text-center font-[400]">
+      <MarqueeVertical />
       <h1 className="font-pixel text-[24px] leading-[32px] text-[#FFFFFF] uppercase mb-2">
         gates
       </h1>
@@ -19,14 +25,18 @@ export function GateHeader() {
       <div className="flex justify-between items-center px-6.5 pb-[56px]">
         <GateProgressDisplay
           icon={<WatchesIcon />}
-          current={0}
+          current={year}
           max={1}
           label="years"
         />
-        <GateNextDisplayBlock className="z-1 border-2 backdrop-blur-[8px] mr-4" />
+        <GateNextDisplayBlock
+          className="z-1 border-2 backdrop-blur-[8px] mr-4"
+          isLockedNewGate={isLockedNewGate}
+          currentLevel={currentLevel}
+        />
         <GateProgressDisplay
-          icon={<TicketIcon />}
-          current={0}
+          icon={<TicketIcon className="h-[45px] w-[45px]" />}
+          current={ticket}
           max={1}
           label="ticket"
         />
@@ -86,11 +96,13 @@ export const GateProgressDisplay = ({
 }
 
 const GateNextDisplayBlock = ({
-  isLocked = true,
+  isLockedNewGate = false,
   className,
+  currentLevel,
 }: {
-  isLocked?: boolean
   className?: string
+  isLockedNewGate?: boolean
+  currentLevel: number
 }) => {
   return (
     <GateContentBlock
@@ -99,7 +111,18 @@ const GateNextDisplayBlock = ({
         className,
       )}
     >
-      <LockIcon className="w-[26px] h-[32px]" />
+      {!isLockedNewGate ? (
+        <LockIcon className="w-[26px] h-[32px]" />
+      ) : (
+        <span
+          className={cn(
+            currentLevel === 1 || (currentLevel >= 10 && 'mr-3'),
+            'text-[#B6FF00] font-pixel text-[30px] font-[400] leading-[120%]',
+          )}
+        >
+          {currentLevel - 1}
+        </span>
+      )}
     </GateContentBlock>
   )
 }
@@ -120,5 +143,41 @@ export const GateContentBlock = ({
     >
       <div>{children}</div>
     </div>
+  )
+}
+
+const MarqueeVertical = () => {
+  return (
+    <>
+      {/* Контейнер линии с движущейся стрелкой */}
+      <div className="absolute top-1/2 z-0 left-[49.5%] -translate-x-1/2 -translate-y-1/2 top-0 right-0 w-[250px] h-[4px] -rotate-90 overflow-visible">
+        <div className="relative w-full h-full">
+          <ArrowIcon className="arrow-move absolute -top-[3px] left-0 text-[#B6FF00] w-[15px] h-[15px]" />
+        </div>
+      </div>
+
+      {/* Визуальная линия */}
+      <div
+        className="top-[260px] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none absolute
+        w-[250px] h-[4px] z-0 bg-line-gradient rotate-90 blur-[3px]"
+      />
+
+      {/* Световой градиент */}
+      <div
+        className="left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none absolute inset-0 top-[375px]
+        w-[14px] h-[350px] z-0 bg-gradient-to-b from-[#B6FF00]/25 to-[#B6FF00]/75 blur-[12px]"
+      />
+
+      <style>{`
+        @keyframes arrow-line {
+          0% { left: -50px; }
+          100% { left: 90px; }
+        }
+
+        .arrow-move {
+          animation: arrow-line 4s linear infinite;
+        }
+      `}</style>
+    </>
   )
 }

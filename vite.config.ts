@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'vector-transport-skirt-wa.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'ave-other-thunder-app.trycloudflare.com',
+      'batch-anti-remain-emerald.trycloudflare.com',
     ],
   },
 
