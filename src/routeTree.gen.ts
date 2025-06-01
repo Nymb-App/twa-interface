@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as UnlockGateImport } from './routes/unlock-gate'
 import { Route as TasksImport } from './routes/tasks'
 import { Route as StarBoardImport } from './routes/star-board'
 import { Route as SendGiftImport } from './routes/send-gift'
@@ -23,6 +24,12 @@ import { Route as MinigamesSlideImport } from './routes/minigames/slide'
 import { Route as MinigamesBattleImport } from './routes/minigames/battle'
 
 // Create/Update Routes
+
+const UnlockGateRoute = UnlockGateImport.update({
+  id: '/unlock-gate',
+  path: '/unlock-gate',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const TasksRoute = TasksImport.update({
   id: '/tasks',
@@ -144,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TasksImport
       parentRoute: typeof rootRoute
     }
+    '/unlock-gate': {
+      id: '/unlock-gate'
+      path: '/unlock-gate'
+      fullPath: '/unlock-gate'
+      preLoaderRoute: typeof UnlockGateImport
+      parentRoute: typeof rootRoute
+    }
     '/minigames/battle': {
       id: '/minigames/battle'
       path: '/minigames/battle'
@@ -172,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/send-gift': typeof SendGiftRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
+  '/unlock-gate': typeof UnlockGateRoute
   '/minigames/battle': typeof MinigamesBattleRoute
   '/minigames/slide': typeof MinigamesSlideRoute
 }
@@ -185,6 +200,7 @@ export interface FileRoutesByTo {
   '/send-gift': typeof SendGiftRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
+  '/unlock-gate': typeof UnlockGateRoute
   '/minigames/battle': typeof MinigamesBattleRoute
   '/minigames/slide': typeof MinigamesSlideRoute
 }
@@ -199,6 +215,7 @@ export interface FileRoutesById {
   '/send-gift': typeof SendGiftRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
+  '/unlock-gate': typeof UnlockGateRoute
   '/minigames/battle': typeof MinigamesBattleRoute
   '/minigames/slide': typeof MinigamesSlideRoute
 }
@@ -214,6 +231,7 @@ export interface FileRouteTypes {
     | '/send-gift'
     | '/star-board'
     | '/tasks'
+    | '/unlock-gate'
     | '/minigames/battle'
     | '/minigames/slide'
   fileRoutesByTo: FileRoutesByTo
@@ -226,6 +244,7 @@ export interface FileRouteTypes {
     | '/send-gift'
     | '/star-board'
     | '/tasks'
+    | '/unlock-gate'
     | '/minigames/battle'
     | '/minigames/slide'
   id:
@@ -238,6 +257,7 @@ export interface FileRouteTypes {
     | '/send-gift'
     | '/star-board'
     | '/tasks'
+    | '/unlock-gate'
     | '/minigames/battle'
     | '/minigames/slide'
   fileRoutesById: FileRoutesById
@@ -252,6 +272,7 @@ export interface RootRouteChildren {
   SendGiftRoute: typeof SendGiftRoute
   StarBoardRoute: typeof StarBoardRoute
   TasksRoute: typeof TasksRoute
+  UnlockGateRoute: typeof UnlockGateRoute
   MinigamesBattleRoute: typeof MinigamesBattleRoute
   MinigamesSlideRoute: typeof MinigamesSlideRoute
 }
@@ -265,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   SendGiftRoute: SendGiftRoute,
   StarBoardRoute: StarBoardRoute,
   TasksRoute: TasksRoute,
+  UnlockGateRoute: UnlockGateRoute,
   MinigamesBattleRoute: MinigamesBattleRoute,
   MinigamesSlideRoute: MinigamesSlideRoute,
 }
@@ -287,6 +309,7 @@ export const routeTree = rootRoute
         "/send-gift",
         "/star-board",
         "/tasks",
+        "/unlock-gate",
         "/minigames/battle",
         "/minigames/slide"
       ]
@@ -314,6 +337,9 @@ export const routeTree = rootRoute
     },
     "/tasks": {
       "filePath": "tasks.tsx"
+    },
+    "/unlock-gate": {
+      "filePath": "unlock-gate.tsx"
     },
     "/minigames/battle": {
       "filePath": "minigames/battle.tsx"

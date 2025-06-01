@@ -1,7 +1,12 @@
 import { useContext, useState } from 'react'
+import { HiLockClosed } from 'react-icons/hi2'
 import { GateDrawerContent } from '../gate-page/gate-drawer-content'
-import { GateProgressDisplay } from '../gate-page/gate-header'
+import {
+  GateNextDisplayBlock,
+  GateProgressDisplay,
+} from '../gate-page/gate-header'
 import { FlickeringGrid } from '../magicui/flickering-grid'
+import { GateStatisticsInfoBlock } from '../gate-page/gate-statistics-section'
 import { ActionButton } from './action-button'
 import { Container } from './container'
 import { Drawer, DrawerTrigger } from './drawer'
@@ -10,13 +15,15 @@ import { TicketIcon } from '@/assets/icons/ticket'
 import { BuyIcon } from '@/assets/icons/buy'
 import BuyTime from '/buy-time.png'
 import { GateContext } from '@/context/gate-context'
+import { ArrowIcon } from '@/assets/icons/arrow'
 
 export const JumpToTheNextGateButton = () => {
   const [buyResource, setBuyResource] = useState('')
   const [isOpenDrawerInfo, setIsOpenDrawerInfo] = useState(false)
   const [isOpenDrawerBuyTime, setIsOpenDrawerBuyTime] = useState(false)
   const [isOpenDrawerBuyTicket, setIsOpenDrawerBuyTicket] = useState(false)
-  const { year, ticket, isLockedNewGate } = useContext(GateContext)
+  const { year, ticket, isLockedNewGate, currentLevel } =
+    useContext(GateContext)
 
   return (
     <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 bg-[#121312]">
@@ -28,7 +35,87 @@ export const JumpToTheNextGateButton = () => {
                 <span>jump to the next gate</span>
               </ActionButton>
             </DrawerTrigger>
-            <GateDrawerContent title="open gate">1</GateDrawerContent>
+            <GateDrawerContent title="open gate">
+              <div className="relative flex justify-evenly pt-[54px] pb-[48px]">
+                <FlickeringGrid
+                  className="absolute top-0 mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
+                  squareSize={2}
+                  gridGap={12}
+                  color="#FFFFFF"
+                  maxOpacity={0.5}
+                  flickerChance={0.3}
+                  autoResize={false}
+                  width={450}
+                  height={450}
+                />
+                <GateProgressDisplay
+                  icon={<WatchesIcon />}
+                  current={year || 0}
+                  max={1}
+                  label="years"
+                  isLockedNewGate={isLockedNewGate}
+                />
+                <div className="relative">
+                  <div className="absolute -top-[35px] left-[50px] rotate-90">
+                    <ArrowIcon className="absolute -top-[3px] left-0 text-[#B6FF00] w-[15px] h-[15px] animate-bounce-gate-arrow" />
+                  </div>
+                  <GateNextDisplayBlock
+                    className="z-1 border-2 backdrop-blur-[8px] shadow-[0_0_80px_rgba(182,255,0,0.56),_inset_0_0_16px_rgba(182,255,0,0.24)]"
+                    isLockedNewGate={isLockedNewGate}
+                    currentLevel={currentLevel}
+                  />
+                  <HiLockClosed
+                    className="absolute bottom-5.5 left-8.5"
+                    color="#FFFFFF"
+                    fontSize={24}
+                  />
+                </div>
+                <GateProgressDisplay
+                  icon={<TicketIcon />}
+                  current={ticket || 0}
+                  max={1}
+                  label="ticket"
+                  isLockedNewGate={isLockedNewGate}
+                />
+              </div>
+              <p className="text-[#FFFFFF]/60 font-inter text-[14px] leading-[140%] mb-4">
+                After opening gate, you'll get:
+              </p>
+              <div className="grid grid-cols-2 gap-3 font-pixel">
+                <GateStatisticsInfoBlock
+                  value={2}
+                  description="Daily reward"
+                  className="text-[#B6FF00] text-shadow-[0px_4.00224px_8.00448px_rgba(182,255,0,0.3),_0px_0px_24.0134px_#B6FF00]"
+                >
+                  <span className="ml-1 text-[14px] leading-[120%] text-[#FFFFFF]/40">
+                    days
+                  </span>
+                </GateStatisticsInfoBlock>
+                <GateStatisticsInfoBlock
+                  value={8}
+                  description="Mining"
+                  className="text-[#B6FF00] text-shadow-[0px_4.00224px_8.00448px_rgba(182,255,0,0.3),_0px_0px_24.0134px_#B6FF00]"
+                >
+                  <span className="ml-1 text-[14px] leading-[120%] text-[#FFFFFF]/40">
+                    hours
+                  </span>
+                </GateStatisticsInfoBlock>
+                <GateStatisticsInfoBlock
+                  value={1200}
+                  description="Max Energy"
+                  className="text-[#B6FF00] text-shadow-[0px_4.00224px_8.00448px_rgba(182,255,0,0.3),_0px_0px_24.0134px_#B6FF00] mr-3"
+                />
+                <GateStatisticsInfoBlock
+                  value={4}
+                  description="In Swipe"
+                  className="text-[#B6FF00] text-shadow-[0px_4.00224px_8.00448px_rgba(182,255,0,0.3),_0px_0px_24.0134px_#B6FF00]"
+                >
+                  <span className="ml-1 text-[14px] leading-[120%] text-[#FFFFFF]/40">
+                    point
+                  </span>
+                </GateStatisticsInfoBlock>
+              </div>
+            </GateDrawerContent>
           </Container>
         </Drawer>
       )}
@@ -87,7 +174,6 @@ export const JumpToTheNextGateButton = () => {
       {buyResource === 'time' && (
         <Drawer open={isOpenDrawerBuyTime}>
           <Container>
-            <DrawerTrigger className="w-full"></DrawerTrigger>
             <GateDrawerContent
               title="buy time"
               description="Get what you want right now"
@@ -101,7 +187,6 @@ export const JumpToTheNextGateButton = () => {
       {buyResource === 'ticket' && (
         <Drawer open={isOpenDrawerBuyTicket}>
           <Container>
-            <DrawerTrigger className="w-full"></DrawerTrigger>
             <GateDrawerContent
               title="buy time"
               description="Get what you want right now"

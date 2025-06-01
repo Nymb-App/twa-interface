@@ -53,14 +53,16 @@ export function GateStatisticsSection() {
   )
 }
 
-const GateStatisticsInfoBlock = ({
+export const GateStatisticsInfoBlock = ({
   value,
   description,
   children,
+  className,
 }: {
   value: number
   description: string
-  children: ReactNode
+  children?: ReactNode
+  className?: string
 }) => {
   const shouldZeroPad = ['mining', 'daily reward'].includes(
     description.toLowerCase(),
@@ -68,7 +70,9 @@ const GateStatisticsInfoBlock = ({
   return (
     <div className="rounded-[16px] uppercase starboard-result-block-bg backdrop-blur-[16px] px-2 py-3.5">
       <span className="text-[#FFFFFF] text-[24px] leading-[32px] tracking-[0.3px]">
-        <span>{shouldZeroPad ? zeroPad(value) : value}</span>
+        <span className={className}>
+          {shouldZeroPad ? zeroPad(value) : value}
+        </span>
       </span>
       {children}
       <p className="font-inter text-[#FFFFFF] text-[14px] leading-[140%] mt-2 normal-case">

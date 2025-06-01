@@ -62,12 +62,14 @@ export const GateProgressDisplay = ({
   max,
   label,
   className,
+  isLockedNewGate,
 }: {
   icon: ReactNode
   current: number
   max: number
   label: string
   className?: string
+  isLockedNewGate?: boolean
 }) => {
   return (
     <div
@@ -78,24 +80,38 @@ export const GateProgressDisplay = ({
     >
       <div>{icon}</div>
       <div className="text-[24px] text-[#FFFFFF] leading-[32px] tracking-[0.3px]">
-        <span className={cn(current > 0 && ' text-[#B6FF00]')}>
+        <span
+          className={cn(
+            current > 0 && ' text-[#B6FF00]',
+            isLockedNewGate && 'text-[#FFFFFF]',
+          )}
+        >
           {label === 'years' ? zeroPad(current) : current}
         </span>
-        <span className="font-inter text-[#FFFFFF]/40 text-[24px] leading-[32px] tracking-[0.3px] mx-1">
-          /
-        </span>
-        <span className={cn(label === 'ticket' && max === 1 && '-ml-2')}>
-          {label === 'years' ? zeroPad(max) : max}
-        </span>
+        {!isLockedNewGate && (
+          <>
+            <span className="font-inter text-[#FFFFFF]/40 text-[24px] leading-[32px] tracking-[0.3px] mx-1">
+              /
+            </span>
+            <span className={cn(label === 'ticket' && max === 1 && '-ml-2')}>
+              {label === 'years' ? zeroPad(max) : max}
+            </span>
+          </>
+        )}
       </div>
-      <span className="text-[#FFFFFF]/40 text-[16px] leading-[20px]">
+      <span
+        className={cn(
+          'text-[#FFFFFF]/40 text-[16px] leading-[20px]',
+          isLockedNewGate && 'text-[#FFFFFF]',
+        )}
+      >
         {label}
       </span>
     </div>
   )
 }
 
-const GateNextDisplayBlock = ({
+export const GateNextDisplayBlock = ({
   isLockedNewGate = false,
   className,
   currentLevel,
@@ -108,6 +124,8 @@ const GateNextDisplayBlock = ({
     <GateContentBlock
       className={cn(
         'flex justify-center items-center w-[88px] h-[88px]',
+        isLockedNewGate &&
+          'border-[#B6FF00] shadow-[0_0_32px_rgba(182,255,0,0.24),_inset_0_0_16px_rgba(182,255,0,0.24)]',
         className,
       )}
     >
@@ -116,7 +134,9 @@ const GateNextDisplayBlock = ({
       ) : (
         <span
           className={cn(
-            currentLevel === 1 || (currentLevel >= 10 && 'mr-3'),
+            String(currentLevel).startsWith('1') ? 'mr-3' : 'mr-0',
+            // currentLevel > 20 && 'mr-0',
+            // currentLevel >= 1 && currentLevel <= 19 && 'mr-3',
             'text-[#B6FF00] font-pixel text-[30px] font-[400] leading-[120%]',
           )}
         >
