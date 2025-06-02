@@ -363,11 +363,24 @@ code {
       transform: translateY(0);
     }
   }
-  
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 }
 
 @layer utilities {
   /* Утилиты для применения анимаций по CSS-переменным */
+
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn 2s ease-out forwards;
+  }
 
   .animate-bounce-gate-arrow {
     animation: bounceGateArrow 2s infinite;

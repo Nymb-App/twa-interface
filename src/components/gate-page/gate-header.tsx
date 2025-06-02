@@ -111,15 +111,21 @@ export const GateProgressDisplay = ({
   )
 }
 
+interface IGateNextDisplayBlock {
+  className?: string
+  isLockedNewGate?: boolean
+  currentLevel: number
+  animationSpanClass?: string
+  onAnimationEnd?: React.AnimationEventHandler<HTMLDivElement>
+}
+
 export const GateNextDisplayBlock = ({
   isLockedNewGate = false,
   className,
   currentLevel,
-}: {
-  className?: string
-  isLockedNewGate?: boolean
-  currentLevel: number
-}) => {
+  animationSpanClass,
+  onAnimationEnd,
+}: IGateNextDisplayBlock) => {
   return (
     <GateContentBlock
       className={cn(
@@ -133,11 +139,12 @@ export const GateNextDisplayBlock = ({
         <LockIcon className="w-[26px] h-[32px]" />
       ) : (
         <span
+          onAnimationEnd={onAnimationEnd}
           className={cn(
             String(currentLevel).startsWith('1') ? 'mr-3' : 'mr-0',
             // currentLevel > 20 && 'mr-0',
             // currentLevel >= 1 && currentLevel <= 19 && 'mr-3',
-            'text-[#B6FF00] font-pixel text-[30px] font-[400] leading-[120%]',
+            `text-[#B6FF00] font-pixel text-[30px] font-[400] leading-[120%] ${animationSpanClass}`,
           )}
         >
           {currentLevel - 1}

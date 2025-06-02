@@ -41,7 +41,7 @@ export const JumpToTheNextGateButton = () => {
                   className="absolute top-0 mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
                   squareSize={2}
                   gridGap={12}
-                  color="#FFFFFF"
+                  color="#b7ff01"
                   maxOpacity={0.5}
                   flickerChance={0.3}
                   autoResize={false}
