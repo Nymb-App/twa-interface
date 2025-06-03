@@ -3,6 +3,7 @@ import { TonConnectUIProvider } from '@tonconnect/ui-react'
 import { TelegramProvider } from './telegram'
 import { AppProvider } from '@/context/app-context'
 import { FarmingProvider } from '@/context/farming-context'
+import { GateProvider } from '@/context/gate-context'
 
 const queryClient = new QueryClient()
 export const Provider = ({ children }: { children: React.ReactNode }) => {
@@ -11,7 +12,9 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       <TonConnectUIProvider manifestUrl="https://numb-test.vercel.app/manifest/tonconnect-manifest.json">
         <TelegramProvider>
           <AppProvider>
-            <FarmingProvider>{children}</FarmingProvider>
+            <GateProvider>
+              <FarmingProvider>{children}</FarmingProvider>
+            </GateProvider>
           </AppProvider>
         </TelegramProvider>
       </TonConnectUIProvider>

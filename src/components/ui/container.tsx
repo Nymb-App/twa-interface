@@ -8,5 +8,5 @@ export const Container = ({
   className?: string
   children: ReactNode
 }) => {
-  return <div className={cn('px-3', className)}>{children}</div>
+  return <div className={cn('px-4', className)}>{children}</div>
 }

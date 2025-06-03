@@ -8,7 +8,7 @@ export const SendGiftActionButtons = ({
   setIsShowSendGiftActionButtons?: (value: boolean) => void
 }) => {
   return (
-    <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 px-3 bg-[#151317]">
+    <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 px-4 bg-[#151317]">
       <ActionButton
         className="bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] mb-2"
         onClick={() => {

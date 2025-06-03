@@ -311,15 +311,14 @@ export function RussianRoulette({
           className={cn('flex items-center', isWinner && '!gap-[75px]')}
           style={{ gap, transform: 'translateX(0)' }}
         >
-          {extended.map((node, i) => {
+          {extended.map((node, idx) => {
             return (
-              <div>
+              <div key={idx}>
                 <div
-                  key={i}
                   ref={
-                    i === 0
+                    idx === 0
                       ? cardRef
-                      : i === winnerGlobalIdx
+                      : idx === winnerGlobalIdx
                         ? winRef
                         : undefined
                   }

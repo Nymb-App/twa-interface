@@ -349,11 +349,42 @@ code {
       transform: rotate(3deg) translateY(-5px);
     }
   }
-  
+
+  @keyframes bounceGateArrow {
+    0% {
+      transform: translateX(0);
+      animation-timing-function: ease-in;
+    }
+    50% {
+      transform: translateX(10px);
+      animation-timing-function: ease-in-out;
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 }
 
 @layer utilities {
   /* Утилиты для применения анимаций по CSS-переменным */
+
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn 2s ease-out forwards;
+  }
+
+  .animate-bounce-gate-arrow {
+    animation: bounceGateArrow 2s infinite;
+  }
 
   .animate-slide-up-fade {
     animation: var(--animate-slide-up-fade);

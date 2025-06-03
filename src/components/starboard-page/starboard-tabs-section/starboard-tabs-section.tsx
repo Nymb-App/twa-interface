@@ -16,7 +16,7 @@ export const StarboardTabsSection = () => {
         <Carousel opts={{ slidesToScroll: 4 }}>
           <CarouselContent className="flex gap-2 mr-7">
             {levelsList.map((item, idx) => (
-              <CarouselItem className="basis-[80px] flex">
+              <CarouselItem key={idx} className="basis-[80px] flex">
                 <TabsTrigger
                   defaultChecked={idx === 0}
                   key={idx}
@@ -60,7 +60,7 @@ export const StarboardTabsSection = () => {
 
                   {gateUserData.users.map((gateData, gateUserIdx) => (
                     <StarboardTopRateBlock
-                      key={idx}
+                      key={idx + gateData.time}
                       idx={gateUserIdx}
                       gateUserData={gateData}
                     />
