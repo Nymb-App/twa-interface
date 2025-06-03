@@ -1,15 +1,14 @@
-import { FlickeringGrid } from '../magicui/flickering-grid'
-import StarBoardImage from '/starboard-img.png'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import TasksImage from '/tasks-img.png'
 
-export const StarboardPreviewSection = () => {
+export function TasksHeader() {
   return (
-    <header className="flex flex-col items-center relative">
-      <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase">
-        star board <br />
-        12 gate
+    <header className="flex flex-col items-center relative min-h-[175px]">
+      <h1 className="mb-10 font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase">
+        tasks
       </h1>
       <img
-        src={StarBoardImage}
+        src={TasksImage}
         alt="preview-image"
         width={191}
         height={155}

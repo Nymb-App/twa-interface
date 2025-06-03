@@ -3,6 +3,7 @@ import { isMobile } from 'react-device-detect'
 import { Toaster } from 'sonner'
 import { SendGiftButton } from './send-gift-button'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
+import { CheckInButton } from './check-in-button'
 import type { ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
 import { cn } from '@/utils'
@@ -18,6 +19,7 @@ export const PageLayout = ({
   useFooter = true,
   useSendButton = false,
   useSendGiftActionButtons = false,
+  useCheckInButton = false,
   className,
   setIsStartRoulette,
   setIsShowSendGiftActionButtons,
@@ -26,6 +28,7 @@ export const PageLayout = ({
   useFooter?: boolean
   useSendButton?: boolean
   useSendGiftActionButtons?: boolean
+  useCheckInButton?: boolean
   className?: string
   setIsStartRoulette?: (value: boolean) => void
   setIsShowSendGiftActionButtons?: (value: boolean) => void
@@ -61,6 +64,7 @@ export const PageLayout = ({
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
       )}
+      {useCheckInButton && <CheckInButton />}
       <Toaster className="!mb-18" />
     </div>
   )
