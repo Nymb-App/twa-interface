@@ -216,6 +216,14 @@ code {
   --animate-slide-up-fade-4: slide-up-fade 0.6s ease-out 2.5s forwards;
   --animate-slide-up-fade-5: slide-up-fade 0.6s ease-out 3s forwards;
 
+  --animate-slide-up-fade-swipe-game-1: slide-up-fade 0.3s ease-out 0.3s forwards;
+  --animate-slide-up-fade-swipe-game-2: slide-up-fade 0.6s ease-out 0.7s forwards;
+  --animate-slide-up-fade-swipe-game-3: slide-up-fade 0.6s ease-out 1.3s forwards;
+  --animate-slide-up-fade-swipe-game-4: slide-up-fade 0.6s ease-out 1.5s forwards;
+  --animate-slide-up-fade-swipe-game-5: slide-up-fade 0.6s ease-out 1.9s forwards;
+  --animate-slide-up-fade-swipe-game-6: slide-up-fade 0.6s ease-out 2.3s forwards;
+  --animate-slide-up-fade-swipe-game-7: slide-up-fade 0.6s ease-out 2.7s forwards;
+
   @keyframes slide-up-fade {
     0% {
       opacity: 0;

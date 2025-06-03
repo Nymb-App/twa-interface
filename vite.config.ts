@@ -44,7 +44,8 @@ export default defineConfig({
   server: {
     allowedHosts: [
       'spotlight-springer-flame-studying.trycloudflare.com',
-      'nymb-interface.vercel.app'
+      'nymb-interface.vercel.app',
+      'contest-soap-wb-hostels.trycloudflare.com',
     ],
   },
 
