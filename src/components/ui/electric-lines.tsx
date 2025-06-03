@@ -66,11 +66,11 @@ export const ElectricLines = ({ className }: { className?: string }) => {
           <path
             d="M108.761 59.5256L60.2612 59.5256L60.2612 0.52563L0.761225 0.525635L0.761229 47.0256"
             stroke="url(#pulseGradient2)"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             fill="none"
-            stroke-linecap="round"
-            stroke-dasharray="120"
-            stroke-dashoffset="120"
+            strokeLinecap="round"
+            strokeDasharray="120"
+            strokeDashoffset="120"
           >
             <animate
               attributeName="stroke-dashoffset"
@@ -105,11 +105,11 @@ export const ElectricLines = ({ className }: { className?: string }) => {
           <path
             d="M95.5112 0.775635V29.2131L36.5112 29.2131V65.7756L0.0112305 65.7756"
             stroke="url(#pulseGradient3)"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             fill="none"
-            stroke-linecap="round"
-            stroke-dasharray="120"
-            stroke-dashoffset="120"
+            strokeLinecap="round"
+            strokeDasharray="120"
+            strokeDashoffset="120"
           >
             <animate
               attributeName="stroke-dashoffset"
@@ -144,11 +144,11 @@ export const ElectricLines = ({ className }: { className?: string }) => {
           <path
             d="M121.761 61.0256H74.7612V1.02563H0.26123"
             stroke="url(#pulseGradient4)"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             fill="none"
-            stroke-linecap="round"
-            stroke-dasharray="120"
-            stroke-dashoffset="120"
+            strokeLinecap="round"
+            strokeDasharray="120"
+            strokeDashoffset="120"
           >
             <animate
               attributeName="stroke-dashoffset"

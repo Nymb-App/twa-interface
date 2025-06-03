@@ -68,10 +68,10 @@ export const TaskCompletedSvgIcon = () => {
         <path
           d="M1.42859 3.99995L4.85716 7.42852L10.5714 1.71423"
           stroke="#B6FF00"
-          stroke-width="2"
-          stroke-miterlimit="10"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

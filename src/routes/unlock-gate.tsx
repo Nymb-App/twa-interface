@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { HiLockClosed, HiLockOpen } from 'react-icons/hi2'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { GateNextDisplayBlock } from '@/components/gate-page/gate-header'
 import { PageLayout } from '@/components/ui/page-layout'
 import { GateContext } from '@/context/gate-context'
@@ -39,12 +39,29 @@ function RouteComponent() {
     setIsFadeOutLockerAnimation(true)
   }
 
-  setTimeout(() => setIsStartAnimation(false), 4500)
+  const gateNumberRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const el = gateNumberRef.current
+    if (!el) return
+
+    const handleAnimationEnd = (e: AnimationEvent) => {
+      if (e.animationName === 'translateGateNumber') {
+        setIsStartAnimation(false)
+      }
+    }
+
+    el.addEventListener('animationend', handleAnimationEnd)
+    return () => {
+      el.removeEventListener('animationend', handleAnimationEnd)
+    }
+  }, [])
 
   return (
     <PageLayout useFooter={false} useUnlockGateCloseButton={!isStartAnimation}>
       {isStartAnimation ? (
         <div
+          ref={gateNumberRef}
           className={cn(
             'relative mt-[135px] translate-y-[150px]',
             isScaleBlockAnimation && 'animation-translate-gate-number',
@@ -208,9 +225,11 @@ function RouteComponent() {
 
         @keyframes fadeOutLockerAnimation {
           0% {
+            transform: scale(1);
             opacity: 1;
           }
           100% {
+            transform: scale(1.5);
             opacity: 0;
           }
         }
