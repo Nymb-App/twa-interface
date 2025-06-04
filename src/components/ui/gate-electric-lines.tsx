@@ -1,6 +1,18 @@
 import { cn } from '@/utils'
 
-export const GateElectricLines = ({ className }: { className?: string }) => {
+export const GateElectricLines = ({
+  className,
+  svg1ClassName,
+  svg2ClassName,
+  svg3ClassName,
+  svg4ClassName,
+}: {
+  className?: string
+  svg1ClassName?: string
+  svg2ClassName?: string
+  svg3ClassName?: string
+  svg4ClassName?: string
+}) => {
   return (
     <div
       className={cn(
@@ -10,7 +22,7 @@ export const GateElectricLines = ({ className }: { className?: string }) => {
     >
       <div className="relative h-full w-full">
         <svg
-          className="absolute top-[20%] left-[70%]"
+          className={cn('absolute top-[20%] left-[70%]', svg1ClassName)}
           width="109"
           height="61"
           viewBox="0 0 109 61"
@@ -52,7 +64,7 @@ export const GateElectricLines = ({ className }: { className?: string }) => {
 
         {/* Вторая svg */}
         <svg
-          className="absolute top-[27%] left-[10%]"
+          className={cn('absolute top-[27%] left-[10%]', svg2ClassName)}
           width="103"
           height="49"
           viewBox="0 0 103 49"
@@ -96,7 +108,7 @@ export const GateElectricLines = ({ className }: { className?: string }) => {
         </svg>
         {/* Третья svg */}
         <svg
-          className="absolute top-[60%] left-[58%]"
+          className={cn('absolute top-[60%] left-[58%]', svg3ClassName)}
           width="122"
           height="61"
           viewBox="0 0 122 61"
@@ -137,7 +149,7 @@ export const GateElectricLines = ({ className }: { className?: string }) => {
         </svg>
         {/* Четвёртая svg */}
         <svg
-          className="absolute top-[60%] left-[15%]"
+          className={cn('absolute top-[60%] left-[15%]', svg4ClassName)}
           width="73"
           height="96"
           viewBox="0 0 73 96"

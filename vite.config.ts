@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'contest-soap-wb-hostels.trycloudflare.com',
+      'fighter-cards-greece-plains.trycloudflare.com',
     ],
   },
 

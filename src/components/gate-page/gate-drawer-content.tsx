@@ -19,11 +19,13 @@ export const GateDrawerContent = ({
   title,
   description,
   setIsOpenDrawer,
+  footerButton,
 }: {
   children: ReactNode
   title?: string
   description?: string
   setIsOpenDrawer?: (value: boolean) => void
+  footerButton?: ReactNode
 }) => {
   const { currentLevel, isLockedNewGate } = useContext(GateContext)
 
@@ -47,7 +49,9 @@ export const GateDrawerContent = ({
       {children}
       <DrawerFooter className="mt-10 px-0 py-0 pb-12">
         <DrawerClose asChild>
-          {!isLockedNewGate ? (
+          {footerButton ? (
+            footerButton
+          ) : !isLockedNewGate ? (
             <ActionButton
               onClick={() => setIsOpenDrawer?.(false)}
               className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
