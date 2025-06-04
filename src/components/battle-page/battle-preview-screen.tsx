@@ -7,13 +7,13 @@ import { Drawer, DrawerTrigger } from '../ui/drawer'
 import { GateDrawerContent } from '../gate-page/gate-drawer-content'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import BattleDrawerImage from '../../../public/minigames/battle-drawer-img.png'
-import { GateElectricLines } from '../ui/gate-electric-lines'
+import { ElectricLines } from '../ui/electric-lines'
 import type { ReactNode } from 'react'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
 import { BustIcon } from '@/assets/icons/bust'
 
-export function BattlePreviewPage({
+export function BattlePreviewScreen({
   setIsStartFindingOpponent,
 }: {
   setIsStartFindingOpponent: (value: boolean) => void
@@ -65,7 +65,7 @@ function BattleGameRewardSection() {
       <Container>
         <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px]">
           <div className="text-center">
-            <span className="text-[white] tracking-[5px] font-[400] text-[48px] leading-[120%] [-webkit-text-stroke:4px_rgba(182,255,0,1)] [text-shadow:0px_12.0067px_24.0134px_rgba(182,255,0,0.3),_0px_0px_72.0403px_#B6FF00]">
+            <span className="text-[white] tracking-[5px] font-[400] text-[48px] leading-[120%] [-webkit-text-stroke:3px_rgba(182,255,0,1)] [text-shadow:0px_0px_15px_rgba(182,255,0,0.2)]">
               {battleGameRewardRadioValue}
             </span>
           </div>
@@ -88,7 +88,7 @@ function BattleGameRewardSection() {
                 <label
                   htmlFor={option}
                   className={cn(
-                    'backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[12px] font-[400] uppercase',
+                    'backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[9.5px] font-[400] uppercase',
                     battleGameRewardRadioValue === option
                       ? 'border border-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)] backdrop-blur-sm'
                       : 'border border-transparent starboard-result-block-bg text-[#FFFFFF66]',
@@ -103,13 +103,13 @@ function BattleGameRewardSection() {
         <Drawer>
           <DrawerTrigger asChild className="w-full mx-auto">
             <button className="flex justify-center gap-[21px] h-[40px] max-w-[254px]">
-              <span className="bg-[#FFFFFF]/4 rounded-[14px] basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
+              <span className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
                 <span className="ml-1.5">
                   <BustIcon />
                 </span>
                 <span>1 Bust</span>
               </span>
-              <span className="bg-[#FFFFFF]/4 rounded-[14px] basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-green-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
+              <span className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-green-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
                 <span className="ml-[11px]">
                   <BustIcon strokeColor="#B6FF00" />
                 </span>
@@ -197,11 +197,12 @@ export const CurrentUserBattleCard = ({
           height={220}
         />
         {isStartFindingOpponent && (
-          <GateElectricLines
-            svg1ClassName="top-[-30%] left-[90%]"
-            svg2ClassName="top-[70%] left-[-90%] rotate-180"
-            svg3ClassName="top-[70%] left-[90%] scale-x-[-1]"
-            svg4ClassName="top-[-50%] left-[-80%] rotate-90 scale-x-[-1]"
+          <ElectricLines
+            accentColor="#B6FF00"
+            svg1ClassName="top-[-120px] left-[150px]"
+            svg2ClassName="top-[-90px] left-[-55px]"
+            svg3ClassName="top-[0px] left-[-45px]"
+            svg4ClassName="top-[10px] left-[155px]"
           />
         )}
       </div>

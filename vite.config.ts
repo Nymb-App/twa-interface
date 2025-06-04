@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'fighter-cards-greece-plains.trycloudflare.com',
+      'editorial-find-rod-grove.trycloudflare.com',
     ],
   },
 

@@ -1,14 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import {
-  BattlePreviewPage,
+  BattlePreviewScreen,
   BattleTitle,
   CurrentUserBattleCard,
-} from '@/components/battle-page/battle-preview'
+} from '@/components/battle-page/battle-preview-screen'
 import { PageLayout } from '@/components/ui/page-layout'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn } from '@/utils'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { BattleResultGameScreen } from '@/components/battle-page/battle-result-game-screen'
+import { GameBoardScreen } from '@/components/battle-page/battle-gameboard-screen'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -17,6 +19,9 @@ export const Route = createFileRoute('/minigames/battle')({
 function RouteComponent() {
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(false)
   const [isWasFoundOpponent, setIsWasFoundOpponent] = useState(false)
+  const [startGame, setStartGame] = useState(true)
+  const [isWinner, setIsWinner] = useState(false)
+  const [isLoser, setIsLoser] = useState(false)
 
   useEffect(() => {
     document.body.style.backgroundColor = '#03061a'
@@ -25,51 +30,70 @@ function RouteComponent() {
     }
   }, [])
 
-  return !isStartFindingOpponent ? (
-    <BattlePreviewPage setIsStartFindingOpponent={setIsStartFindingOpponent} />
-  ) : (
-    <PageLayout useFooter={false} className="bg-[#03061a] pb-30">
-      <header className="font-pixel font-[400] text-center">
-        <BattleTitle
-          text={
-            !isWasFoundOpponent
-              ? 'Finding the opponent'
-              : 'An opponent was found'
-          }
+  return (
+    <>
+      {!isStartFindingOpponent && !isWinner && !startGame && (
+        <BattlePreviewScreen
+          setIsStartFindingOpponent={setIsStartFindingOpponent}
         />
-      </header>
-      <div className="flex flex-col min-h-[calc(100vh-18rem)] items-center justify-between gap-3">
-        <OpponentBattleCard
-          isWasFoundOpponent={isWasFoundOpponent}
-          setIsWasFoundOpponent={setIsWasFoundOpponent}
-          className="relative z-0 w-full"
-        />
-        <div className="relative">
-          <p className="relative z-2 font-pixel font-[400] text-[20px] leading-[24px] text-center">
-            VS
-          </p>
-        </div>
-        <CurrentUserBattleCard
-          className="relative z-0 w-full"
-          isStartFindingOpponent={isStartFindingOpponent}
-        />
-      </div>
-      {!isWasFoundOpponent && (
-        <div className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a]">
-          <ActionButton
-            onClick={() => {
-              setIsStartFindingOpponent(false)
-              setIsWasFoundOpponent(false)
-            }}
-            className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
-          >
-            <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
-              close
-            </span>
-          </ActionButton>
-        </div>
       )}
-    </PageLayout>
+      {isStartFindingOpponent && !isWinner && (
+        <PageLayout useFooter={false} className="bg-[#03061a] pb-30">
+          <header className="font-pixel font-[400] text-center">
+            <BattleTitle
+              text={
+                !isWasFoundOpponent
+                  ? 'Finding the opponent'
+                  : 'An opponent was found'
+              }
+            />
+          </header>
+          <div className="flex flex-col min-h-[calc(100vh-18rem)] items-center justify-between gap-3">
+            <OpponentBattleCard
+              isWasFoundOpponent={isWasFoundOpponent}
+              setIsWasFoundOpponent={setIsWasFoundOpponent}
+              className="relative z-0 w-full"
+            />
+            <div className="relative">
+              <p className="relative z-2 font-pixel font-[400] text-[20px] leading-[24px] text-center">
+                VS
+              </p>
+            </div>
+            <CurrentUserBattleCard
+              className="relative z-0 w-full"
+              isStartFindingOpponent={isStartFindingOpponent}
+            />
+          </div>
+          {!isWasFoundOpponent && (
+            <div className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a]">
+              <ActionButton
+                onClick={() => {
+                  setIsStartFindingOpponent(false)
+                  setIsWasFoundOpponent(false)
+                }}
+                className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
+              >
+                <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
+                  close
+                </span>
+              </ActionButton>
+            </div>
+          )}
+        </PageLayout>
+      )}
+      {startGame && <GameBoardScreen />}
+      {isWinner && (
+        <BattleResultGameScreen
+          rewardTimeValue={24}
+          rewardTimeLabel="weeks"
+          isWinner={isWinner}
+          starsImgSrc="/minigames/winning-stars.png"
+        />
+      )}
+      {isLoser && (
+        <BattleResultGameScreen rewardTimeValue={24} rewardTimeLabel="weeks" />
+      )}
+    </>
   )
 }
 

@@ -1,6 +1,20 @@
 import { cn } from '@/utils'
 
-export const ElectricLines = ({ className }: { className?: string }) => {
+export const ElectricLines = ({
+  className,
+  accentColor = '#8C35FB',
+  svg1ClassName,
+  svg2ClassName,
+  svg3ClassName,
+  svg4ClassName,
+}: {
+  className?: string
+  accentColor?: string
+  svg1ClassName?: string
+  svg2ClassName?: string
+  svg3ClassName?: string
+  svg4ClassName?: string
+}) => {
   return (
     <div
       className={cn(
@@ -10,7 +24,7 @@ export const ElectricLines = ({ className }: { className?: string }) => {
     >
       <div className="relative h-full w-full">
         <svg
-          className="absolute top-[20px] left-[205px]"
+          className={cn('absolute top-[20px] left-[205px]', svg1ClassName)}
           width="49"
           height="104"
           viewBox="0 0 49 104"
@@ -18,10 +32,10 @@ export const ElectricLines = ({ className }: { className?: string }) => {
           xmlns="http://www.w3.org/2000/svg"
         >
           <linearGradient id="pulseGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#8C35FB" stopOpacity="0" />
-            <stop offset="15%" stopColor="#8C35FB" stopOpacity="0.1" />
-            <stop offset="30%" stopColor="#8C35FB" stopOpacity="0.2" />
-            <stop offset="70%" stopColor="#8C35FB" stopOpacity="1" />
+            <stop offset="0%" stopColor={accentColor} stopOpacity="0" />
+            <stop offset="15%" stopColor={accentColor} stopOpacity="0.1" />
+            <stop offset="30%" stopColor={accentColor} stopOpacity="0.2" />
+            <stop offset="70%" stopColor={accentColor} stopOpacity="1" />
             <stop offset="100%" stopColor="white" stopOpacity="0" />
           </linearGradient>
           <path
@@ -44,7 +58,7 @@ export const ElectricLines = ({ className }: { className?: string }) => {
         </svg>
         {/* Вторая svg */}
         <svg
-          className="absolute top-[43px] left-[10px]"
+          className={cn('absolute top-[43px] left-[10px]', svg2ClassName)}
           width="109"
           height="61"
           viewBox="0 0 109 61"
@@ -57,10 +71,10 @@ export const ElectricLines = ({ className }: { className?: string }) => {
             <stop offset="100%" stop-color="#8C35FB" stop-opacity="0" />
           </linearGradient> */}
           <linearGradient id="pulseGradient2" x1="0" y1="1" x2="1" y2="1">
-            <stop offset="0%" stopColor="#8C35FB" stopOpacity="0" />
-            <stop offset="15%" stopColor="#8C35FB" stopOpacity="0.1" />
-            <stop offset="30%" stopColor="#8C35FB" stopOpacity="0.2" />
-            <stop offset="70%" stopColor="#8C35FB" stopOpacity="1" />
+            <stop offset="0%" stopColor={accentColor} stopOpacity="0" />
+            <stop offset="15%" stopColor={accentColor} stopOpacity="0.1" />
+            <stop offset="30%" stopColor={accentColor} stopOpacity="0.2" />
+            <stop offset="70%" stopColor={accentColor} stopOpacity="1" />
             <stop offset="100%" stopColor="white" stopOpacity="0" />
           </linearGradient>
           <path
@@ -83,7 +97,7 @@ export const ElectricLines = ({ className }: { className?: string }) => {
         </svg>
         {/* Третия svg */}
         <svg
-          className="absolute bottom-[70px] -left-[15px]"
+          className={cn('absolute bottom-[70px] -left-[15px]', svg3ClassName)}
           width="97"
           height="67"
           viewBox="0 0 97 67"
@@ -96,10 +110,10 @@ export const ElectricLines = ({ className }: { className?: string }) => {
             <stop offset="100%" stop-color="#8C35FB" stop-opacity="0" />
           </linearGradient> */}
           <linearGradient id="pulseGradient3" x1="0" y1="1" x2="1" y2="1">
-            <stop offset="0%" stopColor="#8C35FB" stopOpacity="0" />
-            <stop offset="15%" stopColor="#8C35FB" stopOpacity="0.1" />
-            <stop offset="30%" stopColor="#8C35FB" stopOpacity="0.2" />
-            <stop offset="70%" stopColor="#8C35FB" stopOpacity="1" />
+            <stop offset="0%" stopColor={accentColor} stopOpacity="0" />
+            <stop offset="15%" stopColor={accentColor} stopOpacity="0.1" />
+            <stop offset="30%" stopColor={accentColor} stopOpacity="0.2" />
+            <stop offset="70%" stopColor={accentColor} stopOpacity="1" />
             <stop offset="100%" stopColor="white" stopOpacity="0" />
           </linearGradient>
           <path
@@ -122,7 +136,7 @@ export const ElectricLines = ({ className }: { className?: string }) => {
         </svg>
         {/* Четвёртая svg */}
         <svg
-          className="absolute bottom-[33px] left-[155px]"
+          className={cn('absolute bottom-[33px] left-[155px]', svg4ClassName)}
           width="122"
           height="62"
           viewBox="0 0 122 62"
@@ -136,10 +150,10 @@ export const ElectricLines = ({ className }: { className?: string }) => {
           </linearGradient> */}
           <linearGradient id="pulseGradient4" x1="0" y1="1" x2="1" y2="1">
             <stop offset="0%" stopColor="white" stopOpacity="0" />
-            <stop offset="30%" stopColor="#8C35FB" stopOpacity="1" />
-            <stop offset="70%" stopColor="#8C35FB" stopOpacity="0.2" />
-            <stop offset="85%" stopColor="#8C35FB" stopOpacity="0.1" />
-            <stop offset="100%" stopColor="#8C35FB" stopOpacity="0" />
+            <stop offset="30%" stopColor={accentColor} stopOpacity="1" />
+            <stop offset="70%" stopColor={accentColor} stopOpacity="0.2" />
+            <stop offset="85%" stopColor={accentColor} stopOpacity="0.1" />
+            <stop offset="100%" stopColor={accentColor} stopOpacity="0" />
           </linearGradient>
           <path
             d="M121.761 61.0256H74.7612V1.02563H0.26123"

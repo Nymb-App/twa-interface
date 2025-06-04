@@ -57,13 +57,28 @@ function RouteComponent() {
   )
 }
 
-const AvatarCard = ({ src, label }: { src: string; label: string }) => (
-  <div className="relative size-22">
+export const AvatarCard = ({
+  src,
+  label,
+  className,
+  classNameForSpan,
+}: {
+  src: string
+  label: string
+  className?: string
+  classNameForSpan?: string
+}) => (
+  <div className={cn('relative size-22', className)}>
     <img
       src={src}
-      className="size-full object-cover rounded-full shadow-lg" // ← ОДИНАКОВО для всех
+      className={cn('size-full object-cover rounded-full shadow-lg')} // ← ОДИНАКОВО для всех
     />
-    <span className="absolute left-1/2 top-1/2 -translate-1/2 font-pixel text-2xl">
+    <span
+      className={cn(
+        'absolute left-1/2 top-1/2 -translate-1/2 font-pixel text-2xl',
+        classNameForSpan,
+      )}
+    >
       {label || 'NA'}
     </span>
   </div>

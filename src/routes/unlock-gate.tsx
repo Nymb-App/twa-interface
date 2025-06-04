@@ -138,7 +138,7 @@ function RouteComponent() {
               />
               <span
                 className={cn(
-                  'font-pixel font-[400] text-[104px] leading-[120%] text-[white] [-webkit-text-stroke:2px_rgba(182,255,0,1)] [text-shadow:0px_12.0067px_24.0134px_rgba(182,255,0,0.3),_0px_0px_72.0403px_#B6FF00]',
+                  'font-pixel font-[400] text-[100px] leading-[120%] text-[white] [-webkit-text-stroke:4px_rgba(182,255,0,1)] [text-shadow:0px_0px_70px_rgba(182,255,0,0.3)]',
                   currentLevel.toString().startsWith('1') ? 'mr-12' : 'mr-0',
                 )}
               >
