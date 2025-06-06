@@ -2,7 +2,11 @@ import { motion } from 'framer-motion'
 import { useContext, useState } from 'react'
 import { AppContext } from '@/context/app-context'
 
-export const BattleAnimatedPushButton = () => {
+export const BattleAnimatedPushButton = ({
+  onClick,
+}: {
+  onClick: () => void
+}) => {
   const [isPressed, setIsPressed] = useState(false)
 
   const { setBattleGamePercentOfFill } = useContext(AppContext)
@@ -11,6 +15,7 @@ export const BattleAnimatedPushButton = () => {
     setIsPressed(true)
     setTimeout(() => setIsPressed(false), 100)
     setBattleGamePercentOfFill((prev: number) => prev + 1)
+    onClick()
   }
 
   return (

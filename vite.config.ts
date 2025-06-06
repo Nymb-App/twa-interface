@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'stickers-exotic-dentists-suzuki.trycloudflare.com',
+      'classifieds-participate-strengthen-preferred.trycloudflare.com',
     ],
   },
 

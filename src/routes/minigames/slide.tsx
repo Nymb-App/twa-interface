@@ -9,6 +9,7 @@ import BombField from '@/components/minigames/playground'
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/components/ui/action-button'
+import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
 // import { SettingsPanel } from './settings-pannel';
 
 export const Route = createFileRoute('/minigames/slide')({
@@ -203,28 +204,7 @@ export function RouteComponent() {
           }}
         />
         {!isGameStarted && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Countdown
-              date={Date.now() + 4000}
-              intervalDelay={1000}
-              precision={0}
-              renderer={({ seconds }) => (
-                <span
-                  key={seconds}
-                  className={cn(
-                    'font-pixel text-[7.5rem] text-white [-webkit-text-stroke:3px_rgba(182,255,0,1)] [text-shadow:0px_0px_100px_rgba(182,255,0,0.4)] animate-[number-change_0.5s_ease-out]',
-                    seconds === 2 && 'mr-12',
-                    seconds === 1 && 'ml-12',
-                  )}
-                >
-                  {seconds > 1 ? seconds - 1 : 'GO!'}
-                </span>
-              )}
-              onComplete={() => {
-                setIsGameStarted(true)
-              }}
-            />
-          </div>
+          <CountdownStartGame onComplete={() => setIsGameStarted(true)} />
         )}
       </div>
 
@@ -246,13 +226,6 @@ export function RouteComponent() {
           }}
         />
       )}
-
-      <style>{`
-        @keyframes number-change {
-          0% { opacity: 0; transform: scale(1.5); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
     </PageLayout>
   )
 }

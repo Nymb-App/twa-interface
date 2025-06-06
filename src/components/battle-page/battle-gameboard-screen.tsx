@@ -1,11 +1,13 @@
 import Countdown from 'react-countdown'
 import { useContext, useEffect, useState } from 'react'
-import { NeonRain } from '../ui/neon-rain'
 import { PageLayout } from '../ui/page-layout'
+import { GreenRain } from '../ui/green-rain'
+import { NeonRain } from '../ui/neon-rain'
+import { CountdownStartGame } from '../minigames/countdown-start-game'
 import { BattleAnimatedPushButton } from './battle-animated-push-button'
 import { BattleAnimatedBoostButton } from './battle-animated-boost-button'
+import { BattleRainSplitLine } from './battle-rain-split-line'
 import { AvatarCard } from '@/routes/send-gift'
-import { cn } from '@/utils'
 import { BattlePushIcon } from '@/assets/icons/battle-push'
 import { AppContext } from '@/context/app-context'
 
@@ -19,6 +21,15 @@ export function GameBoardScreen({
 
   const [isCountdownStarted, setIsCountdownStarted] = useState(true)
   const [endTime, setEndTime] = useState<number | null>(null)
+
+  const [percentRainHeight, setPercentRain] = useState(50)
+
+  const handleClick = () => {
+    setPercentRain((prev) => {
+      const newValue = Math.min(Math.max(prev + 1, 0), 100) // ограничим от 0 до 100
+      return newValue
+    })
+  }
 
   useEffect(() => {
     if (!isCountdownStarted && !endTime) {
@@ -83,31 +94,30 @@ export function GameBoardScreen({
         </div>
         <section className="mt-[-50px] mb-[-80px] w-full relative z-0 flex-1">
           {isCountdownStarted ? (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Countdown
-                date={Date.now() + 4000}
-                intervalDelay={1000}
-                precision={0}
-                renderer={({ seconds }) => (
-                  <span
-                    key={seconds}
-                    className={cn(
-                      'font-pixel text-[7.5rem] text-white [-webkit-text-stroke:3px_rgba(182,255,0,1)] [text-shadow:0px_0px_100px_rgba(182,255,0,0.4)] animate-[number-change_0.5s_ease-out]',
-                      seconds === 2 && 'mr-12',
-                      seconds === 1 && 'ml-12',
-                    )}
-                  >
-                    {seconds > 1 ? seconds - 1 : 'GO!'}
-                  </span>
-                )}
-                onComplete={() => {
-                  setIsCountdownStarted(false)
-                  setBattleGamePercentOfFill(0)
-                }}
-              />
-            </div>
+            <CountdownStartGame
+              onComplete={() => {
+                setIsCountdownStarted(false)
+                setBattleGamePercentOfFill(0)
+              }}
+            />
           ) : (
-            <NeonRain />
+            <div className="absolute inset-0">
+              <div
+                className="absolute top-0 w-full transition-all duration-150 ease-linear"
+                style={{ height: `${100 - percentRainHeight}%` }}
+              >
+                <NeonRain />
+              </div>
+
+              <BattleRainSplitLine position={percentRainHeight} />
+
+              <div
+                className={`absolute bottom-0 w-full transition-all duration-150 ease-linear`}
+                style={{ height: `${percentRainHeight}%` }}
+              >
+                <GreenRain />
+              </div>
+            </div>
           )}
         </section>
         <div className="w-full">
@@ -129,7 +139,7 @@ export function GameBoardScreen({
               {isCountdownStarted ? (
                 <BattlePushIcon />
               ) : (
-                <BattleAnimatedPushButton />
+                <BattleAnimatedPushButton onClick={handleClick} />
               )}
 
               <button>

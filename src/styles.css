@@ -238,6 +238,11 @@ code {
 
   --animate-dot-reveal: dot-reveal 5s ease-in-out infinite;
 
+  @keyframes number-change {
+    0% { opacity: 0; transform: scale(1.5); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
   @keyframes dot-reveal {
     0% {
       height: 0%;
