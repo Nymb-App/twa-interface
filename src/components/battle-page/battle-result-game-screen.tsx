@@ -1,4 +1,6 @@
 import { useRive } from '@rive-app/react-canvas'
+import { useEffect } from 'react'
+import { shareURL } from '@telegram-apps/sdk'
 import { ActionButton } from '../ui/action-button'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { AvatarCard } from '@/routes/send-gift'
@@ -10,12 +12,14 @@ export function BattleResultGameScreen({
   starsImgSrc,
   bgSrc,
   isWinner = false,
+  handleResultGame,
 }: {
   rewardTimeValue: number
   rewardTimeLabel: string
   starsImgSrc?: string
   bgSrc?: string
   isWinner?: boolean
+  handleResultGame: () => void
 }) {
   const { RiveComponent, rive } = useRive({
     src: `/riveAnimations/${isWinner ? 'winner' : 'loser'}.riv`,
@@ -38,10 +42,17 @@ export function BattleResultGameScreen({
     },
   })
 
+  useEffect(() => {
+    document.body.style.backgroundColor = isWinner ? '#0a1309' : '#110522'
+    return () => {
+      document.body.style.backgroundColor = '#03061a'
+    }
+  }, [])
+
   return (
     <div
       className={cn(
-        'absolute inset-0 flex flex-col items-center justify-between font-pixel bg-black/30 z-50',
+        'absolute left-1/2 -translate-x-1/2 top-0 h-full flex flex-col items-center justify-between font-pixel bg-black/30 z-50 max-w-[450px] w-full',
         isWinner ? 'bg-[#0a1309]' : 'bg-[#110522]',
         bgSrc &&
           `bg-[url("${bgSrc}")] bg-no-repeat bg-[position:bottom_left_-0px]`,
@@ -134,10 +145,23 @@ export function BattleResultGameScreen({
       </div>
 
       <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-        <ActionButton className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7">
+        <ActionButton
+          onClick={() => {
+            const telegramLink =
+              import.meta.env.VITE_TELEGRAM_APP_LINK ||
+              'https://telegram-apps.com'
+            if (shareURL.isAvailable()) {
+              shareURL(telegramLink, 'Check out this cool app!')
+            }
+          }}
+          className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
+        >
           Share and get {isWinner ? '+1 wek' : '+2 hour'}
         </ActionButton>
-        <ActionButton className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed uppercase opacity-0 animate-slide-up-fade-swipe-game-6">
+        <ActionButton
+          onClick={handleResultGame}
+          className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed uppercase opacity-0 animate-slide-up-fade-swipe-game-6"
+        >
           new battle
         </ActionButton>
       </div>

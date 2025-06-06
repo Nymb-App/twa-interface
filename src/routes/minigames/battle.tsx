@@ -19,7 +19,8 @@ export const Route = createFileRoute('/minigames/battle')({
 function RouteComponent() {
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(false)
   const [isWasFoundOpponent, setIsWasFoundOpponent] = useState(false)
-  const [startGame, setStartGame] = useState(true)
+  const [isStartGame, setIsStartGame] = useState(false)
+  const [isGameFinished, setIsGameFinished] = useState(false)
   const [isWinner, setIsWinner] = useState(false)
   const [isLoser, setIsLoser] = useState(false)
 
@@ -30,14 +31,22 @@ function RouteComponent() {
     }
   }, [])
 
+  useEffect(() => {
+    if (isWasFoundOpponent) {
+      setTimeout(() => {
+        setIsStartGame(true)
+      }, 3000)
+    }
+  }, [isWasFoundOpponent])
+
   return (
     <>
-      {!isStartFindingOpponent && !isWinner && !startGame && (
+      {!isStartFindingOpponent && (
         <BattlePreviewScreen
           setIsStartFindingOpponent={setIsStartFindingOpponent}
         />
       )}
-      {isStartFindingOpponent && !isWinner && (
+      {isStartFindingOpponent && !isStartGame && (
         <PageLayout useFooter={false} className="bg-[#03061a] pb-30">
           <header className="font-pixel font-[400] text-center">
             <BattleTitle
@@ -81,17 +90,36 @@ function RouteComponent() {
           )}
         </PageLayout>
       )}
-      {startGame && <GameBoardScreen />}
+      {isStartGame && !isWinner && (
+        <GameBoardScreen handleFinishGame={() => setIsWinner(true)} />
+      )}
       {isWinner && (
         <BattleResultGameScreen
           rewardTimeValue={24}
           rewardTimeLabel="weeks"
           isWinner={isWinner}
           starsImgSrc="/minigames/winning-stars.png"
+          handleResultGame={() => {
+            setIsStartGame(false)
+            setIsGameFinished(false)
+            setIsWinner(false)
+            setIsWasFoundOpponent(false)
+            setIsStartFindingOpponent(false)
+          }}
         />
       )}
       {isLoser && (
-        <BattleResultGameScreen rewardTimeValue={24} rewardTimeLabel="weeks" />
+        <BattleResultGameScreen
+          rewardTimeValue={24}
+          rewardTimeLabel="weeks"
+          handleResultGame={() => {
+            setIsStartGame(false)
+            setIsGameFinished(false)
+            setIsWinner(false)
+            setIsWasFoundOpponent(false)
+            setIsStartFindingOpponent(false)
+          }}
+        />
       )}
     </>
   )

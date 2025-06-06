@@ -8,6 +8,10 @@ interface IAppContext {
   setGiftCountValue: (value: number) => void
   battleGameRewardRadioValue: string
   setBattleGameRewardRadioValue: (value: string) => void
+  battleGamePercentOfFill: number
+  setBattleGamePercentOfFill: (
+    value: number | ((prevState: number) => number),
+  ) => void
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -17,6 +21,8 @@ export const AppContext = createContext<IAppContext>({
   setGiftCountValue: () => {},
   battleGameRewardRadioValue: '1 weeks',
   setBattleGameRewardRadioValue: () => {},
+  battleGamePercentOfFill: 0,
+  setBattleGamePercentOfFill: () => {},
 })
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -24,6 +30,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [giftCountValue, setGiftCountValue] = useState(24)
   const [battleGameRewardRadioValue, setBattleGameRewardRadioValue] =
     useState('1 weeks')
+  const [battleGamePercentOfFill, setBattleGamePercentOfFill] = useState(0)
 
   return (
     <AppContext.Provider
@@ -34,6 +41,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setGiftCountValue,
         battleGameRewardRadioValue,
         setBattleGameRewardRadioValue,
+        battleGamePercentOfFill,
+        setBattleGamePercentOfFill,
       }}
     >
       {children}
