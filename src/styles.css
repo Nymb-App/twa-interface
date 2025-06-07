@@ -489,6 +489,12 @@ div[data-state='indeterminate'] {
   border-radius: 50%;
 }
 
-.bg-battle-main { background-color: #03061a !important; }
-.bg-battle-purple { background-color: #110522 !important; }
-.bg-battle-green { background-color: #0a1309 !important; }
+.bg-battle-main { background-color: #03061a !important; 
+  transition: background-color 0.5s linear;
+}
+.bg-battle-purple { background-color: #110522 !important; 
+  transition: background-color 0.5s linear;
+}
+.bg-battle-green { background-color: #0a1309 !important; 
+  transition: background-color 0.5s linear;
+}

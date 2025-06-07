@@ -6,7 +6,7 @@ export const BattleRainSplitLine = ({ position }: { position: number }) => {
   return (
     <div
       className={cn(
-        'absolute left-1/2 w-[140%] -translate-x-1/2 -translate-y-1/2 h-auto transition-all duration-150 ease-linear',
+        'absolute left-1/2 w-[140%] -translate-x-1/2 -translate-y-1/2 h-auto transition-all duration-1000 ease-linear',
         position === 50 && 'theme-blue',
         position > 50 && 'theme-green',
         position < 50 && 'theme-purple',

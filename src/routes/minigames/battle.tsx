@@ -24,7 +24,8 @@ function RouteComponent() {
   const [isGameFinished, setIsGameFinished] = useState(false)
   const [isWinner, setIsWinner] = useState(false)
   const [isLoser, setIsLoser] = useState(false)
-  const { battleGameRewardRadioValue } = useContext(AppContext)
+  const { battleGameRewardRadioValue, setBattleGamePercentOfFill } =
+    useContext(AppContext)
 
   useEffect(() => {
     document.body.style.backgroundColor = '#03061a'
@@ -39,6 +40,7 @@ function RouteComponent() {
         setIsStartGame(true)
       }, 3000)
     }
+    setBattleGamePercentOfFill(0)
   }, [isWasFoundOpponent])
 
   return (

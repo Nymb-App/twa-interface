@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'classifieds-participate-strengthen-preferred.trycloudflare.com',
+      'bag-islamic-nextel-wav.trycloudflare.com',
     ],
   },
 

@@ -1,5 +1,5 @@
 import { useRive } from '@rive-app/react-canvas'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { shareURL } from '@telegram-apps/sdk'
 import { ActionButton } from '../ui/action-button'
 import { WatchesIcon } from '@/assets/icons/watches'
@@ -41,6 +41,14 @@ export function BattleResultGameScreen({
       // setIsShowSendGiftActionButtons?.(true)
     },
   })
+
+  // флаг, указывающий, что анимация закончилась
+  const [animationEnded, setAnimationEnded] = useState(false)
+
+  // обработчик конца анимации
+  const onAnimationEnd = () => {
+    setAnimationEnded(true)
+  }
 
   useEffect(() => {
     document.body.style.backgroundColor = isWinner ? '#0a1309' : '#110522'
@@ -154,12 +162,16 @@ export function BattleResultGameScreen({
               shareURL(telegramLink, 'Check out this cool app!')
             }
           }}
+          disabled={!animationEnded}
+          onAnimationEnd={onAnimationEnd}
           className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
         >
           Share and get {isWinner ? '+1 wek' : '+2 hour'}
         </ActionButton>
         <ActionButton
           onClick={handleResultGame}
+          disabled={!animationEnded}
+          onAnimationEnd={onAnimationEnd}
           className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed uppercase opacity-0 animate-slide-up-fade-swipe-game-6"
         >
           new battle

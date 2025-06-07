@@ -1,5 +1,5 @@
 import Countdown from 'react-countdown'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { PageLayout } from '../ui/page-layout'
 import { GreenRain } from '../ui/green-rain'
 import { NeonRain } from '../ui/neon-rain'
@@ -22,8 +22,7 @@ export function GameBoardScreen({
   setIsWinner: (value: boolean) => void
   setIsLoser: (value: boolean) => void
 }) {
-  const { battleGameRewardRadioValue, setBattleGamePercentOfFill } =
-    useContext(AppContext)
+  const { battleGameRewardRadioValue } = useContext(AppContext)
 
   const [isCountdownStarted, setIsCountdownStarted] = useState(true)
   const [endTime, setEndTime] = useState<number | null>(null)
@@ -72,50 +71,33 @@ export function GameBoardScreen({
     }
   }, [isCountdownStarted, endTime, autoClick])
 
+  const backgroundClass = useMemo(() => {
+    if (percentRainHeight > 50) return 'bg-battle-green'
+    if (percentRainHeight < 50) return 'bg-battle-purple'
+    return 'bg-battle-main'
+  }, [percentRainHeight])
+
   useEffect(() => {
     if (typeof window === 'undefined') return
+
     const body = document.body
     body.classList.remove(
       'bg-battle-green',
       'bg-battle-purple',
       'bg-battle-main',
     )
-
-    if (percentRainHeight > 50) {
-      body.classList.add('bg-battle-green')
-    } else if (percentRainHeight < 50) {
-      body.classList.add('bg-battle-purple')
-    } else {
-      body.classList.add('bg-battle-main')
-    }
+    body.classList.add(backgroundClass)
 
     return () => {
-      body.classList.remove(
-        'bg-battle-green',
-        'bg-battle-purple',
-        'bg-battle-main',
-      )
+      body.classList.remove(backgroundClass)
     }
-  }, [percentRainHeight])
+  }, [backgroundClass])
 
   return (
-    <PageLayout
-      useFooter={false}
-      className={cn(
-        'bg-[#03061a] pb-0',
-        percentRainHeight > 50 && 'bg-[#0a1309]',
-        percentRainHeight < 50 && 'bg-[#110522]',
-      )}
-    >
+    <PageLayout useFooter={false} className={cn('pb-0', backgroundClass)}>
       <div className="flex flex-col min-h-[calc(100vh-7rem)] items-center justify-between">
         <div className="w-full">
-          <section
-            className={cn(
-              'w-full font-[400] pb-4',
-              percentRainHeight > 50 && 'bg-[#0a1309]',
-              percentRainHeight < 50 && 'bg-[#110522]',
-            )}
-          >
+          <section className={cn('w-full font-[400] pb-4')}>
             <dl className="flex justify-evenly text-center text-[14px] font-pixel uppercase">
               <div>
                 <dt className="leading-[120%] text-[14px] text-[#FFFFFF]/40 mb-4">
@@ -171,21 +153,20 @@ export function GameBoardScreen({
               igorivanov
             </h1>
           </section>
-          <SvgHeaderBg />
+          <SvgHeaderBg percentRainHeight={percentRainHeight} />
         </div>
         <section className="mt-[-50px] mb-[-80px] w-full relative z-0 flex-1">
           {isCountdownStarted ? (
             <CountdownStartGame
               onComplete={() => {
                 setIsCountdownStarted(false)
-                setBattleGamePercentOfFill(0)
                 setAutoClick(true)
               }}
             />
           ) : (
             <div className="absolute inset-0">
               <div
-                className="absolute top-0 w-full transition-all duration-150 ease-linear"
+                className="absolute top-0 w-full transition-all duration-1000 ease-linear"
                 style={{ height: `${100 - percentRainHeight}%` }}
               >
                 <NeonRain />
@@ -194,7 +175,7 @@ export function GameBoardScreen({
               <BattleRainSplitLine position={percentRainHeight} />
 
               <div
-                className={`absolute bottom-0 w-full transition-all duration-150 ease-linear`}
+                className={`absolute bottom-0 w-full transition-all duration-1000 ease-linear`}
                 style={{ height: `${percentRainHeight}%` }}
               >
                 <GreenRain />
@@ -214,14 +195,8 @@ export function GameBoardScreen({
               teviall
             </h1>
           </section>
-          <SvgFooterBg />
-          <section
-            className={cn(
-              'pt-[46px] pb-[46px]',
-              percentRainHeight > 50 && 'bg-[#0a1309]',
-              percentRainHeight < 50 && 'bg-[#110522]',
-            )}
-          >
+          <SvgFooterBg percentRainHeight={percentRainHeight} />
+          <section className="pt-[46px] pb-[46px]">
             <div className="flex justify-evenly">
               <BattleAnimatedBoostButton />
               {isCountdownStarted ? (
@@ -240,7 +215,7 @@ export function GameBoardScreen({
   )
 }
 
-const SvgHeaderBg = () => {
+const SvgHeaderBg = ({ percentRainHeight }: { percentRainHeight?: number }) => {
   return (
     <svg
       width="390"
@@ -283,8 +258,26 @@ const SvgHeaderBg = () => {
           y2="52"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#02071B" />
-          <stop offset="1" stopColor="#02071B" stopOpacity="0.4" />
+          <stop
+            stopColor={
+              percentRainHeight! > 50
+                ? '#0a1309'
+                : percentRainHeight === 50
+                  ? '#03061a'
+                  : '#110522'
+            }
+          />
+          <stop
+            offset="1"
+            stopColor={
+              percentRainHeight! > 50
+                ? '#0a1309'
+                : percentRainHeight === 50
+                  ? '#03061a'
+                  : '#110522'
+            }
+            stopOpacity="0.4"
+          />
         </linearGradient>
         <linearGradient
           id="paint1_linear_51_56418"
@@ -302,7 +295,7 @@ const SvgHeaderBg = () => {
   )
 }
 
-const SvgFooterBg = () => {
+const SvgFooterBg = ({ percentRainHeight }: { percentRainHeight?: number }) => {
   return (
     <svg
       width="390"
@@ -345,8 +338,26 @@ const SvgFooterBg = () => {
           y2="0"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#120523" />
-          <stop offset="1" stopColor="#120523" stopOpacity="0.4" />
+          <stop
+            stopColor={
+              percentRainHeight! > 50
+                ? '#0a1309'
+                : percentRainHeight === 50
+                  ? '#03061a'
+                  : '#110522'
+            }
+          />
+          <stop
+            offset="1"
+            stopColor={
+              percentRainHeight! > 50
+                ? '#0a1309'
+                : percentRainHeight === 50
+                  ? '#03061a'
+                  : '#110522'
+            }
+            stopOpacity="0.4"
+          />
         </linearGradient>
         <linearGradient
           id="paint1_linear_51_56588"
