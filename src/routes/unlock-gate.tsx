@@ -19,8 +19,7 @@ function RouteComponent() {
 
   const [isStartAnimation, setIsStartAnimation] = useState(true)
 
-  const [isTwitchingLockerAnimation, setIsTwitchingLockerAnimation] =
-    useState(true)
+  const [_, setIsTwitchingLockerAnimation] = useState(true)
 
   const [isTranslateLockerAnimation, setIsTranslateLockerAnimation] =
     useState(false)

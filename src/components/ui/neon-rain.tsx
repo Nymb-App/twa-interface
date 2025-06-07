@@ -1,15 +1,17 @@
 import { useEffect, useRef } from 'react'
 
 export const NeonRain = () => {
-  const canvasRef = useRef(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
+    if (!canvas) return
     const ctx = canvas.getContext('2d')
 
     const resizeCanvas = () => {
       // Настройка размера в соответствии с родителем, а не с окном
       const parent = canvas.parentElement
+      if (!parent) return
       canvas.width = parent.offsetWidth
       canvas.height = parent.offsetHeight
     }
@@ -21,12 +23,20 @@ export const NeonRain = () => {
     const chargedCountMax = 10
 
     class RainDrop {
+      public charged: boolean
+      public x!: number
+      public y!: number
+      public length!: number
+      public speed!: number
+      public alpha!: number
+      public width!: number
       constructor(charged = false) {
         this.charged = charged
         this.reset()
       }
 
       reset() {
+        if (!canvas) return
         this.x = Math.random() * canvas.width
         this.y = Math.random() * -canvas.height
         this.length = this.charged
@@ -45,8 +55,8 @@ export const NeonRain = () => {
         this.y += this.speed
       }
 
-      draw(ctx) {
-        const grad = ctx.createLinearGradient(
+      draw(context: CanvasRenderingContext2D) {
+        const grad = context.createLinearGradient(
           this.x,
           this.y,
           this.x,
@@ -61,12 +71,12 @@ export const NeonRain = () => {
         grad.addColorStop(0.5, `rgba(116,29,227, ${this.alpha * 0.5})`)
         grad.addColorStop(1, `rgba(74,29,227, 0)`)
 
-        ctx.beginPath()
-        ctx.strokeStyle = grad
-        ctx.lineWidth = this.width
-        ctx.moveTo(this.x, this.y)
-        ctx.lineTo(this.x, this.y + this.length)
-        ctx.stroke()
+        context.beginPath()
+        context.strokeStyle = grad
+        context.lineWidth = this.width
+        context.moveTo(this.x, this.y)
+        context.lineTo(this.x, this.y + this.length)
+        context.stroke()
       }
     }
 
@@ -74,7 +84,7 @@ export const NeonRain = () => {
       { length: normalCount },
       () => new RainDrop(false),
     )
-    const chargedDrops = []
+    const chargedDrops: Array<RainDrop> = []
 
     const spawnChargedParticles = () => {
       const availableSlots = chargedCountMax - chargedDrops.length
@@ -91,6 +101,7 @@ export const NeonRain = () => {
     }
 
     const animate = () => {
+      if (!ctx) return
       ctx.fillStyle = 'rgba(0, 0, 30, 0.2)'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 

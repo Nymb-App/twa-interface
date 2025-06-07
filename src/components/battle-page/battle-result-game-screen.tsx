@@ -21,7 +21,7 @@ export function BattleResultGameScreen({
   isWinner?: boolean
   handleResultGame: () => void
 }) {
-  const { RiveComponent, rive } = useRive({
+  const { RiveComponent } = useRive({
     src: `/riveAnimations/${isWinner ? 'winner' : 'loser'}.riv`,
     autoplay: true,
     onLoad: () => {

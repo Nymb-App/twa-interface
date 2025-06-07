@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { createFileRoute } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
 import { useCallback, useEffect, useMemo, useState } from 'react'
