@@ -169,8 +169,8 @@ export const BattleBoostActiveIcon = () => {
           cy="71"
           r="44"
           fill="#B6FF00"
-          fill-opacity="0.31"
-          shape-rendering="crispEdges"
+          fillOpacity="0.31"
+          shapeRendering="crispEdges"
         />
       </g>
       <mask
@@ -332,26 +332,26 @@ export const BattleBoostActiveIcon = () => {
       <path
         d="M51.5 69.5L60 61L68.5 69.5"
         stroke="#B6FF00"
-        stroke-width="2"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M54 75L60 69L66 75"
         stroke="#B6FF00"
-        stroke-width="2"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M57 80L60 77L63 80"
         stroke="#B6FF00"
-        stroke-width="2"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <defs>
         <filter
@@ -361,9 +361,9 @@ export const BattleBoostActiveIcon = () => {
           width="142"
           height="142"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"

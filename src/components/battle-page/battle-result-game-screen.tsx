@@ -14,7 +14,7 @@ export function BattleResultGameScreen({
   isWinner = false,
   handleResultGame,
 }: {
-  rewardTimeValue: number
+  rewardTimeValue: number | string
   rewardTimeLabel: string
   starsImgSrc?: string
   bgSrc?: string

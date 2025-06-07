@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {
   BattlePreviewScreen,
   BattleTitle,
@@ -9,8 +9,9 @@ import { PageLayout } from '@/components/ui/page-layout'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn } from '@/utils'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { BattleResultGameScreen } from '@/components/battle-page/battle-result-game-screen'
 import { GameBoardScreen } from '@/components/battle-page/battle-gameboard-screen'
+import { BattleResultGameScreen } from '@/components/battle-page/battle-result-game-screen'
+import { AppContext } from '@/context/app-context'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -23,6 +24,7 @@ function RouteComponent() {
   const [isGameFinished, setIsGameFinished] = useState(false)
   const [isWinner, setIsWinner] = useState(false)
   const [isLoser, setIsLoser] = useState(false)
+  const { battleGameRewardRadioValue } = useContext(AppContext)
 
   useEffect(() => {
     document.body.style.backgroundColor = '#03061a'
@@ -90,14 +92,18 @@ function RouteComponent() {
           )}
         </PageLayout>
       )}
-      {isStartGame && !isWinner && (
-        <GameBoardScreen handleFinishGame={() => setIsWinner(true)} />
+      {isStartGame && !isGameFinished && (
+        <GameBoardScreen
+          handleFinishGame={() => setIsGameFinished(true)}
+          setIsWinner={setIsWinner}
+          setIsLoser={setIsLoser}
+        />
       )}
-      {isWinner && (
+      {isGameFinished && isWinner && (
         <BattleResultGameScreen
-          rewardTimeValue={24}
-          rewardTimeLabel="weeks"
-          isWinner={isWinner}
+          rewardTimeValue={battleGameRewardRadioValue.split(' ')[0]}
+          rewardTimeLabel={battleGameRewardRadioValue.split(' ')[1]}
+          isWinner={true}
           starsImgSrc="/minigames/winning-stars.png"
           handleResultGame={() => {
             setIsStartGame(false)
@@ -108,14 +114,14 @@ function RouteComponent() {
           }}
         />
       )}
-      {isLoser && (
+      {isGameFinished && isLoser && (
         <BattleResultGameScreen
-          rewardTimeValue={24}
-          rewardTimeLabel="weeks"
+          rewardTimeValue={battleGameRewardRadioValue.split(' ')[0]}
+          rewardTimeLabel={battleGameRewardRadioValue.split(' ')[1]}
           handleResultGame={() => {
             setIsStartGame(false)
             setIsGameFinished(false)
-            setIsWinner(false)
+            setIsLoser(false)
             setIsWasFoundOpponent(false)
             setIsStartFindingOpponent(false)
           }}
