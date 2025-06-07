@@ -26,23 +26,22 @@ export function GameBoardScreen({
 
   const [isCountdownStarted, setIsCountdownStarted] = useState(true)
   const [endTime, setEndTime] = useState<number | null>(null)
-  const [percentRainHeight, setPercentRain] = useState(50)
-
+  const [percentRainHeight, setPercentRainHeight] = useState(50)
   const [autoClick, setAutoClick] = useState(false)
+  const [isX2Boost, setIsX2Boost] = useState(false)
 
   const handleClick = () => {
-    setPercentRain((prev) => {
-      const newValue = Math.min(Math.max(prev + 1, 0), 90) // ограничим от 0 до 95
+    setPercentRainHeight((prev) => {
+      const newValue = Math.min(Math.max(prev + (isX2Boost ? 2 : 1), 0), 100)
       return newValue
     })
   }
-
   useEffect(() => {
-    if (percentRainHeight === 90) {
+    if (percentRainHeight >= (isX2Boost ? 97 : 95)) {
       handleFinishGame()
       setIsWinner(true)
     }
-    if (percentRainHeight === 10) {
+    if (percentRainHeight <= 6) {
       handleFinishGame()
       setIsLoser(true)
     }
@@ -59,8 +58,8 @@ export function GameBoardScreen({
 
     if (!isCountdownStarted && endTime && autoClick) {
       autoClickInterval = setInterval(() => {
-        setPercentRain((prev) => {
-          const newValue = Math.min(Math.max(prev - 1, 0), 90)
+        setPercentRainHeight((prev) => {
+          const newValue = Math.min(Math.max(prev - 1, 0), 100)
           return newValue
         })
       }, 300)
@@ -166,16 +165,19 @@ export function GameBoardScreen({
           ) : (
             <div className="absolute inset-0">
               <div
-                className="absolute top-0 w-full transition-all duration-1000 ease-linear"
+                className={`absolute top-0 w-full transition-all duration-${isX2Boost ? 500 : 1000} ease-linear`}
                 style={{ height: `${100 - percentRainHeight}%` }}
               >
                 <NeonRain />
               </div>
 
-              <BattleRainSplitLine position={percentRainHeight} />
+              <BattleRainSplitLine
+                position={percentRainHeight}
+                isX2Boost={isX2Boost}
+              />
 
               <div
-                className={`absolute bottom-0 w-full transition-all duration-1000 ease-linear`}
+                className={`absolute bottom-0 w-full transition-all duration-${isX2Boost ? 500 : 1000} ease-linear`}
                 style={{ height: `${percentRainHeight}%` }}
               >
                 <GreenRain />
@@ -198,7 +200,7 @@ export function GameBoardScreen({
           <SvgFooterBg percentRainHeight={percentRainHeight} />
           <section className="pt-[46px] pb-[46px]">
             <div className="flex justify-evenly">
-              <BattleAnimatedBoostButton />
+              <BattleAnimatedBoostButton setIsX2Boost={setIsX2Boost} />
               {isCountdownStarted ? (
                 <BattlePushIcon />
               ) : (

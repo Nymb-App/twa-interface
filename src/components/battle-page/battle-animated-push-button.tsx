@@ -22,8 +22,8 @@ export const BattleAnimatedPushButton = ({
     <motion.button
       className="relative"
       onClick={handlePress}
-      whileTap={{ scale: 1.05 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      // whileTap={{ scale: 1.05 }}
+      // transition={{ type: 'spring', stiffness: 400 }}
     >
       {/* <svg
         className="absolute top-0 left-0"

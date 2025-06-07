@@ -1,12 +1,18 @@
 import { cn } from '@/utils'
 
-export const BattleRainSplitLine = ({ position }: { position: number }) => {
+export const BattleRainSplitLine = ({
+  position,
+  isX2Boost,
+}: {
+  position: number
+  isX2Boost: boolean
+}) => {
   const currentPosition = 100 - position
 
   return (
     <div
       className={cn(
-        'absolute left-1/2 w-[140%] -translate-x-1/2 -translate-y-1/2 h-auto transition-all duration-1000 ease-linear',
+        `absolute left-1/2 w-[140%] -translate-x-1/2 -translate-y-1/2 h-auto transition-all duration-${isX2Boost ? 500 : 1000} ease-linear`,
         position === 50 && 'theme-blue',
         position > 50 && 'theme-green',
         position < 50 && 'theme-purple',
