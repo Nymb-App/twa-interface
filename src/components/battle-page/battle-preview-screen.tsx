@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
 import { PageLayout } from '../ui/page-layout'
 import { Container } from '../ui/container'
@@ -18,10 +18,28 @@ export function BattlePreviewScreen({
 }: {
   setIsStartFindingOpponent: (value: boolean) => void
 }) {
+  const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
+
+  useEffect(() => {
+    if (!isAnimationsEnd) {
+      document.body.style.overflowY = 'hidden'
+    }
+    return () => {
+      document.body.style.overflowY = 'auto'
+    }
+  }, [isAnimationsEnd])
+
   return (
-    <PageLayout useFooter={false} className="bg-[#03061a] pb-50">
+    <PageLayout
+      useFooter={false}
+      className={cn(
+        'bg-[#03061a] pb-50 animate-battle-preview-slide overflow-hidden',
+        isAnimationsEnd && 'overflow-y-auto',
+      )}
+    >
       <header className="font-pixel font-[400] text-center">
         <BattleTitle
+          className="opacity-0 animate-battle-preview-title-fade"
           text={
             <>
               Enter the
@@ -33,7 +51,10 @@ export function BattlePreviewScreen({
         <CurrentUserBattleCard />
       </header>
       <BattleGameRewardSection />
-      <div className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a]">
+      <div
+        className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a] opacity-0 animate-battle-preview-find-fade"
+        onAnimationEnd={() => setIsAnimationsEnd(true)}
+      >
         <p className="font-inter text-[#FFFFFF]/40 text-[14px] font-[400] leading-[140%] text-center mb-4">
           The opponent will be <br /> randomly selected. Commission 1%
         </p>
@@ -48,22 +69,33 @@ export function BattlePreviewScreen({
   )
 }
 
-export const BattleTitle = ({ text }: { text: string | ReactNode }) => {
+export const BattleTitle = ({
+  text,
+  className,
+}: {
+  text: string | ReactNode
+  className?: string
+}) => {
   return (
-    <h1 className="text-[24px] leading-[32px] text-[#FFFFFF] uppercase mb-4">
+    <h1
+      className={cn(
+        'text-[24px] leading-[32px] text-[#FFFFFF] uppercase mb-4',
+        className,
+      )}
+    >
       {text}
     </h1>
   )
 }
 
-function BattleGameRewardSection() {
+function BattleGameRewardSection({ className }: { className?: string }) {
   const { battleGameRewardRadioValue, setBattleGameRewardRadioValue } =
     useContext(AppContext)
 
   return (
-    <section className="relative px-[3px]">
+    <section className={cn('relative px-[3px]', className)}>
       <Container>
-        <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px]">
+        <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px] opacity-0 animate-battle-preview-reward-fade">
           <div className="text-center">
             <span className="text-[white] tracking-[5px] font-[400] text-[48px] leading-[120%] [-webkit-text-stroke:3px_rgba(182,255,0,1)] [text-shadow:0px_0px_15px_rgba(182,255,0,0.2)]">
               {battleGameRewardRadioValue}
@@ -102,7 +134,7 @@ function BattleGameRewardSection() {
         </div>
         <Drawer>
           <DrawerTrigger asChild className="w-full mx-auto">
-            <button className="flex justify-center gap-[21px] h-[40px] max-w-[254px]">
+            <button className="flex justify-center gap-[21px] h-[40px] max-w-[254px] opacity-0 animate-battle-preview-bust-fade">
               <span className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
                 <span className="ml-1.5">
                   <BustIcon />
@@ -172,40 +204,40 @@ export const CurrentUserBattleCard = ({
   return (
     <div
       className={cn(
-        "font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] z-[-1] bg-no-repeat bg-bottom pt-[26px] h-[220px] uppercase",
+        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] z-[-1] bg-no-repeat bg-bottom pt-[26px] h-[220px] uppercase",
         className,
       )}
     >
-      <p>teviall</p>
-      <div className="relative size-[104px] rounded-[34px] shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)]">
+      <p className="opacity-0 animate-battle-preview-username-fade">teviall</p>
+      <div className="relative z-1 size-[104px] rounded-[34px] opacity-0 animate-battle-preview-avatar-fade">
         <img
           src={'/roulette-icons/default.png'}
-          className="w-full h-auto object-cover absolute z-1 rounded-[34px]"
+          className="w-full h-auto object-cover absolute z-1 rounded-[34px] shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)]"
         />
         <p className="absolute z-1 left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
           NA
         </p>
-        <FlickeringGrid
-          className="absolute top-[-65px] left-[-134px] w-[450px] h-[220px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]"
-          squareSize={2}
-          gridGap={12}
-          color="#b7ff01"
-          maxOpacity={0.5}
-          flickerChance={0.3}
-          autoResize={false}
-          width={400}
-          height={220}
-        />
-        {isStartFindingOpponent && (
-          <ElectricLines
-            accentColor="#B6FF00"
-            svg1ClassName="top-[-120px] left-[150px]"
-            svg2ClassName="top-[-90px] left-[-55px]"
-            svg3ClassName="top-[0px] left-[-45px]"
-            svg4ClassName="top-[10px] left-[155px]"
-          />
-        )}
       </div>
+      <FlickeringGrid
+        className="absolute top-[54%] -translate-y-1/2 left-[60%] -translate-x-1/2 w-[450px] h-[220px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]"
+        squareSize={2}
+        gridGap={12}
+        color="#b7ff01"
+        maxOpacity={0.5}
+        flickerChance={0.3}
+        autoResize={false}
+        width={400}
+        height={220}
+      />
+      {isStartFindingOpponent && (
+        <ElectricLines
+          accentColor="#B6FF00"
+          svg1ClassName="top-[-120px] left-[150px]"
+          svg2ClassName="top-[-90px] left-[-55px]"
+          svg3ClassName="top-[0px] left-[-45px]"
+          svg4ClassName="top-[10px] left-[155px]"
+        />
+      )}
     </div>
   )
 }

@@ -236,6 +236,29 @@ code {
     }
   }
 
+  /* Battle page animations - START */
+
+  @keyframes battle-preview-slide-bottom-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(50rem);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-battle-preview-slide: battle-preview-slide-bottom-fade 0.7s ease-out forwards;
+  --animate-battle-preview-title-fade: slide-up-fade 0.6s ease-out 0.7s forwards;
+  --animate-battle-preview-username-fade: slide-up-fade 0.6s ease-out 1.2s forwards;
+  --animate-battle-preview-avatar-fade: slide-up-fade 0.6s ease-out 1.7s forwards;
+  --animate-battle-preview-reward-fade: slide-up-fade 0.6s ease-out 2.2s forwards;
+  --animate-battle-preview-bust-fade: slide-up-fade 0.6s ease-out 2.7s forwards;
+  --animate-battle-preview-find-fade: slide-up-fade 0.6s ease-out 3.2s forwards;
+
+  /* Battle page animations - END */
+
   --animate-dot-reveal: dot-reveal 5s ease-in-out infinite;
 
   @keyframes number-change {
