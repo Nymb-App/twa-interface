@@ -27,6 +27,8 @@ function RouteComponent() {
   const { battleGameRewardRadioValue, setBattleGamePercentOfFill } =
     useContext(AppContext)
 
+  const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
+
   useEffect(() => {
     document.body.style.backgroundColor = '#03061a'
     return () => {
@@ -34,14 +36,14 @@ function RouteComponent() {
     }
   }, [])
 
-  useEffect(() => {
-    if (isWasFoundOpponent) {
-      setTimeout(() => {
-        setIsStartGame(true)
-      }, 3000)
-    }
-    setBattleGamePercentOfFill(0)
-  }, [isWasFoundOpponent])
+  // useEffect(() => {
+  //   if (isWasFoundOpponent) {
+  //     setTimeout(() => {
+  //       setIsStartGame(true)
+  //     }, 3000)
+  //   }
+  //   setBattleGamePercentOfFill(0)
+  // }, [isWasFoundOpponent])
 
   return (
     <>
@@ -51,9 +53,13 @@ function RouteComponent() {
         />
       )}
       {isStartFindingOpponent && !isStartGame && (
-        <PageLayout useFooter={false} className="bg-[#03061a] pb-30">
+        <PageLayout
+          useFooter={false}
+          className="bg-[#03061a] pb-30 overflow-hidden"
+        >
           <header className="font-pixel font-[400] text-center">
             <BattleTitle
+              className="opacity-0 animate-battle-preview-title-fade"
               text={
                 !isWasFoundOpponent
                   ? 'Finding the opponent'
@@ -65,26 +71,33 @@ function RouteComponent() {
             <OpponentBattleCard
               isWasFoundOpponent={isWasFoundOpponent}
               setIsWasFoundOpponent={setIsWasFoundOpponent}
-              className="relative z-0 w-full"
+              className="relative z-0 w-full opacity-0 animate-battle-finding-slide-top-fade"
             />
             <div className="relative">
-              <p className="relative z-2 font-pixel font-[400] text-[20px] leading-[24px] text-center">
+              <p className="relative z-2 font-pixel font-[400] text-[20px] leading-[24px] text-center opacity-0 animate-battle-finding-versus-fade">
                 VS
               </p>
             </div>
             <CurrentUserBattleCard
-              className="relative z-0 w-full"
+              className="relative z-0 w-full opacity-0 animate-battle-preview-slide"
               isStartFindingOpponent={isStartFindingOpponent}
             />
           </div>
           {!isWasFoundOpponent && (
-            <div className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a]">
+            <div
+              className={cn(
+                'fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a] opacity-0 animate-battle-finding-button-fade',
+                !isAnimationsEnd && 'pointer-events-none',
+              )}
+              onAnimationEnd={() => setIsAnimationsEnd(true)}
+            >
               <ActionButton
                 onClick={() => {
                   setIsStartFindingOpponent(false)
                   setIsWasFoundOpponent(false)
+                  setIsAnimationsEnd(false)
                 }}
-                className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
+                className={cn('bg-gradient-to-b from-[#FFFFFF] to-[#999999]')}
               >
                 <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
                   close
@@ -142,11 +155,11 @@ export const OpponentBattleCard = ({
   setIsWasFoundOpponent: (value: boolean) => void
   className?: string
 }) => {
-  useEffect(() => {
-    setTimeout(() => {
-      setIsWasFoundOpponent(true)
-    }, 3000)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsWasFoundOpponent(true)
+  //   }, 3000)
+  // }, [])
 
   return (
     <div

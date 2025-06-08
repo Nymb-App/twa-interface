@@ -50,7 +50,7 @@ export function BattlePreviewScreen({
         />
         <CurrentUserBattleCard />
       </header>
-      <BattleGameRewardSection />
+      <BattleGameRewardSection isAnimationsEnd={isAnimationsEnd} />
       <div
         className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a] opacity-0 animate-battle-preview-find-fade"
         onAnimationEnd={() => setIsAnimationsEnd(true)}
@@ -60,7 +60,10 @@ export function BattlePreviewScreen({
         </p>
         <ActionButton
           onClick={() => setIsStartFindingOpponent(true)}
-          className="font-pixel text-[#121312] rounded-[16px] uppercase"
+          className={cn(
+            'font-pixel text-[#121312] rounded-[16px] uppercase',
+            !isAnimationsEnd && 'pointer-events-none',
+          )}
         >
           <span>finding the opponent</span>
         </ActionButton>
@@ -88,7 +91,13 @@ export const BattleTitle = ({
   )
 }
 
-function BattleGameRewardSection({ className }: { className?: string }) {
+function BattleGameRewardSection({
+  className,
+  isAnimationsEnd,
+}: {
+  className?: string
+  isAnimationsEnd?: boolean
+}) {
   const { battleGameRewardRadioValue, setBattleGameRewardRadioValue } =
     useContext(AppContext)
 
@@ -134,7 +143,12 @@ function BattleGameRewardSection({ className }: { className?: string }) {
         </div>
         <Drawer>
           <DrawerTrigger asChild className="w-full mx-auto">
-            <button className="flex justify-center gap-[21px] h-[40px] max-w-[254px] opacity-0 animate-battle-preview-bust-fade">
+            <button
+              className={cn(
+                'flex justify-center gap-[21px] h-[40px] max-w-[254px] opacity-0 animate-battle-preview-bust-fade',
+                !isAnimationsEnd && 'pointer-events-none',
+              )}
+            >
               <span className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
                 <span className="ml-1.5">
                   <BustIcon />
@@ -231,11 +245,12 @@ export const CurrentUserBattleCard = ({
       />
       {isStartFindingOpponent && (
         <ElectricLines
+          className="opacity-0 animate-battle-finding-lines-fade"
           accentColor="#B6FF00"
-          svg1ClassName="top-[-120px] left-[150px]"
-          svg2ClassName="top-[-90px] left-[-55px]"
-          svg3ClassName="top-[0px] left-[-45px]"
-          svg4ClassName="top-[10px] left-[155px]"
+          svg1ClassName="top-[-15%] left-[72%]"
+          svg2ClassName="top-[0%] left-[30%]"
+          svg3ClassName="top-[80px] left-[130px]"
+          svg4ClassName="top-[95px] left-[260px]"
         />
       )}
     </div>

@@ -249,6 +249,31 @@ code {
     }
   }
 
+  @keyframes battle-finding-slide-top-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(-50rem);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes battle-finding-lines-fade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  --animate-battle-finding-slide-top-fade: battle-finding-slide-top-fade 0.7s ease-out forwards;
+  --animate-battle-finding-versus-fade: slide-up-fade 0.6s ease-out 0.7s forwards;
+  --animate-battle-finding-lines-fade: battle-finding-lines-fade 0.6s ease-out 2.2s forwards;
+  --animate-battle-finding-button-fade: slide-up-fade 0.6s ease-out 2.7s forwards;
+
   --animate-battle-preview-slide: battle-preview-slide-bottom-fade 0.7s ease-out forwards;
   --animate-battle-preview-title-fade: slide-up-fade 0.6s ease-out 0.7s forwards;
   --animate-battle-preview-username-fade: slide-up-fade 0.6s ease-out 1.2s forwards;
