@@ -34,7 +34,7 @@ export function GameBoardScreen({
   const [isRightBoostActive, setIsRightBoostActive] = useState(false)
   const [isRightBoostDisable, setIsRightBoostDisable] = useState(false)
   const [leftBoostfillPercentage, setLeftBoostfillPercentage] = useState(0)
-  const [rightBoostfillPercentage, setRightBoostfillPercentage] = useState(100)
+  const [rightBoostfillPercentage, setRightBoostfillPercentage] = useState(0)
 
   const isBuyTurboBoost = true
   const isBoostActive =
@@ -63,7 +63,7 @@ export function GameBoardScreen({
 
   useEffect(() => {
     if (!isCountdownStarted && !endTime) {
-      setEndTime(Date.now() + 160000)
+      setEndTime(Date.now() + 60000)
     }
   }, [isCountdownStarted, endTime])
 
