@@ -24,8 +24,7 @@ function RouteComponent() {
   const [isGameFinished, setIsGameFinished] = useState(false)
   const [isWinner, setIsWinner] = useState(false)
   const [isLoser, setIsLoser] = useState(false)
-  const { battleGameRewardRadioValue, setBattleGamePercentOfFill } =
-    useContext(AppContext)
+  const { battleGameRewardRadioValue } = useContext(AppContext)
 
   const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
 
@@ -36,14 +35,13 @@ function RouteComponent() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   if (isWasFoundOpponent) {
-  //     setTimeout(() => {
-  //       setIsStartGame(true)
-  //     }, 3000)
-  //   }
-  //   setBattleGamePercentOfFill(0)
-  // }, [isWasFoundOpponent])
+  useEffect(() => {
+    if (isWasFoundOpponent) {
+      setTimeout(() => {
+        setIsStartGame(true)
+      }, 4500)
+    }
+  }, [isWasFoundOpponent])
 
   return (
     <>
@@ -155,11 +153,11 @@ export const OpponentBattleCard = ({
   setIsWasFoundOpponent: (value: boolean) => void
   className?: string
 }) => {
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setIsWasFoundOpponent(true)
-  //   }, 3000)
-  // }, [])
+  useEffect(() => {
+    setTimeout(() => {
+      setIsWasFoundOpponent(true)
+    }, 4500)
+  }, [])
 
   return (
     <div

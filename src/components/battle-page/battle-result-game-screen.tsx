@@ -67,6 +67,7 @@ export function BattleResultGameScreen({
       )}
     >
       <RiveComponent className="absolute h-full w-full top-0 left-0 z-[-1]" />
+      <div className="absolute top-[-10px] left-0 w-full h-screen backdrop-blur-[2.5px]" />
       <header className="relative w-full h-[310px] top-20">
         {starsImgSrc && (
           <img
@@ -107,7 +108,6 @@ export function BattleResultGameScreen({
           </h3>
         </div>
       </header>
-
       <div className="flex flex-col items-center justify-center gap-1 opacity-0 animate-slide-up-fade-swipe-game-5">
         <h2 className="font-inter text-sm text-white/50">
           {isWinner ? 'Your reward' : 'You lose'}:
@@ -151,7 +151,6 @@ export function BattleResultGameScreen({
           </div>
         </div>
       </div>
-
       <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
         <ActionButton
           onClick={() => {

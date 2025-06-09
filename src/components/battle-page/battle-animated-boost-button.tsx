@@ -1,39 +1,39 @@
-import { useContext, useState } from 'react'
 import { BattleBoostActiveIcon } from '@/assets/icons/battle-boost-active'
-import { AppContext } from '@/context/app-context'
 import { BattleBoostFilledIcon } from '@/assets/icons/battle-boost-filled'
 
 export const BattleAnimatedBoostButton = ({
-  setIsX2Boost,
+  onBoostActivate,
+  isBoostActive,
+  resetBoost,
+  boostReady,
+  fillPercentage,
+  setIsBoostDisable,
 }: {
-  setIsX2Boost: (value: boolean) => void
+  onBoostActivate: () => void
+  isBoostActive: boolean
+  resetBoost: () => void
+  boostReady: boolean
+  fillPercentage: number
+  setIsBoostDisable: () => void
 }) => {
-  const { battleGamePercentOfFill, setBattleGamePercentOfFill } =
-    useContext(AppContext)
+  const fillPercentageValue = Math.min(fillPercentage, 100)
 
-  const fillPercentage = Math.min(battleGamePercentOfFill, 100)
-
-  const [isBoostActive, setIsBoostActive] = useState(false)
+  const handleClick = () => {
+    if (boostReady && !isBoostActive) {
+      onBoostActivate()
+    }
+  }
 
   return (
-    <button
-      className="relative"
-      onClick={() => {
-        if (fillPercentage === 100) {
-          setBattleGamePercentOfFill(0)
-          setIsX2Boost(true)
-          setIsBoostActive(true)
-        }
-      }}
-    >
-      {fillPercentage === 100 && !isBoostActive && <BattleBoostActiveIcon />}
+    <button className="relative w-[88px] h-[88px]" onClick={handleClick}>
+      {boostReady && !isBoostActive && <BattleBoostActiveIcon />}
       {isBoostActive && (
         <BattleBoostFilledIcon
-          setIsBoostActive={setIsBoostActive}
-          setIsX2Boost={setIsX2Boost}
+          onFinish={resetBoost}
+          setIsBoostDisable={setIsBoostDisable}
         />
       )}
-      {!isBoostActive && (
+      {!isBoostActive && !boostReady && (
         <svg
           width="88"
           height="88"
@@ -43,12 +43,12 @@ export const BattleAnimatedBoostButton = ({
         >
           <defs>
             {/* Progressive fill mask */}
-            <mask id="fillMask">
+            <mask id={`fillMask-${fillPercentageValue}`}>
               <rect x="0" y="0" width="88" height="88" fill="black" />
               <path
-                d={`M 44 44 L 44 0 A 44 44 0 ${fillPercentage > 50 ? 1 : 0} 1 ${
-                  44 + 44 * Math.sin((fillPercentage / 100) * 2 * Math.PI)
-                } ${44 - 44 * Math.cos((fillPercentage / 100) * 2 * Math.PI)} Z`}
+                d={`M 44 44 L 44 0 A 44 44 0 ${fillPercentageValue > 50 ? 1 : 0} 1 ${
+                  44 + 44 * Math.sin((fillPercentageValue / 100) * 2 * Math.PI)
+                } ${44 - 44 * Math.cos((fillPercentageValue / 100) * 2 * Math.PI)} Z`}
                 fill="white"
               />
             </mask>
@@ -205,7 +205,7 @@ export const BattleAnimatedBoostButton = ({
             />
           </g>
           {/* Filled area with colored circles */}
-          <g mask="url(#fillMask)">
+          <g mask={`url(#fillMask-${fillPercentageValue})`}>
             {/* Background for filled area */}
             <circle cx="44" cy="44" r="44" fill="#365314" fillOpacity="0.3" />
 

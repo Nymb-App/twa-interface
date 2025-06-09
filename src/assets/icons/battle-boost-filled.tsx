@@ -1,43 +1,40 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { motion } from 'framer-motion'
-import { AppContext } from '@/context/app-context'
 
 export const BattleBoostFilledIcon = ({
-  setIsBoostActive,
-  setIsX2Boost,
+  onFinish,
+  setIsBoostDisable,
 }: {
-  setIsBoostActive: (value: boolean) => void
-  setIsX2Boost: (value: boolean) => void
+  onFinish: () => void
+  setIsBoostDisable: () => void
 }) => {
-  const [fillPercentage, setFillPercentage] = useState(100)
-
-  const { setBattleGamePercentOfFill } = useContext(AppContext)
+  const [fillMaskPercentage, setFillMaskPercentage] = useState(100)
+  const maskId = useId()
 
   useEffect(() => {
-    if (fillPercentage === 0) {
-      setIsX2Boost(false)
-
+    if (fillMaskPercentage === 0) {
+      setIsBoostDisable()
       const timeout = setTimeout(() => {
-        setBattleGamePercentOfFill(0)
-        setIsBoostActive(false)
+        onFinish()
       }, 3000)
 
       return () => clearTimeout(timeout)
     }
-  }, [fillPercentage])
+  }, [fillMaskPercentage])
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFillPercentage((prev) => Math.max(prev - 1, 0))
+      setFillMaskPercentage((prev) => Math.max(prev - 1, 0))
     }, 300)
 
     return () => clearInterval(interval)
   }, [])
 
-  const angle = (fillPercentage / 100) * 2 * Math.PI
+  const angle = (fillMaskPercentage / 100) * 2 * Math.PI
   const x = 44 + 44 * Math.sin(angle)
   const y = 44 - 44 * Math.cos(angle)
-  const largeArcFlag = fillPercentage > 50 ? 1 : 0
+  const largeArcFlag = fillMaskPercentage > 50 ? 1 : 0
+
   return (
     <motion.svg
       initial={{ opacity: 0, scale: 0.5 }}
@@ -50,7 +47,7 @@ export const BattleBoostFilledIcon = ({
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <mask id="fillMask">
+        <mask id={maskId}>
           <rect x="0" y="0" width="88" height="88" fill="black" />
           <path
             d={`M44 44 L44 0 A44 44 0 ${largeArcFlag} 1 ${x} ${y} Z`}
@@ -209,7 +206,7 @@ export const BattleBoostFilledIcon = ({
         />
       </g>
       {/* Filled area with colored circles */}
-      <g mask="url(#fillMask)">
+      <g mask={`url(#${maskId})`}>
         {/* Background for filled area */}
         <circle cx="44" cy="44" r="44" fill="#365314" fillOpacity="0.3" />
 

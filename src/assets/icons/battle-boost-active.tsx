@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
+import { useId } from 'react'
 
 export const BattleBoostActiveIcon = () => {
+  const maskId = useId()
   return (
     <motion.svg
       initial={{ opacity: 0, scale: 0.5 }}
@@ -174,7 +176,7 @@ export const BattleBoostActiveIcon = () => {
         />
       </g>
       <mask
-        id="mask0_51_56354"
+        id={maskId}
         maskUnits="userSpaceOnUse"
         x="16"
         y="27"
@@ -183,7 +185,7 @@ export const BattleBoostActiveIcon = () => {
       >
         <circle cx="60" cy="71" r="44" fill="#B6FF00" />
       </mask>
-      <g mask="url(#mask0_51_56354)">
+      <g mask={`url(#${maskId})`}>
         <path
           d="M80.398 73.5303C82.1285 73.5303 83.5313 72.1275 83.5313 70.397C83.5313 68.6665 82.1285 67.2637 80.398 67.2637C78.6675 67.2637 77.2646 68.6665 77.2646 70.397C77.2646 72.1275 78.6675 73.5303 80.398 73.5303Z"
           fill="#B6FF00"
