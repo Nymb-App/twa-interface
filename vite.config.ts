@@ -46,6 +46,7 @@ export default defineConfig({
       'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
       'ever-paint-representing-crossing.trycloudflare.com',
+      'reviewer-supervision-dna-prayer.trycloudflare.com',
     ],
   },
 
