@@ -170,8 +170,8 @@ const AnimatedCanvas = ({
         ref={canvasRef}
         className="absolute left-1/2 -translate-x-1/2 h-full rotate-180"
       />
-      <div className="absolute inset-0 w-full h-[50%] bg-[#03061a] mask-[linear-gradient(to_top,_black_0%,_black_60%,transparent_70%)]" />
-      <div className="absolute bottom-0 w-full h-[50%] bg-[#03061a] mask-[linear-gradient(to_bottom,_black_0%,_black_60%,transparent_70%)]" />
+      <div className="absolute inset-0 w-full h-[60%] bg-[#03061a] mask-[linear-gradient(to_top,_black_0%,_black_60%,transparent_70%)]" />
+      <div className="absolute bottom-0 w-full h-[60%] bg-[#03061a] mask-[linear-gradient(to_bottom,_black_0%,_black_60%,transparent_70%)]" />
     </div>
   )
 }

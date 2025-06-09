@@ -64,12 +64,11 @@ export const GreenRain = () => {
         )
         grad.addColorStop(
           0,
-          this.charged
-            ? `rgba(255,255,255, ${this.alpha})`
-            : `rgba(174,250,65, ${this.alpha})`,
+          this.charged ? `rgba(255,255,255, 1)` : `rgba(174,250,65, 1)`,
         )
         grad.addColorStop(0.5, `rgba(174,250,65, ${this.alpha * 0.5})`)
-        grad.addColorStop(1, `rgba(174,250,65, 0)`)
+        // grad.addColorStop(1, `rgba(174,250,65, ${this.alpha * 0.5})`)
+        grad.addColorStop(0, `rgba(174,250,65, 0)`)
 
         context.beginPath()
         context.strokeStyle = grad

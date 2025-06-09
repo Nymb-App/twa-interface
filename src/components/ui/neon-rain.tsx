@@ -68,8 +68,11 @@ export const NeonRain = () => {
             ? `rgba(255,255,255, ${this.alpha})`
             : `rgba(180,120,255, ${this.alpha})`,
         )
-        grad.addColorStop(0.5, `rgba(116,29,227, ${this.alpha * 0.5})`)
-        grad.addColorStop(1, `rgba(74,29,227, 0)`)
+        // grad.addColorStop(0.5, `rgba(116,29,227, ${this.alpha * 0.5})`)
+        // grad.addColorStop(1, `rgba(74,29,227, 0)`)
+
+        grad.addColorStop(1, `rgba(116,29,227, ${this.alpha * 0.5})`)
+        grad.addColorStop(0, `rgba(74,29,227, 0)`)
 
         context.beginPath()
         context.strokeStyle = grad

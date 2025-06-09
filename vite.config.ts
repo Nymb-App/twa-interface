@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'housewares-talking-hispanic-periodic.trycloudflare.com',
+      'grade-refurbished-turns-organised.trycloudflare.com',
     ],
   },
 

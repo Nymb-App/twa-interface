@@ -41,10 +41,11 @@ export function GameBoardScreen({
     (isLeftBoostActive && !isLeftBoostDisable) ||
     (isRightBoostActive && !isRightBoostDisable)
 
+  // Смена процента push
   const handleClick = () => {
     setPercentRainHeight((prev) => {
       const newValue = Math.min(
-        Math.max(prev + (isBoostActive ? 2 : 1), 0),
+        Math.max(prev + (isBoostActive ? 4 : 2), 0),
         100,
       )
       return newValue
@@ -70,10 +71,11 @@ export function GameBoardScreen({
   useEffect(() => {
     let autoClickInterval: NodeJS.Timeout | null = null
 
+    // Смена для бота
     if (!isCountdownStarted && endTime && autoClick) {
       autoClickInterval = setInterval(() => {
         setPercentRainHeight((prev) => {
-          const newValue = Math.min(Math.max(prev - 1, 0), 100)
+          const newValue = Math.min(Math.max(prev - 2, 0), 100)
           return newValue
         })
       }, 300)
@@ -107,24 +109,32 @@ export function GameBoardScreen({
   }, [backgroundClass])
 
   return (
-    <PageLayout useFooter={false} className={cn('pb-0', backgroundClass)}>
+    <PageLayout
+      useFooter={false}
+      className={cn('pb-0 overflow-x-hidden', backgroundClass)}
+    >
       <div className="flex flex-col min-h-[calc(100vh-7rem)] items-center justify-between">
         <div className="w-full">
           <section className={cn('w-full font-[400] pb-4')}>
-            <dl className="flex justify-evenly text-center text-[14px] font-pixel uppercase">
+            <dl className="flex justify-evenly text-center text-[14px] font-inter">
               <div>
                 <dt className="leading-[120%] text-[14px] text-[#FFFFFF]/40 mb-4">
                   Winning:
                 </dt>
-                <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2">
-                  {battleGameRewardRadioValue}
+                <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px]">
+                  <span className="mr-1 text-lg">
+                    {battleGameRewardRadioValue.split(' ')[0]}
+                  </span>
+                  <span className="text-xs">
+                    {battleGameRewardRadioValue.split(' ')[1]}
+                  </span>
                 </dd>
               </div>
               <div>
                 <dt className="leading-[120%] text-[14px] text-[#FFFFFF]/40 mb-2">
                   There's time:
                 </dt>
-                <dd className="text-[20px] leading-[24px] text-[#FFFFFF]">
+                <dd className="text-[20px] leading-[24px] text-[#FFFFFF] font-pixel">
                   {isCountdownStarted || !endTime ? (
                     <span>01:00</span>
                   ) : (
@@ -179,7 +189,7 @@ export function GameBoardScreen({
           ) : (
             <div className="absolute inset-0">
               <div
-                className={`absolute top-0 w-full transition-all duration-${isBoostActive ? 500 : 1000} ease-linear`}
+                className={`absolute top-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
                 style={{ height: `${100 - percentRainHeight}%` }}
               >
                 <NeonRain />
@@ -191,7 +201,7 @@ export function GameBoardScreen({
               />
 
               <div
-                className={`absolute bottom-0 w-full transition-all duration-${isBoostActive ? 500 : 1000} ease-linear`}
+                className={`absolute bottom-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
                 style={{ height: `${percentRainHeight}%` }}
               >
                 <GreenRain />

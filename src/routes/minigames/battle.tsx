@@ -200,7 +200,7 @@ export const OpponentBattleCard = ({
 
 export const FindingTheOpponentPlaceholder = () => {
   return (
-    <div className="flex flex-col items-center justify-center font-pixel mt-4">
+    <div className="flex flex-col items-center justify-center font-pixel mt-4 animate-battle-finding-dots-pulse">
       <div className="relative mb-4">
         <div className="absolute z-0 inset-0 rounded-full bg-[#8c35fb66] blur-[20px] shadow-[0px_0px_59.8px_#8C35FB]" />
         <div className="relative flex items-center justify-center">
