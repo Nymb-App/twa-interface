@@ -12,6 +12,7 @@ import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { GameBoardScreen } from '@/components/battle-page/battle-gameboard-screen'
 import { BattleResultGameScreen } from '@/components/battle-page/battle-result-game-screen'
 import { AppContext } from '@/context/app-context'
+import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-bg'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -114,6 +115,7 @@ function RouteComponent() {
       )}
       {isGameFinished && isWinner && (
         <BattleResultGameScreen
+          classNameForBg="rotate-180"
           rewardTimeValue={battleGameRewardRadioValue.split(' ')[0]}
           rewardTimeLabel={battleGameRewardRadioValue.split(' ')[1]}
           isWinner={true}
@@ -125,6 +127,15 @@ function RouteComponent() {
             setIsWasFoundOpponent(false)
             setIsStartFindingOpponent(false)
           }}
+          battleResultGameBgComponent={
+            <BattleResultGameBg
+              className="rotate-180 bg-[#0a1309]"
+              glowColor="#0a1309"
+              gradColor1="rgba(10, 19, 9, 0)"
+              gradColor2="#1e4020"
+              gradColor3="#58c77a"
+            />
+          }
         />
       )}
       {isGameFinished && isLoser && (
@@ -138,6 +149,7 @@ function RouteComponent() {
             setIsWasFoundOpponent(false)
             setIsStartFindingOpponent(false)
           }}
+          battleResultGameBgComponent={<BattleResultGameBg />}
         />
       )}
     </>
