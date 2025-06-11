@@ -1,11 +1,15 @@
 import { cn } from '@/utils'
 
 export const BattleRainSplitLine = ({
-  position,
-  isBoostActive,
+  position = 50,
+  isBoostActive = false,
+  className,
+  style,
 }: {
-  position: number
-  isBoostActive: boolean
+  position?: number
+  isBoostActive?: boolean
+  className?: string
+  style?: React.CSSProperties
 }) => {
   const currentPosition = 100 - position
 
@@ -16,9 +20,11 @@ export const BattleRainSplitLine = ({
         position === 50 && 'theme-blue',
         position > 50 && 'theme-green',
         position < 50 && 'theme-purple',
+        className,
       )}
       style={{
         top: `${currentPosition}%`,
+        ...style,
       }}
     >
       <div className="translate-y-[100%] h-[100px] segment-1" />

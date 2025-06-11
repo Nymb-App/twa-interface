@@ -211,18 +211,25 @@ function BattleGameRewardSection({
 }
 
 export const CurrentUserBattleCard = ({
+  isWasFoundOpponent,
+  cardHeight,
+  style,
   className,
   isStartFindingOpponent,
 }: {
+  isWasFoundOpponent?: boolean
+  cardHeight?: number
+  style?: React.CSSProperties
   className?: string
   isStartFindingOpponent?: boolean
 }) => {
   return (
     <div
       className={cn(
-        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] z-[-1] bg-no-repeat bg-bottom pt-[26px] h-[220px] uppercase",
+        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] z-[-1] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase",
         className,
       )}
+      style={style}
     >
       <p className="opacity-0 animate-battle-preview-username-fade">teviall</p>
       <div className="relative z-1 size-[104px] rounded-[34px] opacity-0 animate-battle-preview-avatar-fade">
@@ -235,19 +242,28 @@ export const CurrentUserBattleCard = ({
         </p>
       </div>
       <FlickeringGrid
-        className="absolute top-[54%] -translate-y-1/2 left-[60%] -translate-x-1/2 w-[450px] h-[220px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]"
+        className={cn(
+          'absolute top-[125px] -translate-y-1/2 left-[60%] -translate-x-1/2 w-[450px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]',
+          isWasFoundOpponent &&
+            'transition-[height] duration-1300 linear top-[55%]',
+        )}
         squareSize={2}
         gridGap={12}
         color="#b7ff01"
         maxOpacity={0.5}
         flickerChance={0.3}
         autoResize={false}
-        width={400}
-        height={220}
+        width={450}
+        height={cardHeight}
+        style={{ height: `${cardHeight}px` }}
       />
       {isStartFindingOpponent && (
         <ElectricLines
-          className="opacity-0 animate-battle-finding-lines-fade"
+          className={cn(
+            'opacity-0 animate-battle-finding-lines-fade',
+            isWasFoundOpponent &&
+              'top-[90px] transition-all duration-1300 linear',
+          )}
           accentColor="#B6FF00"
           svg1ClassName="top-[-15%] left-[72%]"
           svg2ClassName="top-[0%] left-[30%]"

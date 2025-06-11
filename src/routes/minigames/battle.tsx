@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import {
   BattlePreviewScreen,
   BattleTitle,
@@ -13,6 +13,7 @@ import { GameBoardScreen } from '@/components/battle-page/battle-gameboard-scree
 import { BattleResultGameScreen } from '@/components/battle-page/battle-result-game-screen'
 import { AppContext } from '@/context/app-context'
 import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-bg'
+import { BattleRainSplitLine } from '@/components/battle-page/battle-rain-split-line'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -39,8 +40,28 @@ function RouteComponent() {
   useEffect(() => {
     if (isWasFoundOpponent) {
       setTimeout(() => {
-        setIsStartGame(true)
+        // setIsStartGame(true)
       }, 4500)
+    }
+  }, [isWasFoundOpponent])
+
+  const [cardHeight, setCardHeight] = useState(220)
+  const [cardWidth, setCardWidth] = useState(450)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (isWasFoundOpponent && containerRef.current) {
+      const resize = () => {
+        const height = Math.floor(containerRef.current!.clientHeight / 2)
+        const width = Math.floor(containerRef.current!.clientWidth - 50)
+        setCardHeight(height)
+        setCardWidth(width)
+      }
+
+      resize()
+
+      window.addEventListener('resize', resize)
+      return () => window.removeEventListener('resize', resize)
     }
   }, [isWasFoundOpponent])
 
@@ -66,44 +87,83 @@ function RouteComponent() {
               }
             />
           </header>
-          <div className="flex flex-col min-h-[calc(100vh-18rem)] items-center justify-between gap-3">
+          <div
+            ref={containerRef}
+            className={cn(
+              'flex flex-col min-h-[calc(100vh-18rem)] items-center justify-between gap-3',
+              isWasFoundOpponent && 'gap-0',
+            )}
+          >
             <OpponentBattleCard
+              cardHeight={cardHeight}
+              style={
+                isWasFoundOpponent ? { height: `${cardHeight}px` } : undefined
+              }
               isWasFoundOpponent={isWasFoundOpponent}
               setIsWasFoundOpponent={setIsWasFoundOpponent}
-              className="relative z-0 w-full opacity-0 animate-battle-finding-slide-top-fade"
+              className={cn(
+                'relative z-0 w-full opacity-0 animate-battle-finding-slide-top-fade',
+                isWasFoundOpponent &&
+                  'duration-1300 linear transition-all pt-18',
+              )}
             />
             <div className="relative">
-              <p className="relative z-2 font-pixel font-[400] text-[20px] leading-[24px] text-center opacity-0 animate-battle-finding-versus-fade">
+              <div
+                className={cn(
+                  'relative z-2 font-pixel font-[400] text-[20px] leading-[24px] text-center opacity-0 animate-battle-finding-versus-fade',
+                  isWasFoundOpponent &&
+                    'absolute -translate-x-1/2 -translate-y-1/2',
+                )}
+              >
                 VS
-              </p>
+                {isWasFoundOpponent && (
+                  <BattleRainSplitLine
+                    className={cn(
+                      `absolute -translate-y-1/2 -translate-x-1/2 z-[-1]`,
+                      'opacity-0 animate-battle-finding-line-width-fade',
+                    )}
+                    style={{ width: `${cardWidth}px` }}
+                  />
+                )}
+              </div>
             </div>
             <CurrentUserBattleCard
-              className="relative z-0 w-full opacity-0 animate-battle-preview-slide"
+              isWasFoundOpponent={isWasFoundOpponent}
+              cardHeight={cardHeight}
+              style={
+                isWasFoundOpponent ? { height: `${cardHeight}px` } : undefined
+              }
+              className={cn(
+                'relative z-0 w-full opacity-0 animate-battle-preview-slide',
+                isWasFoundOpponent &&
+                  'duration-1300 linear pt-17 transition-all',
+              )}
               isStartFindingOpponent={isStartFindingOpponent}
             />
           </div>
-          {!isWasFoundOpponent && (
-            <div
-              className={cn(
-                'fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a] opacity-0 animate-battle-finding-button-fade',
-                !isAnimationsEnd && 'pointer-events-none',
-              )}
-              onAnimationEnd={() => setIsAnimationsEnd(true)}
+          <div
+            className={cn(
+              'fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a]',
+              !isAnimationsEnd && 'pointer-events-none',
+              !isWasFoundOpponent
+                ? 'opacity-0 animate-battle-finding-button-fade-in'
+                : 'animate-battle-finding-button-fade-out pointer-events-none',
+            )}
+            onAnimationEnd={() => setIsAnimationsEnd(true)}
+          >
+            <ActionButton
+              onClick={() => {
+                setIsStartFindingOpponent(false)
+                setIsWasFoundOpponent(false)
+                setIsAnimationsEnd(false)
+              }}
+              className={cn('bg-gradient-to-b from-[#FFFFFF] to-[#999999]')}
             >
-              <ActionButton
-                onClick={() => {
-                  setIsStartFindingOpponent(false)
-                  setIsWasFoundOpponent(false)
-                  setIsAnimationsEnd(false)
-                }}
-                className={cn('bg-gradient-to-b from-[#FFFFFF] to-[#999999]')}
-              >
-                <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
-                  close
-                </span>
-              </ActionButton>
-            </div>
-          )}
+              <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
+                close
+              </span>
+            </ActionButton>
+          </div>
         </PageLayout>
       )}
       {isStartGame && !isGameFinished && (
@@ -157,10 +217,14 @@ function RouteComponent() {
 }
 
 export const OpponentBattleCard = ({
+  cardHeight,
+  style,
   isWasFoundOpponent,
   setIsWasFoundOpponent,
   className,
 }: {
+  cardHeight?: number
+  style?: React.CSSProperties
   isWasFoundOpponent: boolean
   setIsWasFoundOpponent: (value: boolean) => void
   className?: string
@@ -174,9 +238,10 @@ export const OpponentBattleCard = ({
   return (
     <div
       className={cn(
-        "font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-opponent-bg.png')] z-[-1] bg-no-repeat bg-bottom pt-[26px] h-[220px] uppercase",
+        "font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-opponent-bg.png')] z-[-1] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase",
         className,
       )}
+      style={style}
     >
       <div className="relative size-[104px] rounded-[34px]">
         {isWasFoundOpponent ? (
@@ -192,19 +257,23 @@ export const OpponentBattleCard = ({
         ) : (
           <FindingTheOpponentPlaceholder />
         )}
-        <FlickeringGrid
-          className="absolute top-[-15px] left-[-134px] w-[450px] h-[220px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]"
-          squareSize={2}
-          gridGap={12}
-          color="#cdaff9"
-          maxOpacity={0.5}
-          flickerChance={0.3}
-          autoResize={false}
-          width={400}
-          height={220}
-        />
         {/* {isWasFoundOpponent && <ElectricLines />} */}
       </div>
+      <FlickeringGrid
+        className={cn(
+          'absolute top-[6px] left-[25px] w-[450px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]',
+          isWasFoundOpponent && 'transition-[height] duration-1700 linear',
+        )}
+        squareSize={2}
+        gridGap={12}
+        color="#cdaff9"
+        maxOpacity={0.5}
+        flickerChance={0.3}
+        autoResize={false}
+        width={450}
+        height={cardHeight}
+        style={{ height: `${cardHeight}px` }}
+      />
       <p className={cn(!isWasFoundOpponent && 'hidden')}>teviall</p>
     </div>
   )
