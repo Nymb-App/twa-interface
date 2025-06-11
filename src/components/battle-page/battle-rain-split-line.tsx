@@ -5,11 +5,13 @@ export const BattleRainSplitLine = ({
   isBoostActive = false,
   className,
   style,
+  onAnimationEnd,
 }: {
   position?: number
   isBoostActive?: boolean
   className?: string
   style?: React.CSSProperties
+  onAnimationEnd?: React.AnimationEventHandler<HTMLDivElement>
 }) => {
   const currentPosition = 100 - position
 
@@ -26,6 +28,7 @@ export const BattleRainSplitLine = ({
         top: `${currentPosition}%`,
         ...style,
       }}
+      onAnimationEnd={onAnimationEnd}
     >
       <div className="translate-y-[100%] h-[100px] segment-1" />
       <div className="translate-y-0 h-[100px] segment-2" />

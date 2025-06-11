@@ -29,6 +29,10 @@ function RouteComponent() {
   const { battleGameRewardRadioValue } = useContext(AppContext)
 
   const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
+  const [isFinalAnimationBeforeGame, setIsFinalAnimationBeforeGame] =
+    useState(false)
+  const [isTranslateCardsAnimationStart, setIsTranslateCardsAnimationStart] =
+    useState(false)
 
   useEffect(() => {
     document.body.style.backgroundColor = '#03061a'
@@ -38,12 +42,8 @@ function RouteComponent() {
   }, [])
 
   useEffect(() => {
-    if (isWasFoundOpponent) {
-      setTimeout(() => {
-        // setIsStartGame(true)
-      }, 4500)
-    }
-  }, [isWasFoundOpponent])
+    setIsTranslateCardsAnimationStart(false)
+  }, [isGameFinished])
 
   const [cardHeight, setCardHeight] = useState(220)
   const [cardWidth, setCardWidth] = useState(450)
@@ -77,9 +77,16 @@ function RouteComponent() {
           useFooter={false}
           className="bg-[#03061a] pb-30 overflow-hidden"
         >
-          <header className="font-pixel font-[400] text-center">
+          <header
+            className={cn(
+              'font-pixel font-[400] text-center',
+              isFinalAnimationBeforeGame &&
+                '!animate-battle-finding-button-fade-out',
+              isTranslateCardsAnimationStart && 'hidden',
+            )}
+          >
             <BattleTitle
-              className="opacity-0 animate-battle-preview-title-fade"
+              className={'opacity-0 animate-battle-preview-title-fade'}
               text={
                 !isWasFoundOpponent
                   ? 'Finding the opponent'
@@ -95,6 +102,7 @@ function RouteComponent() {
             )}
           >
             <OpponentBattleCard
+              isTranslateCardsAnimationStart={isTranslateCardsAnimationStart}
               cardHeight={cardHeight}
               style={
                 isWasFoundOpponent ? { height: `${cardHeight}px` } : undefined
@@ -105,6 +113,8 @@ function RouteComponent() {
                 'relative z-0 w-full opacity-0 animate-battle-finding-slide-top-fade',
                 isWasFoundOpponent &&
                   'duration-1300 linear transition-all pt-18',
+                isTranslateCardsAnimationStart &&
+                  '-translate-y-[85%] animate-battle-finding-button-fade-out',
               )}
             />
             <div className="relative">
@@ -115,19 +125,48 @@ function RouteComponent() {
                     'absolute -translate-x-1/2 -translate-y-1/2',
                 )}
               >
-                VS
-                {isWasFoundOpponent && (
-                  <BattleRainSplitLine
-                    className={cn(
-                      `absolute -translate-y-1/2 -translate-x-1/2 z-[-1]`,
-                      'opacity-0 animate-battle-finding-line-width-fade',
-                    )}
-                    style={{ width: `${cardWidth}px` }}
-                  />
-                )}
+                <span
+                  className={cn(
+                    isFinalAnimationBeforeGame &&
+                      'animate-battle-finding-button-fade-out delay-1500 ease-out',
+                    isWasFoundOpponent &&
+                      !isFinalAnimationBeforeGame &&
+                      isTranslateCardsAnimationStart &&
+                      'hidden',
+                  )}
+                >
+                  VS
+                </span>
+                {isWasFoundOpponent &&
+                  !isFinalAnimationBeforeGame &&
+                  !isTranslateCardsAnimationStart && (
+                    <BattleRainSplitLine
+                      className={cn(
+                        `absolute -translate-y-1/2 -translate-x-1/2 z-[-1]`,
+                        'opacity-0 animate-battle-finding-line-width-fade-in',
+                      )}
+                      style={{ width: `${cardWidth}px` }}
+                      onAnimationEnd={() => setIsFinalAnimationBeforeGame(true)}
+                    />
+                  )}
+                {isFinalAnimationBeforeGame &&
+                  !isTranslateCardsAnimationStart && (
+                    <BattleRainSplitLine
+                      className={cn(
+                        `absolute -translate-y-1/2 -translate-x-1/2 z-[-1]`,
+                        'animate-battle-finding-line-width-fade-out',
+                      )}
+                      style={{ width: `${cardWidth}px` }}
+                      onAnimationEnd={() => {
+                        setIsTranslateCardsAnimationStart(true)
+                        setIsFinalAnimationBeforeGame(false)
+                      }}
+                    />
+                  )}
               </div>
             </div>
             <CurrentUserBattleCard
+              isTranslateCardsAnimationStart={isTranslateCardsAnimationStart}
               isWasFoundOpponent={isWasFoundOpponent}
               cardHeight={cardHeight}
               style={
@@ -137,7 +176,18 @@ function RouteComponent() {
                 'relative z-0 w-full opacity-0 animate-battle-preview-slide',
                 isWasFoundOpponent &&
                   'duration-1300 linear pt-17 transition-all',
+                isTranslateCardsAnimationStart &&
+                  'translate-y-[85%] animate-battle-finding-button-fade-out',
               )}
+              onAnimationEnd={() => {
+                if (
+                  isWasFoundOpponent &&
+                  !isFinalAnimationBeforeGame &&
+                  isTranslateCardsAnimationStart
+                ) {
+                  setIsStartGame(true)
+                }
+              }}
               isStartFindingOpponent={isStartFindingOpponent}
             />
           </div>
@@ -222,12 +272,14 @@ export const OpponentBattleCard = ({
   isWasFoundOpponent,
   setIsWasFoundOpponent,
   className,
+  isTranslateCardsAnimationStart,
 }: {
   cardHeight?: number
   style?: React.CSSProperties
   isWasFoundOpponent: boolean
   setIsWasFoundOpponent: (value: boolean) => void
   className?: string
+  isTranslateCardsAnimationStart?: boolean
 }) => {
   useEffect(() => {
     setTimeout(() => {
@@ -238,12 +290,18 @@ export const OpponentBattleCard = ({
   return (
     <div
       className={cn(
-        "font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-opponent-bg.png')] z-[-1] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase",
+        "font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-opponent-bg.png')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
         className,
       )}
       style={style}
     >
-      <div className="relative size-[104px] rounded-[34px]">
+      <div
+        className={cn(
+          'relative size-[104px] rounded-[34px]',
+          isTranslateCardsAnimationStart &&
+            '!animate-battle-finding-button-fade-out',
+        )}
+      >
         {isWasFoundOpponent ? (
           <div>
             <img
@@ -261,8 +319,10 @@ export const OpponentBattleCard = ({
       </div>
       <FlickeringGrid
         className={cn(
-          'absolute top-[6px] left-[25px] w-[450px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]',
+          'absolute top-[2px] left-[25px] w-[450px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]',
           isWasFoundOpponent && 'transition-[height] duration-1700 linear',
+          isTranslateCardsAnimationStart &&
+            '!animate-battle-finding-button-fade-out',
         )}
         squareSize={2}
         gridGap={12}
@@ -274,7 +334,15 @@ export const OpponentBattleCard = ({
         height={cardHeight}
         style={{ height: `${cardHeight}px` }}
       />
-      <p className={cn(!isWasFoundOpponent && 'hidden')}>teviall</p>
+      <p
+        className={cn(
+          !isWasFoundOpponent && 'hidden',
+          isTranslateCardsAnimationStart &&
+            '!animate-battle-finding-button-fade-out',
+        )}
+      >
+        teviall
+      </p>
     </div>
   )
 }

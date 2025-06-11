@@ -211,28 +211,47 @@ function BattleGameRewardSection({
 }
 
 export const CurrentUserBattleCard = ({
+  isTranslateCardsAnimationStart,
   isWasFoundOpponent,
   cardHeight,
   style,
   className,
   isStartFindingOpponent,
+  onAnimationEnd,
 }: {
+  isTranslateCardsAnimationStart?: boolean
   isWasFoundOpponent?: boolean
   cardHeight?: number
   style?: React.CSSProperties
   className?: string
   isStartFindingOpponent?: boolean
+  onAnimationEnd?: React.AnimationEventHandler<HTMLDivElement>
 }) => {
   return (
     <div
       className={cn(
-        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] z-[-1] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase",
+        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
         className,
       )}
+      onAnimationEnd={onAnimationEnd}
       style={style}
     >
-      <p className="opacity-0 animate-battle-preview-username-fade">teviall</p>
-      <div className="relative z-1 size-[104px] rounded-[34px] opacity-0 animate-battle-preview-avatar-fade">
+      <p
+        className={cn(
+          'opacity-0 animate-battle-preview-username-fade',
+          isTranslateCardsAnimationStart &&
+            '!animate-battle-finding-button-fade-out',
+        )}
+      >
+        teviall
+      </p>
+      <div
+        className={cn(
+          'relative z-1 size-[104px] rounded-[34px] opacity-0 animate-battle-preview-avatar-fade',
+          isTranslateCardsAnimationStart &&
+            '!animate-battle-finding-button-fade-out',
+        )}
+      >
         <img
           src={'/roulette-icons/default.png'}
           className="w-full h-auto object-cover absolute z-1 rounded-[34px] shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)]"
@@ -243,9 +262,11 @@ export const CurrentUserBattleCard = ({
       </div>
       <FlickeringGrid
         className={cn(
-          'absolute top-[125px] -translate-y-1/2 left-[60%] -translate-x-1/2 w-[450px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]',
+          'absolute top-[120px] -translate-y-1/2 left-[60%] -translate-x-1/2 w-[450px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]',
           isWasFoundOpponent &&
-            'transition-[height] duration-1300 linear top-[55%]',
+            'transition-[height] duration-1300 linear top-[56%]',
+          isTranslateCardsAnimationStart &&
+            'animate-battle-finding-button-fade-out',
         )}
         squareSize={2}
         gridGap={12}
@@ -263,6 +284,8 @@ export const CurrentUserBattleCard = ({
             'opacity-0 animate-battle-finding-lines-fade',
             isWasFoundOpponent &&
               'top-[90px] transition-all duration-1300 linear',
+            isTranslateCardsAnimationStart &&
+              '!animate-battle-finding-button-fade-out',
           )}
           accentColor="#B6FF00"
           svg1ClassName="top-[-15%] left-[72%]"
