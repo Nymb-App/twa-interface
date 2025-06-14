@@ -47,6 +47,8 @@ export default defineConfig({
       'nymb-interface.vercel.app',
       'ever-paint-representing-crossing.trycloudflare.com',
       'reviewer-supervision-dna-prayer.trycloudflare.com',
+      'grade-refurbished-turns-organised.trycloudflare.com',
+      'polish-app-consultancy-tom.trycloudflare.com',
     ],
   },
 

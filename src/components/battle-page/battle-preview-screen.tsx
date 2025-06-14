@@ -142,27 +142,29 @@ function BattleGameRewardSection({
           </RadioGroup>
         </div>
         <Drawer>
-          <DrawerTrigger asChild className="w-full mx-auto">
-            <button
-              className={cn(
-                'flex justify-center gap-[21px] h-[40px] max-w-[254px] opacity-0 animate-battle-preview-bust-fade',
-                !isAnimationsEnd && 'pointer-events-none',
-              )}
-            >
-              <span className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
-                <span className="ml-1.5">
-                  <BustIcon />
-                </span>
-                <span>1 Bust</span>
+          <div className="flex justify-center gap-5">
+            <button className="bg-[#FFFFFF]/4 rounded-[14px] h-auto basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-1px] opacity-0 animate-battle-preview-bust-fade">
+              <span className="ml-1.5">
+                <BustIcon />
               </span>
-              <span className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-green-bg.png')] bg-no-repeat bg-[position:bottom_left_-0px]">
-                <span className="ml-[11px]">
-                  <BustIcon strokeColor="#B6FF00" />
-                </span>
-                <span>1 Extra</span>
-              </span>
+              <span className="font-semibold">1 Bust</span>
             </button>
-          </DrawerTrigger>
+            <DrawerTrigger asChild>
+              <button
+                className={cn(
+                  'flex justify-center gap-[21px] h-[40px] opacity-0 animate-battle-preview-bust-fade font-semibold',
+                  !isAnimationsEnd && 'pointer-events-none',
+                )}
+              >
+                <span className="bg-[#FFFFFF]/4 rounded-[14px] w-[140px] h-full basis-[114px] flex justify-center items-center gap-3 pr-2 bg-[url('/minigames/boost-green-bg.png')] bg-no-repeat bg-[position:bottom_left_-5px]">
+                  <span className="ml-[11px]">
+                    <BustIcon strokeColor="#B6FF00" />
+                  </span>
+                  <span className="text-[#B6FF00]">1 Extra</span>
+                </span>
+              </button>
+            </DrawerTrigger>
+          </div>
           <GateDrawerContent
             title="get extra bust"
             description="Increase your chances of winning"
