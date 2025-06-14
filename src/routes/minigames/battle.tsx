@@ -1,19 +1,24 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {
   BattlePreviewScreen,
   BattleTitle,
-  CurrentUserBattleCard,
 } from '@/components/battle-page/battle-preview-screen'
 import { PageLayout } from '@/components/ui/page-layout'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn } from '@/utils'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { GameBoardScreen } from '@/components/battle-page/battle-gameboard-screen'
 import { BattleResultGameScreen } from '@/components/battle-page/battle-result-game-screen'
 import { AppContext } from '@/context/app-context'
 import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-bg'
+import { BattleAnimatedMiddleLine } from '@/components/battle-page/battle-animated-middle-line'
+import { BattleCard } from '@/components/battle-page/opponent-battle-card'
+import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
+import { NeonRain } from '@/components/ui/neon-rain'
 import { BattleRainSplitLine } from '@/components/battle-page/battle-rain-split-line'
+import { GreenRain } from '@/components/ui/green-rain'
+import { BattleAnimatedBoostButton } from '@/components/battle-page/battle-animated-boost-button'
+import { BattlePushIcon } from '@/assets/icons/battle-push'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -29,8 +34,8 @@ function RouteComponent() {
   const { battleGameRewardRadioValue } = useContext(AppContext)
 
   const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
-  const [isFinalAnimationBeforeGame, setIsFinalAnimationBeforeGame] =
-    useState(false)
+  // const [isFinalAnimationBeforeGame, setIsFinalAnimationBeforeGame] =
+  // useState(false)
   const [isTranslateCardsAnimationStart, setIsTranslateCardsAnimationStart] =
     useState(false)
 
@@ -45,31 +50,43 @@ function RouteComponent() {
     setIsTranslateCardsAnimationStart(false)
   }, [isGameFinished])
 
-  const [cardHeight, setCardHeight] = useState(220)
-  const [cardWidth, setCardWidth] = useState(450)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [isMorphAnimation, setIsMorphAnimation] = useState(false)
+  const [isClosingAnimation, setIsClosingAnimation] = useState(false)
+  const [isOpeningAnimation, setIsOpeningAnimation] = useState(false)
+  const [isOpeningAnimationDelayed, setIsOpeningAnimationDelayed] =
+    useState(false)
+  const [isCountdownCompleted, setIsCountDownCompleted] = useState(false)
 
   useEffect(() => {
-    if (isWasFoundOpponent && containerRef.current) {
-      const resize = () => {
-        const height = Math.floor(containerRef.current!.clientHeight / 2)
-        const width = Math.floor(containerRef.current!.clientWidth - 50)
-        setCardHeight(height)
-        setCardWidth(width)
-      }
+    if (!isStartFindingOpponent) return
+    setTimeout(() => {
+      setIsClosingAnimation(true)
+    }, 1000)
+  }, [isStartFindingOpponent])
 
-      resize()
+  useEffect(() => {
+    if (!isOpeningAnimation) return
+    setTimeout(() => {
+      setIsOpeningAnimationDelayed(true)
+    }, 5000)
+  }, [isOpeningAnimation])
 
-      window.addEventListener('resize', resize)
-      return () => window.removeEventListener('resize', resize)
-    }
-  }, [isWasFoundOpponent])
+  useEffect(() => {
+    if (!isCountdownCompleted) return
+    setTimeout(() => {
+      setIsLoser(true)
+    }, 3000)
+  }, [isCountdownCompleted])
+
+  const isBoostActive = false
 
   return (
     <>
       {!isStartFindingOpponent && (
         <BattlePreviewScreen
-          setIsStartFindingOpponent={setIsStartFindingOpponent}
+          onClick={() => {
+            setIsStartFindingOpponent(true)
+          }}
         />
       )}
       {isStartFindingOpponent && !isStartGame && (
@@ -80,122 +97,175 @@ function RouteComponent() {
           <header
             className={cn(
               'font-pixel font-[400] text-center',
-              isFinalAnimationBeforeGame &&
-                '!animate-battle-finding-button-fade-out',
+              // isFinalAnimationBeforeGame &&
+              // '!animate-battle-finding-button-fade-out',
               isTranslateCardsAnimationStart && 'hidden',
             )}
           >
             <BattleTitle
               className={'opacity-0 animate-battle-preview-title-fade'}
               text={
-                !isWasFoundOpponent
+                !isMorphAnimation
                   ? 'Finding the opponent'
                   : 'An opponent was found'
               }
             />
           </header>
-          <div
-            ref={containerRef}
-            className={cn(
-              'flex flex-col min-h-[calc(100vh-18rem)] items-center justify-between gap-3',
-              isWasFoundOpponent && 'gap-0',
-            )}
-          >
-            <OpponentBattleCard
-              isTranslateCardsAnimationStart={isTranslateCardsAnimationStart}
-              cardHeight={cardHeight}
-              style={
-                isWasFoundOpponent ? { height: `${cardHeight}px` } : undefined
-              }
-              isWasFoundOpponent={isWasFoundOpponent}
-              setIsWasFoundOpponent={setIsWasFoundOpponent}
-              className={cn(
-                'relative z-0 w-full opacity-0 animate-battle-finding-slide-top-fade',
-                isWasFoundOpponent &&
-                  'duration-1300 linear transition-all pt-18',
-                isTranslateCardsAnimationStart &&
-                  '-translate-y-[85%] animate-battle-finding-button-fade-out',
-              )}
-            />
-            <div className="relative">
-              <div
+          <div className="flex flex-col gap-2 justify-between min-h-[calc(100vh-18rem)]">
+            <div className="relative flex flex-col h-full flex-1 items-center justify-between mask-[linear-gradient(to_bottom,transparent_0%,black_1%,black_99%,transparent_100%)]">
+              <BattleCard
+                nickname="igorivanov"
+                isMe={false}
+                isRow={isMorphAnimation}
+                isBgVisible={!isOpeningAnimation}
                 className={cn(
-                  'relative z-2 font-pixel font-[400] text-[20px] leading-[24px] text-center opacity-0 animate-battle-finding-versus-fade',
-                  isWasFoundOpponent &&
-                    'absolute -translate-x-1/2 -translate-y-1/2',
+                  'transition-all duration-5000',
+                  isClosingAnimation &&
+                    !isOpeningAnimation &&
+                    'flex-1 min-h-[220px]',
+                  isOpeningAnimation && 'h-[54px]',
                 )}
-              >
-                <span
-                  className={cn(
-                    isFinalAnimationBeforeGame &&
-                      'animate-battle-finding-button-fade-out delay-1500 ease-out',
-                    isWasFoundOpponent &&
-                      !isFinalAnimationBeforeGame &&
-                      isTranslateCardsAnimationStart &&
-                      'hidden',
-                  )}
-                >
-                  VS
-                </span>
-                {isWasFoundOpponent &&
-                  !isFinalAnimationBeforeGame &&
-                  !isTranslateCardsAnimationStart && (
-                    <BattleRainSplitLine
-                      className={cn(
-                        `absolute -translate-y-1/2 -translate-x-1/2 z-[-1]`,
-                        'opacity-0 animate-battle-finding-line-width-fade-in',
-                      )}
-                      style={{ width: `${cardWidth}px` }}
-                      onAnimationEnd={() => setIsFinalAnimationBeforeGame(true)}
-                    />
-                  )}
-                {isFinalAnimationBeforeGame &&
-                  !isTranslateCardsAnimationStart && (
-                    <BattleRainSplitLine
-                      className={cn(
-                        `absolute -translate-y-1/2 -translate-x-1/2 z-[-1]`,
-                        'animate-battle-finding-line-width-fade-out',
-                      )}
-                      style={{ width: `${cardWidth}px` }}
-                      onAnimationEnd={() => {
-                        setIsTranslateCardsAnimationStart(true)
-                        setIsFinalAnimationBeforeGame(false)
-                      }}
-                    />
-                  )}
-              </div>
-            </div>
-            <CurrentUserBattleCard
-              isTranslateCardsAnimationStart={isTranslateCardsAnimationStart}
-              isWasFoundOpponent={isWasFoundOpponent}
-              cardHeight={cardHeight}
-              style={
-                isWasFoundOpponent ? { height: `${cardHeight}px` } : undefined
-              }
-              className={cn(
-                'relative z-0 w-full opacity-0 animate-battle-preview-slide',
-                isWasFoundOpponent &&
-                  'duration-1300 linear pt-17 transition-all',
-                isTranslateCardsAnimationStart &&
-                  'translate-y-[85%] animate-battle-finding-button-fade-out',
+                classNameBg={cn(
+                  'transition-all duration-3000 delay-1500',
+                  isOpeningAnimation && 'opacity-0',
+                )}
+              />
+              {isOpeningAnimationDelayed && !isCountdownCompleted && (
+                <CountdownStartGame
+                  onComplete={() => {
+                    setIsCountDownCompleted(true)
+                    // setIsCountdownStarted(false)
+                    // setAutoClick(true)
+                  }}
+                />
               )}
-              onAnimationEnd={() => {
-                if (
-                  isWasFoundOpponent &&
-                  !isFinalAnimationBeforeGame &&
-                  isTranslateCardsAnimationStart
-                ) {
-                  setIsStartGame(true)
-                }
-              }}
-              isStartFindingOpponent={isStartFindingOpponent}
-            />
+
+              {isCountdownCompleted && (
+                <div className="absolute inset-0">
+                  <div
+                    className={`absolute top-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
+                    style={{ height: `${100 - 50}%` }}
+                  >
+                    <NeonRain />
+                  </div>
+
+                  <BattleRainSplitLine
+                    position={50}
+                    isBoostActive={isBoostActive}
+                  />
+
+                  <div
+                    className={`absolute bottom-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
+                    style={{ height: `${50}%` }}
+                  >
+                    <GreenRain />
+                  </div>
+                </div>
+              )}
+
+              <BattleAnimatedMiddleLine
+                className={cn(
+                  'absolute top-1/2 left-1/2 -translate-1/2 z-1 w-[calc(100%-50px)] opacity-0 animate-battle-finding-versus-fade',
+                )}
+                classNameForLine={cn(
+                  'opacity-0',
+                  isClosingAnimation &&
+                    'animate-battle-finding-line-width-fade-in-out',
+                )}
+                onAnimationEnd={() => {
+                  setIsClosingAnimation(false)
+                  setIsMorphAnimation(true)
+                  setIsOpeningAnimation(true)
+                }}
+              />
+              <BattleCard
+                nickname="tevial"
+                isRow={isMorphAnimation}
+                isBgVisible={!isOpeningAnimation}
+                className={cn(
+                  'transition-all duration-5000 w-full h-[220px]',
+                  isClosingAnimation &&
+                    !isOpeningAnimation &&
+                    'flex-1 min-h-[220px]',
+                  isOpeningAnimation && 'h-[54px]',
+                )}
+                classNameBg={cn(
+                  'transition-all duration-3000 delay-1500',
+                  isOpeningAnimation && 'opacity-0',
+                )}
+              />
+            </div>
+            <div
+              className={cn(
+                'transition-all duration-4000 delay-1500 h-0',
+                isOpeningAnimation && 'h-[100px]',
+              )}
+            >
+              {isCountdownCompleted && (
+                <div className="flex justify-evenly items-center">
+                  <BattleAnimatedBoostButton
+                  // onBoostActivate={() => setIsLeftBoostActive(true)}
+                  // isBoostActive={isLeftBoostActive}
+                  // setIsBoostDisable={() => setIsLeftBoostDisable(true)}
+                  // resetBoost={() => {
+                  // setLeftBoostfillPercentage(0)
+                  // setIsLeftBoostActive(false)
+                  // setIsLeftBoostDisable(false)
+                  // }}
+                  // boostReady={leftBoostfillPercentage === 100}
+                  // fillPercentage={leftBoostfillPercentage}
+                  />
+                  {/* {isCountdownStarted ? ( */}
+                  <BattlePushIcon />
+                  <BattleAnimatedBoostButton />
+                  {/* ) : ( */}
+                  {/* <BattleAnimatedPushButton
+                    handleClick={handleClick}
+                    leftBoostFillPercentage={leftBoostfillPercentage}
+                    rightBoostFillPercentage={rightBoostfillPercentage}
+                    setLeftBoostfillPercentage={setLeftBoostfillPercentage}
+                    setRightBoostfillPercentage={setRightBoostfillPercentage}
+                  /> */}
+                  {/* )} */}
+                  {/* {!isCountdownStarted && isBuyTurboBoost ? (
+                  <BattleAnimatedBoostButton
+                    onBoostActivate={() => setIsRightBoostActive(true)}
+                    isBoostActive={isRightBoostActive}
+                    setIsBoostDisable={() => setIsRightBoostDisable(true)}
+                    resetBoost={() => {
+                      setRightBoostfillPercentage(0)
+                      setIsRightBoostActive(false)
+                      setIsRightBoostDisable(false)
+                    }}
+                    boostReady={rightBoostfillPercentage === 100}
+                    fillPercentage={rightBoostfillPercentage}
+                  />
+                ) : (
+                  <BattleTurboBoostIcon />
+                )} */}
+                </div>
+              )}
+              {isLoser && (
+                <BattleResultGameScreen
+                  rewardTimeValue={battleGameRewardRadioValue.split(' ')[0]}
+                  rewardTimeLabel={battleGameRewardRadioValue.split(' ')[1]}
+                  handleResultGame={() => {
+                    setIsStartGame(false)
+                    setIsGameFinished(false)
+                    setIsLoser(false)
+                    setIsWasFoundOpponent(false)
+                    setIsStartFindingOpponent(false)
+                  }}
+                  battleResultGameBgComponent={<BattleResultGameBg />}
+                />
+              )}
+            </div>
           </div>
           <div
             className={cn(
               'fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a]',
               !isAnimationsEnd && 'pointer-events-none',
-              !isWasFoundOpponent
+              !isMorphAnimation
                 ? 'opacity-0 animate-battle-finding-button-fade-in'
                 : 'animate-battle-finding-button-fade-out pointer-events-none',
             )}
@@ -263,101 +333,5 @@ function RouteComponent() {
         />
       )}
     </>
-  )
-}
-
-export const OpponentBattleCard = ({
-  cardHeight,
-  style,
-  isWasFoundOpponent,
-  setIsWasFoundOpponent,
-  className,
-  isTranslateCardsAnimationStart,
-}: {
-  cardHeight?: number
-  style?: React.CSSProperties
-  isWasFoundOpponent: boolean
-  setIsWasFoundOpponent: (value: boolean) => void
-  className?: string
-  isTranslateCardsAnimationStart?: boolean
-}) => {
-  useEffect(() => {
-    setTimeout(() => {
-      setIsWasFoundOpponent(true)
-    }, 4500)
-  }, [])
-
-  return (
-    <div
-      className={cn(
-        "font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-opponent-bg.png')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
-        className,
-      )}
-      style={style}
-    >
-      <div
-        className={cn(
-          'relative size-[104px] rounded-[34px]',
-          isTranslateCardsAnimationStart &&
-            '!animate-battle-finding-button-fade-out',
-        )}
-      >
-        {isWasFoundOpponent ? (
-          <div>
-            <img
-              src={'/roulette-icons/default.png'}
-              className="w-full h-auto object-cover absolute z-1 rounded-[34px] shadow-[0px_0px_59.8px_#8C35FB]"
-            />
-            <p className="absolute z-1 left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
-              NA
-            </p>
-          </div>
-        ) : (
-          <FindingTheOpponentPlaceholder />
-        )}
-        {/* {isWasFoundOpponent && <ElectricLines />} */}
-      </div>
-      <FlickeringGrid
-        className={cn(
-          'absolute top-[2px] left-[25px] w-[450px] mask-[linear-gradient(to_right,transparent_0%,black_20%,black_70%,transparent_80%)]',
-          isWasFoundOpponent && 'transition-[height] duration-1700 linear',
-          isTranslateCardsAnimationStart &&
-            '!animate-battle-finding-button-fade-out',
-        )}
-        squareSize={2}
-        gridGap={12}
-        color="#cdaff9"
-        maxOpacity={0.5}
-        flickerChance={0.3}
-        autoResize={false}
-        width={450}
-        height={cardHeight}
-        style={{ height: `${cardHeight}px` }}
-      />
-      <p
-        className={cn(
-          !isWasFoundOpponent && 'hidden',
-          isTranslateCardsAnimationStart &&
-            '!animate-battle-finding-button-fade-out',
-        )}
-      >
-        teviall
-      </p>
-    </div>
-  )
-}
-
-export const FindingTheOpponentPlaceholder = () => {
-  return (
-    <div className="flex flex-col items-center justify-center font-pixel mt-4 animate-battle-finding-dots-pulse">
-      <div className="relative mb-4">
-        <div className="absolute z-0 inset-0 rounded-full bg-[#8c35fb66] blur-[20px] shadow-[0px_0px_59.8px_#8C35FB]" />
-        <div className="relative flex items-center justify-center">
-          <div className="text-[#FFFFFF] text-[104px] font-[400] leading-[120%]">
-            :
-          </div>
-        </div>
-      </div>
-    </div>
   )
 }

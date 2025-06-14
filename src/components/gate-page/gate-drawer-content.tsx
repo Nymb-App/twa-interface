@@ -13,6 +13,7 @@ import { ActionButton } from '../ui/action-button'
 import type { ReactNode } from 'react'
 import { CloseIcon } from '@/assets/icons/close'
 import { GateContext } from '@/context/gate-context'
+import { cn } from '@/utils'
 
 export const GateDrawerContent = ({
   children,
@@ -20,19 +21,26 @@ export const GateDrawerContent = ({
   description,
   setIsOpenDrawer,
   footerButton,
+  className,
 }: {
   children: ReactNode
   title?: string
   description?: string
   setIsOpenDrawer?: (value: boolean) => void
   footerButton?: ReactNode
+  className?: string
 }) => {
   const { currentLevel, isLockedNewGate } = useContext(GateContext)
 
   return (
-    <DrawerContent className="font-[400] bg-[#121312] text-center !rounded-t-[32px] border-t-2 border-[#2f302e] py-3 px-4">
+    <DrawerContent
+      className={cn(
+        'font-[400] bg-[#121312] text-center !rounded-t-[32px] border-t-2 border-[#2f302e] py-3 px-4',
+        className,
+      )}
+    >
       <DrawerTrigger onClick={() => setIsOpenDrawer?.(false)}>
-        <div className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px]">
+        <div className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer">
           <CloseIcon />
         </div>
       </DrawerTrigger>

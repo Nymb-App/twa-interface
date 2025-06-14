@@ -40,7 +40,7 @@ export function BattleResultGameScreen({
   return (
     <div
       className={cn(
-        'absolute left-1/2 -translate-x-1/2 top-0 h-full flex flex-col items-center justify-between font-pixel bg-black/30 z-50 max-w-[450px] w-full',
+        'fixed left-1/2 -translate-x-1/2 top-0 h-screen flex flex-col items-center justify-between font-pixel bg-black/30 z-50 max-w-[450px] w-full',
         isWinner ? 'bg-[#0a1309]' : 'bg-[#110522]',
       )}
     >

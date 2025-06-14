@@ -5,10 +5,17 @@ import { cn } from '@/utils'
 export const CountdownStartGame = ({
   onComplete,
 }: {
-  onComplete: () => void
+  onComplete?: () => void
 }) => {
+  const [isOnCompleteTimer, setIsCompleteTimer] = useState(false)
+
   return (
-    <div className="absolute inset-0 flex items-center justify-center">
+    <div
+      className={cn(
+        'absolute inset-0 flex items-center justify-center',
+        isOnCompleteTimer && 'opacity-0',
+      )}
+    >
       <Countdown
         date={Date.now() + 4000}
         intervalDelay={1000}
@@ -25,7 +32,10 @@ export const CountdownStartGame = ({
             {seconds > 1 ? seconds - 1 : 'GO!'}
           </span>
         )}
-        onComplete={onComplete}
+        onComplete={() => {
+          onComplete?.()
+          setIsCompleteTimer(true)
+        }}
       />
       <AnimatedCanvas
         initialDotCount={1200}

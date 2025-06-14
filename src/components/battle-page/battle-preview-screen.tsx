@@ -13,11 +13,7 @@ import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
 import { BustIcon } from '@/assets/icons/bust'
 
-export function BattlePreviewScreen({
-  setIsStartFindingOpponent,
-}: {
-  setIsStartFindingOpponent: (value: boolean) => void
-}) {
+export function BattlePreviewScreen({ onClick }: { onClick?: () => void }) {
   const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
 
   useEffect(() => {
@@ -59,7 +55,7 @@ export function BattlePreviewScreen({
           The opponent will be <br /> randomly selected. Commission 1%
         </p>
         <ActionButton
-          onClick={() => setIsStartFindingOpponent(true)}
+          onClick={onClick}
           className={cn(
             'font-pixel text-[#121312] rounded-[16px] uppercase',
             !isAnimationsEnd && 'pointer-events-none',
@@ -168,6 +164,7 @@ function BattleGameRewardSection({
           <GateDrawerContent
             title="get extra bust"
             description="Increase your chances of winning"
+            className="backdrop-blur-[8px] bg-[#121312]/95"
             footerButton={
               <ActionButton className="font-pixel text-[#121312] rounded-[16px] uppercase">
                 <span>confirm and pay 0.1 ton</span>

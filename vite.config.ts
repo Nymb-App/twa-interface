@@ -45,7 +45,7 @@ export default defineConfig({
     allowedHosts: [
       'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'ef-roof-prozac-output.trycloudflare.com',
+      'fails-origin-jackie-caution.trycloudflare.com',
     ],
   },
 

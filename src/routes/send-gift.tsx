@@ -62,16 +62,20 @@ export const AvatarCard = ({
   label,
   className,
   classNameForSpan,
+  classNameForImg,
 }: {
   src: string
   label: string
   className?: string
   classNameForSpan?: string
+  classNameForImg?: string
 }) => (
-  <div className={cn('relative size-22', className)}>
+  <div
+    className={cn('relative size-22 rounded-full overflow-hidden', className)}
+  >
     <img
       src={src}
-      className={cn('size-full object-cover rounded-full shadow-lg')} // ← ОДИНАКОВО для всех
+      className={cn('size-full object-cover shadow-lg', classNameForImg)} // ← ОДИНАКОВО для всех
     />
     <span
       className={cn(
