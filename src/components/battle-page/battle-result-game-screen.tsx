@@ -1,7 +1,7 @@
-import { useRive } from '@rive-app/react-canvas'
 import { useEffect, useState } from 'react'
 import { shareURL } from '@telegram-apps/sdk'
 import { ActionButton } from '../ui/action-button'
+import type { JSX } from 'react'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { AvatarCard } from '@/routes/send-gift'
 import { cn } from '@/utils'
@@ -10,38 +10,18 @@ export function BattleResultGameScreen({
   rewardTimeValue,
   rewardTimeLabel,
   starsImgSrc,
-  bgSrc,
   isWinner = false,
   handleResultGame,
+  battleResultGameBgComponent,
 }: {
+  classNameForBg?: string
   rewardTimeValue: number | string
   rewardTimeLabel: string
   starsImgSrc?: string
-  bgSrc?: string
   isWinner?: boolean
   handleResultGame: () => void
+  battleResultGameBgComponent?: JSX.Element
 }) {
-  const { RiveComponent } = useRive({
-    src: `/riveAnimations/${isWinner ? 'winner' : 'loser'}.riv`,
-    autoplay: true,
-    onLoad: () => {
-      // setStartRiveAnimation(true)
-    },
-    onPlay: () => {
-      // setTimeout(() => {
-      //   setStartRiveAnimation(true)
-      //   setPlaceholderRiveAnimation(false)
-      // }, 2000)
-    },
-    // onStateChange: () => {
-    //   rive?.stop()
-    // },
-    onStop: () => {
-      // setStartRiveAnimation(false)
-      // setIsShowSendGiftActionButtons?.(true)
-    },
-  })
-
   // флаг, указывающий, что анимация закончилась
   const [animationEnded, setAnimationEnded] = useState(false)
 
@@ -60,14 +40,12 @@ export function BattleResultGameScreen({
   return (
     <div
       className={cn(
-        'absolute left-1/2 -translate-x-1/2 top-0 h-full flex flex-col items-center justify-between font-pixel bg-black/30 z-50 max-w-[450px] w-full',
+        'fixed left-1/2 -translate-x-1/2 top-0 h-screen flex flex-col items-center justify-between font-pixel bg-black/30 z-50 max-w-[450px] w-full',
         isWinner ? 'bg-[#0a1309]' : 'bg-[#110522]',
-        bgSrc &&
-          `bg-[url("${bgSrc}")] bg-no-repeat bg-[position:bottom_left_-0px]`,
       )}
     >
-      <RiveComponent className="absolute h-full w-full top-0 left-0 z-[-1]" />
-      <div className="absolute top-[-10px] left-0 w-full h-screen backdrop-blur-[2.5px]" />
+      {battleResultGameBgComponent}
+      <div className="absolute top-[-10px] left-0 w-full h-screen backdrop-blur-[4px] opacity-50" />
       <div className="absolute bottom-0 max-h-[1200px] w-full h-full flex flex-col justify-between">
         <header className="relative w-full h-[310px] top-20">
           {starsImgSrc && (

@@ -1,11 +1,17 @@
 import { cn } from '@/utils'
 
 export const BattleRainSplitLine = ({
-  position,
-  isBoostActive,
+  position = 50,
+  isBoostActive = false,
+  className,
+  style,
+  onAnimationEnd,
 }: {
-  position: number
-  isBoostActive: boolean
+  position?: number
+  isBoostActive?: boolean
+  className?: string
+  style?: React.CSSProperties
+  onAnimationEnd?: React.AnimationEventHandler<HTMLDivElement>
 }) => {
   const currentPosition = 100 - position
 
@@ -16,10 +22,13 @@ export const BattleRainSplitLine = ({
         position === 50 && 'theme-blue',
         position > 50 && 'theme-green',
         position < 50 && 'theme-purple',
+        className,
       )}
       style={{
         top: `${currentPosition}%`,
+        ...style,
       }}
+      onAnimationEnd={onAnimationEnd}
     >
       <div className="translate-y-[100%] h-[100px] segment-1" />
       <div className="translate-y-0 h-[100px] segment-2" />

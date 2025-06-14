@@ -49,6 +49,7 @@ export default defineConfig({
       'reviewer-supervision-dna-prayer.trycloudflare.com',
       'grade-refurbished-turns-organised.trycloudflare.com',
       'polish-app-consultancy-tom.trycloudflare.com',
+      'fails-origin-jackie-caution.trycloudflare.com',
     ],
   },
 

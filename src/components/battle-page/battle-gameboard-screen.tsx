@@ -111,7 +111,10 @@ export function GameBoardScreen({
   return (
     <PageLayout
       useFooter={false}
-      className={cn('pb-0 overflow-x-hidden', backgroundClass)}
+      className={cn(
+        'pb-0 overflow-x-hidden opacity-0 animate-battle-game-board-fade-in',
+        backgroundClass,
+      )}
     >
       <div className="flex flex-col min-h-[calc(100vh-7rem)] items-center justify-between">
         <div className="w-full">
@@ -121,7 +124,7 @@ export function GameBoardScreen({
                 <dt className="leading-[120%] text-[14px] text-[#FFFFFF]/40 mb-4">
                   Winning:
                 </dt>
-                <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px]">
+                <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px] uppercase">
                   <span className="mr-1 text-lg">
                     {battleGameRewardRadioValue.split(' ')[0]}
                   </span>

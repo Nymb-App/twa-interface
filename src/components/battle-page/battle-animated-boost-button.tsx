@@ -9,18 +9,18 @@ export const BattleAnimatedBoostButton = ({
   fillPercentage,
   setIsBoostDisable,
 }: {
-  onBoostActivate: () => void
-  isBoostActive: boolean
-  resetBoost: () => void
-  boostReady: boolean
-  fillPercentage: number
-  setIsBoostDisable: () => void
+  onBoostActivate?: () => void
+  isBoostActive?: boolean
+  resetBoost?: () => void
+  boostReady?: boolean
+  fillPercentage?: number
+  setIsBoostDisable?: () => void
 }) => {
-  const fillPercentageValue = Math.min(fillPercentage, 100)
+  const fillPercentageValue = Math.min(fillPercentage ?? 50, 100)
 
   const handleClick = () => {
     if (boostReady && !isBoostActive) {
-      onBoostActivate()
+      onBoostActivate?.()
     }
   }
 
@@ -29,8 +29,8 @@ export const BattleAnimatedBoostButton = ({
       {boostReady && !isBoostActive && <BattleBoostActiveIcon />}
       {isBoostActive && (
         <BattleBoostFilledIcon
-          onFinish={resetBoost}
-          setIsBoostDisable={setIsBoostDisable}
+          onFinish={resetBoost!}
+          setIsBoostDisable={setIsBoostDisable!}
         />
       )}
       {!isBoostActive && !boostReady && (

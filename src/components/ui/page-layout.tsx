@@ -25,19 +25,21 @@ export const PageLayout = ({
   useJumpToTheNextGateButton = false,
   useUnlockGateCloseButton = false,
   className,
+  classNameContent,
   setIsStartRoulette,
   setIsShowSendGiftActionButtons,
 }: {
-  children: ReactNode
-  useFooter?: boolean
-  useSendButton?: boolean
-  useSendGiftActionButtons?: boolean
-  useCheckInButton?: boolean
-  useJumpToTheNextGateButton?: boolean
-  useUnlockGateCloseButton?: boolean
-  className?: string
-  setIsStartRoulette?: (value: boolean) => void
-  setIsShowSendGiftActionButtons?: (value: boolean) => void
+  children: ReactNode,
+  useFooter?: boolean,
+  useSendButton?: boolean,
+  useSendGiftActionButtons?: boolean,
+  useCheckInButton?: boolean,
+  useJumpToTheNextGateButton?: boolean,
+  useUnlockGateCloseButton?: boolean,
+  className?: string,
+  classNameContent?: string,
+  setIsStartRoulette?: (value: boolean) => void,
+  setIsShowSendGiftActionButtons?: (value: boolean) => void,
 }) => {
   const linkItems = [
     { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
@@ -57,6 +59,7 @@ export const PageLayout = ({
         className={cn(
           useFooter && 'pb-[5rem]',
           useSendButton && 'pb-[5rem] mb-[5rem]',
+          classNameContent,
         )}
       >
         {children}
