@@ -14,11 +14,9 @@ import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-
 import { BattleAnimatedMiddleLine } from '@/components/battle-page/battle-animated-middle-line'
 import { BattleCard } from '@/components/battle-page/opponent-battle-card'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
-import { NeonRain } from '@/components/ui/neon-rain'
-import { BattleRainSplitLine } from '@/components/battle-page/battle-rain-split-line'
-import { GreenRain } from '@/components/ui/green-rain'
 import { BattleAnimatedBoostButton } from '@/components/battle-page/battle-animated-boost-button'
 import { BattlePushIcon } from '@/assets/icons/battle-push'
+import { BattleScene } from '@/components/battle-page/battle-scene'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -71,12 +69,12 @@ function RouteComponent() {
     }, 5000)
   }, [isOpeningAnimation])
 
-  useEffect(() => {
-    if (!isCountdownCompleted) return
-    setTimeout(() => {
-      setIsLoser(true)
-    }, 3000)
-  }, [isCountdownCompleted])
+  // useEffect(() => {
+  //   if (!isCountdownCompleted) return
+  //   setTimeout(() => {
+  //     setIsLoser(true)
+  //   }, 3000)
+  // }, [isCountdownCompleted])
 
   const isBoostActive = false
 
@@ -92,7 +90,7 @@ function RouteComponent() {
       {isStartFindingOpponent && !isStartGame && (
         <PageLayout
           useFooter={false}
-          className="bg-[#03061a] pb-30 overflow-hidden"
+          className="bg-[#03061a] overflow-hidden pb-0"
         >
           <header
             className={cn(
@@ -111,7 +109,7 @@ function RouteComponent() {
               }
             />
           </header>
-          <div className="flex flex-col gap-2 justify-between min-h-[calc(100vh-18rem)]">
+          <div className="flex flex-col gap-2 justify-between">
             <div className="relative flex flex-col h-full flex-1 items-center justify-between mask-[linear-gradient(to_bottom,transparent_0%,black_1%,black_99%,transparent_100%)]">
               <BattleCard
                 nickname="igorivanov"
@@ -140,28 +138,7 @@ function RouteComponent() {
                 />
               )}
 
-              {isCountdownCompleted && (
-                <div className="absolute inset-0">
-                  <div
-                    className={`absolute top-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
-                    style={{ height: `${100 - 50}%` }}
-                  >
-                    <NeonRain />
-                  </div>
-
-                  <BattleRainSplitLine
-                    position={50}
-                    isBoostActive={isBoostActive}
-                  />
-
-                  <div
-                    className={`absolute bottom-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
-                    style={{ height: `${50}%` }}
-                  >
-                    <GreenRain />
-                  </div>
-                </div>
-              )}
+              {isCountdownCompleted && <BattleScene />}
 
               <BattleAnimatedMiddleLine
                 className={cn(
@@ -198,11 +175,11 @@ function RouteComponent() {
             <div
               className={cn(
                 'transition-all duration-4000 delay-1500 h-0',
-                isOpeningAnimation && 'h-[100px]',
+                isOpeningAnimation && 'h-[200px]',
               )}
             >
               {isCountdownCompleted && (
-                <div className="flex justify-evenly items-center">
+                <div className="flex justify-evenly items-center h-full">
                   <BattleAnimatedBoostButton
                   // onBoostActivate={() => setIsLeftBoostActive(true)}
                   // isBoostActive={isLeftBoostActive}

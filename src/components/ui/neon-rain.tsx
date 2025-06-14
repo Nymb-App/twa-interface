@@ -1,6 +1,36 @@
 import { useEffect, useRef } from 'react'
 
-export const NeonRain = () => {
+export const NeonRain = ({
+  gradColorGradient0 = 'rgba(255,255,255,1)',
+  gradColorGradient1 = 'rgba(180,120,255,1)',
+  gradColorGradient2 = 'rgba(116,29,227,1)',
+  gradColorGradient3 = 'rgba(74,29,227,0)',
+  className,
+  fillStyle = 'rgba(0, 0, 30, 0.2)',
+}: {
+  className?: string
+  fillStyle?: string
+  gradColorGradient0?: string
+  gradColorGradient1?: string
+  gradColorGradient2?: string
+  gradColorGradient3?: string
+}) => {
+  const gradColorGradient0Value = gradColorGradient0.trim()
+  const gradColorGradient1Value = gradColorGradient1.trim()
+  const gradColorGradient2Value = gradColorGradient2.trim()
+  const gradColorGradient3Value = gradColorGradient3.trim()
+
+  function addAlpha(rgba: string, alpha: number): string {
+    const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/)
+
+    if (!match) {
+      throw new Error('Invalid RGBA string')
+    }
+
+    const [, r, g, b] = match
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
@@ -65,14 +95,20 @@ export const NeonRain = () => {
         grad.addColorStop(
           0,
           this.charged
-            ? `rgba(255,255,255, ${this.alpha})`
-            : `rgba(180,120,255, ${this.alpha})`,
+            ? addAlpha(gradColorGradient0Value, 0)
+            : addAlpha(gradColorGradient1Value, 0),
         )
-        // grad.addColorStop(0.5, `rgba(116,29,227, ${this.alpha * 0.5})`)
-        // grad.addColorStop(1, `rgba(74,29,227, 0)`)
 
-        grad.addColorStop(1, `rgba(116,29,227, ${this.alpha * 0.5})`)
-        grad.addColorStop(0, `rgba(74,29,227, 0)`)
+        grad.addColorStop(
+          0.5,
+          addAlpha(gradColorGradient2Value, this.alpha * 0.5),
+        )
+        grad.addColorStop(1, addAlpha(gradColorGradient3Value, 0))
+        grad.addColorStop(
+          1,
+          addAlpha(gradColorGradient2Value, this.alpha * 0.5),
+        )
+        grad.addColorStop(1, addAlpha(gradColorGradient3Value, 0))
 
         context.beginPath()
         context.strokeStyle = grad
@@ -105,7 +141,7 @@ export const NeonRain = () => {
 
     const animate = () => {
       if (!ctx) return
-      ctx.fillStyle = 'rgba(0, 0, 30, 0.2)'
+      ctx.fillStyle = fillStyle
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       for (const drop of normalDrops) {
@@ -134,6 +170,7 @@ export const NeonRain = () => {
 
   return (
     <canvas
+      className={className}
       ref={canvasRef}
       style={{
         position: 'absolute',

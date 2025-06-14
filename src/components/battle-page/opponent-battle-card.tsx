@@ -5,6 +5,7 @@ import { ElectricLines } from '../ui/electric-lines'
 import { cn } from '@/utils'
 
 export const BattleCard = ({
+  showElectricsLines = true,
   nickname = 'unknown',
   isMe = true,
   isFindingUser,
@@ -13,6 +14,7 @@ export const BattleCard = ({
   className,
   classNameBg,
 }: {
+  showElectricsLines?: boolean
   nickname?: string
   isMe?: boolean
   isFindingUser?: boolean
@@ -68,6 +70,7 @@ export const BattleCard = ({
 
       {!isFindingUser ? (
         <BattleAvatarCard
+          showElectricsLines={showElectricsLines}
           isMe={isMe}
           isRow={isRow}
           classNameContainer={cn(
@@ -100,18 +103,20 @@ export const BattleCard = ({
 }
 
 const BattleAvatarCard = ({
-  isMe = true,
   src,
   label,
   nickName,
+  showElectricsLines = true,
+  isMe = true,
   duration = 0.8,
   isRow = false,
   classNameContainer,
   className,
 }: {
-  isMe?: boolean
   src: string
   label: string
+  showElectricsLines?: boolean
+  isMe?: boolean
   nickName?: string
   duration?: number
   isRow?: boolean
@@ -137,7 +142,7 @@ const BattleAvatarCard = ({
           className,
         )}
       >
-        {isMe && (
+        {isMe && showElectricsLines && (
           <ElectricLines
             className={cn(
               'absolute top-1/2 left-1/2 -translate-1/2 transition-all',

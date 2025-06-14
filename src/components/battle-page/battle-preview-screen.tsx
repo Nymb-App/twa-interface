@@ -8,6 +8,7 @@ import { GateDrawerContent } from '../gate-page/gate-drawer-content'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import BattleDrawerImage from '/minigames/battle-drawer-img.png'
 import { ElectricLines } from '../ui/electric-lines'
+import { BattleCard } from './opponent-battle-card'
 import type { ReactNode } from 'react'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
@@ -44,7 +45,8 @@ export function BattlePreviewScreen({ onClick }: { onClick?: () => void }) {
             </>
           }
         />
-        <CurrentUserBattleCard />
+        {/* <CurrentUserBattleCard /> */}
+        <BattleCard showElectricsLines={false} nickname="tevial" />
       </header>
       <BattleGameRewardSection isAnimationsEnd={isAnimationsEnd} />
       <div
