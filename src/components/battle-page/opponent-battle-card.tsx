@@ -41,7 +41,7 @@ export const BattleCard = ({
         }}
         initial={false}
         animate={{ opacity: isBgVisible ? 1 : 0 }}
-        transition={{ duration: 5, ease: 'easeInOut', delay: 2 }}
+        transition={{ duration: 1.6, delay: 2 }}
       />
 
       <FlickeringGrid
@@ -60,9 +60,10 @@ export const BattleCard = ({
         height={500}
       />
 
-      <SvgBg
+      <SvgBgIos
         className={cn(
-          'w-full h-[180px] opacity-0 transition-all duration-1000 delay-4500 z-10',
+          'relative -top-1 w-full h-[180px] opacity-0 transition-all duration-900 delay-3000 z-10',
+          isMe && 'top-1',
           !isBgVisible && 'opacity-100',
         )}
         isMe={isMe}
@@ -88,7 +89,7 @@ export const BattleCard = ({
           )}
           nickName={nickname}
           src="/roulette-icons/default.png"
-          label="IM"
+          label={nickname.slice(0, 2)}
         />
       ) : (
         <div className="absolute size-[104px] bottom-20 animate-battle-finding-dots-pulse">
@@ -184,7 +185,7 @@ const BattleAvatarCard = ({
   )
 }
 
-const SvgBg = ({
+const SvgBgIos = ({
   isMe = true,
   className,
 }: {
@@ -203,6 +204,10 @@ const SvgBg = ({
     >
       <foreignObject x="-8" y="-8" width="406" height="68">
         <div
+          className={cn(
+            'bg-linear-to-b from-[#040619]/20 via-[#040619]/20',
+            isMe ? 'to-[#B6FF00]/20' : 'to-[#8C35FB]/20',
+          )}
           style={{
             backdropFilter: 'blur(4px)',
             clipPath: `url(#bg-blur-${id})`,
@@ -234,24 +239,8 @@ const SvgBg = ({
           y2="52"
           gradientUnits="userSpaceOnUse"
         >
-          <stop
-            stopColor={
-              isMe ? '#B6FF00' : '#8C35FB'
-              // isMe ? ' #0a1309' : '#110522'
-              // percentRainHeight! > 50
-              //   ? '#0a1309'
-              //   : percentRainHeight === 50
-              //     ? '#03061a'
-              //     : '#110522'
-            }
-            stopOpacity="0"
-          />
-          <stop
-            offset="1"
-            // stopColor={isMe ? '#0a1309' : '#110522'}
-            stopColor={isMe ? '#B6FF00' : '#8C35FB'}
-            stopOpacity="0.05"
-          />
+          <stop stopColor="#040619" stopOpacity="1" />
+          <stop offset="1" stopColor="#040619" stopOpacity="0.5" />
         </linearGradient>
         <linearGradient
           id={`paint1_linear_${id}`}
@@ -268,3 +257,43 @@ const SvgBg = ({
     </svg>
   )
 }
+
+// ;<linearGradient
+//   id={`paint0_linear_${id}`}
+//   x1="195"
+//   y1="0"
+//   x2="195"
+//   y2="52"
+//   gradientUnits="userSpaceOnUse"
+// >
+//   <stop
+//     stopColor={
+//       // isMe ? '#B6FF00' : '#8C35FB'
+//       // isMe ? ' #0a1309' : '#110522'
+//       // percentRainHeight! > 50
+//       //   ? '#0a1309'
+//       //   : percentRainHeight === 50
+//       //     ? '#03061a'
+//       //     : '#110522'
+//       '#040619'
+//     }
+//     stopOpacity="1"
+//   />
+
+//   <stop
+//     offset="1"
+//     // stopColor={isMe ? '#0a1309' : '#110522'}
+//     // stopColor={isMe ? '#B6FF00' : '#8C35FB'}
+//     stopColor={isMe ? '#B6FF00' : '#8C35FB'}
+//     stopOpacity="0.05"
+//   />
+//   {/*
+// <stop
+//   offset="2"
+//   // stopColor={isMe ? '#0a1309' : '#110522'}
+//   // stopColor={isMe ? '#B6FF00' : '#8C35FB'}
+//   // stopColor="#040619"
+//   stopColor={isMe ? '#B6FF00' : '#8C35FB'}
+//   stopOpacity="1"
+// /> */}
+// </linearGradient>

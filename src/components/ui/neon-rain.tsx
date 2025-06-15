@@ -33,24 +33,24 @@ export const NeonRain = ({
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
+  const normalCount = 120
+  const chargedCountMax = 10
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
 
-    const resizeCanvas = () => {
-      // Настройка размера в соответствии с родителем, а не с окном
-      const parent = canvas.parentElement
-      if (!parent) return
-      canvas.width = parent.offsetWidth
-      canvas.height = parent.offsetHeight
-    }
+    // const resizeCanvas = () => {
+    //   // Настройка размера в соответствии с родителем, а не с окном
+    //   const parent = canvas.parentElement
+    //   if (!parent) return
+    //   canvas.width = parent.offsetWidth
+    //   canvas.height = parent.offsetHeight
+    // }
 
-    resizeCanvas()
-    window.addEventListener('resize', resizeCanvas)
-
-    const normalCount = 200
-    const chargedCountMax = 10
+    // resizeCanvas()
+    // window.addEventListener('resize', resizeCanvas)
 
     class RainDrop {
       public charged: boolean
@@ -70,8 +70,8 @@ export const NeonRain = ({
         this.x = Math.random() * canvas.width
         this.y = Math.random() * -canvas.height
         this.length = this.charged
-          ? 120 + Math.random() * 200
-          : 60 + Math.random() * 100
+          ? 60 + Math.random() * 200
+          : 20 + Math.random() * 100
         this.speed = this.charged
           ? 20 + Math.random() * 15
           : 4 + Math.random() * 6
@@ -163,7 +163,7 @@ export const NeonRain = ({
     animate()
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas)
+      // window.removeEventListener('resize', resizeCanvas)
       clearInterval(interval)
     }
   }, [])

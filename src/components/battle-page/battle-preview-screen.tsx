@@ -3,16 +3,12 @@ import { ActionButton } from '../ui/action-button'
 import { PageLayout } from '../ui/page-layout'
 import { Container } from '../ui/container'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
-import { Drawer, DrawerTrigger } from '../ui/drawer'
-import { GateDrawerContent } from '../gate-page/gate-drawer-content'
 import { FlickeringGrid } from '../magicui/flickering-grid'
-import BattleDrawerImage from '/minigames/battle-drawer-img.png'
 import { ElectricLines } from '../ui/electric-lines'
 import { BattleCard } from './opponent-battle-card'
 import type { ReactNode } from 'react'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
-import { BustIcon } from '@/assets/icons/bust'
 
 export function BattlePreviewScreen({ onClick }: { onClick?: () => void }) {
   const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
@@ -89,7 +85,7 @@ export const BattleTitle = ({
   )
 }
 
-function BattleGameRewardSection({
+export function BattleGameRewardSection({
   className,
   isAnimationsEnd,
 }: {
@@ -100,7 +96,7 @@ function BattleGameRewardSection({
     useContext(AppContext)
 
   return (
-    <section className={cn('relative px-[3px]', className)}>
+    <section className={cn('relative', className)}>
       <Container>
         <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px] opacity-0 animate-battle-preview-reward-fade">
           <div className="text-center">
@@ -139,71 +135,6 @@ function BattleGameRewardSection({
             ))}
           </RadioGroup>
         </div>
-        <Drawer>
-          <div className="flex justify-center gap-5">
-            <button className="bg-[#FFFFFF]/4 rounded-[14px] h-auto basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-1px] opacity-0 animate-battle-preview-bust-fade">
-              <span className="ml-1.5">
-                <BustIcon />
-              </span>
-              <span className="font-semibold">1 Bust</span>
-            </button>
-            <DrawerTrigger asChild>
-              <button
-                className={cn(
-                  'flex justify-center gap-[21px] h-[40px] opacity-0 animate-battle-preview-bust-fade font-semibold',
-                  !isAnimationsEnd && 'pointer-events-none',
-                )}
-              >
-                <span className="bg-[#FFFFFF]/4 rounded-[14px] w-[140px] h-full basis-[114px] flex justify-center items-center gap-3 pr-2 bg-[url('/minigames/boost-green-bg.png')] bg-no-repeat bg-[position:bottom_left_-5px]">
-                  <span className="ml-[11px]">
-                    <BustIcon strokeColor="#B6FF00" />
-                  </span>
-                  <span className="text-[#B6FF00]">1 Extra</span>
-                </span>
-              </button>
-            </DrawerTrigger>
-          </div>
-          <GateDrawerContent
-            title="get extra bust"
-            description="Increase your chances of winning"
-            className="backdrop-blur-[8px] bg-[#121312]/95"
-            footerButton={
-              <ActionButton className="font-pixel text-[#121312] rounded-[16px] uppercase">
-                <span>confirm and pay 0.1 ton</span>
-              </ActionButton>
-            }
-          >
-            <div>
-              <div className="relative flex justify-center mb-8">
-                <img
-                  src={BattleDrawerImage}
-                  alt="battle-drawer-image"
-                  width={154}
-                  height={166}
-                />
-                <FlickeringGrid
-                  className="absolute inset-0 z-[-1] mask-[radial-gradient(ellipse_180px_120px_at_center,black,transparent)]"
-                  squareSize={2}
-                  gridGap={12}
-                  color="#b7ff01"
-                  maxOpacity={0.5}
-                  flickerChance={0.3}
-                  autoResize={false}
-                  width={450}
-                  height={250}
-                />
-              </div>
-              <div className="font-pixel font-[400]">
-                <span className="text-[#FFFFFF] text-[30px] leading-[120%]">
-                  0.1
-                </span>
-                <span className="block text-[#FFFFFF]/40 text-[16px] leading-[20px]">
-                  ton
-                </span>
-              </div>
-            </div>
-          </GateDrawerContent>
-        </Drawer>
       </Container>
     </section>
   )

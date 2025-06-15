@@ -1,97 +1,44 @@
+import { hapticFeedback } from '@telegram-apps/sdk'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 
 export const BattleAnimatedPushButton = ({
-  handleClick,
-  setLeftBoostfillPercentage,
-  setRightBoostfillPercentage,
-  leftBoostFillPercentage,
-  rightBoostFillPercentage,
+  onClick,
+  isDisabled,
 }: {
-  handleClick: () => void
-  setLeftBoostfillPercentage: (
-    value: number | ((prevState: number) => number),
-  ) => void
-  setRightBoostfillPercentage: (
-    value: number | ((prevState: number) => number),
-  ) => void
-  leftBoostFillPercentage: number
-  rightBoostFillPercentage: number
+  onClick?: () => void
+  isDisabled?: boolean
 }) => {
   const [isPressed, setIsPressed] = useState(false)
 
-  const handlePress = () => {
-    handleClick()
-    setIsPressed(true)
-    setTimeout(() => setIsPressed(false), 100)
-    if (leftBoostFillPercentage < 100)
-      setLeftBoostfillPercentage((prev: number) => prev + 1)
-    if (rightBoostFillPercentage < 100)
-      setRightBoostfillPercentage((prev: number) => prev + 1)
-  }
+  // const handlePress = () => {
+  // onClick?.()
+  // setIsPressed(true)
+  // setTimeout(() => setIsPressed(false), 100)
+  // if (leftBoostFillPercentage < 100)
+  //   setLeftBoostfillPercentage((prev: number) => prev + 1)
+  // if (rightBoostFillPercentage < 100)
+  //   setRightBoostfillPercentage((prev: number) => prev + 1)
+  // }
 
   return (
     <motion.button
-      className="relative"
-      onClick={handlePress}
-      // whileTap={{ scale: 1.05 }}
-      // transition={{ type: 'spring', stiffness: 400 }}
+      className="relative rounded-full overflow-hidden bg-[radial-gradient(farthest-side,_transparent_85%,_rgba(182,255,0,0.2)_100%)]"
+      onClick={() => {
+        onClick?.()
+      }}
+      onPointerUp={() => setIsPressed(false)}
+      onPointerDown={() => {
+        // setIsPressed(true)
+        if (!isDisabled && hapticFeedback.impactOccurred.isAvailable()) {
+          hapticFeedback.impactOccurred(
+            /Android/i.test(navigator.userAgent) ? 'heavy' : 'medium',
+          )
+        }
+      }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 200 }}
     >
-      {/* <svg
-        className="absolute top-0 left-0"
-        width="120"
-        height="120"
-        viewBox="0 0 120 120"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g filter="url(#filter0_i_51_55504)">
-          <circle cx="60" cy="60" r="60" fill="#B6FF00" fill-opacity="0.01" />
-        </g>
-        <defs>
-          <filter
-            id="filter0_i_51_55504"
-            x="0"
-            y="0"
-            width="120"
-            height="120"
-            filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
-          >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-            <feBlend
-              mode="normal"
-              in="SourceGraphic"
-              in2="BackgroundImageFix"
-              result="shape"
-            />
-            <feColorMatrix
-              in="SourceAlpha"
-              type="matrix"
-              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-              result="hardAlpha"
-            />
-            <feMorphology
-              radius="2"
-              operator="erode"
-              in="SourceAlpha"
-              result="effect1_innerShadow_51_55504"
-            />
-            <feOffset />
-            <feGaussianBlur stdDeviation="6.95" />
-            <feComposite in2="hardAlpha" operator="arithmetic" k2="1" k3="1" />
-            <feColorMatrix
-              type="matrix"
-              values="0 0 0 0 0.713726 0 0 0 0 1 0 0 0 0 0 0 0 0 0.32 0"
-            />
-            <feBlend
-              mode="normal"
-              in2="shape"
-              result="effect1_innerShadow_51_55504"
-            />
-          </filter>
-        </defs>
-      </svg> */}
       <svg
         width="120"
         height="121"

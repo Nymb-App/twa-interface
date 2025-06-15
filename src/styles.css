@@ -175,7 +175,7 @@ code {
   }
 
   /* Ещё и картинки защитим от перетаскивания/выделения */
-  img {
+  img, svg {
     @apply select-none;
     -webkit-user-drag: none;
     user-drag: none;
@@ -249,14 +249,14 @@ code {
 
   /* Battle page animations - START */
 
-  @keyframes battle-preview-slide-bottom-fade {
+  @keyframes battle-intro-section-slide-fade-out {
     0% {
-      opacity: 0;
-      transform: translateY(50rem);
-    }
-    100% {
       opacity: 1;
       transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(50rem);
     }
   }
 
@@ -271,12 +271,36 @@ code {
     }
   }
 
-  @keyframes fade-in {
+  @keyframes battle-finding-slide-bottom-fade {
     0% {
       opacity: 0;
+      transform: translateY(50rem);
     }
     100% {
       opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes battle-intro-slide-card-bottom-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(5rem);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
@@ -309,6 +333,8 @@ code {
     }
   }
 
+  --animate-fade-in: fade-in 0.5s 0.7s ease-out forwards;
+
   --animate-battle-final-animation-fade-out: fade-out 1s 3s ease-out forwards;
   --animate-battle-final-animation-bg-fade-out: fade-out 4s 1s ease-out forwards;
   
@@ -317,6 +343,9 @@ code {
   --animate-battle-finding-line-width-fade-in-out: battle-finding-line-width-fade-in-out 3s 1.5s ease-out;
   
   --animate-battle-finding-slide-top-fade: battle-finding-slide-top-fade 0.7s ease-out forwards;
+  --animate-battle-finding-slide-bottom-fade: battle-finding-slide-bottom-fade 0.7s ease-out forwards;
+
+  --animate-battle-intro-slide-card-fade: battle-intro-slide-card-bottom-fade 0.6s 0.5s ease-out forwards;
   
   --animate-battle-finding-versus-fade: slide-vs-fade 10s ease-out 0.6s forwards;
 
@@ -325,13 +354,15 @@ code {
   --animate-battle-finding-button-fade-out: fade-out 0.6s ease-out forwards;
   --animate-battle-finding-dots-pulse: battle-finding-dots-pulse 1.2s infinite;
 
-  --animate-battle-preview-slide: battle-preview-slide-bottom-fade 0.6s ease-out forwards;
+  --animate-battle-intro-section-slide-fade-out: battle-intro-section-slide-fade-out 0.6s ease-out forwards;
+
   --animate-battle-preview-title-fade: slide-up-fade 0.6s ease-out 0.3s forwards;
   --animate-battle-preview-username-fade: slide-up-fade 0.6s ease-out 0.7s forwards;
   --animate-battle-preview-avatar-fade: slide-up-fade 0.6s ease-out 1.1s forwards;
   --animate-battle-preview-reward-fade: slide-up-fade 0.6s ease-out 1.5s forwards;
   --animate-battle-preview-bust-fade: slide-up-fade 0.6s ease-out 1.9s forwards;
-  --animate-battle-preview-find-fade: slide-up-fade 0.6s ease-out 2.3s forwards;
+  --animate-battle-preview-find-text-fade: slide-up-fade 0.6s ease-out 2.3s forwards;
+  --animate-battle-preview-find-button-fade: slide-up-fade 0.6s ease-out 2.7s forwards;
 
   /* Battle page animations - END */
 

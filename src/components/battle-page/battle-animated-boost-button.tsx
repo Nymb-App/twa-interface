@@ -1,38 +1,70 @@
-import { BattleBoostActiveIcon } from '@/assets/icons/battle-boost-active'
-import { BattleBoostFilledIcon } from '@/assets/icons/battle-boost-filled'
+import { useEffect, useState } from 'react'
+import { cn } from '@/utils'
 
 export const BattleAnimatedBoostButton = ({
-  onBoostActivate,
-  isBoostActive,
-  resetBoost,
-  boostReady,
-  fillPercentage,
-  setIsBoostDisable,
+  fillPercentage = 0,
+  onClick,
+  // onBoostActivate,
+  // isBoostActive,
+  // resetBoost,
+  // boostReady,
+  // setIsBoostDisable,
 }: {
-  onBoostActivate?: () => void
-  isBoostActive?: boolean
-  resetBoost?: () => void
-  boostReady?: boolean
   fillPercentage?: number
-  setIsBoostDisable?: () => void
+  onClick?: () => void
+  // onBoostActivate?: () => void
+  // isBoostActive?: boolean
+  // resetBoost?: () => void
+  // boostReady?: boolean
+  // setIsBoostDisable?: () => void
 }) => {
-  const fillPercentageValue = Math.min(fillPercentage ?? 50, 100)
+  const fillPercentageValue = Math.min(fillPercentage, 99.9)
 
-  const handleClick = () => {
-    if (boostReady && !isBoostActive) {
-      onBoostActivate?.()
-    }
-  }
+  // const handleClick = () => {
+  //   if (boostReady && !isBoostActive) {
+  //     onBoostActivate?.()
+  //   }
+  // }
+
+  // const handleMouseEnter = () => {
+  //   if (boostReady && !isBoostActive) {
+  //     onBoostActivate?.()
+  //   }
+  // }
+
+  const [isBoostActive, setIsBoostActive] = useState(false)
+  const [boostReady, setBoostReady] = useState(false)
+  const [svgActive, setSvgActive] = useState('')
+  const fillArrowColor = fillPercentage >= 99.9 ? '#B6FF00' : 'white'
+  const strokeArrowOpacity = fillPercentage >= 99.9 ? '1' : '0.4'
+
+  useEffect(() => {
+    const percent = Math.min(fillPercentageValue, 99.9)
+    const angle = (percent / 100) * 360
+    const largeArc = angle > 180 ? 1 : 0
+    const radians = (angle - 90) * (Math.PI / 180)
+    const x = 44 + 44 * Math.cos(radians)
+    const y = 44 + 44 * Math.sin(radians)
+    setSvgActive(`M 44 44 L 44 0 A 44 44 0 ${largeArc} 1 ${x} ${y} Z`)
+  }, [fillPercentage])
 
   return (
-    <button className="relative w-[88px] h-[88px]" onClick={handleClick}>
-      {boostReady && !isBoostActive && <BattleBoostActiveIcon />}
-      {isBoostActive && (
-        <BattleBoostFilledIcon
-          onFinish={resetBoost!}
-          setIsBoostDisable={setIsBoostDisable!}
-        />
+    <button
+      disabled={fillPercentage < 99.9}
+      className={cn(
+        'relative w-[88px] h-[88px] rounded-full',
+        fillPercentage >= 99.9 &&
+          'shadow-[0_0px_20px_5px_rgba(182,_255,_0,_1)] bg-[#B6FF00]/30',
       )}
+      onClick={onClick}
+    >
+      {/* {boostReady && !isBoostActive && <BattleBoostActiveIcon />} */}
+      {/* {isBoostActive && (
+        <BattleBoostFilledIcon
+          onFinish={resetBoost}
+          setIsBoostDisable={setIsBoostDisable}
+        />
+      )} */}
       {!isBoostActive && !boostReady && (
         <svg
           width="88"
@@ -42,17 +74,13 @@ export const BattleAnimatedBoostButton = ({
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            {/* Progressive fill mask */}
             <mask id={`fillMask-${fillPercentageValue}`}>
               <rect x="0" y="0" width="88" height="88" fill="black" />
-              <path
-                d={`M 44 44 L 44 0 A 44 44 0 ${fillPercentageValue > 50 ? 1 : 0} 1 ${
-                  44 + 44 * Math.sin((fillPercentageValue / 100) * 2 * Math.PI)
-                } ${44 - 44 * Math.cos((fillPercentageValue / 100) * 2 * Math.PI)} Z`}
-                fill="white"
-              />
+
+              {fillPercentageValue > 0 && <path d={svgActive} fill="white" />}
             </mask>
           </defs>
+
           {/* Original unfilled circles */}
           <g opacity="0.2">
             <path
@@ -366,8 +394,8 @@ export const BattleAnimatedBoostButton = ({
           {/* Original arrows - always visible */}
           <path
             d="M35.5 42.5L44 34L52.5 42.5"
-            stroke="white"
-            strokeOpacity="0.4"
+            stroke={fillArrowColor}
+            strokeOpacity={strokeArrowOpacity}
             strokeWidth="2"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -375,8 +403,8 @@ export const BattleAnimatedBoostButton = ({
           />
           <path
             d="M38 48L44 42L50 48"
-            stroke="white"
-            strokeOpacity="0.4"
+            stroke={fillArrowColor}
+            strokeOpacity={strokeArrowOpacity}
             strokeWidth="2"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -384,8 +412,8 @@ export const BattleAnimatedBoostButton = ({
           />
           <path
             d="M41 53L44 50L47 53"
-            stroke="white"
-            strokeOpacity="0.4"
+            stroke={fillArrowColor}
+            strokeOpacity={strokeArrowOpacity}
             strokeWidth="2"
             strokeMiterlimit="10"
             strokeLinecap="round"

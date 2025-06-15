@@ -1,21 +1,30 @@
 import { NeonRain } from '../ui/neon-rain'
 import { BattleRainSplitLine } from './battle-rain-split-line'
 
-export const BattleScene = ({ isBoostActive }: { isBoostActive?: boolean }) => {
+export const BattleScene = ({
+  areaClaimedUnits = 0,
+}: {
+  areaClaimedUnits?: number
+}) => {
+  const claimedUnits = areaClaimedUnits / 2
+
   return (
     <div className="absolute inset-0">
       <div
-        className={`absolute top-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
-        style={{ height: `${100 - 50}%` }}
+        className={`absolute top-0 w-full transition-all duration-50`}
+        style={{ height: `${50 - claimedUnits}%` }}
       >
         <NeonRain />
       </div>
 
-      <BattleRainSplitLine position={50} isBoostActive={isBoostActive} />
+      <BattleRainSplitLine
+        position={50 + claimedUnits}
+        className="duration-50"
+      />
 
       <div
-        className={`absolute bottom-0 w-full transition-all duration-${isBoostActive ? 250 : 500} ease-linear`}
-        style={{ height: `${50}%` }}
+        className={`absolute bottom-0 w-full transition-all duration-50`}
+        style={{ height: `${50 + claimedUnits}%` }}
       >
         <NeonRain
           className="rotate-180"
