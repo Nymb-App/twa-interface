@@ -1,70 +1,68 @@
-import { useContext, useEffect, useState } from 'react'
-import { ActionButton } from '../ui/action-button'
-import { PageLayout } from '../ui/page-layout'
+import { useContext } from 'react'
 import { Container } from '../ui/container'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from '../ui/electric-lines'
-import { BattleCard } from './opponent-battle-card'
+import { TextInnerStroke } from '../ui/text-inner-stroke'
 import type { ReactNode } from 'react'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
 
-export function BattlePreviewScreen({ onClick }: { onClick?: () => void }) {
-  const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
+// export function BattlePreviewScreen({ onClick }: { onClick?: () => void }) {
+//   const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
 
-  useEffect(() => {
-    if (!isAnimationsEnd) {
-      document.body.style.overflowY = 'hidden'
-    }
-    return () => {
-      document.body.style.overflowY = 'auto'
-    }
-  }, [isAnimationsEnd])
+//   useEffect(() => {
+//     if (!isAnimationsEnd) {
+//       document.body.style.overflowY = 'hidden'
+//     }
+//     return () => {
+//       document.body.style.overflowY = 'auto'
+//     }
+//   }, [isAnimationsEnd])
 
-  return (
-    <PageLayout
-      useFooter={false}
-      className={cn(
-        'bg-[#03061a] pb-50 animate-battle-preview-slide overflow-hidden',
-        isAnimationsEnd && 'overflow-y-auto',
-      )}
-    >
-      <header className="font-pixel font-[400] text-center">
-        <BattleTitle
-          className="opacity-0 animate-battle-preview-title-fade"
-          text={
-            <>
-              Enter the
-              <br />
-              bet amount
-            </>
-          }
-        />
-        {/* <CurrentUserBattleCard /> */}
-        <BattleCard showElectricsLines={false} nickname="tevial" />
-      </header>
-      <BattleGameRewardSection isAnimationsEnd={isAnimationsEnd} />
-      <div
-        className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a] opacity-0 animate-battle-preview-find-fade"
-        onAnimationEnd={() => setIsAnimationsEnd(true)}
-      >
-        <p className="font-inter text-[#FFFFFF]/40 text-[14px] font-[400] leading-[140%] text-center mb-4">
-          The opponent will be <br /> randomly selected. Commission 1%
-        </p>
-        <ActionButton
-          onClick={onClick}
-          className={cn(
-            'font-pixel text-[#121312] rounded-[16px] uppercase',
-            !isAnimationsEnd && 'pointer-events-none',
-          )}
-        >
-          <span>finding the opponent</span>
-        </ActionButton>
-      </div>
-    </PageLayout>
-  )
-}
+//   return (
+//     <PageLayout
+//       useFooter={false}
+//       className={cn(
+//         'bg-[#03061a] pb-50 animate-battle-preview-slide overflow-hidden',
+//         isAnimationsEnd && 'overflow-y-auto',
+//       )}
+//     >
+//       <header className="font-pixel font-[400] text-center">
+//         <BattleTitle
+//           className="opacity-0 animate-battle-preview-title-fade"
+//           text={
+//             <>
+//               Enter the
+//               <br />
+//               bet amount
+//             </>
+//           }
+//         />
+//         {/* <CurrentUserBattleCard /> */}
+//         <BattleCard showElectricsLines={false} nickname="tevial" />
+//       </header>
+//       <BattleGameRewardSection isAnimationsEnd={isAnimationsEnd} />
+//       <div
+//         className="fixed bottom-0 pb-12 px-4 w-full max-w-[450px] z-50 bg-[#03061a] opacity-0 animate-battle-preview-find-fade"
+//         onAnimationEnd={() => setIsAnimationsEnd(true)}
+//       >
+//         <p className="font-inter text-[#FFFFFF]/40 text-[14px] font-[400] leading-[140%] text-center mb-4">
+//           The opponent will be <br /> randomly selected. Commission 1%
+//         </p>
+//         <ActionButton
+//           onClick={onClick}
+//           className={cn(
+//             'font-pixel text-[#121312] rounded-[16px] uppercase',
+//             !isAnimationsEnd && 'pointer-events-none',
+//           )}
+//         >
+//           <span>finding the opponent</span>
+//         </ActionButton>
+//       </div>
+//     </PageLayout>
+//   )
+// }
 
 export const BattleTitle = ({
   text,
@@ -76,7 +74,7 @@ export const BattleTitle = ({
   return (
     <h1
       className={cn(
-        'text-[24px] leading-[32px] text-[#FFFFFF] uppercase mb-4',
+        'text-[24px] leading-[32px] text-[#FFFFFF] uppercase',
         className,
       )}
     >
@@ -85,13 +83,7 @@ export const BattleTitle = ({
   )
 }
 
-export function BattleGameRewardSection({
-  className,
-  isAnimationsEnd,
-}: {
-  className?: string
-  isAnimationsEnd?: boolean
-}) {
+export function BattleGameRewardSection({ className }: { className?: string }) {
   const { battleGameRewardRadioValue, setBattleGameRewardRadioValue } =
     useContext(AppContext)
 
@@ -99,10 +91,16 @@ export function BattleGameRewardSection({
     <section className={cn('relative', className)}>
       <Container>
         <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px] opacity-0 animate-battle-preview-reward-fade">
-          <div className="text-center">
-            <span className="text-[white] tracking-[5px] font-[400] text-[48px] leading-[120%] [-webkit-text-stroke:3px_rgba(182,255,0,1)] [text-shadow:0px_0px_15px_rgba(182,255,0,0.2)]">
+          <div className="text-center relative h-[56px]">
+            {/* <span className="text-[white] tracking-[5px] font-[400] text-[48px] leading-[120%] [-webkit-text-stroke:3px_rgba(182,255,0,1)] [text-shadow:0px_0px_15px_rgba(182,255,0,0.2)]">
               {battleGameRewardRadioValue}
-            </span>
+            </span> */}
+            <TextInnerStroke
+              strokeColor="rgba(182,255,0,1)"
+              text={battleGameRewardRadioValue}
+              classNameContainer="h-full absolute top-[38px] left-1/2 -translate-1/2"
+              className="tracking-[5px] text-[48px] leading-[120%] [text-shadow:0px_0px_15px_rgba(182,255,0,0.2)]"
+            />
           </div>
           <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
           <RadioGroup

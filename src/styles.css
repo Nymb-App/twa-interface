@@ -237,11 +237,11 @@ code {
   }
 
   @keyframes slide-vs-fade {
-    0%,90% {
+    0% {
       opacity: 0;
       transform: translateY(1rem);
     }
-    5%,85% {
+    100% {
       opacity: 1;
       transform: translateY(0);
     }
@@ -333,6 +333,25 @@ code {
     }
   }
 
+  @keyframes battle-main-scene-title-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    5% {
+      opacity: 1;
+      transform: translateY(0rem);
+    }
+    65% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  --animate--battle-main-scene-title-fade: battle-main-scene-title-fade 14s 0.3s ease-out forwards;
+
   --animate-fade-in: fade-in 0.5s 0.7s ease-out forwards;
 
   --animate-battle-final-animation-fade-out: fade-out 1s 3s ease-out forwards;
@@ -347,7 +366,7 @@ code {
 
   --animate-battle-intro-slide-card-fade: battle-intro-slide-card-bottom-fade 0.6s 0.5s ease-out forwards;
   
-  --animate-battle-finding-versus-fade: slide-vs-fade 10s ease-out 0.6s forwards;
+  --animate-battle-finding-versus-fade: slide-vs-fade 0.3s 0.6s ease-out forwards;
 
   --animate-battle-finding-lines-fade: fade-in 0.6s ease-out 2.2s forwards;
   --animate-battle-finding-button-fade-in: slide-up-fade 0.6s ease-out 1.3s forwards;
