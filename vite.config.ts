@@ -50,6 +50,7 @@ export default defineConfig({
       'grade-refurbished-turns-organised.trycloudflare.com',
       'polish-app-consultancy-tom.trycloudflare.com',
       'fails-origin-jackie-caution.trycloudflare.com',
+      'circle-pads-me-icon.trycloudflare.com',
     ],
   },
 
