@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
@@ -7,6 +7,8 @@ import { SendGift } from '@/assets/icons/send-gift'
 import { RussianRoulette } from '@/components/ui/russian-roullete';
 import { GiftSelector } from '@/components/pages/friends/gift-selector'
 import { SendGiftButton } from '@/components/pages/friends/gift-button'
+import { ActionButton } from '@/components/ui/action-button'
+import { shareURL } from '@telegram-apps/sdk'
 
 
 export const Route = createFileRoute('/send-gift')({
@@ -19,12 +21,13 @@ function RouteComponent() {
     return () => {
       document.body.style.backgroundColor = '#121312'
     }
-  }, [])
+  }, []);
 
   const [giftValue, setGiftValue] = useState(24);
   const [giftUnits, setGiftUnits] = useState('weeks');
 
-  const [isStartRoulette, setIsStartRoulette] = useState(false)
+  const [isStartRoulette, setIsStartRoulette] = useState(false);
+  const [isFinishRoulette, setIsFinishRoulette] = useState(false);
 
   return (
     <PageLayout
@@ -50,43 +53,44 @@ function RouteComponent() {
               enter the<br />
               prize amount
             </>
-          :
-          <>
-            send a gift<br />
-            to fren
-          </>
+            :
+            <>
+              send a gift<br />
+              to fren
+            </>
           }
         </h1>
         <SendGift className="animate-[wiggle_3s_ease-in-out_infinite] absolute top-[60px] z-1" />
       </header>
 
-      {!isStartRoulette 
-      ? (
-        <div className='px-4 mt-16'>
-          <GiftSelector
-            value={giftValue}
-            unit={giftUnits}
-            onValueChange={(value) => {
-              setGiftValue(value)
-            }}
-            onUnitChange={(units) => {
-              setGiftUnits(units);
-            }}
-          />
-        </div>
-      ) : (
-        <div className='px-4 mt-32'>
-          <RussianRoulette
-            isStartRoulette={isStartRoulette}
-            items={participants}
-            winnerIndex={3}
-            duration={12500}
-            gap={50}
-            loops={4}
-            onFinish={() => {console.log('finish')}}
-          />
-        </div>
-      )
+      {!isStartRoulette
+        ? (
+          <div className='px-4 mt-16'>
+            <GiftSelector
+              value={giftValue}
+              unit={giftUnits}
+              onValueChange={(value) => {
+                setGiftValue(value)
+              }}
+              onUnitChange={(units) => {
+                setGiftUnits(units);
+              }}
+            />
+          </div>
+        ) : (
+          <div className='px-4 mt-32'>
+            <RussianRoulette
+              userNames={['Innaus Masinko', 'Alex Johnson', 'Maria Petrova', 'John Smith']}
+              isStartRoulette={isStartRoulette}
+              items={participants}
+              winnerIndex={3}
+              duration={30000}
+              gap={50}
+              loops={12}
+              onFinish={() => setIsFinishRoulette(true)}
+            />
+          </div>
+        )
       }
 
       {!isStartRoulette && (
@@ -95,6 +99,34 @@ function RouteComponent() {
           unit={giftUnits}
           onClick={() => setIsStartRoulette(true)}
         />
+      )}
+      {isFinishRoulette && (
+        <div className="fixed w-full bottom-0 flex flex-col gap-2 px-4 mb-6">
+          <ActionButton
+            onClick={() => {
+              const telegramLink =
+                import.meta.env.VITE_TELEGRAM_APP_LINK ||
+                'https://telegram-apps.com'
+              if (shareURL.isAvailable()) {
+                shareURL(telegramLink, 'Check out this cool app!')
+              }
+            }}
+            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
+          >
+            Share and get +2 hour
+          </ActionButton>
+
+          <Link to="/frens">
+            <ActionButton
+              // onClick={() => setIsShowSendGiftActionButtons?.(false)}
+              className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
+            >
+              <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
+                close
+              </span>
+            </ActionButton>
+          </Link>
+        </div>
       )}
     </PageLayout>
   )

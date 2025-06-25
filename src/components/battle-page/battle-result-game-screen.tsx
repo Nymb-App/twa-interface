@@ -147,7 +147,7 @@ export function BattleResultGameScreen({
             onAnimationEnd={onAnimationEnd}
             className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
           >
-            Share and get {isWinner ? '+1 wek' : '+2 hour'}
+            Share and get {isWinner ? '+1 week' : '+2 hour'}
           </ActionButton>
           <ActionButton
             onClick={handleResultGame}
