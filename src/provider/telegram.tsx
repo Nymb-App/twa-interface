@@ -80,7 +80,11 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
-            router.history.back();
+            if (pathnames[1].pathname === '/send-gift') {
+              router.navigate({ to: '/frens' });
+              return;
+            }
+            router.navigate({ to: '/home' });
           });
         }
       }

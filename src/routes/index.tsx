@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useAuth } from '@/hooks/use-api'
+import { useAuth } from '@/hooks/api/use-api'
 import { cn } from '@/utils'
 
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'

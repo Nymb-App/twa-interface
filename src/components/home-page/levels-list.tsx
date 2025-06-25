@@ -115,26 +115,16 @@ const MarqueeArrows = () => {
   return (
     <div className="absolute top-[50px] w-full z-[-1]">
       <div className="relative min-w-[1600px]">
-        <Marquee direction="right" speed={50}>
+        <Marquee direction="right" speed={30}>
           {arrows.map((_, idx) => (
             <Arrow key={idx} />
           ))}
         </Marquee>
         <div
-          className="top-[3px]
-pointer-events-none
-absolute inset-y-0 left-0
-w-[250px] h-[4px]
-z-0 bg-line-gradient
-"
+          className="top-[3px] pointer-events-none absolute inset-y-0 left-0 w-[250px] h-[4px] z-0 bg-line-gradient"
         />
         <div
-          className="
-pointer-events-none
-absolute inset-y-0 left-0
-w-[40px]
-bg-[#121312] -z-[-1]
-"
+          className="pointer-events-none absolute inset-y-0 left-0 w-[40px] bg-[#121312] -z-[-1]"
         />
       </div>
     </div>

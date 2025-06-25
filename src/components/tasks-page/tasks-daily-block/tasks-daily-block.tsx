@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { ActionButton } from '@/components/ui/action-button'
-import { cn } from '@/utils'
+import { cn, formatDurationFromSeconds } from '@/utils'
 
 export const TaskDailyBlock = ({
   title,
@@ -8,19 +8,28 @@ export const TaskDailyBlock = ({
   buttonActionLabel,
   children,
   isTaskCompleted,
-  setIsTaskCompleted,
+  onComplete,
 }: {
   title: string
-  reward: string
+  reward: {
+    type: "time" | "energy",
+    value: number,
+  }
   buttonActionLabel: string
   isTaskCompleted: boolean
-  setIsTaskCompleted: (value: boolean) => void
+  onComplete: () => void
   children: ReactNode
 }) => {
+  const formattedReward = reward.type === 'time'
+    ? formatDurationFromSeconds(reward.value).split(' ')
+    : [String(reward.value), 'e'];
+
+  const [value, unit] = formattedReward;
+
   return (
     <div
       className={cn(
-        'flex flex-col gap-2 items-center justify-center text-center basis-1/3',
+        'flex flex-col gap-2 items-center justify-center text-center basis-1/3 pt-3',
         isTaskCompleted && 'opacity-10',
       )}
     >
@@ -28,22 +37,14 @@ export const TaskDailyBlock = ({
       <p className="font-inter text-[16px] leading-[20px] font-[600] text-[#FFFFFF]">
         {title}
       </p>
-      <span className="font-pixel uppercase leading-[120%] text-[14px] font-[400] text-[#FFFFFF]/40">
-        <span>+</span>
-        <span
-        // className={cn(
-        //   Number(reward.split(' ')[0]) > 0 &&
-        //     Number(reward.split(' ')[0]) < 20 &&
-        //     '-ml-1.5',
-        // )}
-        >
-          {reward.split(' ')[0]}
-        </span>
-        <span className="ml-1.5">{reward.split(' ')[1]}</span>
+      <span className="relative font-pixel uppercase leading-[120%] text-[14px] font-[400] text-[#FFFFFF]/40 flex items-center gap-1">
+        <span className='absolute -left-1'>+</span>
+        <span>{value}</span>
+        <span>{unit}</span>
       </span>
       {!isTaskCompleted ? (
         <ActionButton
-          onClick={() => setIsTaskCompleted(true)}
+          onClick={onComplete}
           className="rounded-[8px] font-[400] w-auto h-[24px] text-[#121312] uppercase leading-[16%] text-[12px]"
         >
           <span>{buttonActionLabel}</span>

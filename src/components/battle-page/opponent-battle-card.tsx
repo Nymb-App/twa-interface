@@ -8,6 +8,7 @@ export const BattleCard = ({
   showElectricsLines = true,
   nickname = 'unknown',
   isMe = true,
+  areaClaimedPercent = 0,
   isFindingUser,
   isRow = false,
   isBgVisible = true,
@@ -17,6 +18,7 @@ export const BattleCard = ({
   showElectricsLines?: boolean
   nickname?: string
   isMe?: boolean
+  areaClaimedPercent?: number
   isFindingUser?: boolean
   isRow?: boolean
   isBgVisible?: boolean
@@ -65,6 +67,10 @@ export const BattleCard = ({
           'relative -top-1 w-full h-[180px] opacity-0 transition-all duration-900 delay-3000 z-10',
           isMe && 'top-1',
           !isBgVisible && 'opacity-100',
+        )}
+        classNameBg={cn(
+          areaClaimedPercent > 0 && '!from-[#B6FF00]/20 !to-[#B6FF00]/20',
+          areaClaimedPercent < 0 && '!from-[#8C35FB]/20 !to-[#8C35FB]/20',
         )}
         isMe={isMe}
       />
@@ -147,7 +153,7 @@ const BattleAvatarCard = ({
           <ElectricLines
             className={cn(
               'absolute top-1/2 left-1/2 -translate-1/2 transition-all',
-              isRow && 'opacity-0',
+              isRow && 'hidden',
             )}
             accentColor="#B6FF00"
             svg1ClassName="top-[-70%] left-[105%]"
@@ -188,11 +194,14 @@ const BattleAvatarCard = ({
 const SvgBgIos = ({
   isMe = true,
   className,
+  classNameBg,
 }: {
   isMe?: boolean
   className?: string
+  classNameBg?: string
 }) => {
   const id = useId()
+
   return (
     <svg
       width="390"
@@ -207,6 +216,7 @@ const SvgBgIos = ({
           className={cn(
             'bg-linear-to-b from-[#040619]/20 via-[#040619]/20',
             isMe ? 'to-[#B6FF00]/20' : 'to-[#8C35FB]/20',
+            classNameBg,
           )}
           style={{
             backdropFilter: 'blur(4px)',
@@ -257,43 +267,3 @@ const SvgBgIos = ({
     </svg>
   )
 }
-
-// ;<linearGradient
-//   id={`paint0_linear_${id}`}
-//   x1="195"
-//   y1="0"
-//   x2="195"
-//   y2="52"
-//   gradientUnits="userSpaceOnUse"
-// >
-//   <stop
-//     stopColor={
-//       // isMe ? '#B6FF00' : '#8C35FB'
-//       // isMe ? ' #0a1309' : '#110522'
-//       // percentRainHeight! > 50
-//       //   ? '#0a1309'
-//       //   : percentRainHeight === 50
-//       //     ? '#03061a'
-//       //     : '#110522'
-//       '#040619'
-//     }
-//     stopOpacity="1"
-//   />
-
-//   <stop
-//     offset="1"
-//     // stopColor={isMe ? '#0a1309' : '#110522'}
-//     // stopColor={isMe ? '#B6FF00' : '#8C35FB'}
-//     stopColor={isMe ? '#B6FF00' : '#8C35FB'}
-//     stopOpacity="0.05"
-//   />
-//   {/*
-// <stop
-//   offset="2"
-//   // stopColor={isMe ? '#0a1309' : '#110522'}
-//   // stopColor={isMe ? '#B6FF00' : '#8C35FB'}
-//   // stopColor="#040619"
-//   stopColor={isMe ? '#B6FF00' : '#8C35FB'}
-//   stopOpacity="1"
-// /> */}
-// </linearGradient>

@@ -11,8 +11,11 @@ export const Route = createFileRoute('/tasks')({
 
 function RouteComponent() {
   return (
-    <PageLayout>
-      <Container>
+    <PageLayout
+      className='flex flex-col flex-1'
+      classNameContent='flex flex-col flex-1 h-full'
+    >
+      <Container className='flex flex-col flex-1'>
         <TasksHeader />
         <TasksDaily />
         <TasksTabs />

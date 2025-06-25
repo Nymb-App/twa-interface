@@ -1,38 +1,50 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TaskCompletedSvgIcon } from '../tasks-daily-block/tasks-daily-block'
 import type { ReactNode } from 'react'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn } from '@/utils'
+import { useTasks, TaskNames } from '@/hooks/api/use-tasks'
+import type { ITask } from '@/hooks/api/use-tasks'
+import { TWITTER_URL } from '@/constants'
+import { formatTimeReward } from '@/utils'
 
-interface ITaskItem {
-  title: string
-  subtitle: string
-  buttonActionLabel: string
-  icon: ReactNode
+const TaskItemSkeleton = () => {
+  return (
+    <div className="rounded-[14px] py-2 px-4 starboard-result-block-bg backdrop-blur-[16px] h-[56px]">
+      <div className="flex justify-between items-center h-full animate-pulse">
+        <div className="flex gap-4 items-center">
+          <div className="w-5 h-5 bg-white/20 rounded"></div>
+          <div className="flex flex-col gap-1.5">
+            <div className="h-5 w-48 bg-white/20 rounded"></div>
+            <div className="h-4 w-24 bg-white/20 rounded"></div>
+          </div>
+        </div>
+        <div className="h-[24px] w-[50px] bg-white/20 rounded-[8px]"></div>
+      </div>
+    </div>
+  )
 }
 
 export function TasksTabs() {
-  const [unfinishedTasks, setUnfinishedTasks] = useState<Array<ITaskItem>>([
-    {
-      title: 'Subscribe to Nymb Twitter',
-      subtitle: '36 hour',
-      buttonActionLabel: 'join',
-      icon: <TwitterSvgIcon />,
-    },
-    {
-      title: 'Invite 2 fren',
-      subtitle: '1 day',
-      buttonActionLabel: 'invite',
-      icon: <InviteFrenSvgIcon />,
-    },
-  ])
-  const [completedTasks, setCompletedTasks] = useState<Array<ITaskItem>>([])
+  const { tasksQuery, completeTask } = useTasks();
+  const { data: tasks, isLoading, isError } = tasksQuery;
+
+  const unfinishedTasks = tasks?.filter(task => !task.isCompleted) ?? [];
+  const completedTasks = tasks?.filter(task => task.isCompleted) ?? [];
+
+  const handleTaskAction = (task: ITask) => {
+    if (task.name === TaskNames.SubscribeTwitter) {
+      window.open(TWITTER_URL, '_blank', 'noopener,noreferrer');
+    }
+    completeTask({ taskName: task.name as TaskNames });
+  }
+
+  if (isError) return <div>Error loading tasks.</div>
 
   return (
-    <section>
-      <Tabs defaultValue="new tasks">
+    <section className='flex flex-col flex-1'>
+      <Tabs defaultValue="new tasks" className='flex flex-col flex-1'>
         <TabsList className="flex justify-center gap-2 uppercase font-pixel mb-7">
           <TabsTrigger
             value="new tasks"
@@ -53,60 +65,65 @@ export function TasksTabs() {
             <span>completed</span>
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="new tasks">
-          {unfinishedTasks.length > 0 && (
-            <h3 className="font-pixel uppercase font-[400] text-[18px] leading-[24px] mb-3">
-              Tasks
-            </h3>
-          )}
-          {unfinishedTasks.length > 0 ? (
+        <TabsContent className='flex flex-col flex-1' value="new tasks">
+          <h3 className="ml-4 font-pixel uppercase font-[400] text-[18px] leading-[24px] mb-3">
+            Tasks
+          </h3>
+          {isLoading ? (
+            <ul className="flex flex-col gap-2">
+              <TaskItemSkeleton />
+              <TaskItemSkeleton />
+            </ul>
+          ) : unfinishedTasks.length > 0 ? (
             <ul className="flex flex-col gap-2">
               <AnimatePresence>
-                {unfinishedTasks.map((task, idx) => (
+                {unfinishedTasks.map(task => (
                   <motion.li
-                    key={idx}
+                    key={task.name}
                     initial={false}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
                   >
                     <TaskItem
-                      title={task.title}
-                      subtitle={task.subtitle}
-                      buttonActionLabel={task.buttonActionLabel}
-                      icon={task.icon}
-                      setIsTaskCompleted={() => {
-                        const completedTask = unfinishedTasks[idx]
-                        setCompletedTasks([...completedTasks, completedTask])
-                        setUnfinishedTasks(
-                          unfinishedTasks.filter((_, i) => i !== idx),
-                        )
-                      }}
+                      title={task.description}
+                      subtitle={
+                        task.reward.type === 'time'
+                          ? formatTimeReward(task.reward.value)
+                          : `${task.reward.value} ENERGY`
+                      }
+                      buttonActionLabel={task.name === TaskNames.SubscribeTwitter ? 'join' : 'invite'}
+                      icon={task.name === TaskNames.SubscribeTwitter ? <TwitterSvgIcon /> : <InviteFrenSvgIcon />}
+                      setIsTaskCompleted={() => handleTaskAction(task)}
                     />
                   </motion.li>
                 ))}
               </AnimatePresence>
             </ul>
           ) : (
-            <NoTasksBlock title="THERE ARE" subtitle="NO TASKS FOR TODAY" />
+            <NoTasksBlock className='h-full flex-1' title="THERE ARE" subtitle="NO TASKS FOR TODAY" />
           )}
         </TabsContent>
         <TabsContent value="completed tasks">
           {completedTasks.length > 0 && (
-            <h3 className="font-pixel uppercase font-[400] text-[18px] leading-[24px] mb-3">
+            <h3 className="ml-4 font-pixel uppercase font-[400] text-[18px] leading-[24px] mb-3">
               Tasks
             </h3>
           )}
           {completedTasks.length > 0 ? (
             <ul className="flex flex-col gap-2">
-              {completedTasks.map((task, idx) => (
+              {completedTasks.map(task => (
                 <TaskItem
-                  key={idx}
+                  key={task.name}
                   isTaskCompleted
-                  title={task.title}
-                  subtitle={task.subtitle}
-                  buttonActionLabel={task.buttonActionLabel}
-                  icon={task.icon}
+                  title={task.description}
+                  subtitle={
+                    task.reward.type === 'time'
+                      ? formatTimeReward(task.reward.value)
+                      : `${task.reward.value} ENERGY`
+                  }
+                  buttonActionLabel={task.name === TaskNames.SubscribeTwitter ? 'join' : 'invite'}
+                  icon={task.name === TaskNames.SubscribeTwitter ? <TwitterSvgIcon /> : <InviteFrenSvgIcon />}
                 />
               ))}
             </ul>
@@ -155,16 +172,7 @@ export const TaskItem = ({
             </p>
             <span className="font-pixel text-[14px] leading-[120%] text-[#FFFFFF]/40 uppercase">
               <span>+</span>
-              <span
-              // className={cn(
-              //   Number(subtitle.split(' ')[0]) > 0 &&
-              //     Number(subtitle.split(' ')[0]) < 20 &&
-              //     '-ml-1.5',
-              // )}
-              >
-                {subtitle.split(' ')[0]}
-              </span>
-              <span className="ml-1.5">{subtitle.split(' ')[1]}</span>
+              <span>{subtitle}</span>
             </span>
           </div>
         </div>
@@ -222,12 +230,14 @@ export const InviteFrenSvgIcon = ({ fill = 'white' }: { fill?: string }) => {
 export const NoTasksBlock = ({
   title,
   subtitle,
+  className,
 }: {
   title: string
   subtitle: string
+  className?: string
 }) => {
   return (
-    <div className="h-[246px] flex flex-col items-center justify-center font-pixel mt-4">
+    <div className={cn("h-[246px] flex flex-col items-center justify-center font-pixel mt-4", className)}>
       <div className="relative mb-4">
         <div className="absolute inset-0 rounded-full bg-[#B6FF0014] blur-[28px] shadow-[0px_0px_0px_3px_#B6FF00]" />
         <div className="relative flex items-center justify-center">

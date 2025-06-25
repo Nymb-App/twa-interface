@@ -4,8 +4,11 @@ import { TelegramProvider } from './telegram'
 import { AppProvider } from '@/context/app-context'
 import { FarmingProvider } from '@/context/farming-context'
 import { GateProvider } from '@/context/gate-context'
+import VConsole from 'vconsole'
 
 const queryClient = new QueryClient()
+new VConsole();
+
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>

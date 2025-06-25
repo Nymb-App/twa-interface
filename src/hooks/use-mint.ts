@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useApi } from "./use-api";
+import { useApi } from "./api/use-api";
 
 export const useMint = () => {
     const { get, post } = useApi();

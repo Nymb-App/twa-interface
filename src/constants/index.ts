@@ -1,0 +1,1 @@
+export const TWITTER_URL = 'https://x.com/NYMB_app';

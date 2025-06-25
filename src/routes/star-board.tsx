@@ -9,7 +9,10 @@ export const Route = createFileRoute('/star-board')({
 
 function RouteComponent() {
   return (
-    <PageLayout>
+    <PageLayout
+      className='flex flex-col'
+      classNameContent='flex flex-col flex-1 h-full'
+    >
       <StarboardPreviewSection />
       <StarboardTabsSection />
     </PageLayout>

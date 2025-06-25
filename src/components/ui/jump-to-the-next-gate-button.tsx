@@ -15,7 +15,6 @@ import { TicketIcon } from '@/assets/icons/ticket'
 import { BuyIcon } from '@/assets/icons/buy'
 import BuyTime from '/buy-time.png'
 import { GateContext } from '@/context/gate-context'
-import { ArrowIcon } from '@/assets/icons/arrow'
 
 export const JumpToTheNextGateButton = () => {
   const [buyResource, setBuyResource] = useState('')
@@ -29,12 +28,13 @@ export const JumpToTheNextGateButton = () => {
     <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 bg-[#121312]">
       {isLockedNewGate && (
         <Drawer>
-          <Container>
-            <DrawerTrigger asChild className="w-full">
-              <ActionButton className="font-pixel text-[#121312] rounded-[16px] uppercase">
-                <span>jump to the next gate</span>
-              </ActionButton>
-            </DrawerTrigger>
+            <div className='w-full px-4'>
+              <DrawerTrigger asChild className="w-full">
+                <ActionButton className="font-pixel text-[#121312] rounded-[16px] uppercase">
+                  <span>jump to the next gate</span>
+                </ActionButton>
+              </DrawerTrigger>
+            </div>
             <GateDrawerContent title="open gate">
               <div className="relative flex justify-evenly pt-[54px] pb-[48px]">
                 <FlickeringGrid
@@ -56,9 +56,9 @@ export const JumpToTheNextGateButton = () => {
                   isLockedNewGate={isLockedNewGate}
                 />
                 <div className="relative">
-                  <div className="absolute -top-[35px] left-[50px] rotate-90">
+                  {/* <div className="absolute -top-[35px] left-[50px] rotate-90">
                     <ArrowIcon className="absolute -top-[3px] left-0 text-[#B6FF00] w-[15px] h-[15px] animate-bounce-gate-arrow" />
-                  </div>
+                  </div> */}
                   <GateNextDisplayBlock
                     className="z-1 border-2 backdrop-blur-[8px] shadow-[0_0_80px_rgba(182,255,0,0.56),_inset_0_0_16px_rgba(182,255,0,0.24)]"
                     isLockedNewGate={isLockedNewGate}
@@ -116,7 +116,6 @@ export const JumpToTheNextGateButton = () => {
                 </GateStatisticsInfoBlock>
               </div>
             </GateDrawerContent>
-          </Container>
         </Drawer>
       )}
       {!isLockedNewGate && (

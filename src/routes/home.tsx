@@ -10,6 +10,7 @@ import { Container } from '@/components/ui/container'
 import { GameCard } from '@/components/game-card'
 import SwipeAnimationLottie from '@/assets/lottie/swipe2.json'
 import { PageLayout } from '@/components/ui/page-layout'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const Route = createFileRoute('/home')({
   component: RouteComponent,
@@ -23,7 +24,6 @@ function RouteComponent() {
     <PageLayout>
       <ProgressSection
         isClaimStart={isClaimStart}
-        isClaimEnd={isClaimEnd}
         setIsClaimEnd={setIsClaimEnd}
       />
       <Container className="mt-5">
@@ -58,9 +58,11 @@ function RouteComponent() {
           <CardContent />
         </div>
         <FarmingButton
+          onClick={() => {
+            setIsClaimStart(true)
+            setIsClaimEnd(false)
+          }}
           className="w-full"
-          setIsClaimStart={setIsClaimStart}
-          setIsClaimEnd={setIsClaimEnd}
         />
       </Container>
     </PageLayout>

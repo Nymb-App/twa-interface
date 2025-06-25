@@ -13,12 +13,10 @@ import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
 
 export function FarmingButton({
   className,
-  setIsClaimStart,
-  setIsClaimEnd,
+  onClick,
 }: {
   className?: string
-  setIsClaimStart?: (value: boolean) => void
-  setIsClaimEnd?: (value: boolean) => void
+  onClick?: () => void
 }) {
   const [finishClaimAt, setFinishClaimAt] = useState<number | null>(null)
   const [isComplete, setIsComplete] = useState(false)
@@ -36,8 +34,6 @@ export function FarmingButton({
         setFinishClaimAt(savedTime)
         setShowDefaultButton(false)
         setIsComplete(false)
-        setIsClaimStart?.(false)
-        setIsClaimEnd?.(false)
       } else {
         // Таймер завершен
         setIsComplete(true)
@@ -53,31 +49,23 @@ export function FarmingButton({
     setFinishClaimAt(endTime)
     setIsComplete(false)
     setShowDefaultButton(false)
-    setIsClaimStart?.(false)
-    setIsClaimEnd?.(false)
   }, [])
 
   const handleComplete = useCallback(() => {
     setFinishClaimAt(null)
     setIsComplete(true)
     setShowDefaultButton(false)
-    setIsClaimStart?.(false)
-    setIsClaimEnd?.(false)
   }, [])
 
   const handleClaimClick = useCallback(() => {
+    onClick?.()
     setShowDefaultButton(true)
-    setIsClaimStart?.(true)
-    setIsClaimEnd?.(false)
     if (Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0) {
       setFinishAt(
         Number(
           Date.now() + FARMING_DURATION + ANIMATION_DURATION_COUNTUP + 1000,
         ),
       )
-      // setFinishAt(
-      //   Number(Date.now() + FARMING_DURATION) + ANIMATION_DURATION_COUNTUP,
-      // )
     } else {
       setFinishAt(
         Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) +
@@ -86,7 +74,7 @@ export function FarmingButton({
       )
     }
     localStorage.removeItem(NYMB_FARMING_CLAIM_TIME_KEY)
-  }, [])
+  }, [onClick, setFinishAt])
 
   const renderButton = useCallback(
     (timeStr: string, completed: boolean) => {
@@ -110,7 +98,6 @@ export function FarmingButton({
     [className, finishClaimAt, handleClaimClick],
   )
 
-  // if (showDefaultButton && isPendingStart) {
   if (showDefaultButton) {
     return <FarmingDefaultButton className={className} onClick={handleStart} />
   }

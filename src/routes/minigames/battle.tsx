@@ -1,7 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
-import { shareURL } from '@telegram-apps/sdk'
-import { AvatarCard } from '../send-gift'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import Countdown from 'react-countdown'
 import { PageLayout } from '@/components/ui/page-layout'
 import {
   BattleGameRewardSection,
@@ -11,19 +10,18 @@ import { BattleCard } from '@/components/battle-page/opponent-battle-card'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn } from '@/utils'
 import { BattleBustButtons } from '@/components/battle-page/battle-bust-buttons'
-import { WatchesIcon } from '@/assets/icons/watches'
-import WinningStartImg from '/minigames/winning-stars.png'
-import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-bg'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
 import { BattleScene } from '@/components/battle-page/battle-scene'
 import { BattleGameControlsPanel } from '@/components/battle-page/battle-game-controls-panel'
+import { AppContext } from '@/context/app-context'
+import { BattleAnimatedMiddleLine } from '@/components/battle-page/battle-animated-middle-line'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [isAnimationsEnd, setIsAnimationsEnd] = useState(false)
+  const [, setIsAnimationsEnd] = useState(false)
 
   useEffect(() => {
     document.body.style.backgroundColor = '#03061a'
@@ -31,13 +29,13 @@ function RouteComponent() {
       document.body.style.backgroundColor = '#121312'
     }
   }, [])
-  const [isClosingAnimation, setIsClosingAnimation] = useState(false)
-  const [isOpeningAnimation, setIsOpeningAnimation] = useState(false)
-  const [isOpeningAnimationDelayed, setIsOpeningAnimationDelayed] =
-    useState(false)
-  const [isReset, setIsReset] = useState(true)
+  const [, setIsClosingAnimation] = useState(false)
+  const [isOpeningAnimation] = useState(false)
+  const [, setIsOpeningAnimationDelayed] = useState(false)
+  const [, setIsReset] = useState(true)
 
   // Don't delete
+  const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(false)
   const [
     isStartFindingOpponentAnimationEnd,
@@ -45,6 +43,11 @@ function RouteComponent() {
   ] = useState(false)
   const [isWinningResult, setIsWinningResult] = useState(false)
   const [isMeWinner, setIsMeWinner] = useState(false)
+  const [areaClaimedPercent, setAreaClaimedPercent] = useState(0)
+  const router = useRouter()
+
+  const opponentNickname = 'igorivanov'
+  const myNickname = 'tevial'
 
   const resetGame = () => {
     setIsStartFindingOpponent(false)
@@ -85,23 +88,32 @@ function RouteComponent() {
   }, [isOpeningAnimation])
 
   useEffect(() => {
-    if (!isWinningResult) return
-    if (isReset) {
-      document.body.style.backgroundColor = '#03061a'
-      return
-    }
-    document.body.style.backgroundColor = isMeWinner ? '#0a1309' : '#110522'
-    return () => {
+    if (areaClaimedPercent === 0) {
       document.body.style.backgroundColor = '#03061a'
     }
-  }, [isMeWinner, isReset, isWinningResult])
 
-  const [areaClaimedPercent, setAreaClaimedPercent] = useState(0)
+    if (areaClaimedPercent > 0) {
+      document.body.style.backgroundColor = '#0a1309'
+    }
+
+    if (areaClaimedPercent < 0) {
+      document.body.style.backgroundColor = '#110522'
+    }
+  }, [areaClaimedPercent])
 
   useEffect(() => {
     if (areaClaimedPercent >= 80 || areaClaimedPercent <= -80) {
       setIsMeWinner(areaClaimedPercent >= 80)
       setIsWinningResult(true)
+      router.navigate({
+        to: '/minigames/battle-result',
+        search: {
+          myNickname: myNickname,
+          opponentNickname: opponentNickname,
+          isMeWinner: isMeWinner,
+          bet: battleGameRewardRadioValue,
+        },
+      })
     }
   }, [areaClaimedPercent])
 
@@ -127,18 +139,11 @@ function RouteComponent() {
       )}
       {isStartFindingOpponent && (
         <MainScene
+          areaClaimedPercent={areaClaimedPercent}
           onForcedExitBattle={resetGame}
           onAreaClaimedPercentageChange={(percent) =>
             setAreaClaimedPercent(percent)
           }
-        />
-      )}
-      {isWinningResult && (
-        <ResultScene
-          nickname="tevial"
-          bet="1 week"
-          isMeWinner={isMeWinner}
-          onNewBattle={resetGame}
         />
       )}
     </PageLayout>
@@ -180,7 +185,7 @@ const IntroScene = ({
     >
       <header className="font-pixel font-[400] text-center">
         <BattleTitle
-          className="opacity-0 animate-battle-preview-title-fade"
+          className="opacity-0 animate-battle-preview-title-fade mb-4"
           text={
             <>
               Enter the
@@ -227,9 +232,11 @@ const IntroScene = ({
 }
 
 const MainScene = ({
+  areaClaimedPercent = 0,
   onAreaClaimedPercentageChange,
   onForcedExitBattle,
 }: {
+  areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
 }) => {
@@ -241,7 +248,9 @@ const MainScene = ({
   const opponentNickname = 'igorivanov'
   const myNickname = 'tevial'
 
+  const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(true) // true
+  const [isVersusAnimationStart, setIsVersusAnimationStart] = useState(false) // false
   const [isClosingAnimation, setIsClosingAnimation] = useState(false) // false
   const [isOpeningAnimation, setIsOpeningAnimation] = useState(false) // false
   const [isMorphAnimation, setIsMorphAnimation] = useState(false) // false
@@ -250,32 +259,44 @@ const MainScene = ({
   const [isCountdownCompleted, setIsCountdownCompleted] = useState(false) // false
 
   const [areaClaimedPercentage, setAreaClaimedPercentage] = useState(0)
-  const [isBoostActive, setIsBoostActive] = useState(false)
+
+  const [isBoostActive0, setIsBoostActive0] = useState(false)
+  const [isBoostActive1, setIsBoostActive1] = useState(false)
+
+  const countdownTarget = useMemo(
+    () => Date.now() + 60000,
+    [isCountdownCompleted],
+  )
+
+  const router = useRouter()
 
   const timeouts = useRef<Array<number>>([])
 
+  const addTimeout = (fn: () => void, delay: number) => {
+    const id = window.setTimeout(fn, delay)
+    timeouts.current.push(id)
+  }
+
   useEffect(() => {
-    const addTimeout = (fn: () => void, delay: number) => {
-      const id = window.setTimeout(fn, delay)
-      timeouts.current.push(id)
-    }
-
     addTimeout(() => setIsStartFindingOpponent(false), 5000)
-
+    addTimeout(() => setIsVersusAnimationStart(true), 1000)
     addTimeout(() => setIsClosingAnimation(true), 5500)
     addTimeout(() => setIsOpeningAnimation(true), 9000)
     addTimeout(() => setIsMorphAnimation(true), 10500)
     addTimeout(() => setIsCardBgAnimationStart(true), 10500)
     addTimeout(() => setIsStartCountdown(true), 15000)
 
-    if (isBoostActive) {
-      addTimeout(() => setIsBoostActive(false), 8000)
+    if (isBoostActive0 || isBoostActive1) {
+      addTimeout(() => {
+        setIsBoostActive0(false)
+        setIsBoostActive1(false)
+      }, 8000)
     }
 
     return () => {
       timeouts.current.forEach(clearTimeout)
     }
-  }, [isBoostActive])
+  }, [isBoostActive0, isBoostActive1])
 
   // bot
   const intervalRef = useRef<number | null>(null)
@@ -308,21 +329,67 @@ const MainScene = ({
 
   return (
     <>
-      <header
-        className={cn(
-          'font-pixel font-[400] text-center',
-          // isFinalAnimationBeforeGame &&
-          // '!animate-battle-finding-button-fade-out',
-          // isTranslateCardsAnimationStart && 'hidden',
+      <header className={cn('font-pixel font-[400] text-center min-h-[52px]')}>
+        {!isStartCountdown ? (
+          <BattleTitle
+            className={cn('opacity-0 animate--battle-main-scene-title-fade')}
+            text={
+              isStartFindingOpponent
+                ? 'Finding the opponent'
+                : 'An opponent was found'
+            }
+          />
+        ) : (
+          <dl className="flex justify-evenly text-center w-full font-[400] text-[14px] font-inter opacity-0 animate-battle-preview-title-fade">
+            <div>
+              <dt className="leading-[120%] text-[14px] text-[#FFFFFF]/40 mb-4">
+                Winning:
+              </dt>
+              <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px] uppercase">
+                <span className="mr-1 text-lg">
+                  {battleGameRewardRadioValue.split(' ')[0]}
+                </span>
+                <span className="text-xs">
+                  {battleGameRewardRadioValue.split(' ')[1]}
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="leading-[120%] text-[14px] text-[#FFFFFF]/40 mb-2">
+                There's time:
+              </dt>
+              <dd className="text-[20px] leading-[24px] text-[#FFFFFF] font-pixel">
+                {!isCountdownCompleted && <span>01:00</span>}
+
+                {isCountdownCompleted && (
+                  <Countdown
+                    key={'game-timer'}
+                    date={countdownTarget}
+                    intervalDelay={1000}
+                    precision={0}
+                    onComplete={() => {
+                      router.navigate({
+                        to: '/minigames/battle-result',
+                        search: {
+                          myNickname: myNickname,
+                          opponentNickname: opponentNickname,
+                          isMeWinner: Boolean(areaClaimedPercent > 0),
+                          bet: battleGameRewardRadioValue,
+                        },
+                      })
+                    }}
+                    renderer={({ minutes, seconds }) => (
+                      <span>
+                        {minutes.toString().padStart(2, '0')}:
+                        {seconds.toString().padStart(2, '0')}
+                      </span>
+                    )}
+                  />
+                )}
+              </dd>
+            </div>
+          </dl>
         )}
-      >
-        <BattleTitle
-          className={'opacity-0 animate-battle-preview-title-fade'}
-          text={
-            !isMorphAnimation ? 'Finding the opponent' : 'An opponent was found'
-            // 'Finding the opponent'
-          }
-        />
       </header>
       <div className="flex flex-col gap-2 justify-between flex-1">
         <div className="relative flex flex-col h-full flex-1 items-center justify-between mask-[linear-gradient(to_bottom,transparent_0%,black_1%,black_99%,transparent_100%)]">
@@ -330,6 +397,7 @@ const MainScene = ({
             isFindingUser={isStartFindingOpponent}
             nickname={opponentNickname}
             isMe={false}
+            areaClaimedPercent={areaClaimedPercent}
             isRow={isMorphAnimation}
             isBgVisible={!isCardBgAnimationStart}
             className={cn(
@@ -348,8 +416,6 @@ const MainScene = ({
             <CountdownStartGame
               onComplete={() => {
                 setIsCountdownCompleted(true)
-                // setIsCountdownStarted(false)
-                // setAutoClick(true)
               }}
             />
           )}
@@ -358,25 +424,24 @@ const MainScene = ({
             <BattleScene areaClaimedUnits={areaClaimedPercentage} />
           )}
 
-          {/* <BattleAnimatedMiddleLine
+          <BattleAnimatedMiddleLine
             className={cn(
-              'absolute top-1/2 left-1/2 -translate-1/2 z-1 w-[calc(100%-50px)] opacity-0 animate-battle-finding-versus-fade',
+              'absolute top-1/2 left-1/2 -translate-1/2 z-1 w-[calc(100%-50px)] opacity-0 transition-all duration-600',
+              isVersusAnimationStart && 'opacity-100',
+              isOpeningAnimation && 'opacity-0 delay-1500',
             )}
             classNameForLine={cn(
-              'opacity-0',
-              // isClosingAnimation &&
-              //   'animate-battle-finding-line-width-fade-in-out',
+              'opacity-0 w-0 transition-all',
+              isClosingAnimation &&
+                'w-full opacity-100 delay-1500 duration-1500',
+              isOpeningAnimation && 'w-0 opacity-0 delay-600 duration-1500',
             )}
-            onAnimationEnd={() => {
-              // setIsClosingAnimation(false)
-              // setIsMorphAnimation(true)
-              // setIsOpeningAnimation(true)
-            }}
-          /> */}
+          />
           <BattleCard
             nickname={myNickname}
             isRow={isMorphAnimation}
             isBgVisible={!isCardBgAnimationStart}
+            areaClaimedPercent={areaClaimedPercent}
             className={cn(
               'transition-all duration-5000 w-full h-[220px] animate-battle-finding-slide-bottom-fade',
               isClosingAnimation &&
@@ -396,13 +461,21 @@ const MainScene = ({
             isOpeningAnimation && 'h-[160px]',
           )}
         >
-          {isCountdownCompleted && (
+          {(isStartCountdown || isCountdownCompleted) && (
             <BattleGameControlsPanel
+              disabled={!isCountdownCompleted}
               onClick={() => {
-                const addUnits = isBoostActive ? 2 : 1
+                const addUnits = isBoostActive0 || isBoostActive1 ? 2 : 1
                 setAreaClaimedPercentage((prev) => prev + addUnits)
               }}
-              onBoostActivate={() => setIsBoostActive(true)}
+              onBoostActivate={() => {
+                if (!isBoostActive0) {
+                  setIsBoostActive0(true)
+                }
+                if (!isBoostActive1) {
+                  setIsBoostActive1(true)
+                }
+              }}
             />
           )}
         </div>
@@ -432,167 +505,5 @@ const MainScene = ({
       </div>
       {/* </div> */}
     </>
-  )
-}
-
-const ResultScene = ({
-  nickname = 'Unknown',
-  bet,
-  onNewBattle,
-  isMeWinner = false,
-}: {
-  nickname?: string
-  bet?: string
-  onNewBattle?: () => void
-  isMeWinner?: boolean
-}) => {
-  // return (
-  //   <BattleResultGameScreen
-  //     rewardTimeValue={battleGameRewardRadioValue.split(' ')[0]}
-  //     rewardTimeLabel={battleGameRewardRadioValue.split(' ')[1]}
-  //   />
-  // )
-  // флаг, указывающий, что анимация закончилась
-  // const [animationEnded, setAnimationEnded] = useState(false)
-
-  // обработчик конца анимации
-  // const onAnimationEnd = () => {
-  //   setAnimationEnded(true)
-  // }
-
-  const rewardTimeValue = bet
-
-  const [isShareBattleDisabled, setIsShareBattleDisabled] = useState(true)
-  const [isNewBattleDisabled, setIsNewBattleDisabled] = useState(true)
-
-  return (
-    <div
-      className={cn(
-        'fixed left-1/2 -translate-x-1/2 top-0 h-screen flex flex-col items-center justify-between font-pixel bg-black/30 z-50 max-w-[450px] w-full',
-        isMeWinner ? 'bg-[#0a1309]' : 'bg-[#110522]',
-      )}
-    >
-      <BattleResultGameBg
-        className={cn(isMeWinner && 'rotate-180 bg-[#0a1309]')}
-        glowColor={isMeWinner ? '#22d082' : undefined}
-        gradColor1={isMeWinner ? 'rgba(26, 121, 79, 0)' : undefined}
-        gradColor2={isMeWinner ? '#22d082' : undefined}
-        gradColor3={isMeWinner ? '#dee11a' : undefined}
-      />
-      <div className="absolute top-[-10px] left-0 w-full h-screen backdrop-blur-[4px] opacity-50" />
-      <div className="absolute bottom-0 max-h-[1200px] w-full h-full flex flex-col justify-between">
-        <header className="relative w-full h-[310px] top-20">
-          {isMeWinner && (
-            <img
-              src={WinningStartImg}
-              className="w-full h-auto p-6 object-cover bg-blend-lighten absolute opacity-0 animate-slide-up-fade-swipe-game-1"
-            />
-          )}
-          <div
-            className={cn(
-              'relative overflow-hidden size-[104px] rounded-[36px] left-1/2 top-[100px] -translate-x-1/2 shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)] opacity-0 animate-slide-up-fade-swipe-game-2',
-              !isMeWinner && 'shadow-[0_0px_59.8px_rgba(140,_53,_251,_0.4)]',
-            )}
-          >
-            <img
-              src={'/roulette-icons/default.png'}
-              className="w-full h-auto object-cover absolute"
-            />
-            <h2 className="absolute left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
-              NA
-            </h2>
-          </div>
-          <div className="relative flex flex-col gap-2 items-center justify-center top-[110px]">
-            {isMeWinner ? (
-              <h2 className="relative font-pixel text-[24px] text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
-                ABSOLUTE
-                <br />
-                CHAMPION!
-              </h2>
-            ) : (
-              <h2 className="relative font-pixel text-sm text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
-                don't worry!
-              </h2>
-            )}
-            <h3 className="relative font-inter text-sm text-white/50 text-center opacity-0 animate-slide-up-fade-swipe-game-4">
-              {isMeWinner
-                ? 'You showed everyone how to play!'
-                : "You'll be lucky next time."}
-            </h3>
-          </div>
-        </header>
-        <div className="flex flex-col items-center justify-center opacity-0 animate-slide-up-fade-swipe-game-5">
-          <h2 className="font-inter text-sm text-white/50 mb-[-5px]">
-            {isMeWinner ? 'Your reward' : 'You lose'}:
-          </h2>
-          <div className="inline-flex items-center justify-center">
-            <WatchesIcon
-              fill={isMeWinner ? '#B6FF00' : '#DA364C'}
-              className={cn(
-                'size-13',
-                String(rewardTimeValue).startsWith('1') && 'mr-[-18px]',
-              )}
-            />
-            <div className="inline-flex items-baseline gap-1">
-              <h1
-                className={cn(
-                  'font-pixel text-[48px] text-white',
-                  isMeWinner &&
-                    '[-webkit-text-stroke:1px_rgba(182,255,0,1)] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]',
-                  !isMeWinner &&
-                    'bg-gradient-to-b from-[#DA364C] via-[#DA364C] to-[#A51F6D] [background-position:10.42%] bg-clip-text text-transparent',
-                )}
-              >
-                {bet?.split(' ')[0]}
-              </h1>
-              <span className="text-base text-white/50 uppercase">
-                {bet?.split(' ')[1]}
-              </span>
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-4 mt-[41px]">
-              <span className="font-inter text-sm leading-[140%] text-[#FFFFFF]/60">
-                {isMeWinner ? 'Loser' : 'Winner'}:
-              </span>
-              <AvatarCard
-                className="size-[32px]"
-                classNameForSpan="text-[#FFFFFF] text-sm pr-1"
-                src="/roulette-icons/user-2.png"
-                label={nickname.slice(0, 2)}
-              />
-              <span className="font-pixel text-sm font-[400] text-[#FFFFFF] uppercase">
-                {nickname}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-          <ActionButton
-            onClick={() => {
-              const telegramLink =
-                import.meta.env.VITE_TELEGRAM_APP_LINK ||
-                'https://telegram-apps.com'
-              if (shareURL.isAvailable()) {
-                shareURL(telegramLink, 'Check out this cool app!')
-              }
-            }}
-            disabled={isShareBattleDisabled}
-            onAnimationEnd={() => setIsShareBattleDisabled(false)}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
-          >
-            Share and get {isMeWinner ? '+1 week' : '+2 hour'}
-          </ActionButton>
-          <ActionButton
-            onClick={onNewBattle}
-            disabled={isNewBattleDisabled}
-            onAnimationEnd={() => setIsNewBattleDisabled(false)}
-            className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:cursor-not-allowed uppercase opacity-0 animate-slide-up-fade-swipe-game-7"
-          >
-            new battle
-          </ActionButton>
-        </div>
-      </div>
-    </div>
   )
 }

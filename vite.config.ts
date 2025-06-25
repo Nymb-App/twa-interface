@@ -43,14 +43,9 @@ export default defineConfig({
 
   server: {
     allowedHosts: [
-      'spotlight-springer-flame-studying.trycloudflare.com',
       'nymb-interface.vercel.app',
-      'ever-paint-representing-crossing.trycloudflare.com',
-      'reviewer-supervision-dna-prayer.trycloudflare.com',
-      'grade-refurbished-turns-organised.trycloudflare.com',
-      'polish-app-consultancy-tom.trycloudflare.com',
-      'fails-origin-jackie-caution.trycloudflare.com',
-      'circle-pads-me-icon.trycloudflare.com',
+      'spend-contracting-club-forwarding.trycloudflare.com',
+      'localhost:100'
     ],
   },
 

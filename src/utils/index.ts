@@ -1,23 +1,49 @@
-import { clsx } from 'clsx'
+import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import type { ClassValue } from 'clsx'
 
-export function cn(...inputs: Array<ClassValue>) {
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const formatTimeParts = (
-  totalDays: number,
+export function formatTimeParts(
+  days: number,
   minutes: number,
   seconds: number,
-) => [
-  Math.floor(totalDays / 365),
-  Math.floor((totalDays % 365) / 30),
-  Math.floor((totalDays % 30) / 7),
-  totalDays % 7,
-  minutes % 60,
-  seconds % 60,
-]
+) {
+  const allSeconds = days * 24 * 60 * 60 + minutes * 60 + seconds
+  const allMinutes = Math.floor(allSeconds / 60)
+  const allHours = Math.floor(allMinutes / 60)
+
+  const d = Math.floor(allHours / 24)
+  const h = allHours % 24
+  const m = allMinutes % 60
+  const s = allSeconds % 60
+
+  return [d, h, m, s]
+}
+
+export function formatDurationFromSeconds(seconds: number): string {
+  if (seconds <= 0) {
+    return '0 s';
+  }
+
+  const days = Math.floor(seconds / 86400);
+  if (days > 0) {
+    return `${days} d`;
+  }
+
+  const hours = Math.floor(seconds / 3600);
+  if (hours > 0) {
+    return `${hours} h`;
+  }
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes > 0) {
+    return `${minutes} m`;
+  }
+
+  return `${seconds} s`;
+}
 
 export const convertTimestampToLargestUnit = (
   timestamp: number,
@@ -53,4 +79,27 @@ export const convertTimestampToLargestUnit = (
   }
 
   return { time: 0, label: 'd' }
+}
+
+export function formatTimeReward(seconds: number): string {
+  if (seconds <= 0) {
+    return '0 HOURS';
+  }
+
+  // Если время в секундах точно делится на количество секунд в дне, показываем дни.
+  if (seconds % 86400 === 0) {
+    const days = seconds / 86400;
+    return `${days} DAY${days > 1 ? 'S' : ''}`;
+  }
+
+  // В противном случае, всегда показываем часы.
+  // Округляем до ближайшего часа для более чистого отображения.
+  const hours = Math.round(seconds / 3600); 
+
+  // Если после округления 0, но время было, вернем 1 час.
+  if (hours === 0 && seconds > 0) {
+    return '1 HOUR';
+  }
+
+  return `${hours} HOUR${hours > 1 ? 'S' : ''}`;
 }

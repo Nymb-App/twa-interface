@@ -1,51 +1,6 @@
 import { zeroPad } from 'react-countdown'
-import { cn, formatTimeParts } from '@/utils'
+import { cn } from '@/utils'
 import { NYMB_FARMING_FINISHAT_LS_KEY } from '@/context/farming-context'
-
-const CountdownBlock = ({
-  label,
-  value,
-  isFirst,
-  minutesValue,
-  hoursValue,
-}: {
-  label: string
-  value: number
-  isFirst: boolean
-  minutesValue?: number
-  hoursValue?: number
-}) => {
-  const forceGreenForSecondsAndMinutes =
-    (label === 'Seconds' && minutesValue && minutesValue !== 0) ||
-    (label === 'Minutes' && hoursValue && hoursValue !== 0)
-
-  const colorClass =
-    value === 0 && !forceGreenForSecondsAndMinutes
-      ? 'text-[#FFFFFF]/40 font-[400] text-[30px]'
-      : 'font-[400] text-[30px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]'
-
-  return (
-    <div
-      className={`w-[50px] relative ${
-        !isFirst &&
-        'before:content-[":"] before:text-[30px] before:absolute before:-left-[25px] before:top-[22px] before:-translate-y-1/2 before:text-gray-500'
-      }`}
-    >
-      <p
-        className={cn(
-          'leading-[120%] mb-2',
-          colorClass,
-          value > 9 && value <= 19 && 'pr-3',
-        )}
-      >
-        {zeroPad(value)}
-      </p>
-      <p className="text-[10px] font-[400] uppercase text-[#FFFFFF]/40">
-        {label}
-      </p>
-    </div>
-  )
-}
 
 export const CountdownTimerDisplay = ({
   isCountdownHeaderView = false,
@@ -62,80 +17,60 @@ export const CountdownTimerDisplay = ({
   seconds: number
   completed?: boolean
 }) => {
-  if (completed) {
-    const blocks = [
-      { label: 'Weeks', value: 0 },
-      { label: 'Days', value: 0 },
-      { label: 'Hours', value: 0 },
-      { label: 'Minutes', value: 0 },
-      { label: 'Seconds', value: 0 },
-    ]
-    localStorage.setItem(NYMB_FARMING_FINISHAT_LS_KEY, String(0))
-    return isCountdownHeaderView ? (
-      <div className="text-center">
-        <div className="flex justify-center gap-6">
-          {blocks.map((item, index) => (
-            <CountdownBlock
-              key={item.label}
-              label={item.label}
-              value={item.value}
-              isFirst={index === 0}
-            />
-          ))}
-        </div>
-      </div>
-    ) : (
-      <div className="font-pixel font-[400] text-[12px] leading-[120%] mt-1 text-[#FFFFFF99]">
-        00:00:00:00:00:00
-      </div>
-    )
+  if (!isCountdownHeaderView) {
+    return null
   }
 
-  if (isCountdownHeaderView) {
-    const computedWeeks = Math.floor(days / 7)
-    const remainingDays = days % 7
-    const blocks = [
-      { label: 'Weeks', value: computedWeeks },
-      { label: 'Days', value: remainingDays },
-      { label: 'Hours', value: hours },
-      { label: 'Minutes', value: minutes },
-      { label: 'Seconds', value: seconds },
-    ]
+  const computedWeeks = completed ? 0 : Math.floor(days / 7)
+  const remainingDays = completed ? 0 : days % 7
+  const blocks = [
+    { label: 'Weeks', value: computedWeeks },
+    { label: 'Days', value: remainingDays },
+    { label: 'Hours', value: completed ? 0 : hours },
+    { label: 'Minutes', value: completed ? 0 : minutes },
+    { label: 'Seconds', value: completed ? 0 : seconds },
+  ]
 
-    return (
-      <div className="text-center">
-        <div className="flex justify-center gap-6">
-          {blocks.map((item, index) => (
-            <CountdownBlock
-              key={item.label}
-              label={item.label}
-              value={item.value}
-              isFirst={index === 0}
-              minutesValue={minutes}
-              hoursValue={hours}
-            />
-          ))}
-        </div>
-      </div>
-    )
-  } else {
-    const parts = formatTimeParts(days, minutes + hours * 60, seconds)
-    let foundNonZero = false
+  let hasFoundNonZero = false
 
-    return (
-      <div className="font-pixel font-[400] text-[12px] leading-[120%] mt-1">
-        {parts.map((val, i) => {
-          if (val !== 0) foundNonZero = true
-          const color = foundNonZero ? 'text-[#B6FF00]' : 'text-[#FFFFFF99]'
+  return (
+    <div className="text-center">
+      <div className="flex justify-center gap-6">
+        {blocks.map((item, index) => {
+          const isHighlighted = item.value !== 0 || hasFoundNonZero
+
+          if (isHighlighted) {
+            hasFoundNonZero = true
+          }
+
+          const colorClass = isHighlighted
+            ? 'font-[400] text-[30px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]'
+            : 'text-[#FFFFFF]/40 font-[400] text-[30px]'
 
           return (
-            <span key={i} className={color}>
-              {zeroPad(val)}
-              {i < parts.length - 1 && ':'}
-            </span>
+            <div
+              key={item.label}
+              className={`w-[50px] relative ${
+                index !== 0 &&
+                'before:content-[":"] before:text-[30px] before:absolute before:-left-[25px] before:top-[22px] before:-translate-y-1/2 before:text-gray-500'
+              }`}
+            >
+              <p
+                className={cn(
+                  'leading-[120%] mb-2',
+                  colorClass,
+                  item.value > 9 && item.value <= 19 && 'pr-3',
+                )}
+              >
+                {zeroPad(item.value)}
+              </p>
+              <p className="text-[10px] font-[400] uppercase text-[#FFFFFF]/40">
+                {item.label}
+              </p>
+            </div>
           )
         })}
       </div>
-    )
-  }
+    </div>
+  )
 }

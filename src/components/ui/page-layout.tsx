@@ -76,7 +76,7 @@ export const PageLayout = ({
       {useCheckInButton && <CheckInButton />}
       {useJumpToTheNextGateButton && <JumpToTheNextGateButton />}
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
-      <Toaster className="!mb-18" />
+      <Toaster className="!mb-18" position='bottom-center' />
     </div>
   )
 }

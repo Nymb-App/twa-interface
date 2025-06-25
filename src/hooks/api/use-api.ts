@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { io } from 'socket.io-client'
 import type { Socket } from 'socket.io-client'
+import { useAccount } from './use-account'
 
 const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
-const devInitData =
-  'user=%7B%22id%22%3A649685983%2C%22first_name%22%3A%22Dmitriy%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22polienko161%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FyJ_JeNbEN5vPQROkivhZRAoHz5wqfZ1To3Mo_e5EULA.svg%22%7D&chat_instance=-7293269513689266275&chat_type=sender&auth_date=1743505634&signature=QPjIV0WZgTB_g-7R43jvO-Vktj7o-SvRCACHQzVEwBw-GLCFUE59JgBSXV9vImmAySK9w_IoVZSNnI6K-FEoCA&hash=c2061dcd32363814b406676c58eacd394a3c249b80f69fe3f0ea8162a0837932'
 
 type MethodName =
   | 'GET' // Получение данных
@@ -117,61 +116,129 @@ export function useWebSocketApi(key: string = 'newData') {
   return { data, sendMessage }
 }
 
+interface AuthResponse {
+  token: string;
+  isLoginVerified: boolean;
+}
+
 export function useAuth() {
-  const [isAuthTokenValid, setAuthTokenValid] = useState<boolean>(false)
+  const [isAuthTokenValid, setAuthTokenValid] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const { initData } = useAccount();
+
   const authToken = useMemo(() => {
     const match = document.cookie.match(/(^| )Authorization-Token=([^;]+)/)
-    return match ? match[2] : null // Возвращает токен или null, если куки не найдены
+    return match ? match[2] : null
   }, [])
 
-  useEffect(() => {
-    if (!authToken) return
-    ;(async () => {
-      const res = await fetch(baseUrl + `/accounts/login?token=${authToken}`, {
+  const setToken = useCallback((token: string) => {
+    document.cookie = `Authorization-Token=${token}; path=/; max-age=3600; ${import.meta.env.VITE_PUBLIC_ENV === 'production' ? 'Secure;' : ''}SameSite=Lax`
+  }, [])
+
+  const verifyToken = useCallback(async (token: string): Promise<boolean> => {
+    try {
+      const res = await fetch(baseUrl + `/accounts/login?token=${token}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       })
 
       if (!res.ok) {
-        console.error('Auth error!')
-        return
+        throw new Error(`Auth verification failed: ${res.status}`)
       }
 
-      const data = await res.json()
-      const isVerified = data.isLoginVerified ?? false
+      const data = await res.json() as AuthResponse
+      return data.isLoginVerified ?? false
+    } catch (err) {
+      console.error('Token verification error:', err)
+      return false
+    }
+  }, [])
 
-      setAuthTokenValid(isVerified)
-    })()
-  }, [authToken])
+  const authorize = useCallback(async (force: boolean = false) => {
+    if (!force && authToken) {
+      const isValid = await verifyToken(authToken)
+      if (isValid) {
+        setAuthTokenValid(true)
+        setIsLoading(false)
+        return
+      }
+    }
 
-  const authorize = async () => {
-    const res = await fetch(baseUrl + '/accounts/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        initData:
-          import.meta.env.VITE_PUBLIC_ENV === 'production'
-            ? devInitData
-            : devInitData,
-      }),
-    })
+    setIsLoading(true)
+    setError(null)
 
-    if (!res.ok) {
-      console.error('Auth error!')
+    try {
+      const res = await fetch(baseUrl + '/accounts/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          initData,
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error(`Authorization failed: ${res.status}`)
+      }
+
+      const data = await res.json() as AuthResponse
+      
+      if (!data.token) {
+        throw new Error('No token in response')
+      }
+
+      setToken(data.token)
+      setAuthTokenValid(true)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error during authorization'
+      console.error('Authorization error:', errorMessage)
+      setError(errorMessage)
+      setAuthTokenValid(false)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [authToken, setToken, verifyToken])
+
+  // Автоматическая авторизация при монтировании
+  useEffect(() => {
+    if (!authToken) {
+      authorize()
       return
     }
 
-    // Получаем токен из ответа
-    const data = await res.json()
-    const token = data.token // Пример: токен должен быть в ответе
+    const checkToken = async () => {
+      const isValid = await verifyToken(authToken)
+      if (!isValid) {
+        await authorize(true)
+      } else {
+        setAuthTokenValid(true)
+      }
+      setIsLoading(false)
+    }
 
-    // Записываем токен в куки
-    document.cookie = `Authorization-Token=${token}; path=/; max-age=3600; ${import.meta.env.VITE_PUBLIC_ENV === 'production' ? 'Secure;' : ''}SameSite=Lax`
-  }
+    checkToken()
+  }, [authToken, authorize, verifyToken])
+
+  // Автоматическое обновление токена перед истечением срока
+  useEffect(() => {
+    if (!authToken || !isAuthTokenValid) return
+
+    const tokenExpirationTime = 3600 * 1000 // 1 час в миллисекундах
+    const refreshThreshold = 5 * 60 * 1000 // 5 минут в миллисекундах
+
+    const refreshTimer = setTimeout(() => {
+      authorize(true)
+    }, tokenExpirationTime - refreshThreshold)
+
+    return () => clearTimeout(refreshTimer)
+  }, [authToken, isAuthTokenValid, authorize])
 
   return {
     authToken,
     isAuthTokenValid,
-    authorize,
+    isLoading,
+    error,
+    authorize: () => authorize(true),
   }
 }
