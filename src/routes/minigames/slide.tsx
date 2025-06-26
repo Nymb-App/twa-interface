@@ -247,7 +247,7 @@ function GameFinished({
   return (
     <div
       className={cn(
-        'absolute inset-0 flex flex-col items-center justify-between font-pixel bg-black/30 z-50',
+        'absolute inset-0 flex flex-col items-center justify-between font-pixel z-50',
         className,
       )}
     >
@@ -284,7 +284,7 @@ function GameFinished({
         <div className="inline-flex items-center justify-center">
           <WatchesIcon className="size-10" />
           <div className="inline-flex items-baseline gap-1">
-            <h1 className="font-pixel text-4xl text-white [-webkit-text-stroke:1px_rgba(182,255,0,1)] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]">
+            <h1 className="font-pixel text-4xl text-[#B6FF00] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]">
               {minutesWinned}
             </h1>
             <span className="text-sm text-white/50">MIN</span>

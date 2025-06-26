@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useLvl } from '@/hooks/use-lvl'
 import { useState } from 'react'
 import { cn } from '@/utils'
+import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 
 export const StarboardTabsSection = () => {
   const { lvls, maxLvl } = useLvl();
@@ -68,7 +69,7 @@ export const StarboardTabsSection = () => {
               <CarouselItem key={idx} className="basis-[80px] flex">
                 <TabsTrigger
                   value={String(item)}
-                  className="data-[state=active]:bg-[#FFFFFF] data-[state=active]:text-[#121312] h-[30px] w-[80px] py-2 px-2.5 shrink-0 bg-[#FFFFFF14] rounded-[64px] text-[#FFFFFF] font-pixel font-[400] text-[12px] leading-[120%] uppercase"
+                  className="data-[state=active]:bg-[#B6FF00] data-[state=active]:text-[#121312] h-[30px] w-[80px] py-2 px-2.5 shrink-0 bg-[#FFFFFF14] rounded-[64px] text-[#FFFFFF] font-pixel font-[400] text-[12px] leading-[120%] uppercase"
                 >
                   {item} gate
                 </TabsTrigger>
@@ -113,20 +114,7 @@ export const StarboardTabsSection = () => {
                   ))}
                 </>
               ) : (
-                <div className="flex flex-col items-center font-pixel">
-                  <div className="relative mb-4">
-                    <div className="absolute inset-0 rounded-full bg-[#B6FF0014] blur-[28px] shadow-[0px_0px_0px_3px_#B6FF00]" />
-                    <div className="relative flex items-center justify-center">
-                      <div className="text-[#B6FF00] text-[76px] font-[400] leading-[120%]">
-                        :
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-center text-[#FFFFFF] font-[400] leading-[24px] text-[18px]">
-                    <p>NO USER</p>
-                    <p>ON THIS GATE</p>
-                  </div>
-                </div>
+                <NoTasksBlock className='h-full flex-1' title="NO USER" subtitle="ON THIS GATE" />
               )}
             </TabsContent>
           );

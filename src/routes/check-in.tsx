@@ -36,7 +36,7 @@ function CheckInHeader() {
       <h1 className="mt-6 mb-20 leading-[32px]">
         your daily <br /> rewards
       </h1>
-      <div className="font-pixel text-[80px] leading-[120%] mb-2 text-[white] [-webkit-text-stroke:2px_rgba(182,255,0,1)] [text-shadow:0px_12.0067px_24.0134px_rgba(182,255,0,0.3),_0px_0px_72.0403px_#B6FF00]">
+      <div className="font-pixel text-[80px] leading-[120%] mb-2 text-[#B6FF00] [text-shadow:0px_12.0067px_24.0134px_rgba(182,255,0,0.3),_0px_0px_72.0403px_#B6FF00]">
         <span className={cn((currentDay > 9 || currentDay > 99) && 'mr-9')}>
           {zeroPad(currentDay)}
         </span>

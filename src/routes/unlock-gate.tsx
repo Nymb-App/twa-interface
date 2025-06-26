@@ -74,7 +74,7 @@ function RouteComponent() {
               )}
               isLockedNewGate={isLockedNewGate}
               currentLevel={currentLevel}
-              animationSpanClass="text-[white] [-webkit-text-stroke:0.5px_rgba(182,255,0,1)]"
+              animationSpanClass="text-[#B6FF00]"
             />
             {!isFadeOutLockerAnimation ? (
               <HiLockClosed
@@ -137,7 +137,7 @@ function RouteComponent() {
               />
               <span
                 className={cn(
-                  'font-pixel font-[400] text-[100px] leading-[120%] text-[white] [-webkit-text-stroke:4px_rgba(182,255,0,1)] [text-shadow:0px_0px_70px_rgba(182,255,0,0.3)]',
+                  'font-pixel font-[400] text-[100px] leading-[120%] text-[#B6FF00] [text-shadow:0px_0px_70px_rgba(182,255,0,0.3)]',
                   currentLevel.toString().startsWith('1') ? 'mr-12' : 'mr-0',
                 )}
               >

@@ -16,12 +16,6 @@ export const Route = createFileRoute('/send-gift')({
 })
 
 function RouteComponent() {
-  useEffect(() => {
-    document.body.style.backgroundColor = '#151317'
-    return () => {
-      document.body.style.backgroundColor = '#121312'
-    }
-  }, []);
 
   const [giftValue, setGiftValue] = useState(24);
   const [giftUnits, setGiftUnits] = useState('weeks');

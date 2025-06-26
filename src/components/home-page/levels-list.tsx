@@ -22,7 +22,7 @@ const levels = [
 export const LevelsList = () => {
   return (
     <div className="relative w-full -mt-[10px]">
-      <div className="pointer-events-none absolute inset-y-0 right-0 top-[20px] h-[70px] w-[40px] bg-gradient-to-l from-[#121312] to-transparent z-20" />
+      <div className="pointer-events-none absolute inset-y-0 -right-10 top-[20px] h-[70px] w-full bg-gradient-to-l from-[#121312] via-transparent via-40% to-transparent to-95% z-20" />
       <div className="absolute top-[10px] left-1/2 -translate-x-1/2 z-0">
         <FlickeringGrid
           className="[mask-image:radial-gradient(140px_circle_at_center,white,transparent)]"
@@ -36,7 +36,7 @@ export const LevelsList = () => {
           height={120}
         />
       </div>
-
+      <Link to='/gate'>
       <Carousel
         className="relative z-10 h-[90px]"
         opts={{ slidesToScroll: 4, align: 'center' }}
@@ -48,6 +48,7 @@ export const LevelsList = () => {
           ))}
         </CarouselContent>
       </Carousel>
+      </Link>
     </div>
   )
 }
@@ -66,8 +67,7 @@ export const CarouselLvlItem = ({
     <CarouselItem className="relative basis-1/4 h-[106px] flex items-center justify-center">
       {!level.isLocked ? (
         <div className="flex justify-center">
-          <Link
-            to="/gate"
+          <div
             className={cn(
               'inline-flex items-center w-[32px] h-[32px] font-[400] text-sm justify-center border rounded-[12px] p-2 border-[#FFFFFF1F] bg-[#121312]',
               level.isCurrentLevel &&
@@ -84,12 +84,11 @@ export const CarouselLvlItem = ({
             >
               {level.num}
             </span>
-          </Link>
+          </div>
         </div>
       ) : (
         <div className="flex justify-center" key={level.num}>
-          <Link to="/gate">
-            <span className="p-2.5 inline-flex font-[400] text-[16px] leading-[20px] border border-[#FFFFFF1F] rounded-[12px] w-[32px] h-[32px] bg-[#161816]">
+          <span className="p-2.5 inline-flex font-[400] text-[16px] leading-[20px] border border-[#FFFFFF1F] rounded-[12px] w-[32px] h-[32px] bg-[#161816]">
               <svg
                 width="12"
                 height="12"
@@ -103,7 +102,6 @@ export const CarouselLvlItem = ({
                 />
               </svg>
             </span>
-          </Link>
         </div>
       )}
     </CarouselItem>

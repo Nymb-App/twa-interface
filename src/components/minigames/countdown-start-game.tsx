@@ -24,7 +24,7 @@ export const CountdownStartGame = ({
           <span
             key={seconds}
             className={cn(
-              'font-pixel text-[7.5rem] text-white [-webkit-text-stroke:3px_rgba(182,255,0,1)] [text-shadow:0px_0px_100px_rgba(182,255,0,0.4)] animate-[number-change_0.5s_ease-out]',
+              'font-pixel text-[7.5rem] text-[#B6FF00] [text-shadow:0px_0px_100px_rgba(182,255,0,0.6)] animate-[number-change_0.5s_ease-out]',
               seconds === 2 && 'mr-12',
               seconds === 1 && 'ml-12',
             )}

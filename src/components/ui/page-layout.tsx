@@ -6,7 +6,7 @@ import { SendGiftActionButtons } from './send-gift-action-buttons'
 import { CheckInButton } from './check-in-button'
 import { JumpToTheNextGateButton } from './jump-to-the-next-gate-button'
 import { UnlockGateCloseButton } from './unlock-gate-close-button'
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
 import { cn } from '@/utils'
 
@@ -48,6 +48,20 @@ export const PageLayout = ({
     { to: '/frens', label: 'Frens', icon: FriendsIcon },
     { to: '/locked', label: 'Blured', icon: FriendsIcon, isLocked: true },
   ]
+
+  const pathnames = useMatches();
+
+  useEffect(() => {
+    if(pathnames[1].pathname === '/send-gift') {
+      document.body.style.backgroundColor = '#151317'
+      return 
+    }
+    document.body.style.backgroundColor = '#121312'
+    return () => {
+      document.body.style.backgroundColor = '#121312'
+    }
+  }, [pathnames]);
+
   return (
     <div
       className={cn(
@@ -76,7 +90,16 @@ export const PageLayout = ({
       {useCheckInButton && <CheckInButton />}
       {useJumpToTheNextGateButton && <JumpToTheNextGateButton />}
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
-      <Toaster className="!mb-18" position='bottom-center' />
+      <Toaster
+        className="!mb-18"
+        position='bottom-center'
+        toastOptions={{
+          className:
+            '!font-inter !text-[#FFFFFF] !font-[400] !leading-[20px] !text-[16px] !border !rounded-[12px] !p-4 !border-[#FFFFFF1F] !bg-[#171914]',
+        }}
+        duration={5000}
+        invert={true}
+      />
     </div>
   )
 }

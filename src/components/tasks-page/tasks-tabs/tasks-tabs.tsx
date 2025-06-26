@@ -238,7 +238,7 @@ export const NoTasksBlock = ({
 }) => {
   return (
     <div className={cn("h-[246px] flex flex-col items-center justify-center font-pixel mt-4", className)}>
-      <div className="relative mb-4">
+      <div className="relative mb-4 animate-battle-finding-dots-pulse">
         <div className="absolute inset-0 rounded-full bg-[#B6FF0014] blur-[28px] shadow-[0px_0px_0px_3px_#B6FF00]" />
         <div className="relative flex items-center justify-center">
           <div className="text-[#B6FF00] text-[76px] font-[400] leading-[120%]">

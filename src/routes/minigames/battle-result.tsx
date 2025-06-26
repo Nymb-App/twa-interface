@@ -132,7 +132,7 @@ const ResultScene = ({
                 className={cn(
                   'font-pixel text-[48px] text-white',
                   isMeWinner &&
-                    '[-webkit-text-stroke:1px_rgba(182,255,0,1)] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]',
+                    'text-[#B6FF00] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]',
                   !isMeWinner &&
                     'bg-gradient-to-b from-[#DA364C] via-[#DA364C] to-[#A51F6D] [background-position:10.42%] bg-clip-text text-transparent',
                 )}

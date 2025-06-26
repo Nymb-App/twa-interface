@@ -757,7 +757,7 @@ export default function BombField({
       {/* точки-фон */}
       <DotPatternInteractive
         ref={dotRef}
-        className="absolute inset-0 mask-[radial-gradient(ellipse_380px_500px_at_center,black,transparent)]"
+        className="absolute inset-0 mask-[radial-gradient(ellipse_380px_350px_at_center,black,transparent)]"
         gap={patternGap}
         baseRadius={baseRadius}
         maxRadius={maxRadius}

@@ -1,7 +1,8 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { animate, motion } from 'framer-motion'
+import { toast } from 'sonner'
 import { PageLayout } from '@/components/ui/page-layout'
 import { Container } from '@/components/ui/container'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
@@ -15,17 +16,14 @@ import {
   NYMB_FARMING_FINISHAT_LS_KEY,
   useFarming,
 } from '@/context/farming-context'
+import { WatchesIcon } from '@/assets/icons/watches'
+
 
 export const Route = createFileRoute('/frens')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [referralsCodesData, setReferralsCodesData] = useState([
-    { code: 'LKSD3KJF', percentageRatio: [20, 80], members: 5 },
-    { code: 'TSADSAJF', percentageRatio: [10, 90], members: 0 },
-  ])
-  const [isToastActive, setIsToastActive] = useState(false)
   const [isClaimStart, setIsClaimStart] = useState(false)
   const [isClaimEnd, setIsClaimEnd] = useState(false)
   const [initialFinishAtValue, _] = useState(
@@ -95,16 +93,32 @@ function RouteComponent() {
           setIsClaimStart={setIsClaimStart}
         />
         <ReferralsLevelsBlock />
-        <RefferalsCodeList
-          referralsCodesData={referralsCodesData}
-          setReferralsCodesData={setReferralsCodesData}
-          isToastActive={isToastActive}
-          setIsToastActive={setIsToastActive}
-        />
-        <RefferalsMembersList />
+        <RefferalsCodeList />
+        <RefferalsMembersList meTime={7400}/>
       </Container>
     </PageLayout>
   )
+}
+
+const useCountdown = (from: number, duration: number, enabled: boolean) => {
+  const [value, setValue] = useState(from)
+
+  useEffect(() => {
+    if (!enabled) {
+      setValue(from)
+      return
+    }
+
+    const controls = animate(from, 0, {
+      duration: duration / 1000,
+      ease: 'linear',
+      onUpdate: setValue,
+    })
+
+    return () => controls.stop()
+  }, [from, duration, enabled])
+
+  return value
 }
 
 const TotalEarningsBlock = ({
@@ -116,7 +130,13 @@ const TotalEarningsBlock = ({
   isClaimStart: boolean
   setIsClaimStart: (value: boolean) => void
 }) => {
-  const displayTime = convertTimestampToLargestUnit(totalEarnings, true)
+    const animatedTotalEarnings = useCountdown(
+    totalEarnings,
+    ANIMATION_DURATION_COUNTUP,
+    isClaimStart,
+  )
+  const currentEarnings = isClaimStart ? animatedTotalEarnings : totalEarnings
+  const displayTime = convertTimestampToLargestUnit(currentEarnings, true)
   const { setFinishAt } = useFarming()
 
   return (
@@ -124,25 +144,13 @@ const TotalEarningsBlock = ({
       className="font-pixel font-[400] mt-2 flex items-center justify-between p-4 starboard-result-block-bg rounded-[14px]
 backdrop-blur-[8px]"
     >
-      <div className="flex flex-col gap-2 items-center">
+      <div className="flex flex-col gap-2 items-center basis-1/2">
         <p className="font-inter leading-[140%] text-[14px]">Total Earnings</p>
-        <div className="flex gap-2 items-center">
-          <svg
-            width="25"
-            height="24"
-            viewBox="0 0 25 24"
+        <div className="flex items-center">
+          <WatchesIcon
+            className="size-[36px]"
             fill={`${displayTime.time > 0 ? '#B6FF00' : '#FFFFFF99'}`}
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clipPath="url(#clip0_51_17272)">
-              <path d="M16.9041 22.4683L16.8982 23.9683L7.89819 23.9293L7.90503 22.4293L16.9041 22.4683ZM19.9109 20.981L19.9041 22.481L16.9041 22.4683L16.9109 20.9683L19.9109 20.981ZM7.91089 20.9293L7.90503 22.4293L4.90503 22.4166L4.91089 20.9166L7.91089 20.9293ZM21.4167 19.4869L21.4109 20.9869L19.9109 20.981L19.9167 19.481L21.4167 19.4869ZM4.91772 19.4166L4.91089 20.9166L3.41089 20.9107L3.41772 19.4107L4.91772 19.4166ZM22.9294 16.4937L22.9167 19.4937L21.4167 19.4869L21.4294 16.4869L22.9294 16.4937ZM3.43042 16.4107L3.41772 19.4107L1.91772 19.4039L1.93042 16.4039L3.43042 16.4107ZM24.4685 7.49957L24.4294 16.4996L22.9294 16.4937L22.9685 7.49371L24.4685 7.49957ZM1.96851 7.40387L1.93042 16.4039L0.43042 16.398L0.468506 7.39801L1.96851 7.40387ZM12.4744 5.94879L12.449 11.9488L19.949 11.981L19.9431 13.481L10.9431 13.4429L10.9744 5.94293L12.4744 5.94879ZM22.9812 4.49371L22.9685 7.49371L21.4685 7.48688L21.4812 4.48688L22.9812 4.49371ZM3.4812 4.41071L3.46851 7.41071L1.96851 7.40387L1.9812 4.40387L3.4812 4.41071ZM21.4871 2.98688L21.4812 4.48688L19.9812 4.48102L19.9871 2.98102L21.4871 2.98688ZM4.98706 2.91754L4.9812 4.41754L3.4812 4.41071L3.48706 2.91071L4.98706 2.91754ZM19.9939 1.48102L19.9871 2.98102L16.9871 2.96832L16.9939 1.46832L19.9939 1.48102ZM7.9939 1.43024L7.98706 2.93024L4.98706 2.91754L4.9939 1.41754L7.9939 1.43024ZM16.9998 -0.0316772L16.9939 1.46832L7.9939 1.43024L7.99976 -0.0697632L16.9998 -0.0316772Z" />
-            </g>
-            <defs>
-              <clipPath id="clip0_51_17272">
-                <rect width="24" height="24" transform="translate(0.5)" />
-              </clipPath>
-            </defs>
-          </svg>
+          />
           <div>
             <span
               className={cn(
@@ -157,7 +165,7 @@ backdrop-blur-[8px]"
           </div>
         </div>
       </div>
-      <div>
+      <div className="basis-1/2 inline-flex justify-center">
         <Button
           disabled={!totalEarnings || isClaimStart}
           onClick={() => {
@@ -178,7 +186,7 @@ backdrop-blur-[8px]"
               )
             }
           }}
-          className="w-[106px] h-[40px] rounded-[12px] uppercase bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00]"
+          className="text-[#121312] h-[40px] rounded-[12px] uppercase bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white disabled:cursor-not-allowed disabled:opacity-100"
         >
           <svg
             width="17"
@@ -190,7 +198,7 @@ backdrop-blur-[8px]"
             <g clipPath="url(#clip0_225_9928)">
               <path
                 d="M12.4999 15.9997H4.50085L4.49988 13.9997H12.4999V15.9997ZM4.49988 13.9997H2.49988V11.9997H4.49988V13.9997ZM14.4999 13.9997H12.4999V11.9997H14.4999V13.9997ZM2.49988 11.9997H0.499878V3.99966H2.49988V11.9997ZM16.4999 4.00064V11.9997H14.4999V3.99966L16.4999 4.00064ZM8.49988 7.99966L13.4999 8.00064V10.0006L6.49988 9.99966V3.99966H8.49988V7.99966ZM4.49988 3.99966H2.49988L2.50085 1.99966H4.50085L4.49988 3.99966ZM14.4999 3.99966H12.4999L12.5009 1.99966H14.5009L14.4999 3.99966ZM12.5009 1.99966H4.50085L4.49988 -0.000335693H12.4999L12.5009 1.99966Z"
-                fill="#121312"
+                fill={!totalEarnings ? 'rgba(255,255,255,0.6)' : '#121312'}
               />
             </g>
             <defs>
@@ -204,7 +212,7 @@ backdrop-blur-[8px]"
               </clipPath>
             </defs>
           </svg>
-          <span className="text-[#121312] uppercase">claim</span>
+          <span className="mt-0.5">for claiming</span>
         </Button>
       </div>
     </div>
@@ -289,27 +297,8 @@ const ReferralsBlock = ({
   )
 }
 
-const RefferalsCodeList = ({
-  referralsCodesData,
-  setReferralsCodesData,
-  isToastActive,
-  setIsToastActive,
-}: {
-  referralsCodesData: Array<{
-    code: string
-    percentageRatio: Array<number>
-    members: number
-  }>
-  setReferralsCodesData: (
-    data: Array<{
-      code: string
-      percentageRatio: Array<number>
-      members: number
-    }>,
-  ) => void
-  isToastActive: boolean
-  setIsToastActive: (value: boolean) => void
-}) => {
+const RefferalsCodeList = () => {
+  const [refferalsList, setRefferalsList] = useState<Array<{ code: string, percentage: number, refferals: number }>>([]);
   return (
     <>
       <div className="font-pixel pt-[40px] px-3 pb-4 mb-3">
@@ -318,20 +307,10 @@ const RefferalsCodeList = ({
             Referrals code
           </h2>
           <Button
-            disabled={isToastActive}
-            className="h-6 bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00]"
-            onClick={async () => {
-              if (referralsCodesData.length === 5) {
-                setIsToastActive(true)
-                const { toast } = await import('sonner')
-                toast.error('You can add up to 5 referral codes only', {
-                  duration: 5000,
-                  className:
-                    '!font-inter !text-[#FFFFFF] !font-[400] !leading-[20px] !text-[16px] !border !rounded-[12px] !p-4 !border-[#FFFFFF1F] !bg-[#171914]',
-                  invert: true,
-                  onAutoClose: () => setIsToastActive(false),
-                  onDismiss: () => setIsToastActive(false),
-                })
+            className={cn("text-[#121312] h-8 bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] leading-4 text-[12px] uppercase", refferalsList.length === 5 && 'from-[#414241] to-[#363736] text-white cursor-not-allowed')}
+            onClick={() => {
+              if (refferalsList.length >= 5) {
+                toast.error('You can add up to 5 referral codes only')
                 return
               }
               const generateRandomString = (length: number) => {
@@ -344,12 +323,12 @@ const RefferalsCodeList = ({
                 }
                 return result
               }
-              setReferralsCodesData([
-                ...referralsCodesData,
+              setRefferalsList([
+                ...refferalsList,
                 {
                   code: generateRandomString(8),
-                  percentageRatio: [0, 0],
-                  members: 0,
+                  percentage: 10,
+                  refferals: 0,
                 },
               ])
             }}
@@ -363,17 +342,15 @@ const RefferalsCodeList = ({
             >
               <path
                 d="M9.00006 6.99982H15.0001V8.99982H9.00006V14.9998H7.00006V8.99982H1.00006V6.99982H7.00006V0.999817H9.00006V6.99982Z"
-                fill="#121312"
+                fill={refferalsList.length >= 5 ? 'rgba(255,255,255,0.6)' : '#121312'}
               />
             </svg>
-            <span className="text-[12px] leading-4 text-[#121312] uppercase">
               add new
-            </span>
           </Button>
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        {referralsCodesData.map((item, idx) => (
+        {refferalsList.map((item, idx) => (
           <motion.div
             key={idx}
             initial={{ opacity: 0, scale: 0.95 }}
@@ -391,14 +368,12 @@ const RefferalsCodeList = ({
                     <CopyButton content={item.code} />
                   </div>
                   <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">
-                    {item.percentageRatio.length === 2
-                      ? `${item.percentageRatio[0]}/${item.percentageRatio[1]}%`
-                      : `0/0%`}
+                    {item.percentage}%
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <p className="font-pixel text-[14px] leading-[120%]">
-                    {item.members || 0}
+                    {item.refferals || 0}
                   </p>
                   <svg
                     width="16"
@@ -431,7 +406,11 @@ const referralsMembersData = [
   { name: 'igorivanov11', referrals: 3, gifts: 1 },
 ]
 
-const RefferalsMembersList = () => {
+const RefferalsMembersList = ({meTime}: {meTime: number}) => {
+
+const MIN_ALLOWED_TIME = 86400 
+
+
   return (
     <>
       <div className="font-pixel pt-[40px] px-3 pb-4 mb-3">
@@ -439,8 +418,8 @@ const RefferalsMembersList = () => {
           <h2 className="font-pixel text-[18px] leading-6 uppercase">
             5 frens
           </h2>
-          <Link to="/send-gift">
-            <Button className="h-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7]">
+          <Link to="/send-gift" disabled={MIN_ALLOWED_TIME >= meTime}>
+            <Button className="h-8 bg-gradient-to-b from-[#8C35FB] to-[#6602E7]" disabled={MIN_ALLOWED_TIME >= meTime}>
               <svg
                 width="16"
                 height="16"
