@@ -9,11 +9,29 @@ import { GiftSelector } from '@/components/pages/friends/gift-selector'
 import { SendGiftButton } from '@/components/pages/friends/gift-button'
 import { ActionButton } from '@/components/ui/action-button'
 import { shareURL } from '@telegram-apps/sdk'
+import { useReferrals } from '@/hooks/api/use-referrals'
 
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
 })
+
+const convertGiftValueToSeconds = (value: number, unit: string) => {
+  switch (unit) {
+    case 'weeks':
+      return value * 60 * 60 * 24 * 7;
+    case 'days':
+      return value * 60 * 60 * 24;
+    case 'hours':
+      return value * 60 * 60;
+    case 'minutes':
+      return value * 60;
+    case 'seconds':
+      return value;
+    default:
+      return value;
+  }
+}
 
 function RouteComponent() {
 
@@ -22,6 +40,18 @@ function RouteComponent() {
 
   const [isStartRoulette, setIsStartRoulette] = useState(false);
   const [isFinishRoulette, setIsFinishRoulette] = useState(false);
+
+  const {sendGiftToFriend, myReferrals} = useReferrals()
+
+  const [referralsNickName, setReferralsNickName] = useState<Array<string>>([])
+
+  const winnerIndex = Math.floor(Math.random() * referralsNickName.length)
+
+  useEffect(() => {
+    if (myReferrals) {
+      setReferralsNickName(myReferrals.referrals.map((referral) => referral.nickname))
+    }
+  }, [myReferrals])
 
   return (
     <PageLayout
@@ -74,14 +104,22 @@ function RouteComponent() {
         ) : (
           <div className='px-4 mt-32'>
             <RussianRoulette
-              userNames={['Innaus Masinko', 'Alex Johnson', 'Maria Petrova', 'John Smith']}
+              userNames={referralsNickName}
               isStartRoulette={isStartRoulette}
-              items={participants}
-              winnerIndex={3}
+              items={referralsNickName.map((nickname, index) => (
+                <AvatarCard key={index} src={`/roulette-icons/user-${index + 1}.png`} label={nickname} />
+              ))}
+              winnerIndex={winnerIndex}
               duration={30000}
               gap={50}
               loops={12}
-              onFinish={() => setIsFinishRoulette(true)}
+              onFinish={() => {
+                setIsFinishRoulette(true)
+                sendGiftToFriend.mutate({
+                  friendId: Number(myReferrals?.referrals[winnerIndex].telegramId),
+                  time: convertGiftValueToSeconds(giftValue, giftUnits),
+                })
+              }}
             />
           </div>
         )
@@ -156,10 +194,3 @@ export const AvatarCard = ({
     </span>
   </div>
 )
-
-const participants = [
-  <AvatarCard src="/roulette-icons/user-1.png" label="IM" />,
-  <AvatarCard src="/roulette-icons/user-2.png" label="AJ" />,
-  <AvatarCard src="/roulette-icons/user-3.png" label="MP" />,
-  <AvatarCard src="/roulette-icons/user-2.png" label="JS" />,
-]

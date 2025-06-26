@@ -17,7 +17,7 @@ import {
   useFarming,
 } from '@/context/farming-context'
 import { WatchesIcon } from '@/assets/icons/watches'
-
+import { useReferrals } from '@/hooks/api/use-referrals'
 
 export const Route = createFileRoute('/frens')({
   component: RouteComponent,
@@ -94,7 +94,7 @@ function RouteComponent() {
         />
         <ReferralsLevelsBlock />
         <RefferalsCodeList />
-        <RefferalsMembersList meTime={7400}/>
+        <RefferalsMembersList meTime={7400} />
       </Container>
     </PageLayout>
   )
@@ -130,7 +130,7 @@ const TotalEarningsBlock = ({
   isClaimStart: boolean
   setIsClaimStart: (value: boolean) => void
 }) => {
-    const animatedTotalEarnings = useCountdown(
+  const animatedTotalEarnings = useCountdown(
     totalEarnings,
     ANIMATION_DURATION_COUNTUP,
     isClaimStart,
@@ -219,86 +219,62 @@ backdrop-blur-[8px]"
   )
 }
 
-const refferalData = [
-  {
-    members: 48,
-    icon: (
-      <svg
-        width="14"
-        height="19"
-        viewBox="0 0 14 19"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M9.75 10.7503C11.9591 10.7503 13.7499 12.5413 13.75 14.7503V17.5003C13.75 17.9145 13.4142 18.2503 13 18.2503C12.5858 18.2503 12.25 17.9145 12.25 17.5003V14.7503C12.2499 13.3697 11.1307 12.2503 9.75 12.2503H4.25C2.86934 12.2503 1.75009 13.3697 1.75 14.7503V17.5003C1.75 17.9145 1.41421 18.2503 1 18.2503C0.585786 18.2503 0.25 17.9145 0.25 17.5003V14.7503C0.250088 12.5413 2.04092 10.7503 4.25 10.7503H9.75ZM7 0.333344C9.02499 0.333344 10.6669 1.97537 10.667 4.00034C10.667 6.02538 9.02504 7.66733 7 7.66733C4.97496 7.66733 3.33301 6.02538 3.33301 4.00034C3.3331 1.97537 4.97501 0.333344 7 0.333344ZM7 1.66733C5.71139 1.66733 4.66708 2.71175 4.66699 4.00034C4.66699 5.289 5.71134 6.33334 7 6.33334C8.28866 6.33334 9.33301 5.289 9.33301 4.00034C9.33292 2.71175 8.28861 1.66733 7 1.66733Z"
-          fill="white"
-          fillOpacity="0.6"
-        />
-      </svg>
-    ),
-  },
-  {
-    members: 128,
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g>
-          <path
-            d="M10.25 14.2503C12.4591 14.2503 14.25 16.0412 14.25 18.2503V21.0003C14.2498 21.4144 13.9141 21.7503 13.5 21.7503C13.0859 21.7503 12.7502 21.4144 12.75 21.0003V18.2503C12.75 16.8696 11.6307 15.7503 10.25 15.7503H4.75C3.36929 15.7503 2.25 16.8696 2.25 18.2503V21.0003C2.24982 21.4144 1.91411 21.7503 1.5 21.7503C1.08589 21.7503 0.750176 21.4144 0.75 21.0003V18.2503C0.75 16.0412 2.54086 14.2503 4.75 14.2503H10.25ZM17.625 11.2503C20.7315 11.2505 23.25 13.7688 23.25 16.8753V18.0003C23.2498 18.4143 22.914 18.7502 22.5 18.7503C22.086 18.7502 21.7502 18.4143 21.75 18.0003V16.8753C21.75 14.5972 19.9031 12.7505 17.625 12.7503H15.375C14.6792 12.7504 14.0254 12.9223 13.4521 13.2249C13.086 13.4181 12.6319 13.2775 12.4385 12.9115C12.2454 12.5455 12.3853 12.0924 12.751 11.8988C13.535 11.4848 14.4292 11.2504 15.375 11.2503H17.625ZM7.5 3.83334C9.52504 3.83334 11.167 5.47529 11.167 7.50034C11.1668 9.52523 9.52494 11.1673 7.5 11.1673C5.47506 11.1673 3.83318 9.52523 3.83301 7.50034C3.83301 5.47529 5.47496 3.83334 7.5 3.83334ZM7.5 5.16733C6.21134 5.16733 5.16699 6.21167 5.16699 7.50034C5.16717 8.78885 6.21144 9.83334 7.5 9.83334C8.78856 9.83334 9.83283 8.78885 9.83301 7.50034C9.83301 6.21167 8.78866 5.16733 7.5 5.16733ZM15 0.833344C17.025 0.833347 18.667 2.47529 18.667 4.50034C18.6668 6.52523 17.0249 8.16732 15 8.16733C14.6319 8.16729 14.3332 7.86836 14.333 7.50034C14.333 7.13217 14.6318 6.83338 15 6.83334C16.2886 6.83334 17.3328 5.78885 17.333 4.50034C17.333 3.21167 16.2887 2.16733 15 2.16733C14.4078 2.16734 13.8687 2.38698 13.457 2.75034C13.1811 2.99373 12.7592 2.96753 12.5156 2.69174C12.2721 2.41578 12.2984 1.99401 12.5742 1.75034C13.2202 1.1802 14.0706 0.833359 15 0.833344Z"
-            fill="white"
-            fillOpacity="0.6"
-          />
-        </g>
-      </svg>
-    ),
-  },
-]
-
 const ReferralsLevelsBlock = () => {
+  const { myReferrals } = useReferrals()
+
   return (
     <div className="mt-2 grid grid-cols-2 gap-2">
-      {refferalData.map((data, i) => (
-        <ReferralsBlock
-          key={i}
-          icon={data.icon}
-          label={`Referrals ${i + 1} lvl`}
-          members={data.members || 0}
-        />
-      ))}
-    </div>
-  )
-}
+      <div className="font-pixel font-[400] flex flex-col items-center justify-center gap-3 px-4 py-2 starboard-result-block-bg backdrop-blur-[16px] rounded-[14px] min-h-[92px]">
+        <p className="font-inter text-sm leading-[140%]">Refferals 1 lvl</p>
+        <div className="flex gap-3 items-center">
+          <svg
+            width="14"
+            height="19"
+            viewBox="0 0 14 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.75 10.7503C11.9591 10.7503 13.7499 12.5413 13.75 14.7503V17.5003C13.75 17.9145 13.4142 18.2503 13 18.2503C12.5858 18.2503 12.25 17.9145 12.25 17.5003V14.7503C12.2499 13.3697 11.1307 12.2503 9.75 12.2503H4.25C2.86934 12.2503 1.75009 13.3697 1.75 14.7503V17.5003C1.75 17.9145 1.41421 18.2503 1 18.2503C0.585786 18.2503 0.25 17.9145 0.25 17.5003V14.7503C0.250088 12.5413 2.04092 10.7503 4.25 10.7503H9.75ZM7 0.333344C9.02499 0.333344 10.6669 1.97537 10.667 4.00034C10.667 6.02538 9.02504 7.66733 7 7.66733C4.97496 7.66733 3.33301 6.02538 3.33301 4.00034C3.3331 1.97537 4.97501 0.333344 7 0.333344ZM7 1.66733C5.71139 1.66733 4.66708 2.71175 4.66699 4.00034C4.66699 5.289 5.71134 6.33334 7 6.33334C8.28866 6.33334 9.33301 5.289 9.33301 4.00034C9.33292 2.71175 8.28861 1.66733 7 1.66733Z"
+              fill="white"
+              fillOpacity="0.6"
+            />
+          </svg>
+          <span className="text-[24px] leading-[32px] tracking-[0.3px]">
+            {myReferrals?.countVoucherReferrals0}
+          </span>
+        </div>
+      </div>
 
-const ReferralsBlock = ({
-  icon,
-  label,
-  members,
-}: {
-  icon: React.ReactNode
-  label: string
-  members: number
-}) => {
-  return (
-    <div className="font-pixel font-[400] flex flex-col items-center justify-center gap-3 px-4 py-2 starboard-result-block-bg backdrop-blur-[16px] rounded-[14px] min-h-[92px]">
-      <p className="font-inter text-sm leading-[140%]">{label}</p>
-      <div className="flex gap-3 items-center">
-        {icon}
-        <span className="text-[24px] leading-[32px] tracking-[0.3px]">
-          {members}
-        </span>
+      <div className="font-pixel font-[400] flex flex-col items-center justify-center gap-3 px-4 py-2 starboard-result-block-bg backdrop-blur-[16px] rounded-[14px] min-h-[92px]">
+        <p className="font-inter text-sm leading-[140%]">Refferals 2 lvl</p>
+        <div className="flex gap-3 items-center">
+          <svg
+            width="14"
+            height="19"
+            viewBox="0 0 14 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.75 10.7503C11.9591 10.7503 13.7499 12.5413 13.75 14.7503V17.5003C13.75 17.9145 13.4142 18.2503 13 18.2503C12.5858 18.2503 12.25 17.9145 12.25 17.5003V14.7503C12.2499 13.3697 11.1307 12.2503 9.75 12.2503H4.25C2.86934 12.2503 1.75009 13.3697 1.75 14.7503V17.5003C1.75 17.9145 1.41421 18.2503 1 18.2503C0.585786 18.2503 0.25 17.9145 0.25 17.5003V14.7503C0.250088 12.5413 2.04092 10.7503 4.25 10.7503H9.75ZM7 0.333344C9.02499 0.333344 10.6669 1.97537 10.667 4.00034C10.667 6.02538 9.02504 7.66733 7 7.66733C4.97496 7.66733 3.33301 6.02538 3.33301 4.00034C3.3331 1.97537 4.97501 0.333344 7 0.333344ZM7 1.66733C5.71139 1.66733 4.66708 2.71175 4.66699 4.00034C4.66699 5.289 5.71134 6.33334 7 6.33334C8.28866 6.33334 9.33301 5.289 9.33301 4.00034C9.33292 2.71175 8.28861 1.66733 7 1.66733Z"
+              fill="white"
+              fillOpacity="0.6"
+            />
+          </svg>
+          <span className="text-[24px] leading-[32px] tracking-[0.3px]">
+            {myReferrals?.countVoucherReferrals1}
+          </span>
+        </div>
       </div>
     </div>
   )
 }
 
 const RefferalsCodeList = () => {
-  const [refferalsList, setRefferalsList] = useState<Array<{ code: string, percentage: number, refferals: number }>>([]);
+
+  const { myCodes, generateNewCode } = useReferrals()
+
   return (
     <>
       <div className="font-pixel pt-[40px] px-3 pb-4 mb-3">
@@ -307,30 +283,17 @@ const RefferalsCodeList = () => {
             Referrals code
           </h2>
           <Button
-            className={cn("text-[#121312] h-8 bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] leading-4 text-[12px] uppercase", refferalsList.length === 5 && 'from-[#414241] to-[#363736] text-white cursor-not-allowed')}
+            className={cn(
+              'text-[#121312] h-8 bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] leading-4 text-[12px] uppercase',
+              (myCodes && myCodes.length >= 5) &&
+                'from-[#414241] to-[#363736] text-white cursor-not-allowed',
+            )}
             onClick={() => {
-              if (refferalsList.length >= 5) {
+              if (myCodes && myCodes.length >= 5) {
                 toast.error('You can add up to 5 referral codes only')
                 return
               }
-              const generateRandomString = (length: number) => {
-                const chars = 'abcdefghijklmnopqrstuvwxyz'
-                let result = ''
-                for (let i = 0; i < length; i++) {
-                  result += chars.charAt(
-                    Math.floor(Math.random() * chars.length),
-                  )
-                }
-                return result
-              }
-              setRefferalsList([
-                ...refferalsList,
-                {
-                  code: generateRandomString(8),
-                  percentage: 10,
-                  refferals: 0,
-                },
-              ])
+              generateNewCode.mutate()
             }}
           >
             <svg
@@ -342,15 +305,19 @@ const RefferalsCodeList = () => {
             >
               <path
                 d="M9.00006 6.99982H15.0001V8.99982H9.00006V14.9998H7.00006V8.99982H1.00006V6.99982H7.00006V0.999817H9.00006V6.99982Z"
-                fill={refferalsList.length >= 5 ? 'rgba(255,255,255,0.6)' : '#121312'}
+                fill={
+                  myCodes && myCodes.length >= 5
+                    ? 'rgba(255,255,255,0.6)'
+                    : '#121312'
+                }
               />
             </svg>
-              add new
+            add new
           </Button>
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        {refferalsList.map((item, idx) => (
+        {myCodes?.map((item, idx) => (
           <motion.div
             key={idx}
             initial={{ opacity: 0, scale: 0.95 }}
@@ -368,12 +335,12 @@ const RefferalsCodeList = () => {
                     <CopyButton content={item.code} />
                   </div>
                   <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">
-                    {item.percentage}%
+                    {item.royalty}%
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <p className="font-pixel text-[14px] leading-[120%]">
-                    {item.refferals || 0}
+                    {item.referralsCount || 0}
                   </p>
                   <svg
                     width="16"
@@ -398,28 +365,28 @@ const RefferalsCodeList = () => {
   )
 }
 
-const referralsMembersData = [
-  { name: 'igorivanov11', referrals: 1, gifts: 5 },
-  { name: 'tevial', referrals: 6, gifts: 3 },
-  { name: 'marcross', referrals: 2, gifts: 7 },
-  { name: 'inaudi_karpin', referrals: 8, gifts: 0 },
-  { name: 'igorivanov11', referrals: 3, gifts: 1 },
-]
+const RefferalsMembersList = ({ meTime }: { meTime: number }) => {
+  const MIN_ALLOWED_TIME = 86400
 
-const RefferalsMembersList = ({meTime}: {meTime: number}) => {
+  const { myReferrals } = useReferrals()
 
-const MIN_ALLOWED_TIME = 86400 
-
+  const referralsCount = myReferrals?.referrals.length || 0
 
   return (
     <>
       <div className="font-pixel pt-[40px] px-3 pb-4 mb-3">
         <div className="flex justify-between items-center gap-2 font-[400]">
           <h2 className="font-pixel text-[18px] leading-6 uppercase">
-            5 frens
+            {referralsCount || 0} frens
           </h2>
-          <Link to="/send-gift" disabled={MIN_ALLOWED_TIME >= meTime}>
-            <Button className="h-8 bg-gradient-to-b from-[#8C35FB] to-[#6602E7]" disabled={MIN_ALLOWED_TIME >= meTime}>
+          <Link
+            to="/send-gift"
+            disabled={MIN_ALLOWED_TIME >= meTime || referralsCount >= 10}
+          >
+            <Button
+              className="h-8 bg-gradient-to-b from-[#8C35FB] to-[#6602E7]"
+              disabled={MIN_ALLOWED_TIME >= meTime || referralsCount >= 10}
+            >
               <svg
                 width="16"
                 height="16"
@@ -440,43 +407,48 @@ const MIN_ALLOWED_TIME = 86400
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        {referralsMembersData.map((item, i) => (
-          <div
-            key={i}
-            className="rounded-[14px] starboard-result-block-bg backdrop-blur-[16px] py-1 px-4"
-          >
-            <div className="flex justify-between items-center font-[400]">
-              <div className="font-inter flex gap-4">
-                <Avatar className="rounded-[12px]">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>{'ju'.toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="mr-2 font-[600] text-[16px] leading-5">
-                    {item.name || 'unknown'}
+        {myReferrals?.referrals.map((item, i) => {
+          const displayTime = convertTimestampToLargestUnit(item.time, true)
+
+          return (
+            <div
+              key={i}
+              className="rounded-[14px] starboard-result-block-bg backdrop-blur-[16px] py-1 px-4"
+            >
+              <div className="flex justify-between items-center font-[400]">
+                <div className="font-inter flex gap-4">
+                  <Avatar className="rounded-[12px]">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>{'ju'.toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="mr-2 font-[600] text-[16px] leading-5">
+                      {item.nickname || 'unknown'}
+                    </p>
+                    <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">
+                      referals:
+                      <span className="ml-1">{item.referralsCount || 0}</span>
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p
+                    className={cn(
+                      'font-pixel text-[14px] leading-[120%]',
+                      item.time &&
+                        '[text-shadow:0px_0px_20px_rgba(182,255,0,1)] text-[#B6FF00]',
+                    )}
+                  >
+                    <span>{item.time ? `+${displayTime.time}` : 0}</span>
+                    <span className="font-pixel text-[#FFFFFF66] text-[10px] ml-1">
+                      {displayTime.label}
+                    </span>
                   </p>
-                  <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">
-                    referals:<span className="ml-1">{item.referrals || 0}</span>
-                  </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <p
-                  className={cn(
-                    'font-pixel text-[14px] leading-[120%]',
-                    item.gifts &&
-                      '[text-shadow:0px_0px_20px_rgba(182,255,0,1)] text-[#B6FF00]',
-                  )}
-                >
-                  <span>{item.gifts ? `+${item.gifts}` : 0}</span>
-                  <span className="font-pixel text-[#FFFFFF66] text-[10px] ml-1">
-                    d
-                  </span>
-                </p>
-              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </>
   )
