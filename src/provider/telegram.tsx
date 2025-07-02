@@ -1,6 +1,5 @@
-'use client'
+'use client';
 
-import { ENV } from '@/lib/constants';
 import { useMatches, useRouter } from '@tanstack/react-router';
 import {
   backButton,
@@ -13,9 +12,10 @@ import {
 } from '@telegram-apps/sdk';
 import { useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { ENV } from '@/lib/constants';
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
-  const router = useRouter()
+  const router = useRouter();
   const pathnames = useMatches();
   /** ***************************************************************/
   /*                           TWA Init                            */
@@ -27,41 +27,41 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    ; (async () => {      
+    (async () => {
       if (isTMA()) {
-        init()
-        miniApp.mountSync()
+        init();
+        miniApp.mountSync();
 
         // fullscreen mode - ON
         if (viewport.mount.isAvailable()) {
-          await viewport.mount()
+          await viewport.mount();
         }
         if (viewport.requestFullscreen.isAvailable()) {
-          await viewport.requestFullscreen()
+          await viewport.requestFullscreen();
         }
 
         // enable closing behavior - ON
         if (closingBehavior.mount.isAvailable()) {
-          await closingBehavior.mount()
+          await closingBehavior.mount();
         }
         if (closingBehavior.mount.isAvailable()) {
-          await closingBehavior.enableConfirmation()
+          await closingBehavior.enableConfirmation();
         }
 
         // disable swipe mode - ON
         if (swipeBehavior.mount.isAvailable()) {
-          await swipeBehavior.mount()
+          await swipeBehavior.mount();
         }
         if (swipeBehavior.disableVertical.isAvailable()) {
-          await swipeBehavior.disableVertical()
+          await swipeBehavior.disableVertical();
         }
 
         if (miniApp.setBackgroundColor.isAvailable()) {
-          miniApp.setBackgroundColor('#121312')
+          miniApp.setBackgroundColor('#121312');
         }
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   /** ***************************************************************/
   /*                        TWA Back Button                        */
@@ -86,6 +86,10 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
+            if (pathnames[1].pathname === '/unlock-gate') {
+              router.navigate({ to: '/gate' });
+              return;
+            }
             if (pathnames[1].pathname === '/send-gift') {
               router.navigate({ to: '/frens' });
               return;
@@ -97,5 +101,5 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
     })();
   }, [pathnames]);
 
-  return children
-}
+  return children;
+};

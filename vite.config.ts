@@ -1,14 +1,14 @@
-import { resolve } from 'node:path'
-import { createRequire } from 'node:module'
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
-import viteReact from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
+import { resolve } from 'node:path';
+import { createRequire } from 'node:module';
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import viteReact from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
 
-const require = createRequire(import.meta.url)
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
   plugins: [
@@ -48,7 +48,7 @@ export default defineConfig({
       'lance-opportunities-candy-tuition.trycloudflare.com',
       'localhost:100',
       'satin-proposals-valuation-wanted.trycloudflare.com',
-      'aircraft-underground-emotions-outstanding.trycloudflare.com',
+      'september-now-five-stakeholders.trycloudflare.com',
     ],
   },
 
@@ -76,4 +76,4 @@ export default defineConfig({
     port: 4173,
     strictPort: true,
   },
-})
+});

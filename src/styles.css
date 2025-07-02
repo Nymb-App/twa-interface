@@ -27,15 +27,14 @@ body {
   /* bg-[#121312] */
   @apply m-0 bg-[#121312];
   font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 @layer utilities {
@@ -175,7 +174,8 @@ code {
   }
 
   /* Ещё и картинки защитим от перетаскивания/выделения */
-  img, svg {
+  img,
+  svg {
     @apply select-none;
     -webkit-user-drag: none;
     user-drag: none;
@@ -314,7 +314,8 @@ code {
   }
 
   @keyframes battle-finding-dots-pulse {
-    0%,100% {
+    0%,
+    100% {
       opacity: 0.4;
     }
     50% {
@@ -323,11 +324,13 @@ code {
   }
 
   @keyframes battle-finding-line-width-fade-in-out {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0;
       width: 0%;
     }
-    15%, 85% {
+    15%,
+    85% {
       opacity: 1;
       width: 100%;
     }
@@ -356,16 +359,19 @@ code {
 
   --animate-battle-final-animation-fade-out: fade-out 1s 3s ease-out forwards;
   --animate-battle-final-animation-bg-fade-out: fade-out 4s 1s ease-out forwards;
-  
+
   --animate-battle-game-board-fade-in: fade-in 1s ease-out forwards;
 
-  --animate-battle-finding-line-width-fade-in-out: battle-finding-line-width-fade-in-out 3s 1.5s ease-out;
-  
-  --animate-battle-finding-slide-top-fade: battle-finding-slide-top-fade 0.7s ease-out forwards;
-  --animate-battle-finding-slide-bottom-fade: battle-finding-slide-bottom-fade 0.7s ease-out forwards;
+  --animate-battle-finding-line-width-fade-in-out: battle-finding-line-width-fade-in-out 3s 1.5s
+    ease-out;
 
-  --animate-battle-intro-slide-card-fade: battle-intro-slide-card-bottom-fade 0.6s 0.5s ease-out forwards;
-  
+  --animate-battle-finding-slide-top-fade: battle-finding-slide-top-fade 0.7s ease-out forwards;
+  --animate-battle-finding-slide-bottom-fade: battle-finding-slide-bottom-fade 0.7s ease-out
+    forwards;
+
+  --animate-battle-intro-slide-card-fade: battle-intro-slide-card-bottom-fade 0.6s 0.5s ease-out
+    forwards;
+
   --animate-battle-finding-versus-fade: slide-vs-fade 0.3s 0.6s ease-out forwards;
 
   --animate-battle-finding-lines-fade: fade-in 0.6s ease-out 2.2s forwards;
@@ -373,7 +379,8 @@ code {
   --animate-battle-finding-button-fade-out: fade-out 0.6s ease-out forwards;
   --animate-battle-finding-dots-pulse: battle-finding-dots-pulse 1.2s infinite;
 
-  --animate-battle-intro-section-slide-fade-out: battle-intro-section-slide-fade-out 0.6s ease-out forwards;
+  --animate-battle-intro-section-slide-fade-out: battle-intro-section-slide-fade-out 0.6s ease-out
+    forwards;
 
   --animate-battle-preview-title-fade: slide-up-fade 0.6s ease-out 0.3s forwards;
   --animate-battle-preview-username-fade: slide-up-fade 0.6s ease-out 0.7s forwards;
@@ -388,8 +395,14 @@ code {
   --animate-dot-reveal: dot-reveal 5s ease-in-out infinite;
 
   @keyframes number-change {
-    0% { opacity: 0; transform: scale(1.5); }
-    100% { opacity: 1; transform: scale(1); }
+    0% {
+      opacity: 0;
+      transform: scale(1.5);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   @keyframes dot-reveal {
@@ -504,7 +517,8 @@ code {
   }
 
   @keyframes wiggle {
-    0%, 100% {
+    0%,
+    100% {
       transform: rotate(-3deg) translateY(5px);
     }
     50% {
@@ -611,28 +625,26 @@ div[data-state='indeterminate'] {
   background-image:
     linear-gradient(
       90deg,
-      rgba(182, 255, 0, 0)     0%,
+      rgba(182, 255, 0, 0) 0%,
       rgba(182, 255, 0, 0.14) 50%,
-      rgba(182, 255, 0, 0)   100%
+      rgba(182, 255, 0, 0) 100%
     ),
-    linear-gradient(
-      90deg,
-      rgba(18,  19,  18, 0) 0%,
-      rgba(18,  19,  18, 1) 100%
-    );
+    linear-gradient(90deg, rgba(18, 19, 18, 0) 0%, rgba(18, 19, 18, 1) 100%);
 }
 
 .starboard-result-block-bg {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 100%);
 }
 
-
-.bg-battle-main { background-color: #03061a !important; 
+.bg-battle-main {
+  background-color: #03061a !important;
   transition: background-color 0.5s linear;
 }
-.bg-battle-purple { background-color: #110522 !important; 
+.bg-battle-purple {
+  background-color: #110522 !important;
   transition: background-color 0.5s linear;
 }
-.bg-battle-green { background-color: #0a1309 !important; 
+.bg-battle-green {
+  background-color: #0a1309 !important;
   transition: background-color 0.5s linear;
 }
