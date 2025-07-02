@@ -5,11 +5,19 @@ import { AppProvider } from '@/context/app-context'
 import { FarmingProvider } from '@/context/farming-context'
 import { GateProvider } from '@/context/gate-context'
 import VConsole from 'vconsole'
+import { useEffect } from 'react'
+import { ENV } from '@/lib/constants'
 
 const queryClient = new QueryClient()
-new VConsole();
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
+
+  useEffect(() => {
+    if (ENV === 'development') {
+      new VConsole();
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TonConnectUIProvider manifestUrl="https://numb-test.vercel.app/manifest/tonconnect-manifest.json">

@@ -19,6 +19,7 @@ import { Route as HomeImport } from './routes/home'
 import { Route as GateImport } from './routes/gate'
 import { Route as FrensImport } from './routes/frens'
 import { Route as CheckInImport } from './routes/check-in'
+import { Route as AuthErrorImport } from './routes/auth-error'
 import { Route as IndexImport } from './routes/index'
 import { Route as MinigamesSlideImport } from './routes/minigames/slide'
 import { Route as MinigamesBattleResultImport } from './routes/minigames/battle-result'
@@ -74,6 +75,12 @@ const CheckInRoute = CheckInImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AuthErrorRoute = AuthErrorImport.update({
+  id: '/auth-error',
+  path: '/auth-error',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
@@ -107,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth-error': {
+      id: '/auth-error'
+      path: '/auth-error'
+      fullPath: '/auth-error'
+      preLoaderRoute: typeof AuthErrorImport
       parentRoute: typeof rootRoute
     }
     '/check-in': {
@@ -193,6 +207,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth-error': typeof AuthErrorRoute
   '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
@@ -208,6 +223,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth-error': typeof AuthErrorRoute
   '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
@@ -224,6 +240,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/auth-error': typeof AuthErrorRoute
   '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
@@ -241,6 +258,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth-error'
     | '/check-in'
     | '/frens'
     | '/gate'
@@ -255,6 +273,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth-error'
     | '/check-in'
     | '/frens'
     | '/gate'
@@ -269,6 +288,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/auth-error'
     | '/check-in'
     | '/frens'
     | '/gate'
@@ -285,6 +305,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthErrorRoute: typeof AuthErrorRoute
   CheckInRoute: typeof CheckInRoute
   FrensRoute: typeof FrensRoute
   GateRoute: typeof GateRoute
@@ -300,6 +321,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthErrorRoute: AuthErrorRoute,
   CheckInRoute: CheckInRoute,
   FrensRoute: FrensRoute,
   GateRoute: GateRoute,
@@ -324,6 +346,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/auth-error",
         "/check-in",
         "/frens",
         "/gate",
@@ -339,6 +362,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/auth-error": {
+      "filePath": "auth-error.tsx"
     },
     "/check-in": {
       "filePath": "check-in.tsx"

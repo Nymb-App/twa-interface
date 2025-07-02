@@ -45,8 +45,10 @@ export default defineConfig({
     allowedHosts: [
       'nymb-interface.vercel.app',
       'spend-contracting-club-forwarding.trycloudflare.com',
+      'lance-opportunities-candy-tuition.trycloudflare.com',
       'localhost:100',
-      'satin-proposals-valuation-wanted.trycloudflare.com'
+      'satin-proposals-valuation-wanted.trycloudflare.com',
+      'aircraft-underground-emotions-outstanding.trycloudflare.com',
     ],
   },
 

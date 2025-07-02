@@ -1,5 +1,6 @@
 'use client'
 
+import { ENV } from '@/lib/constants';
 import { useMatches, useRouter } from '@tanstack/react-router';
 import {
   backButton,
@@ -21,7 +22,12 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   /** ***************************************************************/
 
   useEffect(() => {
-    ; (async () => {
+    if (ENV === 'production' && !isTMA()) {
+      router.navigate({ to: '/auth-error' });
+      return;
+    }
+
+    ; (async () => {      
       if (isTMA()) {
         init()
         miniApp.mountSync()

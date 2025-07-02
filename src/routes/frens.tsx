@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { animate, motion } from 'framer-motion'
 import { toast } from 'sonner'
 import { PageLayout } from '@/components/ui/page-layout'
@@ -18,6 +18,8 @@ import {
 } from '@/context/farming-context'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { useReferrals } from '@/hooks/api/use-referrals'
+import { TELEGRAM_APP_URL } from '@/lib/constants'
+import { useAccount } from '@/hooks/api/use-account'
 
 export const Route = createFileRoute('/frens')({
   component: RouteComponent,
@@ -38,7 +40,8 @@ function RouteComponent() {
     <PageLayout>
       <header className="relative w-full font-pixel font-[400] px-3 bg-[url('/frens-bg.png')] bg-no-repeat bg-bottom pb-6">
         <h1 className="text-center text-[24px] leading-8 uppercase mb-6">
-          Invite frens <br /> and get more time
+          Invite frens<br />
+          and get more time
         </h1>
         <p className="font-inter text-center text-[14px] text-[#FFFFFF99] leading-[140%] mb-2">
           Total Earnings:
@@ -220,7 +223,21 @@ backdrop-blur-[8px]"
 }
 
 const ReferralsLevelsBlock = () => {
-  const { myReferrals } = useReferrals()
+  const { myReferrals } = useReferrals();
+  
+  const {countVoucherReferrals0, countVoucherReferrals1} = useMemo(() => {
+    if(!myReferrals) {
+      return {
+        countVoucherReferrals0: 0,
+        countVoucherReferrals1: 0
+      };
+    }
+
+    return {
+      countVoucherReferrals0: myReferrals.countVoucherReferrals0,
+      countVoucherReferrals1: myReferrals.countVoucherReferrals1
+    };
+  }, [myReferrals]);
 
   return (
     <div className="mt-2 grid grid-cols-2 gap-2">
@@ -241,7 +258,7 @@ const ReferralsLevelsBlock = () => {
             />
           </svg>
           <span className="text-[24px] leading-[32px] tracking-[0.3px]">
-            {myReferrals?.countVoucherReferrals0}
+            {countVoucherReferrals0}
           </span>
         </div>
       </div>
@@ -263,7 +280,7 @@ const ReferralsLevelsBlock = () => {
             />
           </svg>
           <span className="text-[24px] leading-[32px] tracking-[0.3px]">
-            {myReferrals?.countVoucherReferrals1}
+            {countVoucherReferrals1}
           </span>
         </div>
       </div>
@@ -272,8 +289,8 @@ const ReferralsLevelsBlock = () => {
 }
 
 const RefferalsCodeList = () => {
-
-  const { myCodes, generateNewCode } = useReferrals()
+  const { user} = useAccount();
+  const { myCodes, generateNewCode } = useReferrals();
 
   return (
     <>
@@ -327,17 +344,21 @@ const RefferalsCodeList = () => {
           >
             <div className="rounded-[14px] starboard-result-block-bg backdrop-blur-[16px] py-1 px-4">
               <div className="flex justify-between items-center font-[400] ">
+                
                 <div className="font-inter">
                   <div className="flex items-center">
-                    <span className="mr-2 font-[600] text-[16px] leading-5 uppercase">
+                    <span className="font-inter font-semibold text-base uppercase">
                       {item.code}
                     </span>
-                    <CopyButton content={item.code} />
+                    <CopyButton
+                      content={`${TELEGRAM_APP_URL}?startapp=${user?.id}_${item.code}`}
+                    />
                   </div>
                   <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">
                     {item.royalty}%
                   </span>
                 </div>
+                
                 <div className="flex items-center gap-2">
                   <p className="font-pixel text-[14px] leading-[120%]">
                     {item.referralsCount || 0}
@@ -368,16 +389,17 @@ const RefferalsCodeList = () => {
 const RefferalsMembersList = ({ meTime }: { meTime: number }) => {
   const MIN_ALLOWED_TIME = 86400
 
-  const { myReferrals } = useReferrals()
+  const { myReferrals } = useReferrals();
 
-  const referralsCount = myReferrals?.referrals.length || 0
+  // const referralsCount =  myReferrals?.referrals.length || 0;
+  const referralsCount = 0;
 
   return (
     <>
       <div className="font-pixel pt-[40px] px-3 pb-4 mb-3">
         <div className="flex justify-between items-center gap-2 font-[400]">
           <h2 className="font-pixel text-[18px] leading-6 uppercase">
-            {referralsCount || 0} frens
+            {referralsCount} frens
           </h2>
           <Link
             to="/send-gift"
@@ -407,7 +429,7 @@ const RefferalsMembersList = ({ meTime }: { meTime: number }) => {
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        {myReferrals?.referrals.map((item, i) => {
+        {/* {myReferrals?.referrals.map((item, i) => {
           const displayTime = convertTimestampToLargestUnit(item.time, true)
 
           return (
@@ -448,7 +470,7 @@ const RefferalsMembersList = ({ meTime }: { meTime: number }) => {
               </div>
             </div>
           )
-        })}
+        })} */}
       </div>
     </>
   )
