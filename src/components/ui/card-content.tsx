@@ -1,9 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import { Card } from './card'
 
-export const CardContent = ({ isLocked = true }: { isLocked?: boolean }) => {
+export const CardContent = ({
+  isLocked = false,
+  link = '',
+}: {
+  isLocked?: boolean
+  link: string
+}) => {
   return (
-    <Link to="/check-in">
+    <Link to={link}>
       <Card className="p-4 min-h-[104px] flex flex-col justify-center">
         <div className="flex flex-col items-center gap-2">
           {isLocked && (

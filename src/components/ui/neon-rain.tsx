@@ -32,6 +32,8 @@ export const NeonRain = ({
   }
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  // Id of the currently scheduled animation frame so we can cancel it on cleanup
+  const animationFrameId = useRef<number | null>(null)
 
   const normalCount = 120
   const chargedCountMax = 10
@@ -156,7 +158,7 @@ export const NeonRain = ({
         if (chargedDrops[i].y > canvas.height) chargedDrops.splice(i, 1)
       }
 
-      requestAnimationFrame(animate)
+      animationFrameId.current = requestAnimationFrame(animate)
     }
 
     const interval = setInterval(spawnChargedParticles, 1000)
@@ -165,6 +167,9 @@ export const NeonRain = ({
     return () => {
       // window.removeEventListener('resize', resizeCanvas)
       clearInterval(interval)
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current)
+      }
     }
   }, [])
 

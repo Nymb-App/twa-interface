@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as UnlockGateImport } from './routes/unlock-gate'
 import { Route as TasksImport } from './routes/tasks'
 import { Route as StarBoardImport } from './routes/star-board'
+import { Route as ShopImport } from './routes/shop'
 import { Route as SendGiftImport } from './routes/send-gift'
 import { Route as HomeImport } from './routes/home'
 import { Route as GateImport } from './routes/gate'
@@ -42,6 +43,12 @@ const TasksRoute = TasksImport.update({
 const StarBoardRoute = StarBoardImport.update({
   id: '/star-board',
   path: '/star-board',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShopRoute = ShopImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -158,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SendGiftImport
       parentRoute: typeof rootRoute
     }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopImport
+      parentRoute: typeof rootRoute
+    }
     '/star-board': {
       id: '/star-board'
       path: '/star-board'
@@ -213,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
   '/send-gift': typeof SendGiftRoute
+  '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
   '/unlock-gate': typeof UnlockGateRoute
@@ -229,6 +244,7 @@ export interface FileRoutesByTo {
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
   '/send-gift': typeof SendGiftRoute
+  '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
   '/unlock-gate': typeof UnlockGateRoute
@@ -246,6 +262,7 @@ export interface FileRoutesById {
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
   '/send-gift': typeof SendGiftRoute
+  '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
   '/tasks': typeof TasksRoute
   '/unlock-gate': typeof UnlockGateRoute
@@ -264,6 +281,7 @@ export interface FileRouteTypes {
     | '/gate'
     | '/home'
     | '/send-gift'
+    | '/shop'
     | '/star-board'
     | '/tasks'
     | '/unlock-gate'
@@ -279,6 +297,7 @@ export interface FileRouteTypes {
     | '/gate'
     | '/home'
     | '/send-gift'
+    | '/shop'
     | '/star-board'
     | '/tasks'
     | '/unlock-gate'
@@ -294,6 +313,7 @@ export interface FileRouteTypes {
     | '/gate'
     | '/home'
     | '/send-gift'
+    | '/shop'
     | '/star-board'
     | '/tasks'
     | '/unlock-gate'
@@ -311,6 +331,7 @@ export interface RootRouteChildren {
   GateRoute: typeof GateRoute
   HomeRoute: typeof HomeRoute
   SendGiftRoute: typeof SendGiftRoute
+  ShopRoute: typeof ShopRoute
   StarBoardRoute: typeof StarBoardRoute
   TasksRoute: typeof TasksRoute
   UnlockGateRoute: typeof UnlockGateRoute
@@ -327,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   GateRoute: GateRoute,
   HomeRoute: HomeRoute,
   SendGiftRoute: SendGiftRoute,
+  ShopRoute: ShopRoute,
   StarBoardRoute: StarBoardRoute,
   TasksRoute: TasksRoute,
   UnlockGateRoute: UnlockGateRoute,
@@ -352,6 +374,7 @@ export const routeTree = rootRoute
         "/gate",
         "/home",
         "/send-gift",
+        "/shop",
         "/star-board",
         "/tasks",
         "/unlock-gate",
@@ -380,6 +403,9 @@ export const routeTree = rootRoute
     },
     "/send-gift": {
       "filePath": "send-gift.tsx"
+    },
+    "/shop": {
+      "filePath": "shop.tsx"
     },
     "/star-board": {
       "filePath": "star-board.tsx"
