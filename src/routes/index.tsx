@@ -182,16 +182,16 @@ function MintSection() {
             </div>
           </div>
 
-          {isConnectHidden 
-            ? <MintButton className="mt-6 w-[80%] mx-auto" /> 
+          {/* {isConnectHidden  */}
+            // ? <MintButton className="mt-6 w-[80%] mx-auto" /> 
             : <ConnectButton className="mt-6 w-[80%] mx-auto" />
-          }
-          
+          {/* // } */}
+{/*           
           {!isDisconnectHidden &&
             <DisconnectButton
               className="mt-2 w-[80%] mx-auto"
             />
-          }
+          } */}
           <span className="mt-3 text-white/60 mx-auto">
             One for the wallet
           </span>

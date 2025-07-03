@@ -49,6 +49,7 @@ export default defineConfig({
       'localhost:100',
       'satin-proposals-valuation-wanted.trycloudflare.com',
       'september-now-five-stakeholders.trycloudflare.com',
+      'honest-corruption-grab-leu.trycloudflare.com'
     ],
   },
 
