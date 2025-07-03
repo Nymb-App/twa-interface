@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
+import { LoaderIcon } from 'lucide-react'
 import {
   ANIMATION_DURATION_COUNTUP,
   FARMING_DURATION,
+  FARMING_REWARD,
   NYMB_FARMING_FINISHAT_LS_KEY,
   useFarming,
 } from '../../context/farming-context'
@@ -10,6 +12,7 @@ import { ActionButton } from './action-button'
 import { cn } from '@/utils'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
+import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
 
 export function FarmingButton({
   className,
@@ -18,124 +21,103 @@ export function FarmingButton({
   className?: string
   onClick?: () => void
 }) {
-  const [finishClaimAt, setFinishClaimAt] = useState<number | null>(null)
-  const [isComplete, setIsComplete] = useState(false)
-  const [showDefaultButton, setShowDefaultButton] = useState(true)
+  const [isFarming, setIsFarming] = useState(false)
+  const [isClaiming, setIsClaiming] = useState(false)
 
   const { setFinishAt } = useFarming()
+  const { farmingStatusQuery, startFarming, claimReward } = useFarmingApi()
+
+  const duration = useMemo(() => {
+    if (!farmingStatusQuery.data) return FARMING_DURATION
+    return farmingStatusQuery.data.duration * 1000
+  }, [farmingStatusQuery.data])
+
+  const startedAt = useMemo(() => {
+    if (!farmingStatusQuery.data) return 0
+    return farmingStatusQuery.data.startedAt * 1000
+  }, [farmingStatusQuery.data])
+
+  const reward = useMemo(() => {
+    if (!farmingStatusQuery.data) return FARMING_REWARD
+    return farmingStatusQuery.data.reward * 1000
+  }, [farmingStatusQuery.data])
 
   useEffect(() => {
-    const savedFinishAt = localStorage.getItem(NYMB_FARMING_CLAIM_TIME_KEY)
-    const savedTime = savedFinishAt ? Number(savedFinishAt) : null
+    if (!startedAt && !isClaiming) return
 
-    if (savedTime) {
-      if (savedTime > Date.now()) {
-        // Таймер еще активен
-        setFinishClaimAt(savedTime)
-        setShowDefaultButton(false)
-        setIsComplete(false)
-      } else {
-        // Таймер завершен
-        setIsComplete(true)
-        setShowDefaultButton(false)
-      }
+    if (startedAt > 0 && Date.now() < startedAt + duration) {
+      setIsFarming(true)
     }
-  }, [])
+
+    if (reward > 0 && Date.now() >= startedAt + duration) {
+      setIsClaiming(true)
+    }
+  }, [startedAt, duration, reward])
 
   const handleStart = useCallback(() => {
-    const now = Date.now()
-    const endTime = now + FARMING_DURATION
-    localStorage.setItem(NYMB_FARMING_CLAIM_TIME_KEY, endTime.toString())
-    setFinishClaimAt(endTime)
-    setIsComplete(false)
-    setShowDefaultButton(false)
-  }, [])
-
-  const handleComplete = useCallback(() => {
-    setFinishClaimAt(null)
-    setIsComplete(true)
-    setShowDefaultButton(false)
-  }, [])
+    setIsFarming(true)
+    startFarming(undefined, {
+      onSuccess: () => {
+        farmingStatusQuery.refetch()
+      },
+      onError: () => {
+        setIsFarming(false)
+      },
+    })
+  }, [startFarming, farmingStatusQuery])
 
   const handleClaimClick = useCallback(() => {
-    onClick?.()
-    setShowDefaultButton(true)
-    if (Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0) {
-      setFinishAt(
-        Number(
-          Date.now() + FARMING_DURATION + ANIMATION_DURATION_COUNTUP + 1000,
-        ),
-      )
-    } else {
-      setFinishAt(
-        Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) +
-          FARMING_DURATION +
-          ANIMATION_DURATION_COUNTUP,
-      )
-    }
-    localStorage.removeItem(NYMB_FARMING_CLAIM_TIME_KEY)
-  }, [onClick, setFinishAt])
+    setIsClaiming(false)
+    claimReward(undefined, {
+      onSuccess: () => {
+        onClick?.()
+        if (Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0) {
+          setFinishAt(
+            Number(Date.now() + duration + ANIMATION_DURATION_COUNTUP + 1000),
+          )
+        } else {
+          setFinishAt(
+            Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) +
+              duration +
+              ANIMATION_DURATION_COUNTUP,
+          )
+        }
+        localStorage.removeItem(NYMB_FARMING_CLAIM_TIME_KEY)
+      },
+    })
+  }, [onClick, setFinishAt, claimReward])
 
-  const renderButton = useCallback(
-    (timeStr: string, completed: boolean) => {
-      if (completed) {
-        return (
-          <FarmingClaimButton
-            time={timeStr}
-            className={className}
-            onClick={handleClaimClick}
-          />
-        )
-      }
-      return (
-        <FarmingProgressButton
-          time={timeStr}
-          className={className}
-          finishAt={finishClaimAt!}
-        />
-      )
-    },
-    [className, finishClaimAt, handleClaimClick],
-  )
-
-  if (showDefaultButton) {
+  if (!isFarming && !isClaiming) {
     return <FarmingDefaultButton className={className} onClick={handleStart} />
   }
 
-  if (isComplete) {
-    const actualDuration = FARMING_DURATION
+  if (isFarming && startedAt === 0) {
+    return <FarmingDefaultLoadingButton className={className} />
+  }
 
-    const hours = String(Math.floor(actualDuration / 3600000)).padStart(2, '0')
-    const minutes = String(
-      Math.floor((actualDuration % 3600000) / 60000),
-    ).padStart(2, '0')
-    const seconds = String(
-      Math.floor((actualDuration % 60000) / 1000),
-    ).padStart(2, '0')
-    const timeStr = `${hours}:${minutes}:${seconds}`
+  if (isFarming && startedAt > 0) {
+    return (
+      <FarmingProgressButton
+        startAt={startedAt}
+        duration={duration}
+        className={className}
+        onComplete={() => {
+          setIsFarming(false)
+          setIsClaiming(true)
+        }}
+      />
+    )
+  }
+
+  if (isClaiming) {
     return (
       <FarmingClaimButton
-        time={timeStr}
+        time={reward}
         className={className}
         onClick={handleClaimClick}
       />
     )
   }
-
-  if (!finishClaimAt) {
-    return <FarmingDefaultButton className={className} onClick={handleStart} />
-  }
-
-  return (
-    <Countdown
-      date={finishClaimAt}
-      onComplete={handleComplete}
-      renderer={({ hours, minutes, seconds, completed }) => {
-        const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-        return renderButton(timeStr, completed)
-      }}
-    />
-  )
 }
 
 function FarmingDefaultButton({
@@ -159,9 +141,14 @@ function FarmingClaimButton({
   onClick,
 }: {
   className?: string
-  time: string
+  time: number
   onClick?: () => void
 }) {
+  const hours = String(Math.floor(time / 3600000)).padStart(2, '0')
+  const minutes = String(Math.floor((time % 3600000) / 60000)).padStart(2, '0')
+  const seconds = String(Math.floor((time % 60000) / 1000)).padStart(2, '0')
+  const timeStr = `${hours}:${minutes}:${seconds}`
+
   return (
     <button
       onClick={onClick}
@@ -172,44 +159,78 @@ function FarmingClaimButton({
     >
       <span className="mix-blend-difference">CLAIM</span>
       <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
-      <span className="mix-blend-difference">{time}</span>
+      <span className="mix-blend-difference">{timeStr}</span>
     </button>
   )
 }
 
 function FarmingProgressButton({
   className,
-  time,
-  finishAt,
+  startAt,
+  duration,
+  onComplete,
 }: {
   className?: string
-  time: string
-  finishAt: number
+  startAt: number
+  duration: number
+  onComplete?: () => void
 }) {
-  const totalDuration = FARMING_DURATION
-  const timeLeft = finishAt - Date.now()
-  const progressPercent = Math.max(
-    0,
-    Math.min(100, ((totalDuration - timeLeft) / totalDuration) * 100),
-  )
-
   return (
-    <button
-      disabled
+    <Countdown
+      intervalDelay={1000}
+      onComplete={onComplete}
+      renderer={({ hours, minutes, seconds }) => {
+        const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+        const elapsedTime = Date.now() - startAt
+        const progressPercent = Math.floor(
+          Math.max(0, Math.min(100, (elapsedTime / duration) * 100)),
+        )
+        return (
+          <button
+            disabled
+            className={cn(
+              'relative h-[56px] overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+              className,
+            )}
+          >
+            <div
+              className="absolute inset-0 rounded-[16px] bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] transition-[width] ease-linear duration-1000"
+              style={{ width: `${progressPercent}%` }}
+            />
+            <div className="relative z-10 inline-flex items-center gap-1 active:text-[#B6FF00] mix-blend-difference">
+              <span className="mix-blend-difference">FARMING</span>
+              <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
+              <span className="mix-blend-difference">{timeStr}</span>
+            </div>
+          </button>
+        )
+      }}
+      date={startAt + duration}
+    />
+  )
+}
+
+function FarmingDefaultLoadingButton({
+  className,
+  onClick,
+}: {
+  className?: string
+  onClick?: () => void
+}) {
+  return (
+    <ActionButton
+      onClick={onClick}
       className={cn(
-        'relative h-[56px] overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+        'bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
         className,
       )}
+      disabled
     >
-      <div
-        className="absolute inset-0 rounded-[16px] bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] transition-[width] ease-linear duration-1000"
-        style={{ width: `${progressPercent}%` }}
+      <LoaderIcon
+        className="mix-blend-difference animate-spin"
+        fill="#B6FF00"
       />
-      <div className="relative z-10 inline-flex items-center gap-1 active:text-[#B6FF00] mix-blend-difference">
-        <span className="mix-blend-difference">FARMING</span>
-        <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
-        <span className="mix-blend-difference">{time}</span>
-      </div>
-    </button>
+      <span className="mix-blend-difference uppercase ml-2">loading</span>
+    </ActionButton>
   )
 }

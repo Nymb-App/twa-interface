@@ -59,33 +59,38 @@ function RouteComponent() {
 
   const timeoutRef = useRef<number | null>(null)
 
+  // Объединяем связанные эффекты анимации в один useEffect с несколькими зависимостями
   useEffect(() => {
+    // Очищаем предыдущий таймаут перед установкой нового
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+
+    // Обрабатываем запуск поиска оппонента
     if (isStartFindingOpponent) {
       timeoutRef.current = window.setTimeout(() => {
         setIsClosingAnimation(true)
+        timeoutRef.current = null
       }, 1000)
     }
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [isStartFindingOpponent])
-
-  useEffect(() => {
+    // Обрабатываем открывающую анимацию
     if (isOpeningAnimation) {
       timeoutRef.current = window.setTimeout(() => {
         setIsOpeningAnimationDelayed(true)
+        timeoutRef.current = null
       }, 5000)
     }
 
+    // Очистка при размонтировании
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
       }
     }
-  }, [isOpeningAnimation])
+  }, [isStartFindingOpponent, isOpeningAnimation])
 
   useEffect(() => {
     if (areaClaimedPercent === 0) {
@@ -275,50 +280,89 @@ const MainScene = ({
   const addTimeout = (fn: () => void, delay: number) => {
     const id = window.setTimeout(fn, delay)
     timeouts.current.push(id)
+    return id
   }
 
+  // Используем useEffect с пустым массивом зависимостей для инициализации анимаций
   useEffect(() => {
-    addTimeout(() => setIsStartFindingOpponent(false), 5000)
-    addTimeout(() => setIsVersusAnimationStart(true), 1000)
-    addTimeout(() => setIsClosingAnimation(true), 5500)
-    addTimeout(() => setIsOpeningAnimation(true), 9000)
-    addTimeout(() => setIsMorphAnimation(true), 10500)
-    addTimeout(() => setIsCardBgAnimationStart(true), 10500)
-    addTimeout(() => setIsStartCountdown(true), 15000)
+    // Очищаем предыдущие таймауты при повторном запуске эффекта
+    timeouts.current.forEach(clearTimeout)
+    timeouts.current = []
 
-    if (isBoostActive0 || isBoostActive1) {
-      addTimeout(() => {
-        setIsBoostActive0(false)
-        setIsBoostActive1(false)
-      }, 8000)
-    }
+    // Создаем все таймауты для анимационной последовательности
+    const animationTimeouts = [
+      { fn: () => setIsVersusAnimationStart(true), delay: 1000 },
+      { fn: () => setIsStartFindingOpponent(false), delay: 5000 },
+      { fn: () => setIsClosingAnimation(true), delay: 5500 },
+      { fn: () => setIsOpeningAnimation(true), delay: 9000 },
+      { fn: () => setIsMorphAnimation(true), delay: 10500 },
+      { fn: () => setIsCardBgAnimationStart(true), delay: 10500 },
+      { fn: () => setIsStartCountdown(true), delay: 15000 },
+    ]
+
+    // Запускаем все таймауты
+    animationTimeouts.forEach(({ fn, delay }) => {
+      addTimeout(fn, delay)
+    })
 
     return () => {
       timeouts.current.forEach(clearTimeout)
+      timeouts.current = []
+    }
+  }, []) // Пустой массив зависимостей, чтобы эффект запускался только один раз
+
+  // Отдельный эффект для обработки бустов
+  useEffect(() => {
+    if (isBoostActive0 || isBoostActive1) {
+      const boostTimeoutId = addTimeout(() => {
+        setIsBoostActive0(false)
+        setIsBoostActive1(false)
+      }, 8000)
+
+      return () => {
+        clearTimeout(boostTimeoutId)
+        // Удаляем ID из массива таймаутов
+        timeouts.current = timeouts.current.filter(
+          (id) => id !== boostTimeoutId,
+        )
+      }
     }
   }, [isBoostActive0, isBoostActive1])
 
   // bot
-  const intervalRef = useRef<number | null>(null)
+  const botTimeoutRef = useRef<number | null>(null)
+  const isRunningRef = useRef(false)
 
   useEffect(() => {
-    if (!isCountdownCompleted) return
+    // Флаг для отслеживания активности бота
+    isRunningRef.current = isCountdownCompleted
 
+    // Функция для клика бота с оптимизированным управлением таймаутом
     const clickBot = () => {
-      // 👉 логика клика
+      // Проверяем, должен ли бот продолжать работу
+      if (!isRunningRef.current) return
+
+      // Логика клика
       setAreaClaimedPercentage((prev: number) => prev - 1)
 
       // Устанавливаем новую случайную задержку
       const delay = 100 + Math.random() * 100
 
-      intervalRef.current = window.setTimeout(clickBot, delay)
+      // Планируем следующий клик
+      botTimeoutRef.current = window.setTimeout(clickBot, delay)
     }
 
-    clickBot() // запуск
+    // Запускаем бота только когда обратный отсчет завершен
+    if (isCountdownCompleted) {
+      clickBot()
+    }
 
+    // Очистка при размонтировании или изменении isCountdownCompleted
     return () => {
-      if (intervalRef.current) {
-        clearTimeout(intervalRef.current)
+      isRunningRef.current = false
+      if (botTimeoutRef.current !== null) {
+        clearTimeout(botTimeoutRef.current)
+        botTimeoutRef.current = null
       }
     }
   }, [isCountdownCompleted])

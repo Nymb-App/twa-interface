@@ -15,6 +15,30 @@
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />
     <title>Nymb TWA</title>
+    <link
+      rel="preload"
+      fetchpriority="high"
+      as="image"
+      href="/home-bg.png"
+      type="image/png"
+    />
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload Google Fonts CSS -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <!-- Preload local font -->
+    <link
+      rel="preload"
+      href="/fonts/pixel_nymb.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
   </head>
   <body>
     <div id="app"></div>

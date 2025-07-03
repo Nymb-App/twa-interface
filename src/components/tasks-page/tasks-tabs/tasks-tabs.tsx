@@ -27,24 +27,24 @@ const TaskItemSkeleton = () => {
 }
 
 export function TasksTabs() {
-  const { tasksQuery, completeTask } = useTasks();
-  const { data: tasks, isLoading, isError } = tasksQuery;
+  const { tasksQuery, completeTask } = useTasks()
+  const { data: tasks, isLoading, isError } = tasksQuery
 
-  const unfinishedTasks = tasks?.filter(task => !task.isCompleted) ?? [];
-  const completedTasks = tasks?.filter(task => task.isCompleted) ?? [];
+  const unfinishedTasks = tasks?.filter((task) => !task.isCompleted) ?? []
+  const completedTasks = tasks?.filter((task) => task.isCompleted) ?? []
 
   const handleTaskAction = (task: ITask) => {
     if (task.name === TaskNames.SubscribeTwitter) {
-      window.open(TWITTER_URL, '_blank', 'noopener,noreferrer');
+      window.open(TWITTER_URL, '_blank', 'noopener,noreferrer')
     }
-    completeTask({ taskName: task.name as TaskNames });
+    completeTask({ taskName: task.name as TaskNames })
   }
 
   if (isError) return <div>Error loading tasks.</div>
 
   return (
-    <section className='flex flex-col flex-1'>
-      <Tabs defaultValue="new tasks" className='flex flex-col flex-1'>
+    <section className="flex flex-col flex-1">
+      <Tabs defaultValue="new tasks" className="flex flex-col flex-1">
         <TabsList className="flex justify-center gap-2 uppercase font-pixel mb-7">
           <TabsTrigger
             value="new tasks"
@@ -65,7 +65,7 @@ export function TasksTabs() {
             <span>completed</span>
           </TabsTrigger>
         </TabsList>
-        <TabsContent className='flex flex-col flex-1' value="new tasks">
+        <TabsContent className="flex flex-col flex-1" value="new tasks">
           <h3 className="ml-4 font-pixel uppercase font-[400] text-[18px] leading-[24px] mb-3">
             Tasks
           </h3>
@@ -77,7 +77,7 @@ export function TasksTabs() {
           ) : unfinishedTasks.length > 0 ? (
             <ul className="flex flex-col gap-2">
               <AnimatePresence>
-                {unfinishedTasks.map(task => (
+                {unfinishedTasks.map((task) => (
                   <motion.li
                     key={task.name}
                     initial={false}
@@ -92,8 +92,18 @@ export function TasksTabs() {
                           ? formatTimeReward(task.reward.value)
                           : `${task.reward.value} ENERGY`
                       }
-                      buttonActionLabel={task.name === TaskNames.SubscribeTwitter ? 'join' : 'invite'}
-                      icon={task.name === TaskNames.SubscribeTwitter ? <TwitterSvgIcon /> : <InviteFrenSvgIcon />}
+                      buttonActionLabel={
+                        task.name === TaskNames.SubscribeTwitter
+                          ? 'join'
+                          : 'invite'
+                      }
+                      icon={
+                        task.name === TaskNames.SubscribeTwitter ? (
+                          <TwitterSvgIcon />
+                        ) : (
+                          <InviteFrenSvgIcon />
+                        )
+                      }
                       setIsTaskCompleted={() => handleTaskAction(task)}
                     />
                   </motion.li>
@@ -101,7 +111,11 @@ export function TasksTabs() {
               </AnimatePresence>
             </ul>
           ) : (
-            <NoTasksBlock className='h-full flex-1' title="THERE ARE" subtitle="NO TASKS FOR TODAY" />
+            <NoTasksBlock
+              className="h-full flex-1"
+              title="THERE ARE"
+              subtitle="NO TASKS FOR TODAY"
+            />
           )}
         </TabsContent>
         <TabsContent value="completed tasks">
@@ -112,7 +126,7 @@ export function TasksTabs() {
           )}
           {completedTasks.length > 0 ? (
             <ul className="flex flex-col gap-2">
-              {completedTasks.map(task => (
+              {completedTasks.map((task) => (
                 <TaskItem
                   key={task.name}
                   isTaskCompleted
@@ -122,8 +136,16 @@ export function TasksTabs() {
                       ? formatTimeReward(task.reward.value)
                       : `${task.reward.value} ENERGY`
                   }
-                  buttonActionLabel={task.name === TaskNames.SubscribeTwitter ? 'join' : 'invite'}
-                  icon={task.name === TaskNames.SubscribeTwitter ? <TwitterSvgIcon /> : <InviteFrenSvgIcon />}
+                  buttonActionLabel={
+                    task.name === TaskNames.SubscribeTwitter ? 'join' : 'invite'
+                  }
+                  icon={
+                    task.name === TaskNames.SubscribeTwitter ? (
+                      <TwitterSvgIcon />
+                    ) : (
+                      <InviteFrenSvgIcon />
+                    )
+                  }
                 />
               ))}
             </ul>
@@ -231,13 +253,20 @@ export const NoTasksBlock = ({
   title,
   subtitle,
   className,
+  classNameText,
 }: {
   title: string
-  subtitle: string
+  subtitle?: string
   className?: string
+  classNameText?: string
 }) => {
   return (
-    <div className={cn("h-[246px] flex flex-col items-center justify-center font-pixel mt-4", className)}>
+    <div
+      className={cn(
+        'h-[246px] flex flex-col items-center justify-center font-pixel mt-4',
+        className,
+      )}
+    >
       <div className="relative mb-4 animate-battle-finding-dots-pulse">
         <div className="absolute inset-0 rounded-full bg-[#B6FF0014] blur-[28px] shadow-[0px_0px_0px_3px_#B6FF00]" />
         <div className="relative flex items-center justify-center">
@@ -246,7 +275,12 @@ export const NoTasksBlock = ({
           </div>
         </div>
       </div>
-      <div className="text-center text-[#FFFFFF] font-[400] leading-[24px] text-[18px]">
+      <div
+        className={cn(
+          'text-center text-[#FFFFFF] font-[400] leading-[24px] text-[18px]',
+          classNameText,
+        )}
+      >
         <p>{title}</p>
         <p>{subtitle}</p>
       </div>
