@@ -1,6 +1,8 @@
+// eslint-disable-next-line import/no-duplicates
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
 import { useState } from 'react'
+// eslint-disable-next-line import/no-duplicates
 import { FarmingButton } from '@/components/ui/button-farming'
 import { CardContent } from '@/components/ui/card-content'
 import { SwipeCard } from '@/components/swipe-card'

@@ -1,24 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useTonAddress } from '@tonconnect/ui-react';
-import { isAndroid } from 'react-device-detect';
-import { useAuth } from '@/hooks/api/use-api';
-import { useMint } from '@/hooks/use-mint';
-import { Card } from '@/components/ui/card';
-import { ConnectButton, DisconnectButton, MintButton } from '@/components/ui/mint-button';
-import { FlickeringGrid } from '@/components/magicui/flickering-grid';
-import { PageLayout } from '@/components/ui/page-layout';
-import { cn } from '@/utils';
+import { useEffect, useRef, useState } from 'react'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { useTonAddress } from '@tonconnect/ui-react'
+import { isAndroid } from 'react-device-detect'
+import { useAuth } from '@/hooks/api/use-api'
+import { useMint } from '@/hooks/use-mint'
+import { Card } from '@/components/ui/card'
+import {
+  ConnectButton,
+  DisconnectButton,
+  MintButton,
+} from '@/components/ui/mint-button'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { PageLayout } from '@/components/ui/page-layout'
+import { cn } from '@/utils'
 
-import SwipeAnimationLottie from '@/assets/lottie/swipe2.json';
-import { TasksIcon } from '@/assets/icons/tasks';
-import { StatisticsIcon } from '@/assets/icons/statistics';
+import SwipeAnimationLottie from '@/assets/lottie/swipe2.json'
+import { TasksIcon } from '@/assets/icons/tasks'
+import { StatisticsIcon } from '@/assets/icons/statistics'
 import { SocialIcon } from '@/assets/icons/social'
-import { SwipeCard } from '@/components/swipe-card';
-import { GameCard } from '@/components/game-card';
-import { BattleCard } from '@/components/battle-card';
-
-
+import { SwipeCard } from '@/components/swipe-card'
+import { GameCard } from '@/components/game-card'
+import { BattleCard } from '@/components/battle-card'
+import { useGetDailyRewards } from '@/hooks/use-get-daily-rewards'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -113,41 +116,35 @@ function App() {
 }
 
 function MintSection() {
-  const address = useTonAddress();
-  const { mintProgress } = useMint();
+  const address = useTonAddress()
+  const { mintProgress } = useMint()
 
-  const [isConnectHidden, setConnectHidden] = useState<boolean>(false);
-  const [isDisconnectHidden, setDisconnectHidden] = useState<boolean>(false);
+  const [isConnectHidden, setConnectHidden] = useState<boolean>(false)
+  const [isDisconnectHidden, setDisconnectHidden] = useState<boolean>(false)
 
   useEffect(() => {
     if (mintProgress && mintProgress.isEarlyAccessMinted) {
-      setConnectHidden(true);
+      setConnectHidden(true)
     } else {
       if (address) {
-        setConnectHidden(false);
+        setConnectHidden(false)
       } else {
-        setConnectHidden(true);
+        setConnectHidden(true)
       }
     }
-  }, [
-    mintProgress,
-    address,
-  ]);
+  }, [mintProgress, address])
 
   useEffect(() => {
     if (mintProgress && mintProgress.isEarlyAccessMinted) {
-      setDisconnectHidden(true);
+      setDisconnectHidden(true)
     } else {
       if (!address) {
-        setDisconnectHidden(true);
+        setDisconnectHidden(true)
       } else {
-        setDisconnectHidden(false);
+        setDisconnectHidden(false)
       }
     }
-  }, [
-    mintProgress,
-    address,
-  ]);
+  }, [mintProgress, address])
 
   return (
     <section className="relative text-white px-3">
@@ -182,19 +179,16 @@ function MintSection() {
             </div>
           </div>
 
-          {isConnectHidden 
-            ? <MintButton className="mt-6 w-[80%] mx-auto" /> 
-            : <ConnectButton className="mt-6 w-[80%] mx-auto" />
-          }
-          
-          {!isDisconnectHidden &&
-            <DisconnectButton
-              className="mt-2 w-[80%] mx-auto"
-            />
-          }
-          <span className="mt-3 text-white/60 mx-auto">
-            One for the wallet
-          </span>
+          {isConnectHidden ? (
+            <MintButton className="mt-6 w-[80%] mx-auto" />
+          ) : (
+            <ConnectButton className="mt-6 w-[80%] mx-auto" />
+          )}
+
+          {!isDisconnectHidden && (
+            <DisconnectButton className="mt-2 w-[80%] mx-auto" />
+          )}
+          <span className="mt-3 text-white/60 mx-auto">One for the wallet</span>
         </Card>
       </div>
     </section>
@@ -202,6 +196,36 @@ function MintSection() {
 }
 
 function HeroSection() {
+  const { dailyRewardsQuery } = useGetDailyRewards()
+
+  console.log(dailyRewardsQuery.data)
+
+  const [isDailyReward, setIsDailyReward] = useState<boolean>(false)
+
+  useEffect(() => {
+    const now = new Date(
+      Date.UTC(
+        new Date().getUTCFullYear(),
+        new Date().getUTCMonth(),
+        new Date().getUTCDate(),
+        0,
+        0,
+        0,
+        0,
+      ),
+    )
+
+    const todayInSeconds = Math.floor(now.getTime() / 1000)
+    console.log(todayInSeconds, 'today')
+    console.log(dailyRewardsQuery.data?.nextAvailableAt)
+    if (
+      dailyRewardsQuery.data?.nextAvailableAt &&
+      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
+    ) {
+      setIsDailyReward(true)
+    }
+  }, [dailyRewardsQuery])
+
   return (
     <section className="relative mt-48 text-2xl text-white px-3">
       <h2 className="font-pixel text-center animate-slide-up-fade-0">
@@ -209,7 +233,10 @@ function HeroSection() {
       </h2>
 
       <div className="flex flex-col gap-2">
-        <Link to="/home" className="text-white z-50 text-xl">
+        <Link
+          to={isDailyReward ? '/check-in' : '/home'}
+          className="text-white z-50 text-xl"
+        >
           Home
         </Link>
       </div>

@@ -298,23 +298,22 @@ function ShopExchangeCard({
           <span className="text-white/40 text-[48px]">:</span>
           <div className="flex flex-col items-center">
             <span className="text-white text-[30px]">{itemValuePay}</span>
-            <Select defaultValue={item === 'energy' ? 'ton' : 'stars'}>
+            <Select defaultValue="ton">
               <SelectTrigger className="text-[12px] font-pixel uppercase rounded-[8px] text-white/40 border-none starboard-result-block-bg">
                 <div className="flex items-center gap-2">
                   <SelectValue placeholder="Select value" />
                 </div>
               </SelectTrigger>
-              <SelectContent className="starboard-result-block-bg border-none text-white/40 hover:starboard-result-block-bg hover:text-white">
+              <SelectContent className="bg-[#121312] border-none !text-white/40">
                 <SelectItem
-                  className="starboard-result-block-bg border-none text-white/40 hover:starboard-result-block-bg hover:text-white"
+                  className="!bg-[#121312] hover:!bg-[#121312] border-none !text-white/40 hover:!text-white"
                   value="ton"
-                  disabled={item !== 'energy'}
                 >
                   <div className="flex items-center gap-2">
                     <TonIcon /> <span>Ton</span>
                   </div>
                 </SelectItem>
-                <SelectItem value="stars" disabled={item !== 'time'}>
+                <SelectItem value="stars" className="" disabled>
                   <div className="flex items-center gap-2">
                     <StarIcon /> <span>Stars</span>
                   </div>

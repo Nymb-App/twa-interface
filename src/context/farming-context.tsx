@@ -3,7 +3,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 export const NYMB_FARMING_FINISHAT_LS_KEY = 'nymb-farming-finishat'
 export const NYMB_FARMING_CLAIM_TIME_KEY = 'nymb-farming-duration'
 export const ANIMATION_DURATION_COUNTUP = 2000
-export const FARMING_DURATION = 10 * 1000
+export const FARMING_DURATION = 3600_000 * 6
+export const FARMING_REWARD = 3600_000 * 6
 export interface FarmingContextType {
   finishAt: number
   setFinishAt: (value: number) => void
