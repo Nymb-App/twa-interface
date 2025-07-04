@@ -1,10 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
 import { useApi } from './api/use-api'
+import { useAccountMe } from './api/use-account'
 
 export interface CheckInRewards {
   energy: number
   time: number // in seconds
-  tickets: number
+  ticket: number
 }
 
 export interface CheckInData {
@@ -14,8 +16,29 @@ export interface CheckInData {
   rewards: CheckInRewards
 }
 
-export function useGetDailyRewards() {
-  const { get } = useApi()
+export function useCheckIn() {
+  const { post, get } = useApi()
+  const { accountQuery } = useAccountMe()
+  const router = useRouter()
+
+  const checkInMutation = useMutation<any, Error, void>({
+    mutationFn: () => {
+      // const timezone = 'UTC%2B0'
+      return post('/check-in/check_in', {
+        timezone: 'UTC+0',
+      })
+    },
+    onError: () => {
+      dailyRewardsQuery.refetch()
+      accountQuery.refetch()
+      router.navigate({ to: '/home' })
+    },
+    onSuccess: () => {
+      dailyRewardsQuery.refetch()
+      accountQuery.refetch()
+      router.navigate({ to: '/home' })
+    },
+  })
 
   const dailyRewardsQuery = useQuery<CheckInData, Error>({
     queryKey: ['dailyRewards'],
@@ -24,7 +47,7 @@ export function useGetDailyRewards() {
       const timezone = 'UTC%2B0'
       const data = await get(
         // `/check_in/get_daily_rewards?timezone=${encodeURIComponent(timezone)}`,
-        `/check_in/get_daily_rewards?timezone=${timezone}`,
+        `/check-in/get_daily_rewards?timezone=${timezone}`,
       )
       return data as CheckInData
     },
@@ -32,27 +55,9 @@ export function useGetDailyRewards() {
   })
 
   return {
-    dailyRewardsQuery,
-  }
-}
-
-export function useCheckIn() {
-  const { post } = useApi()
-  const queryClient = useQueryClient()
-
-  const checkInMutation = useMutation<any, Error, void>({
-    mutationFn: () => {
-      const timezone = 'UTC%2B0'
-      return post(`/check_in/check-in?timezone=${timezone}`)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['dailyRewards'] })
-    },
-  })
-
-  return {
     checkIn: checkInMutation.mutate,
     isCheckingIn: checkInMutation.isPending,
     checkInError: checkInMutation.error,
+    dailyRewardsQuery,
   }
 }

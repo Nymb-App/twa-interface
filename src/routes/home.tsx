@@ -1,8 +1,9 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
-import { Suspense, lazy, useCallback, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 
 import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
 
 // Lazy load heavy components
 const FarmingButton = lazy(() =>
@@ -43,6 +44,34 @@ function RouteComponent() {
   const handleClaimClick = useCallback(() => {
     setIsClaimStart(true)
   }, [])
+
+  const { dailyRewardsQuery } = useCheckIn()
+
+  const router = useRouter()
+
+  useEffect(() => {
+    const now = new Date(
+      Date.UTC(
+        new Date().getUTCFullYear(),
+        new Date().getUTCMonth(),
+        new Date().getUTCDate(),
+        0,
+        0,
+        0,
+        0,
+      ),
+    )
+
+    const todayInSeconds = Math.floor(now.getTime() / 1000)
+    console.log(todayInSeconds, 'today')
+    console.log(dailyRewardsQuery.data?.nextAvailableAt)
+    if (
+      dailyRewardsQuery.data?.nextAvailableAt &&
+      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
+    ) {
+      router.navigate({ to: '/check-in' })
+    }
+  }, [dailyRewardsQuery])
 
   return (
     <PageLayout>

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
 import { Card } from '@/components/ui/card'
@@ -8,38 +7,10 @@ import { SocialIcon } from '@/assets/icons/social'
 import { SwipeCard } from '@/components/swipe-card'
 import { GameCard } from '@/components/game-card'
 import { BattleCard } from '@/components/battle-card'
-import { useGetDailyRewards } from '@/hooks/use-get-daily-rewards'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
 
 export function HeroSection() {
-  const { dailyRewardsQuery } = useGetDailyRewards()
-
-  console.log(dailyRewardsQuery.data)
-
-  const [isDailyReward, setIsDailyReward] = useState<boolean>(false)
-
-  useEffect(() => {
-    const now = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth(),
-        new Date().getUTCDate(),
-        0,
-        0,
-        0,
-        0,
-      ),
-    )
-
-    const todayInSeconds = Math.floor(now.getTime() / 1000)
-    console.log(todayInSeconds, 'today')
-    console.log(dailyRewardsQuery.data?.nextAvailableAt)
-    if (
-      dailyRewardsQuery.data?.nextAvailableAt &&
-      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
-    ) {
-      setIsDailyReward(true)
-    }
-  }, [dailyRewardsQuery])
+  const { dailyRewardsQuery } = useCheckIn()
 
   return (
     <section className="relative mt-48 text-2xl text-white px-3">
@@ -48,10 +19,7 @@ export function HeroSection() {
       </h2>
 
       <div className="flex flex-col gap-2">
-        <Link
-          to={isDailyReward ? '/check-in' : '/home'}
-          className="text-white z-50 text-xl"
-        >
+        <Link to={'/home'} className="text-white z-50 text-xl">
           Home
         </Link>
       </div>

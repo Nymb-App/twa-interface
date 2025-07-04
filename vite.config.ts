@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => ({
       'satin-proposals-valuation-wanted.trycloudflare.com',
       'september-now-five-stakeholders.trycloudflare.com',
       'honest-corruption-grab-leu.trycloudflare.com',
-      'e658-37-1-204-162.ngrok-free.app',
+      'ef-pp-rd-occurred.trycloudflare.com',
     ],
   },
 
@@ -74,8 +74,8 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           'vendor-lottie': ['lottie-web'],
-                      'vendor-howler': ['howler'],
-            'vendor-tonconnect': ['@tonconnect/ui-react'],
+          'vendor-howler': ['howler'],
+          'vendor-tonconnect': ['@tonconnect/ui-react'],
           'vendor-tanstack': [
             '@tanstack/react-query',
             '@tanstack/react-router',
