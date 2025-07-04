@@ -1,5 +1,4 @@
 import { useRive } from '@rive-app/react-canvas'
-import { Link } from '@tanstack/react-router'
 import { cn } from '@/utils'
 
 export const BattleCard = ({

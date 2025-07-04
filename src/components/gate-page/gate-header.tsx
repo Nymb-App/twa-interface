@@ -6,9 +6,7 @@ import { WatchesIcon } from '@/assets/icons/watches';
 import { TicketIcon } from '@/assets/icons/ticket';
 import { cn } from '@/utils';
 import { LockIcon } from '@/assets/icons/lock';
-import { ArrowIcon } from '@/assets/icons/arrow';
 import { GateContext } from '@/context/gate-context';
-import Marquee from 'react-fast-marquee';
 
 export function GateHeader() {
   const { year, ticket, currentLevel, isLockedNewGate } = useContext(GateContext);

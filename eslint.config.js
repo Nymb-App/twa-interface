@@ -12,8 +12,6 @@ export default [
     rules: {
       // Автоматически удаляет неиспользуемые импорты
       'unused-imports/no-unused-imports': 'error',
-      'no-duplicate-imports': 'error',
-      'react/jsx-no-duplicate-props': 'error',
 
       // Также удаляет неиспользуемые переменные (если нужно)
       // 'unused-imports/no-unused-vars': [

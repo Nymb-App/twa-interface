@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { Link } from '@tanstack/react-router'
 import { cn } from '@/utils'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { BombIcon } from '@/assets/icons/bomb'

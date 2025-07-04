@@ -6,7 +6,6 @@ import viteReact from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 const require = createRequire(import.meta.url)
@@ -58,7 +57,7 @@ export default defineConfig(({ mode }) => ({
       'satin-proposals-valuation-wanted.trycloudflare.com',
       'september-now-five-stakeholders.trycloudflare.com',
       'honest-corruption-grab-leu.trycloudflare.com',
-      'opens-scanning-tx-leading.trycloudflare.com',
+      'e658-37-1-204-162.ngrok-free.app',
     ],
   },
 
@@ -74,12 +73,14 @@ export default defineConfig(({ mode }) => ({
       external: [],
       output: {
         manualChunks: {
-          // Выносим большие библиотеки в отдельные чанки
-          lottie: ['lottie-web'],
-          howler: ['howler'],
-          vconsole: ['vconsole'],
-          // Группируем по вендорам
-          vendor: ['react', 'react-dom', '@tanstack/react-router'],
+          'vendor-lottie': ['lottie-web'],
+                      'vendor-howler': ['howler'],
+            'vendor-tonconnect': ['@tonconnect/ui-react'],
+          'vendor-tanstack': [
+            '@tanstack/react-query',
+            '@tanstack/react-router',
+          ],
+          'vendor-react': ['react', 'react-dom', 'react-icons'],
         },
       },
     },

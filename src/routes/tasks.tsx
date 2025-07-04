@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { lazy, Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
 

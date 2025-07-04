@@ -1,8 +1,8 @@
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid';
 import { ActionButton } from '@/components/ui/action-button';
 import { PageLayout } from '@/components/ui/page-layout';
 import { TELEGRAM_APP_URL } from '@/lib/constants';
-import { createFileRoute, Link } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/auth-error')({
   component: RouteComponent,

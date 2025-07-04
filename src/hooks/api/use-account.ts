@@ -68,7 +68,7 @@ export function useAccountMe() {
   return {
     accountQuery: useQuery<IAccountMe, Error>({
       queryKey: ['account', 'me'],
-      queryFn: async () => (await get('/accounts/me')) as IAccountMe,
+      queryFn: async () => (await get('/accounts/me')),
       staleTime: 5 * 60 * 1000, // Кэш на 5 минут
       enabled: !!initData, // Запрос будет выполнен только после получения initData
     }),

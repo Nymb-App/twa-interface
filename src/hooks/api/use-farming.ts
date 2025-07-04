@@ -17,7 +17,7 @@ export function useFarming() {
   const farmingStatusQuery = useQuery<IFarmingStatus, Error>({
     queryKey: ['farming', 'status'],
     queryFn: async () =>
-      (await get('/farming/get_farming_status')) as IFarmingStatus,
+      (await get('/farming/get_farming_status')),
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
   })
 

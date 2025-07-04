@@ -1,16 +1,15 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { shareURL } from '@telegram-apps/sdk'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { cn } from '@/utils'
 import { SendGift } from '@/assets/icons/send-gift'
-import { RussianRoulette } from '@/components/ui/russian-roullete';
-import { GiftSelector } from '@/components/pages/friends/gift-selector'
-import { SendGiftButton } from '@/components/pages/friends/gift-button'
+import { RussianRoulette } from '@/components/ui/russian-roullete'
+import { GiftSelector } from '@/components/frens-page/gift-selector'
+import { SendGiftButton } from '@/components/frens-page/gift-button'
 import { ActionButton } from '@/components/ui/action-button'
-import { shareURL } from '@telegram-apps/sdk'
 import { useReferrals } from '@/hooks/api/use-referrals'
-
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
@@ -19,29 +18,28 @@ export const Route = createFileRoute('/send-gift')({
 const convertGiftValueToSeconds = (value: number, unit: string) => {
   switch (unit) {
     case 'weeks':
-      return value * 60 * 60 * 24 * 7;
+      return value * 60 * 60 * 24 * 7
     case 'days':
-      return value * 60 * 60 * 24;
+      return value * 60 * 60 * 24
     case 'hours':
-      return value * 60 * 60;
+      return value * 60 * 60
     case 'minutes':
-      return value * 60;
+      return value * 60
     case 'seconds':
-      return value;
+      return value
     default:
-      return value;
+      return value
   }
 }
 
 function RouteComponent() {
+  const [giftValue, setGiftValue] = useState(24)
+  const [giftUnits, setGiftUnits] = useState('weeks')
 
-  const [giftValue, setGiftValue] = useState(24);
-  const [giftUnits, setGiftUnits] = useState('weeks');
+  const [isStartRoulette, setIsStartRoulette] = useState(false)
+  const [isFinishRoulette, setIsFinishRoulette] = useState(false)
 
-  const [isStartRoulette, setIsStartRoulette] = useState(false);
-  const [isFinishRoulette, setIsFinishRoulette] = useState(false);
-
-  const {sendGiftToFriend, myReferrals} = useReferrals()
+  const { sendGiftToFriend, myReferrals } = useReferrals()
 
   const [referralsNickName, setReferralsNickName] = useState<Array<string>>([])
 
@@ -49,15 +47,14 @@ function RouteComponent() {
 
   useEffect(() => {
     if (myReferrals) {
-      setReferralsNickName(myReferrals.referrals.map((referral) => referral.nickname))
+      setReferralsNickName(
+        myReferrals.referrals.map((referral) => referral.nickname),
+      )
     }
   }, [myReferrals])
 
   return (
-    <PageLayout
-      className="bg-[#151317]"
-      useFooter={false}
-    >
+    <PageLayout className="bg-[#151317]" useFooter={false}>
       <header className="flex flex-col items-center relative">
         <FlickeringGrid
           className="absolute inset-0 h-[350px] mask-[radial-gradient(ellipse_250px_250px_at_center,black,transparent)]"
@@ -72,58 +69,64 @@ function RouteComponent() {
         />
 
         <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase mb-[115px]">
-          {!isStartRoulette ?
+          {!isStartRoulette ? (
             <>
-              enter the<br />
+              enter the
+              <br />
               prize amount
             </>
-            :
+          ) : (
             <>
-              send a gift<br />
+              send a gift
+              <br />
               to fren
             </>
-          }
+          )}
         </h1>
         <SendGift className="animate-[wiggle_3s_ease-in-out_infinite] absolute top-[60px] z-1" />
       </header>
 
-      {!isStartRoulette
-        ? (
-          <div className='px-4 mt-16'>
-            <GiftSelector
-              value={giftValue}
-              unit={giftUnits}
-              onValueChange={(value) => {
-                setGiftValue(value)
-              }}
-              onUnitChange={(units) => {
-                setGiftUnits(units);
-              }}
-            />
-          </div>
-        ) : (
-          <div className='px-4 mt-32'>
-            <RussianRoulette
-              userNames={referralsNickName}
-              isStartRoulette={isStartRoulette}
-              items={referralsNickName.map((nickname, index) => (
-                <AvatarCard key={index} src={`/roulette-icons/user-${index + 1}.png`} label={nickname} />
-              ))}
-              winnerIndex={winnerIndex}
-              duration={30000}
-              gap={50}
-              loops={12}
-              onFinish={() => {
-                setIsFinishRoulette(true)
-                sendGiftToFriend.mutate({
-                  friendId: Number(myReferrals?.referrals[winnerIndex].telegramId),
-                  time: convertGiftValueToSeconds(giftValue, giftUnits),
-                })
-              }}
-            />
-          </div>
-        )
-      }
+      {!isStartRoulette ? (
+        <div className="px-4 mt-16">
+          <GiftSelector
+            value={giftValue}
+            unit={giftUnits}
+            onValueChange={(value) => {
+              setGiftValue(value)
+            }}
+            onUnitChange={(units) => {
+              setGiftUnits(units)
+            }}
+          />
+        </div>
+      ) : (
+        <div className="px-4 mt-32">
+          <RussianRoulette
+            userNames={referralsNickName}
+            isStartRoulette={isStartRoulette}
+            items={referralsNickName.map((nickname, index) => (
+              <AvatarCard
+                key={index}
+                src={`/roulette-icons/user-${index + 1}.png`}
+                label={nickname}
+              />
+            ))}
+            winnerIndex={winnerIndex}
+            duration={30000}
+            gap={50}
+            loops={12}
+            onFinish={() => {
+              setIsFinishRoulette(true)
+              sendGiftToFriend.mutate({
+                friendId: Number(
+                  myReferrals?.referrals[winnerIndex].telegramId,
+                ),
+                time: convertGiftValueToSeconds(giftValue, giftUnits),
+              })
+            }}
+          />
+        </div>
+      )}
 
       {!isStartRoulette && (
         <SendGiftButton

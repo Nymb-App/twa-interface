@@ -54,7 +54,7 @@ export function useShopItems() {
 
   const shopItemsQuery = useQuery<Array<IShopItem>, Error>({
     queryKey: ['shop', 'items'],
-    queryFn: async () => (await get('/shop/shop_items')) as Array<IShopItem>,
+    queryFn: async () => (await get('/shop/shop_items')),
     staleTime: 15 * 60 * 1000,
   })
 

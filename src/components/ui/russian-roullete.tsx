@@ -1,11 +1,12 @@
 import {
+  
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
-  type ReactNode,
+  useState
 } from 'react';
 import { hapticFeedback } from '@telegram-apps/sdk'
+import type {ReactNode} from 'react';
 import { cn } from '@/utils';
 /* ───────────────── component ──────────────────── */
 export function RussianRoulette({
@@ -20,7 +21,7 @@ export function RussianRoulette({
   onFinish,
 }: {
   items: Array<ReactNode>
-  userNames: string[]
+  userNames: Array<string>
   winnerIndex: number
   isStartRoulette?: boolean // true → крутится
   duration?: number // ≥ 3000 (default 4000)

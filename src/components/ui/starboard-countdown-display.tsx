@@ -1,6 +1,6 @@
 import { zeroPad } from 'react-countdown'
-import { cn } from '@/utils'
 import React from 'react'
+import { cn } from '@/utils'
 
 export const StarboardCountdownDisplay = ({
     days,

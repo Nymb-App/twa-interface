@@ -1,12 +1,9 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useEffect } from 'react'
-import { io, type Socket } from 'socket.io-client'
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  type UseQueryOptions,
-} from '@tanstack/react-query'
+import { io } from 'socket.io-client'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAccount } from './use-account'
+import type { UseQueryOptions } from '@tanstack/react-query'
 
 const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
 
@@ -81,7 +78,7 @@ export function useApi() {
 
   // Create a query wrapper with proper typing
   const useApiQuery = <T = unknown>(
-    key: string | string[],
+    key: string | Array<string>,
     url: string,
     options?: Omit<UseQueryOptions<T, Error>, 'queryKey' | 'queryFn'> & {
       params?: Record<string, unknown>
@@ -98,9 +95,9 @@ export function useApi() {
         const queryParams = options?.params
           ? `?${new URLSearchParams(
               Object.entries(options.params).reduce(
-                (acc, [key, value]) => {
+                (acc, [uniqueKey, value]) => {
                   if (value !== undefined) {
-                    acc[key] = String(value)
+                    acc[uniqueKey] = String(value)
                   }
                   return acc
                 },

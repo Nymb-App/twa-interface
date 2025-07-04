@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+import { useState } from 'react'
 import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
+import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
 import { Container } from '@/components/ui/container'
 import {
   Carousel,
@@ -8,11 +11,9 @@ import {
 } from '@/components/ui/carousel'
 import { useStatistics } from '@/hooks/api/use-statistics'
 import { useLvl } from '@/hooks/use-lvl'
-import { useState } from 'react'
 import { cn } from '@/utils'
 import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 import { Skeleton } from '@/components/ui/skeleton'
-import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
 
 export const StarboardTabsSection = () => {
   const { lvls, maxLvl } = useLvl()

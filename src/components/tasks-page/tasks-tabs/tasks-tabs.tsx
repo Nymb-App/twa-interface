@@ -1,14 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TaskCompletedSvgIcon } from '../tasks-daily-block/tasks-daily-block'
-import type { ReactNode } from 'react'
-import { ActionButton } from '@/components/ui/action-button'
-import { cn } from '@/utils'
-import { useTasks, TaskNames } from '@/hooks/api/use-tasks'
-import type { ITask } from '@/hooks/api/use-tasks'
-import { TWITTER_URL } from '@/constants'
-import { formatTimeReward } from '@/utils'
 import { InviteFrenSvgIcon, TwitterSvgIcon } from '../task-icons'
+import type { ReactNode } from 'react'
+import type { ITask } from '@/hooks/api/use-tasks'
+import { ActionButton } from '@/components/ui/action-button'
+import { cn, formatTimeReward  } from '@/utils'
+import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import { TWITTER_URL } from '@/constants'
 
 export function TasksTabs() {
   const { tasksQuery, completeTask } = useTasks()

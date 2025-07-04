@@ -1,10 +1,10 @@
 import Countdown from 'react-countdown'
 import { TaskDailyBlock } from '../tasks-daily-block/tasks-daily-block'
+import { TaskIcon } from '../task-icons'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TWITTER_URL } from '@/constants'
 import { useAccount } from '@/hooks/api/use-account'
-import { TaskIcon } from '../task-icons'
 
 const getButtonLabel = (taskName: string) => {
   switch (taskName) {

@@ -1,5 +1,4 @@
 import React, {
-  Suspense,
   useCallback,
   useEffect,
   useMemo,

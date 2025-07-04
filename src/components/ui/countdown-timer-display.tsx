@@ -1,6 +1,5 @@
 import { zeroPad } from 'react-countdown'
 import { cn } from '@/utils'
-import { NYMB_FARMING_FINISHAT_LS_KEY } from '@/context/farming-context'
 
 export const CountdownTimerDisplay = ({
   isCountdownHeaderView = false,

@@ -3,7 +3,7 @@ import { HiLockClosed } from 'react-icons/hi2';
 import { GateDrawerContent } from '../gate-page/gate-drawer-content';
 import { GateNextDisplayBlock, GateProgressDisplay } from '../gate-page/gate-header';
 import { FlickeringGrid } from '../magicui/flickering-grid';
-import { GateInfoBlockNextLvl, GateStatisticsInfoBlock } from '../gate-page/ui/info-block';
+import { GateInfoBlockNextLvl } from '../gate-page/ui/info-block';
 import { ActionButton } from './action-button';
 import { Container } from './container';
 import { Drawer, DrawerTrigger } from './drawer';

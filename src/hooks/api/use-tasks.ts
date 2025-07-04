@@ -1,5 +1,5 @@
-import { useApi } from "./use-api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useApi } from "./use-api";
 
 export enum TaskNames {
     DailyComboLeaveCommentInTwitter = 'daily-combo-twitter-comment',
@@ -25,7 +25,7 @@ export interface ITask {
 
 export interface IDailyCombo {
     resetAt: number;
-    tasks: ITask[];
+    tasks: Array<ITask>;
 }
 
 // --- Хук useTasks ---
@@ -37,9 +37,9 @@ export function useTasks() {
     /**
      * Запрос для получения списка всех задач.
      */
-    const tasksQuery = useQuery<ITask[], Error>({
+    const tasksQuery = useQuery<Array<ITask>, Error>({
         queryKey: ['tasks'],
-        queryFn: async () => await get('/tasks/get_tasks') as ITask[],
+        queryFn: async () => await get('/tasks/get_tasks'),
         staleTime: 5 * 60 * 1000, // Кэш на 5 минут
     });
 
@@ -48,7 +48,7 @@ export function useTasks() {
      */
     const dailyComboQuery = useQuery<IDailyCombo, Error>({
         queryKey: ['dailyCombo'],
-        queryFn: async () => await get('/tasks/get_daily_combo') as IDailyCombo,
+        queryFn: async () => await get('/tasks/get_daily_combo'),
         staleTime: 5 * 60 * 1000, // Кэш на 5 минут
     });
 

@@ -1,7 +1,7 @@
-import { useLvl } from '../use-lvl'
-import { useApi } from './use-api'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useLvl } from '../use-lvl'
+import { useApi } from './use-api'
 
 export interface GlobalStatisticsParams {
   lvl?: number
@@ -12,14 +12,14 @@ export interface GlobalStatisticsParams {
 export interface GlobalStatisticsData {
   totalCount: number
   page: number
-  users: {
+  users: Array<{
     avatarId: string
     lvl: number
     telegramId: number
     time: number
     nickname?: string
     photoUrl?: string
-  }[]
+  }>
 }
 
 export interface StatisticsData {
@@ -32,7 +32,7 @@ export interface StatisticsData {
 export const useStatistics = () => {
   const { get } = useApi()
   const { lvls } = useLvl()
-  const [enabledLevels, setEnabledLevels] = useState<number[]>([12, 11, 10])
+  const [enabledLevels, setEnabledLevels] = useState<Array<number>>([12, 11, 10])
 
   const myStatistics = useQuery<StatisticsData, Error>({
     queryKey: ['myStatistics'],

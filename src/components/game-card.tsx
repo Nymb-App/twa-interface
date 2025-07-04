@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import lottie from 'lottie-web'
+
 import type { AnimationItem } from 'lottie-web'
 import { cn } from '@/utils'
 
@@ -15,7 +15,7 @@ export const GameCard = ({
 }: {
   title: string
   description: string
-  animationData: Record<string, any>
+  animationData: string
   subdescription?: string
   className?: string
   classNameBg?: string
@@ -52,16 +52,18 @@ export const GameCard = ({
   // Инициализация и управление анимацией
   useEffect(() => {
     if (loadLottie && containerRef.current && !animationRef.current) {
-      const anim = lottie.loadAnimation({
-        container: containerRef.current,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        animationData: animationData.default || animationData,
-      })
-      anim.setSpeed(0.5)
-      anim.addEventListener('DOMLoaded', () => setLottieReady(true))
-      animationRef.current = anim
+            import('lottie-web').then((lottie) => {
+                const anim = lottie.default.loadAnimation({
+          container: containerRef.current!,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: animationData,
+        });
+        anim.setSpeed(0.5);
+        anim.addEventListener('DOMLoaded', () => setLottieReady(true));
+        animationRef.current = anim;
+      });
     }
     if (animationRef.current) {
       isVisible ? animationRef.current.play() : animationRef.current.pause()
