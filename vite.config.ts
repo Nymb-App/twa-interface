@@ -7,10 +7,11 @@ import svgr from 'vite-plugin-svgr'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const require = createRequire(import.meta.url)
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     TanStackRouterVite({ autoCodeSplitting: true }),
     viteReact(),
@@ -23,7 +24,14 @@ export default defineConfig({
       },
     }),
     nodePolyfills({ protocolImports: true }),
-  ],
+    mode === 'analyze' &&
+      visualizer({
+        open: true,
+        filename: 'bundle-analyzer-report.html',
+        gzipSize: true,
+        brotliSize: true,
+      }),
+  ].filter(Boolean),
 
   resolve: {
     alias: {
@@ -50,7 +58,7 @@ export default defineConfig({
       'satin-proposals-valuation-wanted.trycloudflare.com',
       'september-now-five-stakeholders.trycloudflare.com',
       'honest-corruption-grab-leu.trycloudflare.com',
-      'titten-transformation-untitled-optimization.trycloudflare.com',
+      'opens-scanning-tx-leading.trycloudflare.com',
     ],
   },
 
@@ -66,10 +74,13 @@ export default defineConfig({
       external: [],
       output: {
         manualChunks: {
-          buffer: ['buffer'],
+          // Выносим большие библиотеки в отдельные чанки
+          lottie: ['lottie-web'],
+          howler: ['howler'],
+          vconsole: ['vconsole'],
+          // Группируем по вендорам
+          vendor: ['react', 'react-dom', '@tanstack/react-router'],
         },
-        format: 'es',
-        plugins: [rollupNodePolyFill()],
       },
     },
   },
@@ -78,4 +89,4 @@ export default defineConfig({
     port: 4173,
     strictPort: true,
   },
-})
+}))

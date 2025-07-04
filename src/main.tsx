@@ -1,4 +1,4 @@
-import { StrictMode, Suspense } from 'react'
+import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 
@@ -14,8 +14,9 @@ const router = createRouter({
   context: {},
   defaultPreload: 'intent',
   scrollRestoration: true,
-  defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
+  defaultGcTime: 30 * 60 * 1000, // 30 минут до сборки мусора
+  defaultStaleTime: 2 * 60 * 1000, // 2 минуты до стейла
+  defaultPreloadDelay: 50, // Уменьшить фризы при наведении
 })
 
 // Register the router instance for type safety
@@ -31,9 +32,7 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <Suspense fallback={null}>
-        <RouterProvider router={router} />
-      </Suspense>
+      <RouterProvider router={router} />
     </StrictMode>,
   )
 }

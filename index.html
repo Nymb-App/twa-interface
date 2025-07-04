@@ -12,6 +12,15 @@
       name="description"
       content="Web site created using create-tsrouter-app"
     />
+    <!-- Preload LCP image -->
+    <link
+      rel="preload"
+      as="image"
+      href="/home-bg.webp"
+      fetchpriority="high"
+      imagesrcset="/home-bg.webp 1x"
+      type="image/webp"
+    />
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />
     <title>Nymb TWA</title>
@@ -22,15 +31,25 @@
       href="/home-bg.png"
       type="image/png"
     />
-    <!-- Preconnect to Google Fonts -->
+    <!-- Preconnect to Google Fonts with dns-prefetch for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Preload Google Fonts CSS -->
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+    <!-- Preload Google Fonts CSS with media="print" to avoid render blocking -->
     <link
       rel="preload"
       as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      />
+    </noscript>
     <!-- Preload local font -->
     <link
       rel="preload"

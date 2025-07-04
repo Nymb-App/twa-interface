@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import lottie from 'lottie-web'
-import { Link } from '@tanstack/react-router'
 import type { AnimationItem } from 'lottie-web'
 import { cn } from '@/utils'
 
@@ -58,7 +57,7 @@ export const GameCard = ({
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        animationData,
+        animationData: animationData.default || animationData,
       })
       anim.setSpeed(0.5)
       anim.addEventListener('DOMLoaded', () => setLottieReady(true))

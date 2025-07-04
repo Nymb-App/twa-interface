@@ -1,133 +1,216 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { io } from 'socket.io-client'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect } from 'react'
+import { io, type Socket } from 'socket.io-client'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+} from '@tanstack/react-query'
 import { useAccount } from './use-account'
-import type { Socket } from 'socket.io-client'
 
 const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
 
-type MethodName =
-  | 'GET' // Получение данных
-  | 'POST' // Создание нового ресурса
-  | 'PUT' // Полное обновление ресурса
-  | 'PATCH' // Частичное обновление ресурса
-  | 'DELETE' // Удаление ресурса
-  | 'HEAD' // Получение заголовков без тела ответа
-  | 'OPTIONS' // Получение доступных методов для ресурса
-  | 'TRACE' // Отладка маршрута запроса
-  | 'CONNECT' // Установка туннеля (обычно для прокси)
+type HttpMethod =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
+  | 'DELETE'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'TRACE'
+  | 'CONNECT'
+
+// interface ApiResponse<T = unknown> {
+//   data?: T
+//   error?: string
+//   status: number
+// }
+
+interface ApiConfig {
+  skipAuth?: boolean
+  headers?: Record<string, string>
+  signal?: AbortSignal
+  params?: Record<string, unknown>
+}
 
 export function useApi() {
   const { authToken } = useAuth()
 
   const fetchData = useCallback(
-    async (method: MethodName, url: string, body?: unknown) => {
-      if (!authToken) {
-        console.error('No auth token available for API request.')
-        throw new Error('Authentication token is not available.')
+    async <T = unknown>(
+      method: HttpMethod,
+      url: string,
+      body?: unknown,
+      config: ApiConfig = {},
+    ): Promise<T> => {
+      const { skipAuth = false, headers = {}, signal } = config
+
+      if (!skipAuth && !authToken) {
+        throw new Error('Authentication token is not available')
       }
 
-      const isBodyAllowed = method !== 'GET' && method !== 'HEAD'
+      const isBodyAllowed = !['GET', 'HEAD'].includes(method)
+      const requestUrl = baseUrl + url
 
-      const response = await fetch(baseUrl + url, {
+      const response = await fetch(requestUrl, {
         method,
         headers: {
-          Authorization: `Bearer ${authToken}`,
+          ...(!skipAuth && { Authorization: `Bearer ${authToken}` }),
           ...(isBodyAllowed && { 'Content-Type': 'application/json' }),
+          ...headers,
         },
         body: isBodyAllowed && body ? JSON.stringify(body) : undefined,
+        signal,
       })
 
-      const text = await response.text()
-      if (!text) {
-        return {}
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}))
+        throw new Error(error.message || 'API request failed')
       }
 
-      return JSON.parse(text)
+      // Handle no-content responses
+      if (response.status === 204) {
+        return {} as T
+      }
 
-      // return await response.json();
+      return response.json()
     },
     [authToken],
   )
 
-  // Автоматически создаём методы для всех HTTP-запросов
-  const api = useMemo(() => {
-    return (
-      [
-        'GET',
-        'POST',
-        'PUT',
-        'PATCH',
-        'DELETE',
-        'HEAD',
-        'OPTIONS',
-        'TRACE',
-        'CONNECT',
-      ] as Array<MethodName>
-    ).reduce(
-      (acc, method) => {
-        acc[method.toLowerCase()] = (url: string, body?: unknown) =>
-          fetchData(method, url, body)
-        return acc
+  // Create a query wrapper with proper typing
+  const useApiQuery = <T = unknown>(
+    key: string | string[],
+    url: string,
+    options?: Omit<UseQueryOptions<T, Error>, 'queryKey' | 'queryFn'> & {
+      params?: Record<string, unknown>
+      config?: Omit<ApiConfig, 'signal'>
+    },
+  ) => {
+    const queryKey = Array.isArray(key)
+      ? key
+      : [key, ...(options?.params ? [options.params] : [])]
+
+    return useQuery<T, Error>({
+      queryKey,
+      queryFn: async ({ signal }) => {
+        const queryParams = options?.params
+          ? `?${new URLSearchParams(
+              Object.entries(options.params).reduce(
+                (acc, [key, value]) => {
+                  if (value !== undefined) {
+                    acc[key] = String(value)
+                  }
+                  return acc
+                },
+                {} as Record<string, string>,
+              ),
+            )}`
+          : ''
+
+        return fetchData('GET', `${url}${queryParams}`, undefined, {
+          ...options?.config,
+          signal,
+        })
       },
-      {} as Record<string, (url: string, body?: unknown) => Promise<unknown>>,
-    )
-  }, [fetchData])
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      ...options,
+    })
+  }
+
+  // Create a mutation wrapper
+  const useApiMutation = <T = unknown, V = unknown>(
+    method: HttpMethod,
+    url: string,
+    options?: {
+      onSuccess?: (data: T) => void
+      onError?: (error: Error) => void
+      config?: ApiConfig
+    },
+  ) => {
+    const queryClient = useQueryClient()
+
+    return useMutation<T, Error, V>({
+      mutationFn: async (variables: V) => {
+        return fetchData<T>(method, url, variables, options?.config)
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries()
+        options?.onSuccess?.(data)
+      },
+      onError: (error) => {
+        options?.onError?.(error)
+      },
+    })
+  }
 
   return {
-    get: api.get,
-    post: api.post,
-    put: api.put,
-    patch: api.patch,
-    del: api.delete,
-    head: api.head,
-    options: api.options,
-    trace: api.trace,
-    connect: api.connect,
+    get: <T = unknown>(
+      url: string,
+      params?: Record<string, unknown>,
+      config?: ApiConfig,
+    ) => fetchData<T>('GET', url, undefined, { ...config, params }),
+    post: <T = unknown, V = unknown>(
+      url: string,
+      body?: V,
+      config?: ApiConfig,
+    ) => fetchData<T>('POST', url, body, config),
+    put: <T = unknown, V = unknown>(
+      url: string,
+      body?: V,
+      config?: ApiConfig,
+    ) => fetchData<T>('PUT', url, body, config),
+    patch: <T = unknown, V = unknown>(
+      url: string,
+      body?: V,
+      config?: ApiConfig,
+    ) => fetchData<T>('PATCH', url, body, config),
+    del: <T = unknown>(url: string, config?: ApiConfig) =>
+      fetchData<T>('DELETE', url, undefined, config),
+    useQuery: useApiQuery,
+    useMutation: useApiMutation,
   }
 }
 
-export function useWebSocketApi(key: string = 'newData') {
-  const [socket, setSocket] = useState<Socket | null>(null)
-  const [data, setData] = useState<unknown>(null)
+// WebSocket hook with TanStack Query integration
+export function useWebSocketApi<T = unknown>(eventKey: string) {
+  const queryClient = useQueryClient()
+  const queryKey = ['websocket', eventKey]
 
   useEffect(() => {
-    const newSocket = io(baseUrl)
-    setSocket(newSocket)
+    const socket = io(baseUrl)
 
-    newSocket.on(key, (message) => {
-      // console.log('📩 Получены новые данные:', message);
-      setData(message)
+    socket.on(eventKey, (data: T) => {
+      queryClient.setQueryData(queryKey, data)
     })
 
     return () => {
-      newSocket.disconnect()
+      socket.disconnect()
     }
-  }, [])
+  }, [eventKey, queryKey, queryClient])
 
-  // Функция для отправки сообщений на бэкенд
-  const sendMessage = useCallback(
-    (event: string, payload: unknown) => {
-      if (socket) {
-        socket.emit(event, payload)
-      }
+  return useQuery<T>({
+    queryKey,
+    queryFn: () => {
+      // Initial data fetch if needed
+      return new Promise(() => {}) // Placeholder, actual implementation depends on your API
     },
-    [socket],
-  )
-
-  return { data, sendMessage }
+    staleTime: 0, // Always consider WebSocket data fresh
+    refetchOnWindowFocus: false,
+  })
 }
 
+// Auth related types and functions
 interface AuthResponse {
   token: string
   isLoginVerified: boolean
 }
 
-// --- Helper Functions ---
 const setToken = (token: string) => {
-  document.cookie = `Authorization-Token=${token}; path=/; max-age=3600; ${
+  const secureFlag =
     import.meta.env.VITE_PUBLIC_ENV === 'production' ? 'Secure;' : ''
-  }SameSite=Lax`
+  document.cookie = `Authorization-Token=${token}; path=/; max-age=3600; ${secureFlag}SameSite=Lax`
 }
 
 const getAuthToken = () => {
@@ -139,77 +222,78 @@ const verifyToken = async (token: string | null): Promise<AuthResponse> => {
   if (!token) {
     throw new Error('No token provided for verification')
   }
-  const res = await fetch(`${baseUrl}/accounts/login?token=${token}`)
-  if (!res.ok) {
-    throw new Error(`Auth verification failed: ${res.status}`)
+  const response = await fetch(`${baseUrl}/accounts/login?token=${token}`)
+  if (!response.ok) {
+    throw new Error(`Auth verification failed: ${response.status}`)
   }
-  return res.json()
+  return response.json()
 }
 
 const login = async (initData: string | undefined): Promise<AuthResponse> => {
   if (!initData) {
     throw new Error('No initData provided for login')
   }
-  const res = await fetch(`${baseUrl}/accounts/login`, {
+
+  const response = await fetch(`${baseUrl}/accounts/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ initData }),
   })
 
-  if (!res.ok) {
-    throw new Error(`Authorization failed: ${res.status}`)
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(error.message || 'Login failed')
   }
 
-  const data = await res.json()
-  if (!data.token) {
-    throw new Error('No token in response')
-  }
-  return data
+  return response.json()
 }
 
-// --- Auth Hook ---
 export function useAuth() {
   const queryClient = useQueryClient()
   const { initData } = useAccount()
-
   const authToken = getAuthToken()
 
-  const authQuery = useQuery({
+  // Verify token query
+  const authQuery = useQuery<AuthResponse, Error>({
     queryKey: ['auth', authToken],
     queryFn: () => verifyToken(authToken),
-    enabled: !!authToken, // Only run if a token exists
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    retry: 1, // Retry once on failure
+    enabled: !!authToken,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
   })
 
-  const loginMutation = useMutation({
-    mutationFn: () => login(initData),
+  // Login mutation
+  const loginMutation = useMutation<AuthResponse, Error>({
+    mutationFn: () => {
+      if (!initData) {
+        throw new Error('No initData available')
+      }
+      return login(initData)
+    },
     onSuccess: (data) => {
       setToken(data.token)
-      // Invalidate auth query to re-verify with the new token
-      // and also refetch account data
       queryClient.invalidateQueries({ queryKey: ['auth'] })
-      queryClient.invalidateQueries({ queryKey: ['account', 'me'] })
+      queryClient.invalidateQueries({ queryKey: ['account'] })
     },
   })
 
-  // Automatically trigger login if no valid token is found and we are not already fetching
+  // Auto-login if no valid token
   useEffect(() => {
     if (!authToken && !authQuery.isLoading && !loginMutation.isPending) {
       loginMutation.mutate()
     }
-  }, [
-    authToken,
-    authQuery.isLoading,
-    loginMutation.isPending,
-    loginMutation.mutate,
-  ])
+  }, [authToken, authQuery.isLoading, loginMutation])
 
   return {
-    isAuthTokenValid: authQuery.data?.isLoginVerified ?? false,
-    isLoading: authQuery.isLoading || loginMutation.isPending,
-    error: authQuery.error?.message || loginMutation.error?.message,
-    login: loginMutation.mutate,
     authToken,
+    isAuthenticated: authQuery.isSuccess,
+    isLoading: authQuery.isLoading || loginMutation.isPending,
+    error: authQuery.error || loginMutation.error,
+    login: loginMutation.mutate,
+    logout: () => {
+      document.cookie =
+        'Authorization-Token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+      queryClient.clear()
+    },
   }
 }

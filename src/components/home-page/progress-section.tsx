@@ -1,35 +1,50 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { animate } from 'framer-motion'
 import Countdown from 'react-countdown'
+
+// Components
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CountdownTimerDisplay } from '../ui/countdown-timer-display'
 import { LevelsList } from './levels-list'
-import EnergyIcon from '@/assets/icons/energy'
-import { useAccountMe } from '@/hooks/api/use-account'
-import { useEffect, useState } from 'react'
-import { animate } from 'framer-motion'
 
-/**
- * Анимирует время от одного значения до другого,
- * передавая анимированную метку времени в Countdown.
- */
-const AnimatedCountdown = ({
-  from,
-  to,
-  onEnd,
-}: {
+// Assets
+import EnergyIcon from '@/assets/icons/energy'
+
+// Hooks
+import { useAccountMe } from '@/hooks/api/use-account'
+
+// Types
+interface AnimatedCountdownProps {
   from: number
   to: number
   onEnd: () => void
-}) => {
-  // Анимируем метку времени от начальной до конечной
+}
+
+interface ProgressSectionProps {
+  isClaimStart?: boolean
+}
+
+interface UserProfileProps {
+  username?: string
+  photoUrl?: string
+}
+
+interface EnergyCounterProps {
+  energy?: string | number
+}
+
+/**
+ * Handles the countdown animation between two timestamps
+ */
+const AnimatedCountdown = ({ from, to, onEnd }: AnimatedCountdownProps) => {
   const [animatedTimestamp, setAnimatedTimestamp] = useState(from * 1000)
+  const duration = 2 // seconds
 
   useEffect(() => {
     const controls = animate(from * 1000, to * 1000, {
-      duration: 2, // Длительность анимации в секундах
+      duration,
       ease: 'easeOut',
-      onUpdate: latest => {
-        setAnimatedTimestamp(latest)
-      },
+      onUpdate: (latest) => setAnimatedTimestamp(latest),
       onComplete: onEnd,
     })
 
@@ -39,68 +54,103 @@ const AnimatedCountdown = ({
   return (
     <Countdown
       date={animatedTimestamp}
-      renderer={props => <CountdownTimerDisplay isCountdownHeaderView {...props} />}
+      renderer={(props) => (
+        <CountdownTimerDisplay isCountdownHeaderView {...props} />
+      )}
     />
   )
 }
 
-const ProgressSection = ({
-  isClaimStart,
-  setIsClaimEnd,
-}: {
-  isClaimStart?: boolean
-  setIsClaimEnd: (value: boolean) => void
-}) => {
-  const { accountQuery, user } = useAccountMe();
-  const {
-    data: account,
-    isLoading: isAccountLoading,
-    refetch,
-  } = accountQuery;
+/**
+ * Displays the user's energy level
+ */
+const EnergyCounter = ({ energy }: EnergyCounterProps) => (
+  <div className="inline-flex items-center justify-between bg-[#1D1F1D] rounded-2xl h-[40px] pl-2 pr-3">
+    <EnergyIcon className="size-[28px]" />
+    <span className="text-base">{energy ?? '...'}</span>
+  </div>
+)
+
+/**
+ * Displays the user's profile information
+ */
+const UserProfile = ({ username, photoUrl }: UserProfileProps) => (
+  <div className="inline-flex items-center justify-between gap-2 bg-[#1D1F1D] rounded-2xl h-[40px] pl-2 pr-3">
+    <Avatar className="rounded-lg size-[28px]">
+      <AvatarImage src={photoUrl ?? 'https://github.com/shadcn.png'} />
+      <AvatarFallback>CN</AvatarFallback>
+    </Avatar>
+    <span className="font-inter text-base font-semibold max-w-[60px] truncate">
+      {username}
+    </span>
+  </div>
+)
+
+/**
+ * Custom hook to handle countdown logic
+ */
+const useCountdownTimer = (isClaimStart: boolean, accountTime?: number) => {
   const [timeBeforeClaim, setTimeBeforeClaim] = useState<number | null>(null)
+  const { accountQuery } = useAccountMe()
+  const { refetch } = accountQuery
 
   useEffect(() => {
-    if (isClaimStart) {
-      // Сохраняем текущее время и запускаем refetch
-      setTimeBeforeClaim(account?.time ?? 0)
-      refetch();
+    if (isClaimStart && accountTime !== undefined) {
+      setTimeBeforeClaim(accountTime)
+      refetch()
     }
-  }, [isClaimStart, refetch, account?.time])
+  }, [isClaimStart, accountTime, refetch])
+
+  return { timeBeforeClaim, setTimeBeforeClaim }
+}
+
+/**
+ * Main ProgressSection component
+ */
+const ProgressSection = ({
+  isClaimStart,
+  // setIsClaimEnd,
+}: ProgressSectionProps) => {
+  const { accountQuery, user } = useAccountMe()
+  const { data: account, isLoading: isAccountLoading } = accountQuery
+  const { timeBeforeClaim, setTimeBeforeClaim } = useCountdownTimer(
+    Boolean(isClaimStart),
+    account?.time,
+  )
 
   /**
-   * Рендерит компонент обратного отсчета в зависимости от состояния.
+   * Renders the countdown component based on claim state
    */
-  const renderCountdown = () => {
+  const renderCountdown = useCallback(() => {
     const isClaiming = isClaimStart && timeBeforeClaim !== null
     const newTime = account?.time
 
-    // --- Логика Клейма ---
+    // Claim logic
     if (isClaiming) {
-      // Если рефетч прошел и время изменилось, показываем анимацию
       if (newTime !== undefined && newTime > timeBeforeClaim) {
         return (
           <AnimatedCountdown
             from={timeBeforeClaim}
             to={newTime}
             onEnd={() => {
-              setIsClaimEnd(true)
-              setTimeBeforeClaim(null) // Сбрасываем состояние клейма
+              // setIsClaimEnd(true)
+              setTimeBeforeClaim(null)
             }}
           />
         )
       }
-      // Если все еще ждем refetch, показываем старое время статично
+
       return (
         <Countdown
           date={timeBeforeClaim * 1000}
-          renderer={props => (
+          renderer={(props) => (
             <CountdownTimerDisplay isCountdownHeaderView {...props} />
           )}
         />
       )
     }
 
-    // --- Стандартная Логика (не клейм) ---
+    // Loading state
     if (isAccountLoading || !account?.time) {
       return (
         <CountdownTimerDisplay
@@ -113,49 +163,50 @@ const ProgressSection = ({
       )
     }
 
+    // Normal countdown
     return (
       <Countdown
         date={account.time * 1000}
         intervalDelay={10}
         precision={3}
-        renderer={props => (
+        renderer={(props) => (
           <CountdownTimerDisplay isCountdownHeaderView {...props} />
         )}
       />
     )
-  }
+  }, [
+    isClaimStart,
+    timeBeforeClaim,
+    account,
+    isAccountLoading,
+    setTimeBeforeClaim,
+  ])
+
+  const headerStyle = useMemo(
+    () => ({
+      backgroundImage: 'url(/home-bg.webp)',
+      contentVisibility: 'auto' as const,
+      containIntrinsicSize: '100% 300px',
+    }),
+    [],
+  )
 
   return (
-    <header className="relative w-full font-pixel px-3 bg-[url('/home-bg.png')] bg-no-repeat bg-bottom pb-6">
-      {/* Top part */}
+    <header
+      className="relative w-full font-pixel px-3 bg-no-repeat bg-bottom pb-6"
+      style={headerStyle}
+    >
       <div className="inline-flex justify-between w-full">
-        {/* Left card */}
-        <div className="inline-flex items-center justify-between bg-[#1D1F1D] rounded-2xl h-[40px] pl-2 pr-3">
-          <EnergyIcon className="size-[28px]" />
-          <span className="text-base">{account?.energy ?? '...'}</span>
-        </div>
-
+        <EnergyCounter energy={account?.energy} />
         <h1 className="text-2xl">HOME</h1>
-
-        {/* Right card */}
-        <div className="inline-flex items-center justify-between gap-2 bg-[#1D1F1D] rounded-2xl h-[40px] pl-2 pr-3">
-          <Avatar className="rounded-lg size-[28px]">
-            <AvatarImage
-              src={user?.photo_url ?? 'https://github.com/shadcn.png'}
-            />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <span className="font-inter text-base font-semibold max-w-[60px] truncate">
-            {user?.username}
-          </span>
-        </div>
+        <UserProfile username={user?.username} photoUrl={user?.photo_url} />
       </div>
 
       <LevelsList />
-
       {renderCountdown()}
     </header>
   )
 }
 
-export default ProgressSection;
+// Memoize the component to prevent unnecessary re-renders
+export default React.memo(ProgressSection)
