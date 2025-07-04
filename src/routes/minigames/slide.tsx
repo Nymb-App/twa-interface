@@ -11,6 +11,8 @@ import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/components/ui/action-button'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
+import { useSlidesMinigame } from '@/hooks/api/use-slides-minigame'
+import { useAccountMe } from '@/hooks/api/use-account'
 // import { SettingsPanel } from './settings-pannel';
 
 export const Route = createFileRoute('/minigames/slide')({
@@ -22,9 +24,13 @@ export function RouteComponent() {
   const defaultX2DoubleAmount = defaultMinutesWinAmount * 2
   const defaultX2TimerDuration = 8_000
 
+  const { finishGameMutation } = useSlidesMinigame();
+  const { accountQuery } = useAccountMe();
+
   const [minutesWinAmount, setMinutesWinAmount] = useState<number>(2)
   const [minutesWinned, setMinutesWinned] = useState<number>(0)
   const [energy, setEnergy] = useState<number>(1200)
+  const [energyAtStart, setEnergyAtStart] = useState<number>(1200)
 
   // X2 time
   const [isX2Time, setX2Time] = useState<boolean>(false)
@@ -64,6 +70,25 @@ export function RouteComponent() {
       setIsGameFinishedForce(true)
     }
   }, [isGameStarted, isGameFinished])
+
+
+  useEffect(() => {
+    if (accountQuery.data) {
+      const e = accountQuery.data.energy || 1200
+      setEnergy(e)
+      setEnergyAtStart(e)
+    }
+  }, [accountQuery.data])
+
+
+  useEffect(() => {
+    if (isGameFinished) {
+      finishGameMutation.mutate({
+        energyConsumed: energyAtStart - energy,
+        collectedTime: minutesWinned * 60_000,
+      });
+    }
+  }, [isGameFinished])
 
   useEffect(() => {
     if (!isGameFinished) {

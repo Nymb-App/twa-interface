@@ -51,19 +51,19 @@ const ProgressSection = ({
   isClaimStart?: boolean
   setIsClaimEnd: (value: boolean) => void
 }) => {
-  const { accountQuery, user } = useAccountMe()
+  const { accountQuery, user } = useAccountMe();
   const {
     data: account,
     isLoading: isAccountLoading,
     refetch,
-  } = accountQuery
+  } = accountQuery;
   const [timeBeforeClaim, setTimeBeforeClaim] = useState<number | null>(null)
 
   useEffect(() => {
     if (isClaimStart) {
       // Сохраняем текущее время и запускаем refetch
       setTimeBeforeClaim(account?.time ?? 0)
-      refetch()
+      refetch();
     }
   }, [isClaimStart, refetch, account?.time])
 
