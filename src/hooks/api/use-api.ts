@@ -261,6 +261,7 @@ export function useAuth() {
 
   // Login mutation
   const loginMutation = useMutation<AuthResponse, Error>({
+      retry: false,
     mutationFn: () => {
       if (!initData) {
         throw new Error('No initData available')
@@ -276,7 +277,12 @@ export function useAuth() {
 
   // Auto-login if no valid token
   useEffect(() => {
-    if (!authToken && !authQuery.isLoading && !loginMutation.isPending) {
+    if (
+      !authToken &&
+      !authQuery.isLoading &&
+      !loginMutation.isPending &&
+      !loginMutation.isError
+    ) {
       loginMutation.mutate()
     }
   }, [authToken, authQuery.isLoading, loginMutation])

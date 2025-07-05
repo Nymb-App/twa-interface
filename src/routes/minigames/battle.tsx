@@ -21,12 +21,19 @@ export const Route = createFileRoute('/minigames/battle')({
 })
 
 function RouteComponent() {
+  useEffect(() => {
+    console.log('[RouteComponent] Mounted')
+    return () => {
+      console.log('[RouteComponent] Unmounted')
+    }
+  }, [])
+
   const [, setIsAnimationsEnd] = useState(false)
 
   useEffect(() => {
-    document.body.style.backgroundColor = '#03061a'
+    const originalColor = document.body.style.backgroundColor
     return () => {
-      document.body.style.backgroundColor = '#121312'
+      document.body.style.backgroundColor = originalColor
     }
   }, [])
   const [, setIsClosingAnimation] = useState(false)
@@ -42,7 +49,7 @@ function RouteComponent() {
     setIsStartFindingOpponentAnimationEnd,
   ] = useState(false)
   const [isWinningResult, setIsWinningResult] = useState(false)
-  const [isMeWinner, setIsMeWinner] = useState(false)
+
   const [areaClaimedPercent, setAreaClaimedPercent] = useState(0)
   const router = useRouter()
 
@@ -53,74 +60,64 @@ function RouteComponent() {
     setIsStartFindingOpponent(false)
     setIsStartFindingOpponentAnimationEnd(false)
     setIsWinningResult(false)
-    setIsMeWinner(false)
+
     setIsReset(true)
   }
 
-  const timeoutRef = useRef<number | null>(null)
-
-  // Объединяем связанные эффекты анимации в один useEffect с несколькими зависимостями
+  // Эффект для анимации поиска оппонента
   useEffect(() => {
-    // Очищаем предыдущий таймаут перед установкой нового
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-      timeoutRef.current = null
-    }
+    if (!isStartFindingOpponent) return
 
-    // Обрабатываем запуск поиска оппонента
-    if (isStartFindingOpponent) {
-      timeoutRef.current = window.setTimeout(() => {
-        setIsClosingAnimation(true)
-        timeoutRef.current = null
-      }, 1000)
-    }
+    const timeoutId = window.setTimeout(() => {
+      setIsClosingAnimation(true)
+    }, 1000)
 
-    // Обрабатываем открывающую анимацию
-    if (isOpeningAnimation) {
-      timeoutRef.current = window.setTimeout(() => {
-        setIsOpeningAnimationDelayed(true)
-        timeoutRef.current = null
-      }, 5000)
-    }
+    return () => clearTimeout(timeoutId)
+  }, [isStartFindingOpponent])
 
-    // Очистка при размонтировании
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-        timeoutRef.current = null
-      }
-    }
-  }, [isStartFindingOpponent, isOpeningAnimation])
+  // Эффект для открывающей анимации
+  useEffect(() => {
+    if (!isOpeningAnimation) return
+
+    const timeoutId = window.setTimeout(() => {
+      setIsOpeningAnimationDelayed(true)
+    }, 5000)
+
+    return () => clearTimeout(timeoutId)
+  }, [isOpeningAnimation])
 
   useEffect(() => {
-    if (areaClaimedPercent === 0) {
-      document.body.style.backgroundColor = '#03061a'
-    }
-
     if (areaClaimedPercent > 0) {
       document.body.style.backgroundColor = '#0a1309'
-    }
-
-    if (areaClaimedPercent < 0) {
+    } else if (areaClaimedPercent < 0) {
       document.body.style.backgroundColor = '#110522'
+    } else {
+      document.body.style.backgroundColor = '#03061a'
     }
   }, [areaClaimedPercent])
 
   useEffect(() => {
     if (areaClaimedPercent >= 80 || areaClaimedPercent <= -80) {
-      setIsMeWinner(areaClaimedPercent >= 80)
+      const isWinner = areaClaimedPercent >= 80
+
       setIsWinningResult(true)
       router.navigate({
         to: '/minigames/battle-result',
         search: {
           myNickname: myNickname,
           opponentNickname: opponentNickname,
-          isMeWinner: isMeWinner,
+          isMeWinner: isWinner,
           bet: battleGameRewardRadioValue,
         },
       })
     }
-  }, [areaClaimedPercent])
+  }, [
+    areaClaimedPercent,
+    battleGameRewardRadioValue,
+    myNickname,
+    opponentNickname,
+    router,
+  ])
 
   return (
     <PageLayout
@@ -245,6 +242,12 @@ const MainScene = ({
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
 }) => {
+  useEffect(() => {
+    console.log('[MainScene] Mounted')
+    return () => {
+      console.log('[MainScene] Unmounted')
+    }
+  }, [])
   const [
     isForcedExitBattleAnimationFinished,
     setIsForcedExitBattleAnimationFinished,
@@ -262,6 +265,7 @@ const MainScene = ({
   const [isCardBgAnimationStart, setIsCardBgAnimationStart] = useState(false) // false
   const [isStartCountdown, setIsStartCountdown] = useState(false) // false
   const [isCountdownCompleted, setIsCountdownCompleted] = useState(false) // false
+  const [isForcedExit, setIsForcedExit] = useState(false)
 
   const [areaClaimedPercentage, setAreaClaimedPercentage] = useState(0)
 
@@ -280,7 +284,6 @@ const MainScene = ({
   const addTimeout = (fn: () => void, delay: number) => {
     const id = window.setTimeout(fn, delay)
     timeouts.current.push(id)
-    return id
   }
 
   // Используем useEffect с пустым массивом зависимостей для инициализации анимаций
@@ -306,6 +309,7 @@ const MainScene = ({
     })
 
     return () => {
+      console.log('[MainScene] Cleaning up main animation timers.')
       timeouts.current.forEach(clearTimeout)
       timeouts.current = []
     }
@@ -314,17 +318,14 @@ const MainScene = ({
   // Отдельный эффект для обработки бустов
   useEffect(() => {
     if (isBoostActive0 || isBoostActive1) {
-      const boostTimeoutId = addTimeout(() => {
+      const boostTimeoutId = window.setTimeout(() => {
         setIsBoostActive0(false)
         setIsBoostActive1(false)
       }, 8000)
 
       return () => {
+        console.log('[MainScene] Cleaning up boost timer.')
         clearTimeout(boostTimeoutId)
-        // Удаляем ID из массива таймаутов
-        timeouts.current = timeouts.current.filter(
-          (id) => id !== boostTimeoutId,
-        )
       }
     }
   }, [isBoostActive0, isBoostActive1])
@@ -359,6 +360,7 @@ const MainScene = ({
 
     // Очистка при размонтировании или изменении isCountdownCompleted
     return () => {
+      console.log('[MainScene] Cleaning up bot timer.')
       isRunningRef.current = false
       if (botTimeoutRef.current !== null) {
         clearTimeout(botTimeoutRef.current)
@@ -370,6 +372,21 @@ const MainScene = ({
   useEffect(() => {
     onAreaClaimedPercentageChange?.(areaClaimedPercentage)
   }, [areaClaimedPercentage])
+
+  // Эффект для обработки принудительного выхода
+  useEffect(() => {
+    if (!isForcedExit) return
+
+    setIsForcedExitBattleAnimationFinished(true)
+    const timeoutId = setTimeout(() => {
+      onForcedExitBattle?.()
+    }, 1000)
+
+    return () => {
+      console.log('[MainScene] Cleaning up forced exit timer.')
+      clearTimeout(timeoutId)
+    }
+  }, [isForcedExit, onForcedExitBattle])
 
   return (
     <>
@@ -417,7 +434,7 @@ const MainScene = ({
                         search: {
                           myNickname: myNickname,
                           opponentNickname: opponentNickname,
-                          isMeWinner: Boolean(areaClaimedPercent > 0),
+                          isMeWinner: areaClaimedPercentage > 0,
                           bet: battleGameRewardRadioValue,
                         },
                       })
