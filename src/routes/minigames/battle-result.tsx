@@ -67,7 +67,10 @@ const ResultScene = ({
       )}
     >
       <BattleResultGameBg
-        className={cn(isMeWinner && 'rotate-180 bg-[#0a1309]')}
+        className={cn(
+          'absolute inset-0 -z-10',
+          isMeWinner && 'rotate-180 bg-[#0a1309]',
+        )}
         glowColor={isMeWinner ? '#22d082' : undefined}
         gradColor1={isMeWinner ? 'rgba(26, 121, 79, 0)' : undefined}
         gradColor2={isMeWinner ? '#22d082' : undefined}

@@ -40,6 +40,7 @@ export const BattleResultGameBg = ({
     const cvs = canvasRef.current
     if (!cvs) return
     const ctx = cvs.getContext('2d')
+    if (!ctx) return
 
     const COUNT_BASE = countBase
     const BASE_SPEED = baseSpeed
@@ -55,6 +56,7 @@ export const BattleResultGameBg = ({
 
     let W: number, H: number, dpr: number
     const drops: Array<Drop> = []
+    let animationFrameId: number
 
     class Drop {
       public x0 = 0
@@ -91,9 +93,7 @@ export const BattleResultGameBg = ({
         const rel = (this.x0 - W / 2) / (W / 2)
         return this.x0 + t * t * BEND_POWER * Math.abs(rel) * Math.sign(rel)
       }
-      draw() {
-        if (this.skip) return
-
+      buildPath() {
         const path = new Path2D()
         for (let i = 0; i < this.segs; i++) {
           const yTop = this.y - i * SEG_LEN
@@ -102,43 +102,11 @@ export const BattleResultGameBg = ({
           path.moveTo(this.calcX(yBot) / dpr, yBot / dpr)
           path.lineTo(this.calcX(yTop) / dpr, yTop / dpr)
         }
-
-        if (!ctx) return
-
-        ctx.save()
-        ctx.lineCap = 'round'
-        ctx.lineWidth = 2
-        ctx.strokeStyle = 'transparent'
-        ctx.shadowBlur = GLOW_BLUR_BIG
-        ctx.shadowColor = GLOW_COLOR
-        ctx.globalAlpha = 0.9
-        ctx.stroke(path)
-        ctx.restore()
-
-        const grad = ctx.createLinearGradient(
-          0,
-          (this.y - this.len) / dpr,
-          0,
-          this.y / dpr,
-        )
-
-        grad.addColorStop(0, gradColor1)
-        grad.addColorStop(0.6, gradColor2)
-        grad.addColorStop(1, gradColor3)
-
-        ctx.lineCap = 'round'
-        ctx.lineWidth = 4
-        ctx.strokeStyle = grad
-        ctx.shadowBlur = GLOW_BLUR_THIN
-        ctx.shadowColor = GLOW_COLOR
-        ctx.globalAlpha = 1
-
-        ctx.stroke(path)
+        return path
       }
     }
 
     const resize = () => {
-      if (!ctx) return
       dpr = Math.min(window.devicePixelRatio || 1, 2)
       W = cvs.width = window.innerWidth * dpr
       H = cvs.height = window.innerHeight * dpr
@@ -154,25 +122,81 @@ export const BattleResultGameBg = ({
       while (drops.length > target) drops.pop()
     }
 
+    let last = performance.now()
     const loop = (now: number) => {
-      if (!ctx) return
       const dt = (now - last) / 1000
       last = now
+
       ctx.clearRect(0, 0, W, H)
+
+      // Step 1: Update state and build paths once
+      const activePaths: Array<{ path: Path2D; drop: Drop }> = []
       drops.forEach((d) => {
         d.update(dt)
-        d.draw()
+        if (!d.skip) {
+          activePaths.push({ path: d.buildPath(), drop: d })
+        }
       })
-      requestAnimationFrame(loop)
+
+      // Step 2: Batch 1 - Draw all glows
+      ctx.save()
+      ctx.lineCap = 'round'
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'transparent'
+      ctx.shadowBlur = GLOW_BLUR_BIG
+      ctx.shadowColor = GLOW_COLOR
+      ctx.globalAlpha = 0.9
+      activePaths.forEach(({ path }) => {
+        ctx.stroke(path)
+      })
+      ctx.restore()
+
+      // Step 3: Batch 2 - Draw all gradients
+      ctx.lineCap = 'round'
+      ctx.lineWidth = 4
+      ctx.shadowBlur = GLOW_BLUR_THIN
+      ctx.shadowColor = GLOW_COLOR
+      ctx.globalAlpha = 1
+      activePaths.forEach(({ path, drop }) => {
+        const grad = ctx.createLinearGradient(
+          0,
+          (drop.y - drop.len) / dpr,
+          0,
+          drop.y / dpr,
+        )
+        grad.addColorStop(0, gradColor1)
+        grad.addColorStop(0.6, gradColor2)
+        grad.addColorStop(1, gradColor3)
+        ctx.strokeStyle = grad
+        ctx.stroke(path)
+      })
+
+      animationFrameId = requestAnimationFrame(loop)
     }
 
     resize()
-    let last = performance.now()
-    requestAnimationFrame(loop)
+    loop(last)
 
     window.addEventListener('resize', resize)
-    return () => window.removeEventListener('resize', resize)
-  }, [])
+    return () => {
+      window.removeEventListener('resize', resize)
+      cancelAnimationFrame(animationFrameId)
+    }
+  }, [
+    baseSpeed,
+    bendPower,
+    countBase,
+    glowBlurBig,
+    glowBlurThin,
+    glowColor,
+    gradColor1,
+    gradColor2,
+    gradColor3,
+    maxLen,
+    minLen,
+    segLen,
+    startCurveY,
+  ])
 
   return (
     <canvas
