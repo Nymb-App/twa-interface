@@ -1,28 +1,44 @@
 import { Link } from '@tanstack/react-router'
 import Marquee from 'react-fast-marquee'
+import { useMemo } from 'react'
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { cn } from '@/utils'
-
-const levels = [
-  { num: 12, isLocked: false, isCurrentLevel: true, isNewUnlocked: false },
-  { num: 11, isLocked: false, isCurrentLevel: false, isNewUnlocked: true },
-  { num: 10, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 9, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 8, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 7, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 6, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 5, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 4, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 3, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 2, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-  { num: 1, isLocked: true, isCurrentLevel: false, isNewUnlocked: false },
-]
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const LevelsList = () => {
+  const levelsArray = Array.from({ length: 12 }, (_, idx) => idx + 1).reverse()
+
+  const { getLvlStats } = useAccountMe()
+
+  const currentLvl = useMemo(
+    () => getLvlStats.data?.currentLevel ?? 12,
+    [getLvlStats],
+  )
+
+  const isNextLvlUnlocked = useMemo(
+    () => getLvlStats.data?.isNextLvlUnlocked ?? false,
+    [getLvlStats],
+  )
+
+  const getLevelStatus = (
+    level: number,
+    currentLevel: number,
+    isNextUnlocked: boolean,
+  ): 'locked' | 'unlocked' | 'pending' => {
+    if (level >= currentLevel) {
+      return 'unlocked'
+    }
+    if (level === currentLevel - 1 && isNextUnlocked) {
+      return 'pending'
+    }
+    return 'locked'
+  }
+
   return (
     <div className="relative -mt-[10px] w-full">
       <div className="pointer-events-none absolute inset-y-0 top-[10px] -right-10 z-20 h-[70px] w-full bg-gradient-to-l from-[#121312] via-transparent via-40% to-transparent to-95%" />
+      <div className="pointer-events-none absolute inset-y-0 top-[10px] -left-10 z-20 h-[70px] w-full bg-gradient-to-r from-[#121312] via-transparent via-40% to-transparent to-95%" />
       <div className="absolute top-[10px] left-1/2 z-0 -translate-x-1/2">
         <FlickeringGrid
           className="[mask-image:radial-gradient(140px_circle_at_center,white,transparent)]"
@@ -39,13 +55,23 @@ export const LevelsList = () => {
       <Link to="/gate">
         <Carousel
           className="relative z-10 h-[90px]"
-          opts={{ slidesToScroll: 4, align: 'center' }}
+          opts={{
+            align: 'center',
+            startIndex: levelsArray.indexOf(currentLvl),
+          }}
         >
           <CarouselContent>
             <MarqueeArrows />
-            {levels.map((level) => (
-              <CarouselLvlItem key={level.num} level={level} />
-            ))}
+            {levelsArray.map((_, idx) => {
+              const lvl = 12 - idx
+              return (
+                <CarouselLvlItem
+                  key={idx}
+                  lvl={lvl}
+                  status={getLevelStatus(lvl, currentLvl, isNextLvlUnlocked)}
+                />
+              )
+            })}
           </CarouselContent>
         </Carousel>
       </Link>
@@ -54,40 +80,35 @@ export const LevelsList = () => {
 }
 
 export const CarouselLvlItem = ({
-  level,
+  lvl,
+  status,
 }: {
-  level: {
-    num: number
-    isLocked: boolean
-    isCurrentLevel: boolean
-    isNewUnlocked: boolean
-  }
+  lvl: number
+  status: 'locked' | 'unlocked' | 'pending'
 }) => {
   return (
     <CarouselItem className="relative flex h-[106px] basis-1/4 items-center justify-center">
-      {!level.isLocked ? (
-        <div className="flex justify-center">
-          <div
+      {status === 'unlocked' && (
+        <div className="flex justify-center h-[48px] w-[48px] rounded-[18px] border border-[#FFFFFF1F] bg-[#161816] shadow-none">
+          <span
             className={cn(
-              'inline-flex h-[32px] w-[32px] items-center justify-center rounded-[12px] border border-[#FFFFFF1F] bg-[#121312] p-2 text-sm font-[400]',
-              level.isCurrentLevel &&
-                'h-[48px] w-[48px] rounded-[18px] border-[#FFFFFF1F] bg-[#161816] shadow-none',
-              level.isNewUnlocked &&
-                'border-[#B6FF00] text-[#B6FF00] shadow-[0px_0px_20px_rgba(182,255,0,0.4)]',
+              String(lvl).startsWith('1') && 'mr-1.5',
+              'leading-[47px]',
             )}
           >
-            <span
-              className={cn(
-                level.num > 20 && 'mr-0',
-                level.num >= 1 && level.num <= 19 && 'mr-1.5',
-              )}
-            >
-              {level.num}
-            </span>
-          </div>
+            {lvl}
+          </span>
         </div>
-      ) : (
-        <div className="flex justify-center" key={level.num}>
+      )}
+      {status === 'pending' && (
+        <div className="inline-flex size-[32px] items-center justify-center rounded-[12px] bg-[#121312] border border-[#B6FF00] text-[#B6FF00] shadow-[0px_0px_20px_rgba(182,255,0,0.4)]">
+          <span className={cn(String(lvl).startsWith('1') && 'mr-1.5')}>
+            {lvl}
+          </span>
+        </div>
+      )}
+      {status === 'locked' && (
+        <div className="flex justify-center">
           <span className="inline-flex h-[32px] w-[32px] rounded-[12px] border border-[#FFFFFF1F] bg-[#161816] p-2.5 text-[16px] leading-[20px] font-[400]">
             <svg
               width="12"
@@ -107,6 +128,7 @@ export const CarouselLvlItem = ({
     </CarouselItem>
   )
 }
+
 const arrows = Array.from({ length: 60 })
 
 const MarqueeArrows = () => {

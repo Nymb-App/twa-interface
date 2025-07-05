@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => ({
       'satin-proposals-valuation-wanted.trycloudflare.com',
       'september-now-five-stakeholders.trycloudflare.com',
       'honest-corruption-grab-leu.trycloudflare.com',
-      'ef-pp-rd-occurred.trycloudflare.com',
+      'ambien-projection-aggregate-proprietary.trycloudflare.com',
     ],
   },
 
