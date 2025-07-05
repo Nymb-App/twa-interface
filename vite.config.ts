@@ -73,12 +73,11 @@ export default defineConfig(({ mode }) => ({
       external: [],
       output: {
         manualChunks: {
-          'vendor-lottie': ['lottie-web'],
+
           'vendor-howler': ['howler'],
-          'vendor-tonconnect': ['@tonconnect/ui-react'],
+
           'vendor-tanstack': [
             '@tanstack/react-query',
-            '@tanstack/react-router',
           ],
           'vendor-react': ['react', 'react-dom', 'react-icons'],
         },

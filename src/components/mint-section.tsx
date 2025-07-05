@@ -1,6 +1,6 @@
-import React from 'react'
+import { Suspense, lazy } from 'react'
+
 import { Card } from '@/components/ui/card'
-import { ConnectButton } from '@/components/ui/mint-button'
 
 function LazyVideo({
   src,
@@ -28,7 +28,10 @@ function LazyVideo({
   )
 }
 
+const MintWidget = lazy(() => import('@/components/mint-widget'))
+
 export function MintSection() {
+  
   return (
     <section className="relative text-white px-3">
       <div className="animate-slide-up-fade-3">
@@ -60,7 +63,9 @@ export function MintSection() {
               <span>MINTED</span>
             </div>
           </div>
-          <ConnectButton className="mt-6 w-[80%] mx-auto" />
+          <Suspense fallback={<div className="h-10 w-[80%] mx-auto mt-6 rounded-lg bg-gray-800 animate-pulse" />}>
+            <MintWidget />
+          </Suspense>
           <span className="mt-3 text-white/60 mx-auto">One for the wallet</span>
         </Card>
       </div>
