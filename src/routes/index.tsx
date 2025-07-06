@@ -3,19 +3,18 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/utils'
-import { HeroSection } from '@/components/hero-section'
-import { MintSection } from '@/components/mint-section'
+import { useAuth } from '@/hooks/api/use-api'
 
 export const Route = createFileRoute('/')({
   component: App,
 })
 
-// const HeroSection = lazy(() =>
-//   import('@/components/hero-section').then((m) => ({ default: m.HeroSection })),
-// )
-// const MintSection = lazy(() =>
-//   import('@/components/mint-section').then((m) => ({ default: m.MintSection })),
-// )
+const HeroSection = lazy(() =>
+  import('@/components/hero-section').then((m) => ({ default: m.HeroSection })),
+)
+const MintSection = lazy(() =>
+  import('@/components/mint-section').then((m) => ({ default: m.MintSection })),
+)
 const FlickeringGrid = lazy(() =>
   import('@/components/magicui/flickering-grid').then((m) => ({
     default: m.FlickeringGrid,
@@ -29,14 +28,14 @@ function App() {
     isAnimationCountdownCooldownFinished,
     setAnimationCountdownCooldownFinished,
   ] = useState<boolean>(false)
-  // const { isAuthTokenValid, authorize } = useAuth()
+  const { login, isAuthenticated } = useAuth()
 
-  // useEffect(() => {
-  //   if (isAuthTokenValid) return
-  //   ;(async () => {
-  //     await authorize()
-  //   })()
-  // }, [authorize, isAuthTokenValid])
+  useEffect(() => {
+    if (isAuthenticated) return
+    ;(async () => {
+      await login()
+    })()
+  }, [login, isAuthenticated])
 
   useEffect(() => {
     const timerId0 = setTimeout(() => {

@@ -9,9 +9,7 @@
   src: url('./assets/fonts/pixel_nymb.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
 }
-
 
 .font-pixel {
   font-family: 'PixelNymb', monospace;

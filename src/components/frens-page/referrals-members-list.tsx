@@ -1,29 +1,39 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Link } from '@tanstack/react-router'
+import { useMemo } from 'react'
 import { Button } from '../ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Skeleton } from '../ui/skeleton'
+import { useReferrals } from '@/hooks/api/use-referrals'
+import { cn } from '@/utils'
+
+const MIN_ALLOWED_TIME = 86400
+const MIN_FRENS_FOR_A_GIFT = 3
 
 export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
-  const MIN_ALLOWED_TIME = 86400
+  const { myReferrals, isLoadingMyReferrals } = useReferrals()
+  const referralsCount = myReferrals?.referrals.length || 0
 
-  // const { myReferrals } = useReferrals()
-
-  // const referralsCount =  myReferrals?.referrals.length || 0;
-  const referralsCount = 0
+  const isSendGiftEnabled = useMemo(() => {
+    if (MIN_ALLOWED_TIME > meTime) return false
+    if (MIN_FRENS_FOR_A_GIFT > referralsCount) return false
+    return true
+  }, [meTime, referralsCount])
 
   return (
     <>
       <div className="font-pixel mb-3 px-3 pt-[40px] pb-4">
         <div className="flex items-center justify-between gap-2 font-[400]">
           <h2 className="font-pixel text-[18px] leading-6 uppercase">
-            {referralsCount} frens
+            {isLoadingMyReferrals ? (
+              <Skeleton className="w-[90px] h-[24px]" />
+            ) : (
+              `${referralsCount} frens`
+            )}
           </h2>
-          <Link
-            to="/send-gift"
-            disabled={MIN_ALLOWED_TIME >= meTime || referralsCount >= 10}
-          >
+          <Link to="/send-gift" disabled={!isSendGiftEnabled}>
             <Button
               className="h-8 bg-gradient-to-b from-[#8C35FB] to-[#6602E7]"
-              disabled={MIN_ALLOWED_TIME >= meTime || referralsCount >= 10}
+              disabled={!isSendGiftEnabled}
             >
               <svg
                 width="16"
@@ -45,48 +55,58 @@ export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        {/* {myReferrals?.referrals.map((item, i) => {
-          const displayTime = convertTimestampToLargestUnit(item.time, true)
-
-          return (
-            <div
-              key={i}
-              className="rounded-[14px] starboard-result-block-bg backdrop-blur-[16px] py-1 px-4"
-            >
-              <div className="flex justify-between items-center font-[400]">
-                <div className="font-inter flex gap-4">
-                  <Avatar className="rounded-[12px]">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>{'ju'.toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="mr-2 font-[600] text-[16px] leading-5">
-                      {item.nickname || 'unknown'}
+        {isLoadingMyReferrals ? (
+          <div className="flex flex-col gap-1">
+            <Skeleton className="w-full rounded-[14px] h-[44px]" />
+            <Skeleton className="w-full rounded-[14px] h-[44px]" />
+            <Skeleton className="w-full rounded-[14px] h-[44px]" />
+            <Skeleton className="w-full rounded-[14px] h-[44px]" />
+            <Skeleton className="w-full rounded-[14px] h-[44px]" />
+          </div>
+        ) : (
+          myReferrals?.referrals.map((item, i) => {
+            return (
+              <div
+                key={i}
+                className="rounded-[14px] starboard-result-block-bg backdrop-blur-[16px] py-1 px-4"
+              >
+                <div className="flex justify-between items-center font-[400]">
+                  <div className="font-inter flex gap-4">
+                    <Avatar className="rounded-[12px]">
+                      <AvatarImage
+                        src={item.photoUrl || 'https://github.com/shadcn.png'}
+                      />
+                      <AvatarFallback>{'ju'.toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="mr-2 font-[600] text-[16px] leading-5">
+                        {item.nickname || 'unknown'}
+                      </p>
+                      <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">
+                        referals:
+                        <span className="ml-1">{item.referralsCount || 0}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <p
+                      className={cn(
+                        'font-pixel text-[14px] leading-[120%]',
+                        item.time &&
+                          '[text-shadow:0px_0px_20px_rgba(182,255,0,1)] text-[#B6FF00]',
+                      )}
+                    >
+                      <span>+3</span>
+                      <span className="font-pixel text-[#FFFFFF66] text-[10px] ml-1">
+                        d
+                      </span>
                     </p>
-                    <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">
-                      referals:
-                      <span className="ml-1">{item.referralsCount || 0}</span>
-                    </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <p
-                    className={cn(
-                      'font-pixel text-[14px] leading-[120%]',
-                      item.time &&
-                        '[text-shadow:0px_0px_20px_rgba(182,255,0,1)] text-[#B6FF00]',
-                    )}
-                  >
-                    <span>{item.time ? `+${displayTime.time}` : 0}</span>
-                    <span className="font-pixel text-[#FFFFFF66] text-[10px] ml-1">
-                      {displayTime.label}
-                    </span>
-                  </p>
-                </div>
               </div>
-            </div>
-          )
-        })} */}
+            )
+          })
+        )}
       </div>
     </>
   )

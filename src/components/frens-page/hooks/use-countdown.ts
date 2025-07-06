@@ -17,7 +17,7 @@ export const useCountdown = (
     const controls = animate(from, 0, {
       duration: duration / 1000,
       ease: 'linear',
-      onUpdate: setValue,
+      onUpdate: (v: number) => setValue(parseFloat(v.toFixed(2))),
     })
 
     return () => controls.stop()

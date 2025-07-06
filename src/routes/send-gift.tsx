@@ -1,10 +1,11 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { shareURL } from '@telegram-apps/sdk'
+import { useRive } from '@rive-app/react-canvas'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { cn } from '@/utils'
-import { SendGift } from '@/assets/icons/send-gift'
+// import { SendGift } from '@/assets/icons/send-gift'
 import { RussianRoulette } from '@/components/ui/russian-roullete'
 import { GiftSelector } from '@/components/frens-page/gift-selector'
 import { SendGiftButton } from '@/components/frens-page/gift-button'
@@ -42,6 +43,7 @@ function RouteComponent() {
   const { sendGiftToFriend, myReferrals } = useReferrals()
 
   const [referralsNickName, setReferralsNickName] = useState<Array<string>>([])
+  const [referralsPhotoUrl, setReferralsPhotoUrl] = useState<Array<string>>([])
 
   const winnerIndex = Math.floor(Math.random() * referralsNickName.length)
 
@@ -50,8 +52,16 @@ function RouteComponent() {
       setReferralsNickName(
         myReferrals.referrals.map((referral) => referral.nickname),
       )
+      setReferralsPhotoUrl(
+        myReferrals.referrals.map((referral) => referral.photoUrl),
+      )
     }
   }, [myReferrals])
+
+  const { rive, RiveComponent } = useRive({
+    src: '/riveAnimations/gift-freinds2.riv',
+    autoplay: false,
+  })
 
   return (
     <PageLayout className="bg-[#151317]" useFooter={false}>
@@ -67,7 +77,6 @@ function RouteComponent() {
           width={450}
           height={350}
         />
-
         <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase mb-[115px]">
           {!isStartRoulette ? (
             <>
@@ -83,7 +92,7 @@ function RouteComponent() {
             </>
           )}
         </h1>
-        <SendGift className="animate-[wiggle_3s_ease-in-out_infinite] absolute top-[60px] z-1" />
+        <RiveComponent className="size-126 absolute top-[-104px] z-1 animate-[wiggle_3s_ease-in-out_infinite] left-[51%] -translate-x-1/2 rotate-[15deg]" />
       </header>
 
       {!isStartRoulette ? (
@@ -106,9 +115,10 @@ function RouteComponent() {
             isStartRoulette={isStartRoulette}
             items={referralsNickName.map((nickname, index) => (
               <AvatarCard
+                classNameForSpan="mix-blend-difference"
                 key={index}
-                src={`/roulette-icons/user-${index + 1}.webp`}
-                label={nickname}
+                src={referralsPhotoUrl[index]}
+                label={''}
               />
             ))}
             winnerIndex={winnerIndex}
@@ -123,6 +133,7 @@ function RouteComponent() {
                 ),
                 time: convertGiftValueToSeconds(giftValue, giftUnits),
               })
+              if (rive) rive.play()
             }}
           />
         </div>
@@ -136,7 +147,7 @@ function RouteComponent() {
         />
       )}
       {isFinishRoulette && (
-        <div className="fixed w-full bottom-0 flex flex-col gap-2 px-4 mb-6">
+        <div className="fixed w-full bottom-0 flex flex-col gap-2 px-4 mb-6 max-w-[450px]">
           <ActionButton
             onClick={() => {
               const telegramLink =
@@ -193,7 +204,7 @@ export const AvatarCard = ({
         classNameForSpan,
       )}
     >
-      {label || 'NA'}
+      {label || ''}
     </span>
   </div>
 )

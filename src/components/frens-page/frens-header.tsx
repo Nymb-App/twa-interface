@@ -1,13 +1,11 @@
-import { useState } from 'react'
+import { useMemo } from 'react'
 import Countdown from 'react-countdown'
+import { Skeleton } from '../ui/skeleton'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import FrensImage from '/frens-img.webp'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
 import { TimeCountup } from '@/components/ui/countup-timer-display'
-import {
-  NYMB_FARMING_FINISHAT_LS_KEY,
-  useFarming,
-} from '@/context/farming-context'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const FrensHeader = ({
   isClaimStart,
@@ -18,12 +16,17 @@ export const FrensHeader = ({
   isClaimEnd: boolean
   setIsClaimEnd: (value: boolean) => void
 }) => {
-  const { finishAt, loading } = useFarming()
+  const { accountQuery, isLoading } = useAccountMe()
 
-  const [initialFinishAtValue, _] = useState(
-    Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)),
-  )
-  const totalEarnings = 1610000
+  const accountClaimedTime = useMemo(() => {
+    if (!accountQuery.data) return 0
+    return accountQuery.data.claimedTime
+  }, [accountQuery.data])
+
+  const accountClaimTime = useMemo(() => {
+    if (!accountQuery.data) return 0
+    return accountQuery.data.claimTime
+  }, [accountQuery.data])
 
   return (
     <header className="font-pixel relative w-full bg-[url('/frens-bg.webp')] bg-bottom bg-no-repeat px-3 pb-6 font-[400]">
@@ -53,18 +56,29 @@ export const FrensHeader = ({
       <p className="font-inter mb-2 text-center text-[14px] leading-[140%] text-[#FFFFFF99]">
         Total Earnings:
       </p>
-      {loading && <div>loading...</div>}
-      {finishAt > 0 && !isClaimStart && (
-        <Countdown
-          date={finishAt}
-          intervalDelay={10}
-          precision={3}
-          renderer={(props: any) => (
-            <CountdownTimerDisplay isCountdownHeaderView {...props} />
-          )}
-        />
+      {isLoading && (
+        <div className="flex items-center justify-center gap-6">
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+        </div>
       )}
-      {!loading && !finishAt && !isClaimStart && (
+      {!isLoading &&
+        accountClaimedTime &&
+        accountClaimedTime > 0 &&
+        !isClaimStart && (
+          <Countdown
+            date={Date.now() + accountClaimedTime}
+            intervalDelay={10}
+            precision={3}
+            renderer={(props: any) => (
+              <CountdownTimerDisplay isCountdownHeaderView {...props} />
+            )}
+          />
+        )}
+      {!isLoading && !accountClaimedTime && !isClaimStart && (
         <CountdownTimerDisplay
           isCountdownHeaderView
           days={0}
@@ -73,24 +87,25 @@ export const FrensHeader = ({
           seconds={0}
         />
       )}
-      {finishAt > 0 && isClaimEnd && (
-        <Countdown
-          date={finishAt}
-          intervalDelay={10}
-          precision={3}
-          renderer={(props: any) => (
-            <CountdownTimerDisplay isCountdownHeaderView {...props} />
-          )}
-        />
-      )}
+      {!isLoading &&
+        accountClaimedTime &&
+        accountClaimedTime > 0 &&
+        isClaimEnd && (
+          <Countdown
+            date={Date.now() + accountClaimedTime}
+            intervalDelay={10}
+            precision={3}
+            renderer={(props: any) => (
+              <CountdownTimerDisplay isCountdownHeaderView {...props} />
+            )}
+          />
+        )}
 
-      {isClaimStart && !isClaimEnd && (
+      {!isLoading && isClaimStart && !isClaimEnd && (
         <TimeCountup
-          initialFinishAtValue={initialFinishAtValue}
-          totalEarnings={totalEarnings}
-          targetTimestamp={Number(
-            localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY),
-          )}
+          initialFinishAtValue={Date.now() + (accountClaimedTime ?? 0)}
+          totalEarnings={accountClaimTime ?? 0}
+          targetTimestamp={Date.now() + (accountClaimedTime ?? 0)}
           isClaimStart={isClaimStart}
           setIsClaimEnd={setIsClaimEnd}
         />

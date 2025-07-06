@@ -67,6 +67,9 @@ interface IAccountQuery {
   telegramId: number
   energy: number
   lvl: number
+  claimTime?: number
+  claimAtTime?: number
+  claimedTime?: number
   nickname: string
   photoUrl: string
   joinedAt: number
@@ -127,6 +130,6 @@ export function useAccountMe() {
     user,
     initData,
     lvlUpMutation,
-    isLoading: getLvlStatsQuery.isLoading,
+    isLoading: getLvlStatsQuery.isLoading || accountQuery.isLoading,
   }
 }
