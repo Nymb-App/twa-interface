@@ -1,8 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-// import { useTonAddress } from '@tonconnect/ui-react'
 
-// import { useMint } from '@/hooks/use-mint'
 
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { PageLayout } from '@/components/ui/page-layout'

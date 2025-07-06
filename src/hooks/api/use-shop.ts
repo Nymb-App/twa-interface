@@ -1,82 +1,51 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useApi } from './use-api'
+import { useTransferTon } from '../use-transfer-ton';
+import { useCallback } from 'react';
+import { useMint } from '../use-mint';
 
-export interface IShopItem {
-  id: string
-  item: 'time' | 'energy'
-  price: number
-  amount: number
-  duration: '1_day' | '1_week' | '1_month'
+
+export type TShopItem = 'energy' | 'time' | 'time_one_week' | 'time_one_year';
+interface IShopItem {
+  item: TShopItem;
+  pricePerUnit: number;
+  amountInUnits: number;
 }
 
-// ;[
-//   {
-//     _id: '6865a7ad66b08116dd6af5d6',
-//     item: 'time',
-//     price: 0.02,
-//     amount: 86400000,
-//     duration: '1_day',
-//     __v: 0,
-//   },
-//   {
-//     _id: '6865a7e7cf03673c86212688',
-//     item: 'energy',
-//     price: 0.2,
-//     amount: 1000,
-//     __v: 0,
-//   },
-//   {
-//     _id: '6865a8091158ad3c9ff87186',
-//     item: 'time',
-//     price: 0.2,
-//     amount: 604800000,
-//     duration: '1_week',
-//     __v: 0,
-//   },
-//   {
-//     _id: '6865a83b46c1346ddeb6ab7f',
-//     item: 'time',
-//     price: 0.6,
-//     amount: 2592000000,
-//     duration: '1_month',
-//     __v: 0,
-//   },
-// ]
+export function useShop() {
+  const { post, get } = useApi();
+  const { collectionData } = useMint();
+  const {
+    transfer,
+  } = useTransferTon();
 
-export interface IBuyItemPayload {
-  item: 'time' | 'energy'
-  duration: '1_day' | '1_week' | '1_month'
-  hash: string
-}
+  const {
+    data: items,
+    isLoading: isItemsLoading,
+    isError: isItemsError,
+  } = useQuery({
+    queryKey: ['get-shop-items'],
+    queryFn: async () => (await get('/shop/shop_items')) as Array<IShopItem>,
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: 3,
+  });
 
-export function useShopItems() {
-  const { get } = useApi()
-
-  const shopItemsQuery = useQuery<Array<IShopItem>, Error>({
-    queryKey: ['shop', 'items'],
-    queryFn: async () => (await get('/shop/shop_items')),
-    staleTime: 15 * 60 * 1000,
-  })
+  const buyItem = useCallback(async (itemName: TShopItem, hash: string) => {
+    return await post('/shop/buy_item', {
+      item: itemName,
+      hash,
+    });
+  }, [transfer, collectionData, items]);
 
   return {
-    shopItemsQuery,
-  }
-}
-
-export function useBuyItem() {
-  const { post } = useApi()
-  const queryClient = useQueryClient()
-
-  const buyItemMutation = useMutation<any, Error, IBuyItemPayload>({
-    mutationFn: (payload) => post('/shop/buy_item', payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['account', 'me'] })
+    itemsData: {
+      items,
+      isLoading: isItemsLoading,
+      isError: isItemsError,
     },
-  })
-
-  return {
-    buyItem: buyItemMutation.mutate,
-    isBuying: buyItemMutation.isPending,
-    buyItemError: buyItemMutation.error,
+    buyItem,
   }
 }
