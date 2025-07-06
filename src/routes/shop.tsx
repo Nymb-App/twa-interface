@@ -4,9 +4,6 @@ import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 import { ItemEnergy, ItemTime } from '@/components/shop-page/index'
 
-
-
-
 export const Route = createFileRoute('/shop')({
   component: RouteComponent,
 })
