@@ -49,12 +49,18 @@ export const GateMainSection = () => {
           width={450}
         />
         <MarqueeVertical className="absolute top-[260px] left-1/2 h-[350px] w-[46px] -translate-x-1/2 -translate-y-1/2" />
-        <GateProgressDisplay
-          icon={<WatchesIcon />}
-          current={convertTimestampToDaysUnit(timeLeft)}
-          max={convertTimestampToDaysUnit(getLvlStats.data?.timeRequired ?? 1)}
-          label="days"
-        />
+        {isLoading ? (
+          <Skeleton className="w-[68px] h-[115px]" />
+        ) : (
+          <GateProgressDisplay
+            icon={<WatchesIcon />}
+            current={convertTimestampToDaysUnit(timeLeft)}
+            max={convertTimestampToDaysUnit(
+              getLvlStats.data?.timeRequired ?? 1,
+            )}
+            label="days"
+          />
+        )}
         {isLoading ? (
           <Skeleton className="absolute left-1/2 z-1 -translate-x-1/2 size-[88px] rounded-[32px]" />
         ) : (
@@ -64,12 +70,16 @@ export const GateMainSection = () => {
             currentLevel={currentLvl}
           />
         )}
-        <GateProgressDisplay
-          icon={<TicketIcon className="h-[45px] w-[45px]" />}
-          current={accountData?.ticket ?? 0}
-          max={getLvlStats.data?.ticketsRequired ?? 1}
-          label="ticket"
-        />
+        {isLoading ? (
+          <Skeleton className="w-[68px] h-[115px]" />
+        ) : (
+          <GateProgressDisplay
+            icon={<TicketIcon className="h-[45px] w-[45px]" />}
+            current={accountData?.ticket ?? 0}
+            max={getLvlStats.data?.ticketsRequired ?? 1}
+            label="ticket"
+          />
+        )}
       </div>
       <GateStatistics />
     </div>

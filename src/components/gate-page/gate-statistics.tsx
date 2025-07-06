@@ -28,15 +28,19 @@ export function GateStatistics() {
     <section className="font-pixel relative rounded-[32px] border-1 border-white/12 bg-[#161816]/80 p-4 pt-3 text-center font-[400] backdrop-blur-[6px]">
       <h2 className="mb-2 flex items-center justify-center text-[14px] leading-[120%] text-white/40 uppercase">
         you on the
-        <span
-          className={cn(
-            'px-4 text-[48px] leading-[120%] text-white',
-            currentLvl > 9 && '-ml-5.5',
-            currentLvl === 1 && '-ml-5.5',
-          )}
-        >
-          {currentLvl}
-        </span>
+        {isLoading ? (
+          <Skeleton className="size-[50px] mx-2" />
+        ) : (
+          <span
+            className={cn(
+              'px-4 text-[48px] leading-[120%] text-white',
+              currentLvl > 9 && '-ml-5.5',
+              currentLvl === 1 && '-ml-5.5',
+            )}
+          >
+            {currentLvl}
+          </span>
+        )}
         gate level
       </h2>
       <div className="grid grid-cols-2 gap-3">

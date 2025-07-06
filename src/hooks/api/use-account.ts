@@ -127,5 +127,6 @@ export function useAccountMe() {
     user,
     initData,
     lvlUpMutation,
+    isLoading: getLvlStatsQuery.isLoading,
   }
 }

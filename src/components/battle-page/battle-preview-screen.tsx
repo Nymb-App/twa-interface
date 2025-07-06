@@ -95,7 +95,7 @@ export const CurrentUserBattleCard = ({
   return (
     <div
       className={cn(
-        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
+        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.webp')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
         className,
       )}
       onAnimationEnd={onAnimationEnd}
@@ -118,7 +118,7 @@ export const CurrentUserBattleCard = ({
         )}
       >
         <img
-          src={'/roulette-icons/default.png'}
+          src={'/roulette-icons/default.webp'}
           className="w-full h-auto object-cover absolute z-1 rounded-[34px] shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)]"
         />
         <p className="absolute z-1 left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">

@@ -4,13 +4,8 @@ import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 
 import { FallbackLoader } from '@/components/ui/fallback-loader'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { PageLayout } from '@/components/ui/page-layout'
 
-// Lazy load heavy components
-const FarmingButton = lazy(() =>
-  import('@/components/ui/button-farming').then((m) => ({
-    default: m.FarmingButton,
-  })),
-)
 const ProgressSection = lazy(
   () => import('@/components/home-page/progress-section'),
 )
@@ -28,9 +23,9 @@ const CardContent = lazy(() =>
     default: m.CardContent,
   })),
 )
-const PageLayout = lazy(() =>
-  import('@/components/ui/page-layout').then((m) => ({
-    default: m.PageLayout,
+const FarmingButton = lazy(() =>
+  import('@/components/ui/button-farming').then((m) => ({
+    default: m.FarmingButton,
   })),
 )
 
@@ -63,8 +58,6 @@ function RouteComponent() {
     )
 
     const todayInSeconds = Math.floor(now.getTime() / 1000)
-    console.log(todayInSeconds, 'today')
-    console.log(dailyRewardsQuery.data?.nextAvailableAt)
     if (
       dailyRewardsQuery.data?.nextAvailableAt &&
       dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
@@ -90,7 +83,7 @@ function RouteComponent() {
               ) : (
                 <GameCard
                   delay={1000}
-                  placeholderSrc="/lottie-placeholder/minigames/slide.png"
+                  placeholderSrc="/lottie-placeholder/minigames/slide.webp"
                   className="font-pixel w-full font-[400]"
                   classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
                   title="Swipes"

@@ -36,8 +36,8 @@ export const BattleCard = ({
         className="absolute w-full h-full z-0 !bg-[length:100%_100%]"
         style={{
           backgroundImage: isMe
-            ? "url('/minigames/battle-header-bg.png')"
-            : "url('/minigames/battle-opponent-bg.png')",
+            ? "url('/minigames/battle-header-bg.webp')"
+            : "url('/minigames/battle-opponent-bg.webp')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -94,7 +94,7 @@ export const BattleCard = ({
             !isMe && !isRow && 'shadow-[0px_0px_59.8px_#8C35FB]',
           )}
           nickName={nickname}
-          src="/roulette-icons/default.png"
+          src="/roulette-icons/default.webp"
           label={nickname.slice(0, 2)}
         />
       ) : (

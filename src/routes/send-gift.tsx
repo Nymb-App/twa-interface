@@ -107,7 +107,7 @@ function RouteComponent() {
             items={referralsNickName.map((nickname, index) => (
               <AvatarCard
                 key={index}
-                src={`/roulette-icons/user-${index + 1}.png`}
+                src={`/roulette-icons/user-${index + 1}.webp`}
                 label={nickname}
               />
             ))}

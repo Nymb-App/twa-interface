@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useTonAddress, useTonConnectModal } from "@tonconnect/ui-react";
 import { useTransferTon } from "@/hooks/use-transfer-ton";
-import { useTonAddress, useTonConnectModal, useTonConnectUI } from "@tonconnect/ui-react";
 import { cn } from "@/utils";
 import { useBalance } from "@/hooks/use-balance";
 

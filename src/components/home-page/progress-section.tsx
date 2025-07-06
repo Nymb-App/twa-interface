@@ -107,10 +107,7 @@ const useCountdownTimer = (isClaimStart: boolean, accountTime?: number) => {
 /**
  * Main ProgressSection component
  */
-const ProgressSection = ({
-  isClaimStart,
-  // setIsClaimEnd,
-}: ProgressSectionProps) => {
+const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
   const { accountQuery, user } = useAccountMe()
   const { data: account, isLoading: isAccountLoading } = accountQuery
   const { timeBeforeClaim, setTimeBeforeClaim } = useCountdownTimer(
@@ -133,7 +130,6 @@ const ProgressSection = ({
             from={timeBeforeClaim}
             to={newTime}
             onEnd={() => {
-              // setIsClaimEnd(true)
               setTimeBeforeClaim(null)
             }}
           />

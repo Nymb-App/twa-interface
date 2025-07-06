@@ -57,7 +57,11 @@ export const LevelsList = () => {
           className="relative z-10 h-[90px]"
           opts={{
             align: 'center',
-            startIndex: levelsArray.indexOf(currentLvl),
+            slidesToScroll: 4,
+            startIndex: Math.max(
+              0,
+              Math.round((levelsArray.indexOf(currentLvl) - 1) / 4),
+            ),
           }}
         >
           <CarouselContent>

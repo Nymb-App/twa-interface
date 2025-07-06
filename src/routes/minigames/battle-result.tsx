@@ -6,7 +6,7 @@ import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-
 import { cn } from '@/utils'
 import { AvatarCard } from '@/routes/send-gift'
 import { ActionButton } from '@/components/ui/action-button'
-import WinningStartImg from '/minigames/winning-stars.png'
+import WinningStartImg from '/minigames/winning-stars.webp'
 
 export const Route = createFileRoute('/minigames/battle-result')({
   validateSearch: (search) => ({
@@ -92,7 +92,7 @@ const ResultScene = ({
             )}
           >
             <img
-              src={'/roulette-icons/default.png'}
+              src={'/roulette-icons/default.webp'}
               className="w-full h-auto object-cover absolute"
             />
             <h2 className="absolute left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
@@ -155,7 +155,7 @@ const ResultScene = ({
               <AvatarCard
                 className="size-[32px]"
                 classNameForSpan="text-[#FFFFFF] text-sm pr-1"
-                src="/roulette-icons/user-2.png"
+                src="/roulette-icons/user-2.webp"
                 label={opponentNickname.slice(0, 2)}
               />
               <span className="font-pixel text-sm font-[400] text-[#FFFFFF] uppercase">

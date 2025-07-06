@@ -2,10 +2,8 @@ import { useMemo, useState } from 'react'
 import { HiLockClosed } from 'react-icons/hi2'
 import { toast } from 'sonner'
 import { GateDrawerContent } from '../gate-page/gate-drawer-content'
-import {
-  GateNextDisplayBlock,
-  GateProgressDisplay,
-} from '../gate-page/gate-header'
+import { GateNextDisplayBlock } from '../gate-page/gate-next-display-block'
+import { GateProgressDisplay } from '../gate-page/gate-progress-display'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { GateInfoBlockNextLvl } from '../gate-page/ui/info-block'
 import { ActionButton } from './action-button'
@@ -14,7 +12,7 @@ import { Drawer, DrawerTrigger } from './drawer'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { TicketIcon } from '@/assets/icons/ticket'
 import { BuyIcon } from '@/assets/icons/buy'
-import BuyTime from '/buy-time.png'
+import BuyTime from '/buy-time.webp'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { convertTimestampToLargestUnit } from '@/utils'
 

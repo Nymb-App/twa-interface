@@ -1,18 +1,21 @@
 import { Suspense, lazy } from 'react'
 import { Link } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
+import { Skeleton } from './ui/skeleton'
 import { Card } from '@/components/ui/card'
 import { TasksIcon } from '@/assets/icons/tasks'
 import { StatisticsIcon } from '@/assets/icons/statistics'
 import { SocialIcon } from '@/assets/icons/social'
 import { SwipeCard } from '@/components/swipe-card'
 
-
-const GameCard = lazy(() => import('@/components/game-card').then(m => ({ default: m.GameCard })))
-const BattleCard = lazy(() => import('@/components/battle-card').then(m => ({ default: m.BattleCard })))
+const GameCard = lazy(() =>
+  import('@/components/game-card').then((m) => ({ default: m.GameCard })),
+)
+const BattleCard = lazy(() =>
+  import('@/components/battle-card').then((m) => ({ default: m.BattleCard })),
+)
 
 export function HeroSection() {
-
   return (
     <section className="relative mt-48 text-2xl text-white px-3">
       <h2 className="font-pixel text-center animate-slide-up-fade-0">
@@ -35,7 +38,9 @@ export function HeroSection() {
             subdescription="you react"
           />
         ) : (
-                    <Suspense fallback={<div className="w-full aspect-square bg-gray-800 animate-pulse rounded-lg" />}>
+          <Suspense
+            fallback={<Skeleton className="w-full aspect-square rounded-lg" />}
+          >
             <GameCard
               delay={1000}
               placeholderSrc="/lottie-placeholder/minigames/slide.png"
@@ -49,7 +54,9 @@ export function HeroSection() {
           </Suspense>
         )}
 
-                <Suspense fallback={<div className="w-full aspect-square bg-gray-800 animate-pulse rounded-lg" />}>
+        <Suspense
+          fallback={<Skeleton className="w-full aspect-square rounded-lg" />}
+        >
           <BattleCard
             className="w-full"
             classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"

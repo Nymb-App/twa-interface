@@ -24,8 +24,8 @@ export function RouteComponent() {
   const defaultX2DoubleAmount = defaultMinutesWinAmount * 2
   const defaultX2TimerDuration = 8_000
 
-  const { finishGameMutation } = useSlidesMinigame();
-  const { accountQuery } = useAccountMe();
+  const { finishGameMutation } = useSlidesMinigame()
+  const { accountQuery } = useAccountMe()
 
   const [minutesWinAmount, setMinutesWinAmount] = useState<number>(2)
   const [minutesWinned, setMinutesWinned] = useState<number>(0)
@@ -71,7 +71,6 @@ export function RouteComponent() {
     }
   }, [isGameStarted, isGameFinished])
 
-
   useEffect(() => {
     if (accountQuery.data) {
       const e = accountQuery.data.energy || 1200
@@ -80,13 +79,12 @@ export function RouteComponent() {
     }
   }, [accountQuery.data])
 
-
   useEffect(() => {
     if (isGameFinished) {
       finishGameMutation.mutate({
         energyConsumed: energyAtStart - energy,
         collectedTime: minutesWinned * 60_000,
-      });
+      })
     }
   }, [isGameFinished])
 
@@ -278,13 +276,13 @@ function GameFinished({
     >
       <header className="relative w-full h-[310px] top-20">
         <img
-          src={'/minigames/winning-stars.png'}
+          src={'/minigames/winning-stars.webp'}
           className="w-full h-auto p-6 object-cover bg-blend-lighten absolute opacity-0 animate-slide-up-fade-swipe-game-1"
         />
 
         <div className="relative overflow-hidden size-[104px] rounded-[36px] left-1/2 top-[100px] -translate-x-1/2 shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)] opacity-0 animate-slide-up-fade-swipe-game-2">
           <img
-            src={'/roulette-icons/default.png'}
+            src={'/roulette-icons/default.webp'}
             className="w-full h-auto object-cover absolute"
           />
           <h2 className="absolute left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">

@@ -15,19 +15,19 @@ type TUser = {
 
 const prizes: Array<TUser> | any = [
   {
-    image: '/roulette-icons/user-1.png',
+    image: '/roulette-icons/user-1.webp',
     username: 'Koshka Koshkina',
   },
   {
-    image: '/roulette-icons/user-1.png',
+    image: '/roulette-icons/user-1.webp',
     username: 'Ivan Ivanov',
   },
   {
-    image: '/roulette-icons/user-2.png',
+    image: '/roulette-icons/user-2.webp',
     username: 'Bogdan Bogdanov',
   },
   {
-    image: '/roulette-icons/user-3.png',
+    image: '/roulette-icons/user-3.webp',
     username: 'Mark Markov',
   },
 ]

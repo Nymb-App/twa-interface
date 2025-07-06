@@ -59,7 +59,7 @@ export default defineConfig(({ mode }) => ({
       'honest-corruption-grab-leu.trycloudflare.com',
       'e658-37-1-204-162.ngrok-free.app',
       'administrator-sole-implementing-obvious.trycloudflare.com',
-      'ambien-projection-aggregate-proprietary.trycloudflare.com',
+      'airports-utility-federation-drinks.trycloudflare.com',
     ],
   },
 
@@ -75,12 +75,9 @@ export default defineConfig(({ mode }) => ({
       external: [],
       output: {
         manualChunks: {
-
           'vendor-howler': ['howler'],
 
-          'vendor-tanstack': [
-            '@tanstack/react-query',
-          ],
+          'vendor-tanstack': ['@tanstack/react-query'],
           'vendor-react': ['react', 'react-dom', 'react-icons'],
         },
       },

@@ -4,7 +4,7 @@ import { ActionButton } from '../ui/action-button'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { cn } from '@/utils'
 import { BustIcon } from '@/assets/icons/bust'
-import BattleDrawerImage from '/minigames/battle-drawer-img.png'
+import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
 
 export const BattleBustButtons = ({
   className,
@@ -18,14 +18,14 @@ export const BattleBustButtons = ({
       className={cn('flex justify-center gap-4 h-10', className)}
       onAnimationEnd={onAnimationEnd}
     >
-      <div className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.png')] bg-no-repeat bg-[position:bottom_left_-1px]">
+      <div className="bg-[#FFFFFF]/4 rounded-[14px] h-full basis-[114px] flex justify-center items-center gap-3 px-2 bg-[url('/minigames/boost-grey-bg.webp')] bg-no-repeat bg-[position:bottom_left_-1px]">
         <span className="ml-1.5">
           <BustIcon />
         </span>
         <span className="font-semibold">1 Bust</span>
       </div>
       <Drawer>
-        <DrawerTrigger className="font-semibold cursor-pointer bg-[#FFFFFF]/4 rounded-[14px] h-full flex justify-center items-center gap-3 px-3 bg-[url('/minigames/boost-green-bg.png')] bg-no-repeat bg-[position:bottom_left_-1px]">
+        <DrawerTrigger className="font-semibold cursor-pointer bg-[#FFFFFF]/4 rounded-[14px] h-full flex justify-center items-center gap-3 px-3 bg-[url('/minigames/boost-green-bg.webp')] bg-no-repeat bg-[position:bottom_left_-1px]">
           <span className="ml-[6px]">
             <BustIcon strokeColor="#B6FF00" />
           </span>

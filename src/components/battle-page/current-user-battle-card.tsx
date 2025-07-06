@@ -23,7 +23,7 @@ export const CurrentUserBattleCard = ({
   return (
     <div
       className={cn(
-        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
+        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.webp')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
         className,
       )}
       onAnimationEnd={onAnimationEnd}
@@ -45,7 +45,7 @@ export const CurrentUserBattleCard = ({
                   isTranslateCardsAnimationStart &&
                     'shadow-none -translate-x-[22px] translate-y-[185px] size-[32px] !transition-all !duration-1300 !linear',
                 )}
-                src="/roulette-icons/default.png"
+                src="/roulette-icons/default.webp"
                 label="IM"
               />
             </div>
@@ -90,7 +90,7 @@ export const CurrentUserBattleCard = ({
           // isTranslateCardsAnimationStart &&
           //   'shadow-none !transition-all !duration-1300 !linear',
           // }
-          src="/roulette-icons/default.png"
+          src="/roulette-icons/default.webp"
           label="NA"
         />
       </div>
