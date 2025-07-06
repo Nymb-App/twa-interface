@@ -2,12 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Suspense, lazy } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { TasksHeader } from '@/components/tasks-page/tasks-header/tasks-header'
 
-const TasksHeader = lazy(() =>
-  import('@/components/tasks-page/tasks-header/tasks-header').then((m) => ({
-    default: m.TasksHeader,
-  })),
-)
 const TasksDaily = lazy(() =>
   import('@/components/tasks-page/tasks-daily/tasks-daily').then((m) => ({
     default: m.TasksDaily,

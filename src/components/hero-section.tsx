@@ -1,19 +1,12 @@
-import { Suspense, lazy } from 'react'
 import { Link } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
-import { Skeleton } from './ui/skeleton'
+import { BattleCard } from './battle-card'
+import { GameCard } from './game-card'
 import { Card } from '@/components/ui/card'
 import { TasksIcon } from '@/assets/icons/tasks'
 import { StatisticsIcon } from '@/assets/icons/statistics'
 import { SocialIcon } from '@/assets/icons/social'
 import { SwipeCard } from '@/components/swipe-card'
-
-const GameCard = lazy(() =>
-  import('@/components/game-card').then((m) => ({ default: m.GameCard })),
-)
-const BattleCard = lazy(() =>
-  import('@/components/battle-card').then((m) => ({ default: m.BattleCard })),
-)
 
 export function HeroSection() {
   return (
@@ -38,33 +31,25 @@ export function HeroSection() {
             subdescription="you react"
           />
         ) : (
-          <Suspense
-            fallback={<Skeleton className="w-full aspect-square rounded-lg" />}
-          >
-            <GameCard
-              delay={1000}
-              placeholderSrc="/lottie-placeholder/minigames/slide.png"
-              className="w-full"
-              classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
-              title="Swipes"
-              description={"let's see how"}
-              subdescription="you react"
-              animationData={'/lottie/swipe2.json'}
-            />
-          </Suspense>
+          <GameCard
+            delay={1000}
+            placeholderSrc="/lottie-placeholder/minigames/slide.png"
+            className="w-full"
+            classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
+            title="Swipes"
+            description={"let's see how"}
+            subdescription="you react"
+            animationData={'/lottie/swipe2.json'}
+          />
         )}
 
-        <Suspense
-          fallback={<Skeleton className="w-full aspect-square rounded-lg" />}
-        >
-          <BattleCard
-            className="w-full"
-            classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
-            title="Battle"
-            description="are you strong"
-            subdescription="enough?"
-          />
-        </Suspense>
+        <BattleCard
+          className="w-full"
+          classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
+          title="Battle"
+          description="are you strong"
+          subdescription="enough?"
+        />
       </div>
       <div className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2">
         <Card className="w-full aspect-square flex justify-center">

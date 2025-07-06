@@ -4,105 +4,74 @@ import { useRouterState } from '@tanstack/react-router'
 
 export function BackgroundMusic() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
-
-  const [playMain, { pause: pauseMain }] = useSound(
-    '/sounds/Main%20App%20Background%20Music.wav',
-    {
-      loop: true,
-      volume: 0.4,
-      interrupt: false,
-    },
-  )
-
-  const [playBattle, { pause: pauseBattle }] = useSound(
-    '/sounds/Battles%20Game%20Background%20Track.wav',
-    {
-      loop: true,
-      volume: 0.4,
-      interrupt: false,
-    },
-  )
-
-  const [playSwipe, { pause: pauseSwipe }] = useSound(
-    '/sounds/Swipe%20Game%20Background%20Track.wav',
-    {
-      loop: true,
-      volume: 0.4,
-      interrupt: false,
-    },
-  )
-
   const [audioUnlocked, setAudioUnlocked] = useState(false)
-
-  // Track which audio is currently active to avoid restarting it unnecessarily
   const currentTrackRef = useRef<'main' | 'battle' | 'swipe' | null>(null)
 
-  // This effect handles the browser's autoplay policy by waiting for the first
-  // user interaction to unlock audio. Once unlocked, it forces the main effect
-  // to re-evaluate which track should be playing.
+  const soundOptions = { loop: true, volume: 0.4, interrupt: true }
+
+  const [playMain, { stop: stopMain }] = useSound(
+    '/sounds/Main-App-Background-Music.aac',
+    soundOptions,
+  )
+  const [playBattle, { stop: stopBattle }] = useSound(
+    '/sounds/Battles-Game-Background-Track.aac',
+    soundOptions,
+  )
+  const [playSwipe, { stop: stopSwipe }] = useSound(
+    '/sounds/Swipe-Game-Background-Track.aac',
+    soundOptions,
+  )
+
+  // Effect to unlock audio on the first user interaction.
   useEffect(() => {
     const unlockAudio = () => {
-      // By setting the ref to null, we ensure the main effect's guard clause
-      // `currentTrackRef.current === desired` will fail, allowing a replay.
-      currentTrackRef.current = null
       setAudioUnlocked(true)
     }
-
     window.addEventListener('pointerdown', unlockAudio, { once: true })
-
     return () => {
       window.removeEventListener('pointerdown', unlockAudio)
     }
   }, [])
 
+  // Main effect to control music playback.
   useEffect(() => {
-    let desired: typeof currentTrackRef.current = 'main'
+    if (!audioUnlocked) {
+      return // Wait for user interaction
+    }
 
+    // Default to the main track
+    let desiredTrack: typeof currentTrackRef.current = 'main'
+
+    // Override for specific game pages
     if (pathname.startsWith('/minigames/battle')) {
-      desired = 'battle'
+      desiredTrack = 'battle'
     } else if (pathname.startsWith('/minigames/slide')) {
-      desired = 'swipe'
+      desiredTrack = 'swipe'
     }
 
-    // If desired track is already playing, do nothing
-    if (currentTrackRef.current === desired) return
-
-    // Pause whatever was playing previously
-    switch (currentTrackRef.current) {
-      case 'main':
-        pauseMain()
-        break
-      case 'battle':
-        pauseBattle()
-        break
-      case 'swipe':
-        pauseSwipe()
-        break
+    if (currentTrackRef.current === desiredTrack) {
+      return // Avoid restarting the same track
     }
 
-    // Play the desired track (or keep all paused for other minigames)
-    switch (desired) {
-      case 'main':
-        playMain()
-        break
-      case 'battle':
-        playBattle()
-        break
-      case 'swipe':
-        playSwipe()
-        break
-    }
+    // Stop all tracks before playing a new one.
+    stopMain()
+    stopBattle()
+    stopSwipe()
 
-    currentTrackRef.current = desired
+    if (desiredTrack === 'swipe') playSwipe()
+    else if (desiredTrack === 'battle') playBattle()
+    else playMain()
+
+    currentTrackRef.current = desiredTrack
   }, [
     pathname,
-    audioUnlocked, // Re-run when audio is unlocked
+    audioUnlocked,
     playMain,
-    pauseMain,
+    stopMain,
     playBattle,
-    pauseBattle,
+    stopBattle,
     playSwipe,
-    pauseSwipe,
+    stopSwipe,
   ])
 
   return null
