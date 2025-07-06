@@ -1,16 +1,18 @@
-import { Link } from '@tanstack/react-router'
 import { ActionButton } from './action-button'
+import { cn } from '@/utils'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
 
-export const CheckInButton = () => {
+export const CheckInButton = ({ className }: { className?: string }) => {
+  const { checkIn, isCheckingIn } = useCheckIn()
+
   return (
-    <Link to="/home">
-      <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 px-4 bg-[#121312]">
-        <ActionButton>
-          <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
-            Continue
-          </span>
-        </ActionButton>
-      </div>
-    </Link>
+    <ActionButton
+      onClick={checkIn}
+      className={cn('', isCheckingIn && 'bg-[#222A10]', className)}
+    >
+      <span className="font-pixel text-[#B6FF00] font-[400] uppercase text-[18px] leading-[24px] mix-blend-difference">
+        Continue
+      </span>
+    </ActionButton>
   )
 }

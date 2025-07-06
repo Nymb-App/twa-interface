@@ -1,11 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Countdown, { zeroPad } from 'react-countdown'
-import { useCallback, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { CarouselApi } from '@/components/ui/carousel'
 import type { CheckInRewards } from '@/hooks/use-get-daily-rewards'
 import { PageLayout } from '@/components/ui/page-layout'
-import { Container } from '@/components/ui/container'
 import {
   calculateDaysBetween,
   cn,
@@ -17,65 +14,65 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { useGetDailyRewards } from '@/hooks/use-get-daily-rewards'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { FallbackLoader } from '@/components/ui/fallback-loader'
 
 export const Route = createFileRoute('/check-in')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { dailyRewardsQuery } = useGetDailyRewards()
+  const { dailyRewardsQuery } = useCheckIn()
+
   const { data, isLoading, isError, error } = dailyRewardsQuery
 
   if (isLoading) {
     return (
       <PageLayout useFooter={false} useCheckInButton={true}>
-        <Container>
-          <div className="flex items-center justify-center h-64">
-            <p className="text-xl">Loading...</p>
-          </div>
-        </Container>
+        <div className="flex items-center justify-center h-64">
+          <FallbackLoader />
+        </div>
       </PageLayout>
     )
   }
 
-  if (isError) {
+  if (isError || !data) {
     return (
       <PageLayout useFooter={false} useCheckInButton={true}>
-        <Container>
-          <div className="flex items-center justify-center h-64">
-            <p className="text-xl text-red-500">Error: {error.message}</p>
-          </div>
-        </Container>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-xl text-red-500">
+            Error: {error?.message || 'Something went wrong'}
+          </p>
+        </div>
       </PageLayout>
     )
   }
 
-  if (!data) {
-    return null // Or some fallback UI
-  }
-
-  const startDate = new Date(data.startedAt * 1000)
-
-  // The last completed check-in is the day before the next one is available.
-  const MS_IN_DAY = 1000 * 60 * 60 * 24
-  const lastCompletedCheckInDate = new Date(
-    data.nextAvailableAt * 1000 - MS_IN_DAY,
+  const currentDay = convertTimestampToDays(
+    data.startedAt,
+    data.nextAvailableAt,
   )
 
-  const currentDay =
-    calculateDaysBetween(startDate, lastCompletedCheckInDate) + 1
-
   return (
-    <PageLayout useFooter={false} useCheckInButton={true}>
-      <Container>
-        <CheckInHeader
-          currentDay={currentDay}
-          nextAvailableAt={data.nextAvailableAt * 1000}
-        />
+    <PageLayout className="relative" useFooter={false} useCheckInButton={true}>
+      <FlickeringGrid
+        className="absolute inset-0 z-0 mask-[radial-gradient(ellipse_250px_400px_at_center,black,transparent)]"
+        squareSize={2}
+        gridGap={12}
+        color="#b7ff01"
+        maxOpacity={1}
+        flickerChance={0.3}
+        autoResize={false}
+        width={450}
+      />
+      <CheckInHeader
+        currentDay={currentDay}
+        nextAvailableAt={data.nextAvailableAt * 1000}
+      />
+      <div className="px-4">
         <CheckInInfoBlock rewards={data.rewards} />
-      </Container>
-      <CheckInDaysBlock currentDay={currentDay} />
+        <CheckInDaysBlock currentDay={currentDay} />
+      </div>
     </PageLayout>
   )
 }
@@ -93,9 +90,7 @@ function CheckInHeader({
         your daily <br /> rewards
       </h1>
       <div className="font-pixel mb-2 text-[80px] leading-[120%] text-[#B6FF00] [text-shadow:0px_12.0067px_24.0134px_rgba(182,255,0,0.3),_0px_0px_72.0403px_#B6FF00]">
-        <span className={cn((currentDay > 9 || currentDay > 99) && 'mr-9')}>
-          {zeroPad(currentDay)}
-        </span>
+        <span>{zeroPad(currentDay)}</span>
       </div>
       <h2>day check-in</h2>
 
@@ -107,17 +102,6 @@ function CheckInHeader({
           </div>
         </div>
       )}
-
-      <FlickeringGrid
-        className="absolute inset-0 z-0 mask-[radial-gradient(ellipse_250px_400px_at_center,black,transparent)]"
-        squareSize={2}
-        gridGap={12}
-        color="#b7ff01"
-        maxOpacity={1}
-        flickerChance={0.3}
-        autoResize={false}
-        width={450}
-      />
     </header>
   )
 }
@@ -153,13 +137,13 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
             </span>
           </p>
         </CheckInInfoBlockItem>
-        {rewards.tickets > 0 && (
+        {rewards.ticket > 0 && (
           <CheckInInfoBlockItem label="Ticket">
             <div className="absolute top-[-15px] left-1/2 -translate-1/2">
               <img src="/ticket-img.png" alt="ticket" />
             </div>
             <p className="font-pixel mt-4 mb-2 text-[24px] leading-[32px] tracking-[0.3px]">
-              <span className="mr-2.5 text-[#FBB107]">+{rewards.tickets}</span>
+              <span className="mr-2.5 text-[#FBB107]">+{rewards.ticket}</span>
             </p>
           </CheckInInfoBlockItem>
         )}
@@ -205,50 +189,18 @@ const renderer = ({
 }
 
 const CheckInDaysBlock = ({ currentDay }: { currentDay: number }) => {
-  const [api, setApi] = useState<CarouselApi>()
-  const [visibleDays, setVisibleDays] = useState(30) // Initial number of days
   const totalDays = 182
-
-  const handleScroll = useCallback(() => {
-    if (!api) return
-
-    const selected = api.selectedScrollSnap()
-    const totalSnaps = api.scrollSnapList().length
-    const buffer = 10 // Load more when 10 items are left to scroll
-
-    if (
-      totalSnaps > 0 &&
-      totalSnaps - selected <= buffer &&
-      visibleDays < totalDays
-    ) {
-      setVisibleDays((prev) => Math.min(prev + 30, totalDays)) // Load 30 more
-    }
-  }, [api, visibleDays])
-
-  useEffect(() => {
-    if (!api) return
-
-    api.on('select', handleScroll)
-    api.on('reInit', handleScroll) // Also check on re-init
-
-    return () => {
-      api.off('select', handleScroll)
-      api.off('reInit', handleScroll)
-    }
-  }, [api, handleScroll])
-
-  // Re-initialize Embla when the number of slides changes
-  useEffect(() => {
-    if (api) {
-      api.reInit()
-    }
-  }, [api, visibleDays])
 
   return (
     <section>
-      <Carousel setApi={setApi} opts={{ slidesToScroll: 5 }} className="pl-2.5">
+      <Carousel
+        opts={{
+          startIndex: currentDay - 4,
+        }}
+        className="pl-2.5"
+      >
         <CarouselContent>
-          {Array.from({ length: visibleDays }).map((_, index) => (
+          {Array.from({ length: totalDays }).map((_, index) => (
             <CarouselItem key={index} className="basis-1/7.5">
               <div
                 className={cn(
@@ -285,6 +237,14 @@ const CheckInDaysBlock = ({ currentDay }: { currentDay: number }) => {
       </Carousel>
     </section>
   )
+}
+
+function convertTimestampToDays(startedAt: number, nextAvailableAt: number) {
+  const startDate = new Date(startedAt * 1000)
+  // The last completed check-in is the day before the next one is available.
+  const MS_IN_DAY = 1000 * 60 * 60 * 24
+  const lastCompletedCheckInDate = new Date(nextAvailableAt * 1000 - MS_IN_DAY)
+  return calculateDaysBetween(startDate, lastCompletedCheckInDate) + 1
 }
 
 const DoneSvgIcon = () => {

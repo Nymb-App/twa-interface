@@ -38,4 +38,3 @@ function RouteComponent() {
     </PageLayout>
   )
 }
-

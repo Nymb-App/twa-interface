@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import {
   DrawerClose,
@@ -12,8 +12,8 @@ import {
 import { ActionButton } from '../ui/action-button'
 import type { ReactNode } from 'react'
 import { CloseIcon } from '@/assets/icons/close'
-import { GateContext } from '@/context/gate-context'
 import { cn } from '@/utils'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const GateDrawerContent = ({
   children,
@@ -30,7 +30,30 @@ export const GateDrawerContent = ({
   footerButton?: ReactNode
   className?: string
 }) => {
-  const { currentLevel, isLockedNewGate } = useContext(GateContext)
+  const { getLvlStats, lvlUpMutation } = useAccountMe()
+
+  const currentLvl = useMemo(
+    () => getLvlStats.data?.currentLevel ?? 12,
+    [getLvlStats],
+  )
+
+  const isNextLvlUnlocked = useMemo(
+    () => getLvlStats.data?.isNextLvlUnlocked ?? false,
+    [getLvlStats],
+  )
+
+  const nextLvlBenefits = useMemo(() => {
+    if (getLvlStats.data?.nextLvlBenefits) {
+      return getLvlStats.data.nextLvlBenefits
+    }
+    return {
+      minigameSlidePoints: 2,
+      minigameBattleTime: 86400,
+      farmingTime: 34920,
+      dailyReward: 172800,
+      maxEnergy: 1000,
+    }
+  }, [getLvlStats])
 
   return (
     <DrawerContent
@@ -59,7 +82,7 @@ export const GateDrawerContent = ({
         <DrawerClose asChild>
           {footerButton ? (
             footerButton
-          ) : !isLockedNewGate ? (
+          ) : !isNextLvlUnlocked ? (
             <ActionButton
               onClick={() => setIsOpenDrawer?.(false)}
               className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
@@ -69,9 +92,20 @@ export const GateDrawerContent = ({
               </span>
             </ActionButton>
           ) : (
-            <Link to="/unlock-gate">
-              <ActionButton className="font-pixel text-[#121312] rounded-[16px] uppercase">
-                <span>Go to {currentLevel - 1} gate</span>
+            <Link
+              to="/unlock-gate"
+              search={{
+                dailyReward: nextLvlBenefits.dailyReward,
+                minigameSlidePoints: nextLvlBenefits.minigameSlidePoints,
+                farmingTime: nextLvlBenefits.farmingTime,
+                maxEnergy: nextLvlBenefits.maxEnergy,
+              }}
+            >
+              <ActionButton
+                onClick={() => lvlUpMutation.mutate()}
+                className="font-pixel text-[#121312] rounded-[16px] uppercase"
+              >
+                <span>Go to {currentLvl - 2} gate</span>
               </ActionButton>
             </Link>
           )}

@@ -1,5 +1,5 @@
 import { parseInitDataQuery, useRawInitData } from '@telegram-apps/sdk-react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { isTMA } from '@telegram-apps/sdk'
 import { useApi } from './use-api'
 import { ENV } from '@/lib/constants'
@@ -61,18 +61,71 @@ export function useAccount() {
  * Хук для получения данных аккаунта с бэкенда (/accounts/me).
  * Возвращает полный результат useQuery.
  */
+
+interface IAccountQuery {
+  tickets: number
+  telegramId: number
+  energy: number
+  lvl: number
+  nickname: string
+  photoUrl: string
+  joinedAt: number
+  lastActiveAt: number
+  ticket: number
+  boost: number
+  farming: {
+    startedAt: string
+    duration: number
+    reward: number
+  }
+  time: number
+  avatarId: string
+}
+
+interface IGetLvlStats {
+  currentLevel: number
+  nextLvl: number
+  ticketsRequired: number
+  timeRequired: number
+  isNextLvlUnlocked: boolean
+  currentLvlBenefits: {
+    minigameSlidePoints: number
+    minigameBattleTime: number
+    farmingTime: number
+    dailyReward: number
+    maxEnergy: number
+  }
+  nextLvlBenefits: {
+    minigameSlidePoints: number
+    minigameBattleTime: number
+    farmingTime: number
+    dailyReward: number
+    maxEnergy: number
+  }
+}
 export function useAccountMe() {
-  const { get } = useApi()
+  const { get, post } = useApi()
   const { initData, user } = useAccount() // Нужен для enabled флага
 
+  const accountQuery = useQuery({
+    queryKey: ['account', 'me'],
+    queryFn: async () => await get<IAccountQuery>('/accounts/me'),
+  })
+
+  const getLvlStatsQuery = useQuery({
+    queryKey: ['account', 'lvlStats'],
+    queryFn: async () => await get<IGetLvlStats>('/accounts/get_lvl_stats'),
+  })
+
+  const lvlUpMutation = useMutation({
+    mutationFn: async () => await post('/accounts/lvl_up'),
+  })
+
   return {
-    accountQuery: useQuery<IAccountMe, Error>({
-      queryKey: ['account', 'me'],
-      queryFn: async () => (await get('/accounts/me')),
-      staleTime: 5 * 60 * 1000, // Кэш на 5 минут
-      enabled: !!initData, // Запрос будет выполнен только после получения initData
-    }),
+    getLvlStats: getLvlStatsQuery,
+    accountQuery,
     user,
     initData,
+    lvlUpMutation,
   }
 }

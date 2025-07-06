@@ -92,7 +92,9 @@ export const PageLayout = ({
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
       )}
-      {useCheckInButton && <CheckInButton />}
+      {useCheckInButton && (
+        <CheckInButton className="fixed bottom-6 w-[calc(100%-2rem)] left-1/2 -translate-x-1/2 max-w-[450px] z-50" />
+      )}
       {useJumpToTheNextGateButton && <JumpToTheNextGateButton />}
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster

@@ -1,4 +1,4 @@
-import Countdown from 'react-countdown'
+import Countdown from 'react-countdown';
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/utils'
 

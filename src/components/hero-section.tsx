@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy } from 'react'
 import { Link } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
 import { Card } from '@/components/ui/card'
@@ -6,40 +6,12 @@ import { TasksIcon } from '@/assets/icons/tasks'
 import { StatisticsIcon } from '@/assets/icons/statistics'
 import { SocialIcon } from '@/assets/icons/social'
 import { SwipeCard } from '@/components/swipe-card'
-import { GameCard } from '@/components/game-card'
-import { BattleCard } from '@/components/battle-card'
-import { useGetDailyRewards } from '@/hooks/use-get-daily-rewards'
+
+
+const GameCard = lazy(() => import('@/components/game-card').then(m => ({ default: m.GameCard })))
+const BattleCard = lazy(() => import('@/components/battle-card').then(m => ({ default: m.BattleCard })))
 
 export function HeroSection() {
-  const { dailyRewardsQuery } = useGetDailyRewards()
-
-  console.log(dailyRewardsQuery.data)
-
-  const [isDailyReward, setIsDailyReward] = useState<boolean>(false)
-
-  useEffect(() => {
-    const now = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth(),
-        new Date().getUTCDate(),
-        0,
-        0,
-        0,
-        0,
-      ),
-    )
-
-    const todayInSeconds = Math.floor(now.getTime() / 1000)
-    console.log(todayInSeconds, 'today')
-    console.log(dailyRewardsQuery.data?.nextAvailableAt)
-    if (
-      dailyRewardsQuery.data?.nextAvailableAt &&
-      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
-    ) {
-      setIsDailyReward(true)
-    }
-  }, [dailyRewardsQuery])
 
   return (
     <section className="relative mt-48 text-2xl text-white px-3">
@@ -48,10 +20,7 @@ export function HeroSection() {
       </h2>
 
       <div className="flex flex-col gap-2">
-        <Link
-          to={isDailyReward ? '/check-in' : '/home'}
-          className="text-white z-50 text-xl"
-        >
+        <Link to={'/home'} className="text-white z-50 text-xl">
           Home
         </Link>
       </div>
@@ -66,25 +35,29 @@ export function HeroSection() {
             subdescription="you react"
           />
         ) : (
-          <GameCard
-            delay={1000}
-            placeholderSrc="/lottie-placeholder/minigames/slide.png"
-            className="w-full"
-            classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
-            title="Swipes"
-            description={"let's see how"}
-            subdescription="you react"
-            animationData={'/lottie/swipe2.json'}
-          />
+                    <Suspense fallback={<div className="w-full aspect-square bg-gray-800 animate-pulse rounded-lg" />}>
+            <GameCard
+              delay={1000}
+              placeholderSrc="/lottie-placeholder/minigames/slide.png"
+              className="w-full"
+              classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
+              title="Swipes"
+              description={"let's see how"}
+              subdescription="you react"
+              animationData={'/lottie/swipe2.json'}
+            />
+          </Suspense>
         )}
 
-        <BattleCard
-          className="w-full"
-          classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
-          title="Battle"
-          description="are you strong"
-          subdescription="enough?"
-        />
+                <Suspense fallback={<div className="w-full aspect-square bg-gray-800 animate-pulse rounded-lg" />}>
+          <BattleCard
+            className="w-full"
+            classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
+            title="Battle"
+            description="are you strong"
+            subdescription="enough?"
+          />
+        </Suspense>
       </div>
       <div className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2">
         <Card className="w-full aspect-square flex justify-center">

@@ -1,26 +1,43 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { HiLockClosed, HiLockOpen } from 'react-icons/hi2';
-import { useRef, useState } from 'react';
-import type { AnimationEventHandler } from 'react';
-import { PageLayout } from '@/components/ui/page-layout';
-import { cn } from '@/utils';
-import { GateElectricLines } from '@/components/ui/gate-electric-lines';
-import { FlickeringGrid } from '@/components/magicui/flickering-grid';
-import { GateInfoBlockNextLvl } from '@/components/gate-page/ui/info-block';
+import { createFileRoute } from '@tanstack/react-router'
+import { HiLockClosed, HiLockOpen } from 'react-icons/hi2'
+import { useRef, useState } from 'react'
+import type { AnimationEventHandler } from 'react'
+import { PageLayout } from '@/components/ui/page-layout'
+import { cn } from '@/utils'
+import { GateElectricLines } from '@/components/ui/gate-electric-lines'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { GateInfoBlockNextLvl } from '@/components/gate-page/ui/info-block'
 
 export const Route = createFileRoute('/unlock-gate')({
   component: RouteComponent,
-});
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): {
+    dailyReward: number
+    minigameSlidePoints: number
+    farmingTime: number
+    maxEnergy: number
+  } => {
+    return {
+      dailyReward: Number(search.dailyReward) || 0,
+      minigameSlidePoints: Number(search.minigameSlidePoints) || 0,
+      farmingTime: Number(search.farmingTime) || 0,
+      maxEnergy: Number(search.maxEnergy) || 0,
+    }
+  },
+})
 
 function RouteComponent() {
-  const [isStartAnimation, setIsStartAnimation] = useState(true);
+  const [isStartAnimation, setIsStartAnimation] = useState(true)
+  const { dailyReward, minigameSlidePoints, farmingTime, maxEnergy } =
+    Route.useSearch()
 
   return (
     <PageLayout
       useFooter={false}
       useUnlockGateCloseButton={!isStartAnimation}
-      className='flex flex-col'
-      classNameContent='relative flex-1 overflow-hidden'
+      className="flex flex-col"
+      classNameContent="relative flex-1 overflow-hidden"
     >
       <div
         className={cn(
@@ -29,10 +46,10 @@ function RouteComponent() {
         )}
       >
         <FlickeringGrid
-          className='absolute top-0 left-[10px] mask-[radial-gradient(ellipse_220px_190px_at_center,black,transparent)]'
+          className="absolute top-0 left-[10px] mask-[radial-gradient(ellipse_220px_190px_at_center,black,transparent)]"
           squareSize={2}
           gridGap={12}
-          color='#b7ff01'
+          color="#b7ff01"
           maxOpacity={1}
           flickerChance={0.3}
           autoResize={false}
@@ -40,20 +57,20 @@ function RouteComponent() {
         <GateLevelBlock
           nextLevel={11}
           onAnimationEnd={() => setIsStartAnimation(false)}
-          className='top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+          className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </div>
       {!isStartAnimation && (
         <GateInfoBlockNextLvl
-          className='absolute top-1/2 left-1/2 mt-24 w-full -translate-x-1/2 -translate-y-1/2 px-4'
-          className1='animate-slide-up-fade-2'
-          className2='animate-slide-up-fade-2'
-          className3='animate-slide-up-fade-3'
-          className4='animate-slide-up-fade-3'
-          dailyReward={86400000}
-          mining={21600000}
-          maxEnergy={2600}
-          swipePoints={20}
+          className="absolute top-1/2 left-1/2 mt-24 w-full -translate-x-1/2 -translate-y-1/2 px-4"
+          className1="animate-slide-up-fade-2"
+          className2="animate-slide-up-fade-2"
+          className3="animate-slide-up-fade-3"
+          className4="animate-slide-up-fade-3"
+          dailyReward={dailyReward}
+          mining={farmingTime}
+          maxEnergy={maxEnergy}
+          swipePoints={minigameSlidePoints}
         />
       )}
       <style>{`
@@ -89,7 +106,7 @@ function RouteComponent() {
         }
       `}</style>
     </PageLayout>
-  );
+  )
 }
 
 const GateLevelBlock = ({
@@ -97,41 +114,51 @@ const GateLevelBlock = ({
   className,
   onAnimationEnd,
 }: {
-  nextLevel: number;
-  className?: string;
-  onAnimationEnd?: (e?: AnimationEventHandler<SVGElement>) => void;
+  nextLevel: number
+  className?: string
+  onAnimationEnd?: (e?: AnimationEventHandler<SVGElement>) => void
 }) => {
-  const gateNumberRef = useRef<HTMLDivElement | null>(null);
+  const gateNumberRef = useRef<HTMLDivElement | null>(null)
 
-  const [isLockedAnimationFinished, setIsLockedAnimationFinished] = useState(false);
+  const [isLockedAnimationFinished, setIsLockedAnimationFinished] =
+    useState(false)
 
-  const [isScaleBlockAnimation, setIsScaleBlockAnimation] = useState(false);
+  const [isScaleBlockAnimation, setIsScaleBlockAnimation] = useState(false)
 
   return (
     <>
-      <div ref={gateNumberRef} className={cn('relative size-[88px]', className)}>
+      <div
+        ref={gateNumberRef}
+        className={cn('relative size-[88px]', className)}
+      >
+        <h1 className="absolute top-[-120px] w-[450px] left-1/2 -translate-x-1/2 -translate-y-1/2 font-pixel text-[#FFFFFF] text-[24px] leading-[32px] text-center uppercase delay-5000 animate-slide-up-fade-1">
+          gate's open
+        </h1>
         <div
           className={cn(
             'absolute top-1/2 left-1/2 size-full -translate-x-1/2 -translate-y-1/2 rounded-[32px] border-2 border-[#B6FF00] shadow-[0_0_80px_rgba(182,255,0,0.56),_inset_0_0_16px_rgba(182,255,0,0.24)] backdrop-blur-[8px]',
-            isScaleBlockAnimation && 'scale-[1.5] opacity-0 transition-all duration-1500',
+            isScaleBlockAnimation &&
+              'scale-[1.5] opacity-0 transition-all duration-1500',
           )}
         />
         <GateElectricLines
-          svg1ClassName='top-[60px] left-[70px]'
-          svg2ClassName='top-[-50px] left-[120px]'
-          svg3ClassName='top-[-40px] -left-[130px]'
-          svg4ClassName='top-[80px] -left-[90px]'
+          svg1ClassName="top-[60px] left-[70px]"
+          svg2ClassName="top-[-50px] left-[120px]"
+          svg3ClassName="top-[-40px] -left-[130px]"
+          svg4ClassName="top-[80px] -left-[90px]"
           className={cn(
             'opacity-0',
-            isScaleBlockAnimation && 'opacity-100 transition-all !duration-3000',
+            isScaleBlockAnimation &&
+              'opacity-100 transition-all !duration-3000',
           )}
         />
-
         <span
           className={cn(
             'font-pixel absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30px] text-[#B6FF00]',
             nextLevel.toString().startsWith('1') && '-ml-2',
-            isScaleBlockAnimation && nextLevel.toString().startsWith('1') && '-ml-5',
+            isScaleBlockAnimation &&
+              nextLevel.toString().startsWith('1') &&
+              '-ml-5',
             isScaleBlockAnimation &&
               'text-[100px] transition-all duration-1500 [text-shadow:0_0_80px_#B6FF00,0_0_130px_#B6FF00,0_0_150px_#B6FF00]',
           )}
@@ -140,21 +167,23 @@ const GateLevelBlock = ({
         </span>
         {!isLockedAnimationFinished ? (
           <HiLockClosed
-            className='animation-twitching-locker absolute -bottom-2 left-1/2 -translate-x-1/2'
-            color='#FFFFFF'
+            className="animation-twitching-locker absolute -bottom-2 left-1/2 -translate-x-1/2"
+            color="#FFFFFF"
             fontSize={24}
             onAnimationEnd={() => {
-              setIsLockedAnimationFinished(true);
+              setIsLockedAnimationFinished(true)
             }}
           />
         ) : (
           <HiLockOpen
-            className='animation-fade-out-locker absolute -bottom-2 left-1/2 -translate-x-1/2'
-            color='#FFFFFF'
+            className="animation-fade-out-locker absolute -bottom-2 left-1/2 -translate-x-1/2"
+            color="#FFFFFF"
             fontSize={24}
             onAnimationEnd={(e) => {
-              onAnimationEnd?.(e as unknown as AnimationEventHandler<SVGElement>);
-              setIsScaleBlockAnimation(true);
+              onAnimationEnd?.(
+                e as unknown as AnimationEventHandler<SVGElement>,
+              )
+              setIsScaleBlockAnimation(true)
             }}
           />
         )}
@@ -230,5 +259,5 @@ const GateLevelBlock = ({
         }
       `}</style>
     </>
-  );
-};
+  )
+}

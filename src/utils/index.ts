@@ -1,6 +1,6 @@
-import {  clsx } from 'clsx'
+import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import type {ClassValue} from 'clsx';
+import type { ClassValue } from 'clsx'
 
 export function cn(...inputs: Array<ClassValue>) {
   return twMerge(clsx(inputs))
@@ -93,6 +93,13 @@ export const convertTimestampToLargestUnit = (
   }
 
   return { time: 0, label: 'd' }
+}
+
+export const convertTimestampToDaysUnit = (
+  timestampInSeconds: number,
+): number => {
+  if (!timestampInSeconds) return 0
+  return Math.floor(timestampInSeconds / 86400)
 }
 
 export function formatTimeReward(seconds: number): string {

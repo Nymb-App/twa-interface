@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react'
 import {
   useTonAddress,
   useTonConnectModal,
-  useTonConnectUI,
 } from '@tonconnect/ui-react'
 import { TextWithAppearingDots } from './appearing-dots'
 import { useMint } from '@/hooks/use-mint'
 import { cn } from '@/utils'
 import { useTransferTon } from '@/hooks/use-transfer-ton'
 
-export function MintButton({
+export default function MintButton({
   onMinted,
   className,
 }: {
@@ -110,38 +109,3 @@ export function MintButton({
   )
 }
 
-export function ConnectButton({ className }: { className?: string }) {
-  const address = useTonAddress()
-  const { open } = useTonConnectModal()
-
-  return (
-    <button
-      disabled={address.length > 0}
-      onClick={open}
-      className={cn(
-        'font-pixel text-lg bg-gradient-to-b cursor-pointer from-[#ADFA4B] to-[#B6FF00] text-[#121312] rounded-xl py-4 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
-        className,
-      )}
-    >
-      CONNECT WALLET
-    </button>
-  )
-}
-
-export function DisconnectButton({ className }: { className?: string }) {
-  const address = useTonAddress()
-  const [tonConnectUI] = useTonConnectUI()
-
-  return (
-    <button
-      disabled={!address}
-      onClick={() => tonConnectUI.disconnect()}
-      className={cn(
-        'font-pixel text-lg text-[#121312] rounded-xl py-4 cursor-pointer bg-gradient-to-b from-white to-[#999999] active:from-white/50 active:to-[#999999]/20 disabled:from-white/20 disabled:to-[#999999]/20 disabled:cursor-not-allowed',
-        className,
-      )}
-    >
-      DISCONNECT
-    </button>
-  )
-}

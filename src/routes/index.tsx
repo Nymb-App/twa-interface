@@ -2,7 +2,6 @@ import { Suspense, lazy, useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
 
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/utils'
 
@@ -16,6 +15,12 @@ const HeroSection = lazy(() =>
 const MintSection = lazy(() =>
   import('@/components/mint-section').then((m) => ({ default: m.MintSection })),
 )
+const FlickeringGrid = lazy(() =>
+  import('@/components/magicui/flickering-grid').then((m) => ({
+    default: m.FlickeringGrid,
+  })),
+)
+
 
 function App() {
   const [isAnimationCountdownFinished, setAnimationCountdownFinished] =
@@ -48,7 +53,9 @@ function App() {
   }, [])
 
   return (
-    <PageLayout useFooter={false}>
+    
+    <Suspense fallback={<div>Loading...</div>}>
+        <PageLayout useFooter={false}>
       <div
         className={cn(
           'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)] duration-500',
@@ -61,16 +68,18 @@ function App() {
           isAnimationCountdownFinished && 'h-[250px]',
         )}
       >
-        <FlickeringGrid
-          className="absolute inset-0 z-0 size-full left-3"
-          squareSize={2}
-          gridGap={12}
-          color="#b7ff01"
-          maxOpacity={0.5}
-          flickerChance={0.3}
-          autoResize={!isAnimationCountdownFinished}
-          width={450}
-        />
+        <Suspense fallback={null}>
+          <FlickeringGrid
+            className="absolute inset-0 z-0 size-full left-3"
+            squareSize={2}
+            gridGap={12}
+            color="#b7ff01"
+            maxOpacity={0.5}
+            flickerChance={0.3}
+            autoResize={!isAnimationCountdownFinished}
+            width={450}
+          />
+        </Suspense>
 
         <div
           className={cn(
@@ -103,6 +112,7 @@ function App() {
           </div>
         </Suspense>
       )}
-    </PageLayout>
+        </PageLayout>
+    </Suspense>
   )
 }
