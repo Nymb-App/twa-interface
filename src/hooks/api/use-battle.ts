@@ -4,7 +4,9 @@ import { useAccount } from './use-account';
 import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene';
 
 const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
-const socket = io(`${baseUrl}/battle`)
+const socket = io(`${baseUrl}/battle`, {
+  autoConnect: false // Рекомендуется для лучшего контроля
+});
 
 // WebSocket hook with TanStack Query integration
 export function useBattle() {
@@ -39,7 +41,7 @@ export function useBattle() {
       const opponent = data.users.filter((user: TOpponentUserData) => user.userId !== account?.id)[0];
       const me = data.users.filter((user: TOpponentUserData) => user.userId === account?.id)[0];
       if(opponent !== undefined || opponent !== null) {
-        setOpponentInfo(opponent);
+        setOpponentInfo(prevInfo => prevInfo ? prevInfo : opponent);
       }
       if(me !== undefined || me !== null) {
         setMyInfo(me);

@@ -12,8 +12,8 @@ import type { Socket } from 'socket.io-client'
 import type { TOpponentUserData } from './battle-intro-scene'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
-import { useAccount } from '@/hooks/api/use-account'
-import { useBattle } from '@/hooks/api/use-battle'
+// import { useAccount } from '@/hooks/api/use-account'
+// import { useBattle } from '@/hooks/api/use-battle'
 
 export const BattleMainScene = ({
   areaClaimedPercent = 0,
@@ -21,12 +21,16 @@ export const BattleMainScene = ({
   onForcedExitBattle,
   socket,
   roomId,
+  opponentInfo,
+  myInfo,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
   socket?: Socket
   roomId?: string
+  opponentInfo: TOpponentUserData | null
+  myInfo: TOpponentUserData | null
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
@@ -56,7 +60,7 @@ export const BattleMainScene = ({
 
   const [countdownTarget, setCountdownTarget] = useState<number | null>(null)
 
-  const { opponentInfo, myInfo } = useBattle();
+  // const { opponentInfo, myInfo } = useBattle();
 
   const router = useRouter()
 

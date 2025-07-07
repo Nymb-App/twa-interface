@@ -5,6 +5,7 @@ import { AppContext } from '@/context/app-context'
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
 import { BattleMainScene } from '@/components/battle-page/battle-main-scene'
 import { useAccount } from '@/hooks/api/use-account'
+import { useBattle } from '@/hooks/api/use-battle'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -100,12 +101,14 @@ function RouteComponent() {
     router,
   ])
 
+  const { makeBet, opponentInfo, myInfo } = useBattle();
+
   const [roomId, setRoomId] = useState<string | undefined>(undefined)
 
   const { user } = useAccount()
 
   const handleJoinGame = (bet: number) => {
-  //   makeBet(bet);
+    makeBet(bet);
   }
 
   return (
@@ -132,6 +135,8 @@ function RouteComponent() {
       )}
       {isStartFindingOpponent && (
         <BattleMainScene
+          opponentInfo={opponentInfo}
+          myInfo={myInfo}
           roomId={roomId}
           areaClaimedPercent={areaClaimedPercent}
           onForcedExitBattle={resetGame}

@@ -4,7 +4,6 @@ import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
 import { BattleCard } from './opponent-battle-card'
 import { BattleBustButtons } from './battle-bust-buttons'
 import { cn } from '@/utils'
-import { useBattle } from '@/hooks/api/use-battle'
 
 export interface IJoinGameData {
   userId: number
@@ -38,8 +37,6 @@ export const BattleIntroScene = ({
     useState(false)
 
   const [bet, setBet] = useState(60 * 60 * 24 * 7)
-  
-  const { makeBet } = useBattle();
 
   return (
     <div
@@ -90,7 +87,6 @@ export const BattleIntroScene = ({
         <ActionButton
           onClick={() => {
             onJoinGame?.(bet)
-            makeBet(bet);
             setIsIntroSceneAnimationsStart(true)
           }}
           className={cn(
