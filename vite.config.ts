@@ -60,6 +60,7 @@ export default defineConfig(({ mode }) => ({
       'e658-37-1-204-162.ngrok-free.app',
       'administrator-sole-implementing-obvious.trycloudflare.com',
       'ambien-projection-aggregate-proprietary.trycloudflare.com',
+      'exp-photographic-continuous-executed.trycloudflare.com',
     ],
   },
 
