@@ -13,6 +13,7 @@ import type { TOpponentUserData } from './battle-intro-scene'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
 import { useAccount } from '@/hooks/api/use-account'
+import { useBattle } from '@/hooks/api/use-battle'
 
 export const BattleMainScene = ({
   areaClaimedPercent = 0,
@@ -24,7 +25,7 @@ export const BattleMainScene = ({
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
-  socket: Socket
+  socket?: Socket
   roomId?: string
 }) => {
   const [
@@ -55,10 +56,7 @@ export const BattleMainScene = ({
 
   const [countdownTarget, setCountdownTarget] = useState<number | null>(null)
 
-  const { user: myUserInfo } = useAccount()
-
-  const [opponentUserData, setOpponentUserData] =
-    useState<TOpponentUserData | null>(null)
+  const { opponentInfo, myInfo } = useBattle();
 
   const router = useRouter()
 
@@ -70,49 +68,10 @@ export const BattleMainScene = ({
   }
 
   useEffect(() => {
-    socket.on('joinedRoom', (data) => {
-      if (!data) return
-      console.log(data, 'data')
-      setOpponentUserData(
-        data.users.filter(
-          (user: TOpponentUserData) => user.userId !== myUserInfo?.id,
-        )[0],
-      )
-      setIsStartFindingOpponent(false)
-    })
-
-    socket.on('clickUpdate', (data) => {
-      console.log(data, 'data on click')
-
-      const userMe = data.users.filter(
-        (user: TOpponentUserData) => user.userId === myUserInfo?.id,
-      )[0]
-
-      const userOpponent = data.users.filter(
-        (user: TOpponentUserData) => user.userId !== myUserInfo?.id,
-      )[0]
-
-      const areaClaimedSocketPercent = userMe.clicks - userOpponent.clicks
-
-      setAreaClaimedPercentage(areaClaimedSocketPercent)
-    })
-
-    // const addUnits = isBoostActive0 || isBoostActive1 ? 2 : 1
-
-    return () => {
-      socket.off('joinedRoom')
-      socket.off('clickUpdate')
+    if (!opponentInfo) {
+      return;
     }
-  }, [])
 
-  useEffect(() => {
-    if (!roomId) return
-    socket.emit('get_roomUsers', {
-      roomId: roomId,
-    })
-  }, [roomId])
-
-  useEffect(() => {
     timeouts.current.forEach(clearTimeout)
     timeouts.current = []
 
@@ -134,7 +93,7 @@ export const BattleMainScene = ({
       timeouts.current.forEach(clearTimeout)
       timeouts.current = []
     }
-  }, [])
+  }, [opponentInfo])
 
   useEffect(() => {
     if (isBoostActive0 || isBoostActive1) {
@@ -245,8 +204,8 @@ export const BattleMainScene = ({
         <div className="relative flex flex-col h-full flex-1 items-center justify-between mask-[linear-gradient(to_bottom,transparent_0%,black_1%,black_99%,transparent_100%)]">
           <BattleCard
             isFindingUser={isStartFindingOpponent}
-            nickname={opponentUserData?.nickname}
-            photoUrl={opponentUserData?.photoUrl}
+            nickname={opponentInfo?.nickname}
+            photoUrl={opponentInfo?.photoUrl}
             isMe={false}
             areaClaimedPercent={areaClaimedPercent}
             isRow={isMorphAnimation}
@@ -290,8 +249,8 @@ export const BattleMainScene = ({
             )}
           />
           <BattleCard
-            nickname={myUserInfo?.username}
-            photoUrl={myUserInfo?.photo_url}
+            nickname={myInfo?.nickname}
+            photoUrl={myInfo?.photoUrl}
             isRow={isMorphAnimation}
             isBgVisible={!isCardBgAnimationStart}
             areaClaimedPercent={areaClaimedPercent}
@@ -318,7 +277,7 @@ export const BattleMainScene = ({
             <BattleGameControlsPanel
               disabled={!isCountdownCompleted}
               onClick={() => {
-                socket.emit('click', { roomId, userId: myUserInfo?.id })
+                // socket.emit('click', { roomId, userId: myInfo?.id })
               }}
               onBoostActivate={() => {
                 if (!isBoostActive0) {

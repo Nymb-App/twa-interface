@@ -1,7 +1,5 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useContext, useEffect, useState } from 'react'
-import { io } from 'socket.io-client'
-// import type { IJoinGameData } from '@/components/battle-page/battle-intro-scene'
 import { PageLayout } from '@/components/ui/page-layout'
 import { AppContext } from '@/context/app-context'
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
@@ -15,12 +13,6 @@ export const Route = createFileRoute('/minigames/battle')({
 function RouteComponent() {
   const [, setIsAnimationsEnd] = useState(false)
 
-  useEffect(() => {
-    const originalColor = document.body.style.backgroundColor
-    return () => {
-      document.body.style.backgroundColor = originalColor
-    }
-  }, [])
   const [, setIsClosingAnimation] = useState(false)
   const [isOpeningAnimation] = useState(false)
   const [, setIsOpeningAnimationDelayed] = useState(false)
@@ -47,6 +39,13 @@ function RouteComponent() {
 
     setIsReset(true)
   }
+
+  useEffect(() => {
+    const originalColor = document.body.style.backgroundColor
+    return () => {
+      document.body.style.backgroundColor = originalColor
+    }
+  }, [])
 
   useEffect(() => {
     if (!isStartFindingOpponent) return
@@ -101,56 +100,12 @@ function RouteComponent() {
     router,
   ])
 
-  const socket = io(`${import.meta.env.VITE_PUBLIC_API_URL}/battle`)
-
-  // const [webSocketData, setWebSocketData] = useState<IJoinGameData | null>(null)
-
   const [roomId, setRoomId] = useState<string | undefined>(undefined)
-  // const [isConnected, setIsConnected] = useState(socket.connected)
 
   const { user } = useAccount()
 
-  useEffect(() => {
-    // Слушаем событие 'connect'
-    socket.on('connect', () => {
-      // setIsConnected(true)
-      console.log(`Connected with id: ${socket.id}`)
-    })
-
-    // Слушаем событие 'joinedRoom'
-    socket.on('joinedRoom', (data) => {
-      console.log(`Joined room`, data)
-
-      if ('roomId' in data) {
-        console.log(`Joined room: ${data.roomId}`)
-        setRoomId(data.roomId)
-      }
-    })
-
-    // Слушаем событие 'disconnect'
-    socket.on('disconnect', () => {
-      console.log('disconnect')
-      // setIsConnected(false)
-    })
-
-    // Очистка при размонтировании компонента
-    return () => {
-      socket.off('connect')
-      socket.off('joinedRoom')
-      socket.off('disconnect')
-    }
-  }, [])
-
   const handleJoinGame = (bet: number) => {
-    const myUserInfo = {
-      userId: user?.id,
-      photoUrl: user?.photo_url,
-      nickname: user?.username,
-      bet: bet,
-    }
-    socket.emit('joinRoom', myUserInfo)
-
-    console.log(myUserInfo, 'info?')
+  //   makeBet(bet);
   }
 
   return (
@@ -183,7 +138,7 @@ function RouteComponent() {
           onAreaClaimedPercentageChange={(percent) =>
             setAreaClaimedPercent(percent)
           }
-          socket={socket}
+          // socket={socket}
         />
       )}
     </PageLayout>

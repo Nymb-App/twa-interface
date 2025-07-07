@@ -1,73 +1,102 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useState } from 'react';
 import { io } from 'socket.io-client'
-import type { Socket } from 'socket.io-client'
+import { useAccount } from './use-account';
+import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene';
 
 const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
-
-const socketUrl = `${baseUrl}/battle`
+const socket = io(`${baseUrl}/battle`)
 
 // WebSocket hook with TanStack Query integration
-export function useWebSocketApi<T = unknown>(eventKey: string) {
-  const queryClient = useQueryClient()
-  const queryKey = ['websocket', eventKey]
-  const socketRef = useRef<Socket | null>(null)
+export function useBattle() {
+  const { user: account } = useAccount();
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [opponentInfo, setOpponentInfo] = useState<TOpponentUserData | null>(null);
+  const [myInfo, setMyInfo] = useState<TOpponentUserData>({
+    userId: account?.id!,
+    photoUrl: account?.photo_url!,
+    nickname: account?.username!,
+    bet: 0,
+    clicks: 0,
+  });
 
   useEffect(() => {
-    const socket = io(socketUrl)
-    socketRef.current = socket
-  }, [eventKey, queryKey, queryClient])
-
-  const emit = useCallback((eventName: string, data?: any) => {
-    const ws = socketRef.current
-    if (ws && ws.connected) {
-      ws.emit(eventName, data)
-      console.log(`Emitted event '${eventName}':`, data)
-    } else {
-      console.error('Socket not connected, cannot emit event.')
+    if (!socket.connected) {
+      socket.connect();
     }
-  }, [])
 
-  const on = useCallback(
-    (eventName: string, handler: (...args: Array<any>) => void) => {
-      const ws = socketRef.current
-      if (ws) {
-        ws.on(eventName, handler)
-        console.log(`Registered handler for event '${eventName}'`)
+    socket.on('connect', () => {
+      console.log(`Connected with id: ${socket.id}`)
+    })
+
+    socket.on('waiting_for_players', (data) => {
+      console.log(`Waiting for players`, data)
+      setRoomId(data.roomId);
+    })
+
+
+    socket.on('game_started', (data) => {
+      console.log(`Game started`, data)
+      const opponent = data.users.filter((user: TOpponentUserData) => user.userId !== account?.id)[0];
+      const me = data.users.filter((user: TOpponentUserData) => user.userId === account?.id)[0];
+      if(opponent !== undefined || opponent !== null) {
+        setOpponentInfo(opponent);
+      }
+      if(me !== undefined || me !== null) {
+        setMyInfo(me);
       }
 
-      return () => {
-        if (ws) {
-          ws.off(eventName, handler)
-          console.log(`Unregistered handler for event '${eventName}'`)
-        }
-      }
-    },
-    [],
-  )
+      setRoomId(data.roomId);
+    })
 
-  const disconnect = useCallback(() => {
-    const ws = socketRef.current
-    if (ws) {
-      console.log('Manually disconnecting socket...')
-      ws.disconnect()
+    socket.on('error', () => {
+      console.log('socket error')
+    })
+
+    socket.on('disconnect', () => {
+      console.log('disconnect')
+    })
+
+    return () => {
+      socket.off('connect')
+      socket.off('waiting_for_players')
+      socket.off('game_started')
+      socket.off('error')
+      socket.off('disconnect')
     }
   }, [])
+  
+  console.log("OpponentInfo", opponentInfo);
 
-  const queryResult = useQuery<T>({
-    queryKey,
-    queryFn: () => {
-      // Initial data fetch if needed
-      return new Promise(() => {}) // Placeholder, actual implementation depends on your API
-    },
-    staleTime: 0, // Always consider WebSocket data fresh
-    refetchOnWindowFocus: false,
-  })
+
+  const makeBet = useCallback((bet: number) => {
+    socket.emit('join_or_create_room', {
+      bet,
+      userId: account?.id,
+      photoUrl: account?.photo_url,
+      nickname: account?.username,
+    })
+  }, [account]);
+
+  const leaveGame = useCallback((roomId: string) => {
+    socket.emit('leave_room', {
+      roomId,
+    });
+  }, []);
+
+  const click = useCallback((roomId: string) => {
+    socket.emit('click', {
+      roomId,
+      userId: account?.id,
+    });
+  }, [account]);
+
 
   return {
-    ...queryResult,
-    emit,
-    on,
-    disconnect,
+    makeBet,
+    leaveGame,
+    click,
+    opponentInfo,
+    myInfo,
+    roomId,
   }
 }
