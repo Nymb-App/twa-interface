@@ -113,7 +113,7 @@ function RouteComponent() {
           <RussianRoulette
             userNames={referralsNickName}
             isStartRoulette={isStartRoulette}
-            items={referralsNickName.map((nickname, index) => (
+            items={referralsNickName.map((_, index) => (
               <AvatarCard
                 classNameForSpan="mix-blend-difference"
                 key={index}

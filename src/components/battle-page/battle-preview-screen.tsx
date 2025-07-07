@@ -1,11 +1,10 @@
-import { useContext } from 'react'
+import { useEffect, useState } from 'react'
 import { Container } from '../ui/container'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from '../ui/electric-lines'
 import type { ReactNode } from 'react'
 import { cn } from '@/utils'
-import { AppContext } from '@/context/app-context'
 
 export const BattleTitle = ({
   text,
@@ -26,9 +25,34 @@ export const BattleTitle = ({
   )
 }
 
-export function BattleGameRewardSection({ className }: { className?: string }) {
-  const { battleGameRewardRadioValue, setBattleGameRewardRadioValue } =
-    useContext(AppContext)
+export function BattleGameRewardSection({
+  onChange,
+  className,
+}: {
+  onChange?: (value: number) => void
+  className?: string
+}) {
+  const [battleGameRewardRadioValue, setBattleGameRewardRadioValue] =
+    useState('1 weeks')
+
+  useEffect(() => {
+    switch (battleGameRewardRadioValue) {
+      case '1 days':
+        onChange?.(60 * 60 * 24)
+        break
+      case '1 weeks':
+        onChange?.(60 * 60 * 24 * 7)
+        break
+      case '1 month':
+        onChange?.(60 * 60 * 24 * 30)
+        break
+      case '1 years':
+        onChange?.(60 * 60 * 24 * 365)
+        break
+      default:
+        onChange?.(60 * 60 * 24 * 7)
+    }
+  }, [battleGameRewardRadioValue])
 
   return (
     <section className={cn('relative', className)}>
@@ -41,7 +65,7 @@ export function BattleGameRewardSection({ className }: { className?: string }) {
           </div>
           <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
           <RadioGroup
-            defaultValue="1 weeks"
+            defaultValue="1"
             value={battleGameRewardRadioValue}
             onValueChange={(value) => {
               setBattleGameRewardRadioValue(value)

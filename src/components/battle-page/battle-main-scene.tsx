@@ -8,22 +8,31 @@ import { BattleCard } from './opponent-battle-card'
 import { BattleAnimatedMiddleLine } from './battle-animated-middle-line'
 import { BattleScene } from './battle-scene'
 import { BattleTitle } from './battle-preview-screen'
+import type { Socket } from 'socket.io-client'
+import type { TOpponentUserData } from './battle-intro-scene'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
+import { useAccount } from '@/hooks/api/use-account'
 
 export const BattleMainScene = ({
   areaClaimedPercent = 0,
   onAreaClaimedPercentageChange,
   onForcedExitBattle,
+  socket,
+  roomId,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
+  socket: Socket
+  roomId?: string
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
     setIsForcedExitBattleAnimationFinished,
   ] = useState(false)
+
+  // const myNickname = ''
 
   const opponentNickname = 'igorivanov'
   const myNickname = 'tevial'
@@ -46,6 +55,11 @@ export const BattleMainScene = ({
 
   const [countdownTarget, setCountdownTarget] = useState<number | null>(null)
 
+  const { user: myUserInfo } = useAccount()
+
+  const [opponentUserData, setOpponentUserData] =
+    useState<TOpponentUserData | null>(null)
+
   const router = useRouter()
 
   const timeouts = useRef<Array<number>>([])
@@ -54,6 +68,49 @@ export const BattleMainScene = ({
     const id = window.setTimeout(fn, delay)
     timeouts.current.push(id)
   }
+
+  useEffect(() => {
+    socket.on('joinedRoom', (data) => {
+      if (!data) return
+      console.log(data, 'data')
+      setOpponentUserData(
+        data.users.filter(
+          (user: TOpponentUserData) => user.userId !== myUserInfo?.id,
+        )[0],
+      )
+      setIsStartFindingOpponent(false)
+    })
+
+    socket.on('clickUpdate', (data) => {
+      console.log(data, 'data on click')
+
+      const userMe = data.users.filter(
+        (user: TOpponentUserData) => user.userId === myUserInfo?.id,
+      )[0]
+
+      const userOpponent = data.users.filter(
+        (user: TOpponentUserData) => user.userId !== myUserInfo?.id,
+      )[0]
+
+      const areaClaimedSocketPercent = userMe.clicks - userOpponent.clicks
+
+      setAreaClaimedPercentage(areaClaimedSocketPercent)
+    })
+
+    // const addUnits = isBoostActive0 || isBoostActive1 ? 2 : 1
+
+    return () => {
+      socket.off('joinedRoom')
+      socket.off('clickUpdate')
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!roomId) return
+    socket.emit('get_roomUsers', {
+      roomId: roomId,
+    })
+  }, [roomId])
 
   useEffect(() => {
     timeouts.current.forEach(clearTimeout)
@@ -95,13 +152,12 @@ export const BattleMainScene = ({
   useEffect(() => {
     if (!isCountdownCompleted) return
 
-    const intervalId = setInterval(() => {
-      setAreaClaimedPercentage((prev) => prev - 1)
-    }, 150)
-
-    return () => {
-      clearInterval(intervalId)
-    }
+    // const intervalId = setInterval(() => {
+    //   setAreaClaimedPercentage((prev) => prev - 1)
+    // }, 150)
+    // return () => {
+    //   clearInterval(intervalId)
+    // }
   }, [isCountdownCompleted])
 
   useEffect(() => {
@@ -189,7 +245,8 @@ export const BattleMainScene = ({
         <div className="relative flex flex-col h-full flex-1 items-center justify-between mask-[linear-gradient(to_bottom,transparent_0%,black_1%,black_99%,transparent_100%)]">
           <BattleCard
             isFindingUser={isStartFindingOpponent}
-            nickname={opponentNickname}
+            nickname={opponentUserData?.nickname}
+            photoUrl={opponentUserData?.photoUrl}
             isMe={false}
             areaClaimedPercent={areaClaimedPercent}
             isRow={isMorphAnimation}
@@ -233,7 +290,8 @@ export const BattleMainScene = ({
             )}
           />
           <BattleCard
-            nickname={myNickname}
+            nickname={myUserInfo?.username}
+            photoUrl={myUserInfo?.photo_url}
             isRow={isMorphAnimation}
             isBgVisible={!isCardBgAnimationStart}
             areaClaimedPercent={areaClaimedPercent}
@@ -260,8 +318,7 @@ export const BattleMainScene = ({
             <BattleGameControlsPanel
               disabled={!isCountdownCompleted}
               onClick={() => {
-                const addUnits = isBoostActive0 || isBoostActive1 ? 2 : 1
-                setAreaClaimedPercentage((prev) => prev + addUnits)
+                socket.emit('click', { roomId, userId: myUserInfo?.id })
               }}
               onBoostActivate={() => {
                 if (!isBoostActive0) {

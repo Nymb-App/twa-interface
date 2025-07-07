@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => ({
         filename: 'bundle-analyzer-report.html',
         gzipSize: true,
         brotliSize: true,
+        template: 'flamegraph',
       }),
   ].filter(Boolean),
 
@@ -59,7 +60,7 @@ export default defineConfig(({ mode }) => ({
       'honest-corruption-grab-leu.trycloudflare.com',
       'e658-37-1-204-162.ngrok-free.app',
       'administrator-sole-implementing-obvious.trycloudflare.com',
-      'rebates-cruises-art-serious.trycloudflare.com',
+      'exams-repeated-faq-connecticut.trycloudflare.com',
     ],
   },
 

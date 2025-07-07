@@ -14,6 +14,7 @@ export const BattleCard = ({
   isBgVisible = true,
   className,
   classNameBg,
+  photoUrl,
 }: {
   showElectricsLines?: boolean
   nickname?: string
@@ -24,6 +25,7 @@ export const BattleCard = ({
   isBgVisible?: boolean
   className?: string
   classNameBg?: string
+  photoUrl?: string
 }) => {
   return (
     <div
@@ -94,8 +96,8 @@ export const BattleCard = ({
             !isMe && !isRow && 'shadow-[0px_0px_59.8px_#8C35FB]',
           )}
           nickName={nickname}
-          src="/roulette-icons/default.webp"
-          label={nickname.slice(0, 2)}
+          src={photoUrl || '/roulette-icons/default.webp'}
+          label={photoUrl ? '' : nickname.slice(0, 2)}
         />
       ) : (
         <div className="absolute size-[104px] bottom-20 animate-battle-finding-dots-pulse">
@@ -176,7 +178,7 @@ const BattleAvatarCard = ({
             isRow && 'text-sm',
           )}
         >
-          {label || 'NA'}
+          {label}
         </span>
       </motion.div>
 

@@ -5,14 +5,26 @@ import { BattleCard } from './opponent-battle-card'
 import { BattleBustButtons } from './battle-bust-buttons'
 import { cn } from '@/utils'
 
+export interface IJoinGameData {
+  userId: number
+  roomId: string
+  nickname: string
+  photoUrl: string
+  bet: number
+}
+
+export type TOpponentUserData = Omit<IJoinGameData, 'roomId'>
+
 export const BattleIntroScene = ({
   onFindingOpponent,
   className,
   onAnimationEnd,
+  onJoinGame,
 }: {
   onFindingOpponent?: () => void
   className?: string
   onAnimationEnd?: React.AnimationEventHandler<HTMLDivElement>
+  onJoinGame?: (bet: number) => void
 }) => {
   const [isAnimationsBustButtonsEnd, setIsAnimationsBustButtonsEnd] =
     useState(false)
@@ -22,6 +34,8 @@ export const BattleIntroScene = ({
 
   const [isIntroSceneAnimationsStart, setIsIntroSceneAnimationsStart] =
     useState(false)
+
+  const [bet, setBet] = useState(60 * 60 * 24 * 7)
 
   return (
     <div
@@ -56,7 +70,7 @@ export const BattleIntroScene = ({
         />
       </header>
       <div className="flex-1">
-        <BattleGameRewardSection />
+        <BattleGameRewardSection onChange={setBet} />
         <BattleBustButtons
           className={cn(
             'opacity-0 animate-battle-preview-bust-fade',
@@ -71,10 +85,11 @@ export const BattleIntroScene = ({
         </p>
         <ActionButton
           onClick={() => {
+            onJoinGame?.(bet)
             setIsIntroSceneAnimationsStart(true)
           }}
           className={cn(
-            'font-pixel text-[#121312] rounded-[16px] uppercase opacity-0 animate-battle-preview-find-button-fade',
+            'font-pixel text-[#121312] rounded-[16px] uppercase disabled:opacity-50 disabled:cursor-not-allowed opacity-0 animate-battle-preview-find-button-fade',
             !isAnimationsFindButtonEnd && 'pointer-events-none',
           )}
           onAnimationEnd={() => setIsAnimationsFindButtonEnd(true)}
