@@ -101,11 +101,7 @@ function RouteComponent() {
     router,
   ])
 
-  const { makeBet, opponentInfo, myInfo } = useBattle();
-
-  const [roomId, setRoomId] = useState<string | undefined>(undefined)
-
-  const { user } = useAccount()
+  const { makeBet, opponentInfo, myInfo, roomId } = useBattle();
 
   const handleJoinGame = (bet: number) => {
     makeBet(bet);
