@@ -60,38 +60,29 @@ export function TransferTonButton({
   }, [address, isTransactionError, onError])
 
   useEffect(() => {
-    if (!isTransactionLoading) return
+    if (!isTransactionLoading) {
+      return
+    }
 
-    const controller = new AbortController()
-
-    const disableEvent = (e: Event) => {
+    const preventInteraction = (e: Event) => {
       e.preventDefault()
       e.stopPropagation()
     }
 
-    document.addEventListener('click', disableEvent, {
-      capture: true,
-      signal: controller.signal,
-    })
-    document.addEventListener('mousedown', disableEvent, {
-      capture: true,
-      signal: controller.signal,
-    })
-    document.addEventListener('mouseup', disableEvent, {
-      capture: true,
-      signal: controller.signal,
-    })
-    document.addEventListener('touchstart', disableEvent, {
-      capture: true,
-      signal: controller.signal,
-    })
-    document.addEventListener('touchend', disableEvent, {
-      capture: true,
-      signal: controller.signal,
+    const eventsToBlock: Array<keyof DocumentEventMap> = [
+      'pointerdown',
+      'click',
+      'keydown',
+    ]
+
+    eventsToBlock.forEach((event) => {
+      document.addEventListener(event, preventInteraction, { capture: true })
     })
 
     return () => {
-      controller.abort()
+      eventsToBlock.forEach((event) => {
+        document.removeEventListener(event, preventInteraction, { capture: true })
+      })
     }
   }, [isTransactionLoading])
 
@@ -143,7 +134,7 @@ export function TransferTonButton({
       {isTransactionLoading &&
         createPortal(
           <div
-            className="h-screen w-full fixed top-0 left-0 z-[100000]"
+            className="bg-black/50 h-screen w-full fixed top-0 left-0 z-[100000]"
             aria-hidden="true"
           />,
           document.body,
