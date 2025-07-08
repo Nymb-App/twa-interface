@@ -35,14 +35,14 @@ export function ItemTime({ className }: { className?: string }) {
     if (radioValue === '1 year') return 27
   }, [radioValue])
   const itemName = useMemo(() => {
-    if (radioValue === '1 day') return 'time_one_day'
+    if (radioValue === '1 day') return 'time'
     if (radioValue === '1 week') return 'time_one_week'
     if (radioValue === '1 year') return 'time_one_year'
   }, [radioValue])
   const { buyItem } = useShop()
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-time">
       <DrawerTrigger
         className={cn(
           'w-full h-[128px] bg-gradient-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016] rounded-2xl p-[1px] cursor-pointer outline-none',
@@ -138,7 +138,7 @@ export function ItemTime({ className }: { className?: string }) {
                 className={cn(
                   'font-pixel py-1.5 px-6 rounded-[8px] cursor-pointer text-xs uppercase',
                   radioValue === option
-                    ? 'border border-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)]'
+                    ? 'outline outline-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)]'
                     : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
@@ -190,10 +190,10 @@ export function ItemTime({ className }: { className?: string }) {
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
             recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
-            amount={1}
+            amount={amount ?? 0.87}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
             onTransferSuccess={async (hash) => {
-              toast.success('Energy restored')
+              toast.success('Time purchased')
               await buyItem(itemName as TShopItem, hash)
             }}
             onConnect={() => {

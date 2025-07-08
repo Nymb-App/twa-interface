@@ -20,12 +20,17 @@ export const Route = createFileRoute('/minigames/slide')({
 })
 
 export function RouteComponent() {
-  const defaultMinutesWinAmount = 2
+  const { accountQuery } = useAccountMe()
+
+  const defaultMinutesWinAmount = useMemo(() => {
+    if (!accountQuery.data) return 2
+    return accountQuery.data.lvl === 12 ? 2 : 12 - accountQuery.data.lvl + 2
+  }, [accountQuery.data])
+
   const defaultX2DoubleAmount = defaultMinutesWinAmount * 2
   const defaultX2TimerDuration = 8_000
 
   const { finishGameMutation } = useSlidesMinigame()
-  const { accountQuery } = useAccountMe()
 
   const [minutesWinAmount, setMinutesWinAmount] = useState<number>(2)
   const [minutesWinned, setMinutesWinned] = useState<number>(0)
