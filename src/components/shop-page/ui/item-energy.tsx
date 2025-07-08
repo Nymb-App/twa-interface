@@ -22,6 +22,7 @@ import { TonIcon } from '@/assets/icons/ton'
 import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
+import { CloseIcon } from '@/assets/icons/close'
 
 export function ItemEnergy({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -66,6 +67,12 @@ export function ItemEnergy({ className }: { className?: string }) {
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
+        >
+          <CloseIcon />
+        </button>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel text-white text-2xl">
             RESTORE ENERGY
@@ -163,28 +170,6 @@ export function ItemEnergy({ className }: { className?: string }) {
           </TransferTonButton>
         </DrawerFooter>
       </DrawerContent>
-      {/* <GateDrawerContent
-                title="restore energy"
-                description="Get what you want right now"
-                footerButton={
-                    <ActionButton className="font-pixel text-[#121312] rounded-[16px] uppercase">
-                        <span className="flex items-center gap-2">
-                            pay <TonIcon fill="black" /> 0.87 restore energy
-                        </span>
-                    </ActionButton>
-                }
-            >
-                <ShopExchangeCard
-                    item="energy"
-                    itemValueReward="1000"
-                    itemValuePay="0.87"
-                    className="mt-[-35px] pt-[34px] pb-[10px]"
-                    src="/shop-energy-img.webp"
-                    classNameContainerImage="bg-[url('/shop-energy-bg.webp')] bg-no-repeat bg-[center_calc(50%_-_10px)] w-full bg-[size:100%_100%]"
-                    classNameImage="relative left-1/2 -translate-x-1/2 top-[-20px]"
-                    flickeringGridColor="#A119FF"
-                />
-            </GateDrawerContent> */}
     </Drawer>
   )
 }

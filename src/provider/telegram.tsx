@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useMatches, useRouter } from '@tanstack/react-router';
+import { useMatches, useRouter } from '@tanstack/react-router'
 import {
   backButton,
   closingBehavior,
@@ -9,97 +9,106 @@ import {
   miniApp,
   swipeBehavior,
   viewport,
-} from '@telegram-apps/sdk';
-import { useEffect } from 'react';
-import type { ReactNode } from 'react';
-import { ENV } from '@/lib/constants';
+} from '@telegram-apps/sdk'
+import { useEffect } from 'react'
+import type { ReactNode } from 'react'
+import { ENV } from '@/lib/constants'
+import { useBattle } from '@/hooks/api/use-battle'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
-  const router = useRouter();
-  const pathnames = useMatches();
+  const router = useRouter()
+  const pathnames = useMatches()
+  const { isSocketConnected, forceDisconnect } = useBattle()
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
 
   useEffect(() => {
     if (ENV === 'production' && !isTMA()) {
-      router.navigate({ to: '/auth-error' });
-      return;
+      router.navigate({ to: '/auth-error' })
+      return
     }
 
-    (async () => {
+    ;(async () => {
       if (isTMA()) {
-        init();
-        miniApp.mountSync();
+        init()
+        miniApp.mountSync()
 
         // fullscreen mode - ON
         if (viewport.mount.isAvailable()) {
-          await viewport.mount();
+          await viewport.mount()
         }
         if (viewport.requestFullscreen.isAvailable()) {
-          await viewport.requestFullscreen();
+          await viewport.requestFullscreen()
         }
 
         // enable closing behavior - ON
         if (closingBehavior.mount.isAvailable()) {
-          await closingBehavior.mount();
+          await closingBehavior.mount()
         }
         if (closingBehavior.mount.isAvailable()) {
-          await closingBehavior.enableConfirmation();
+          await closingBehavior.enableConfirmation()
         }
 
         // disable swipe mode - ON
         if (swipeBehavior.mount.isAvailable()) {
-          await swipeBehavior.mount();
+          await swipeBehavior.mount()
         }
         if (swipeBehavior.disableVertical.isAvailable()) {
-          await swipeBehavior.disableVertical();
+          await swipeBehavior.disableVertical()
         }
 
         if (miniApp.setBackgroundColor.isAvailable()) {
-          miniApp.setBackgroundColor('#121312');
+          miniApp.setBackgroundColor('#121312')
         }
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   /** ***************************************************************/
   /*                        TWA Back Button                        */
   /** ***************************************************************/
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (await isTMA()) {
         if (backButton.mount.isAvailable()) {
-          await backButton.mount();
+          await backButton.mount()
         }
 
         if (
-          (pathnames[1].pathname === '/' || pathnames[1].pathname === '/home') &&
+          (pathnames[1].pathname === '/' ||
+            pathnames[1].pathname === '/home') &&
           backButton.hide.isAvailable()
         ) {
-          await backButton.hide();
+          await backButton.hide()
         } else {
           if (backButton.show.isAvailable()) {
-            await backButton.show();
+            await backButton.show()
           }
         }
 
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
             if (pathnames[1].pathname === '/unlock-gate') {
-              router.navigate({ to: '/gate' });
-              return;
+              router.navigate({ to: '/gate' })
+              return
             }
             if (pathnames[1].pathname === '/send-gift') {
-              router.navigate({ to: '/frens' });
-              return;
+              router.navigate({ to: '/frens' })
+              return
             }
-            router.navigate({ to: '/home' });
-          });
+            if (
+              isSocketConnected &&
+              pathnames[1].pathname !== '/minigames/battle'
+            ) {
+              forceDisconnect()
+            }
+            router.navigate({ to: '/home' })
+          })
         }
       }
-    })();
-  }, [pathnames]);
+    })()
+  }, [pathnames])
 
-  return children;
-};
+  return children
+}

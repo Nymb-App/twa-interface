@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
+import { useMatches, useRouter } from '@tanstack/react-router'
 import { useAccount } from './use-account'
 import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene'
 
@@ -7,6 +8,12 @@ const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
 const socket = io(`${baseUrl}/battle`, {
   autoConnect: false, // Рекомендуется для лучшего контроля
 })
+
+interface IGameFinishedData {
+  roomId: string
+  winner: TOpponentUserData
+  loser: TOpponentUserData
+}
 
 // WebSocket hook with TanStack Query integration
 export function useBattle() {
@@ -28,6 +35,9 @@ export function useBattle() {
   const [isMeViewMyOpponent0, setIsMeViewMyOpponent0] = useState(false)
 
   const [isMeViewMyOpponent1, setIsMeViewMyOpponent1] = useState(false)
+
+  const router = useRouter()
+  const pathnames = useMatches()
 
   useEffect(() => {
     if (!socket.connected) {
@@ -57,7 +67,6 @@ export function useBattle() {
       if (me !== undefined || me !== null) {
         setMyInfo(me)
       }
-
       setRoomId(data.roomId)
     })
 
@@ -89,6 +98,35 @@ export function useBattle() {
       }
     })
 
+    socket.on('game_finished', (data: IGameFinishedData) => {
+      console.log(`Game finished`, data)
+
+      const isWinner = data.winner.userId === account?.id
+
+      const me = isWinner ? data.winner : data.loser
+
+      const opponent = isWinner ? data.loser : data.winner
+
+      const betConverter: any = {
+        '86400': '1 day',
+        '604800': '1 week',
+        '2592000': '1 month',
+        '31536000': '1 year',
+      }
+
+      router.navigate({
+        to: '/minigames/battle-result',
+        search: {
+          myNickname: me.nickname,
+          opponentNickname: opponent.nickname,
+          isMeWinner: isWinner,
+          bet: betConverter[String(data.winner.bet)],
+          photoUrl: me.photoUrl,
+          opponentPhotoUrl: opponent.photoUrl,
+        },
+      })
+    })
+
     socket.on('error', () => {
       console.log('socket error')
     })
@@ -103,10 +141,18 @@ export function useBattle() {
       socket.off('game_started')
       socket.off('me_view_my_opponent')
       socket.off('click_update')
+      socket.off('game_finished')
       socket.off('error')
       socket.off('disconnect')
     }
   }, [])
+
+  useEffect(() => {
+    console.log(pathnames)
+    if (pathnames[1].pathname !== '/minigames/battle') {
+      forceDisconnect()
+    }
+  }, [pathnames])
 
   useEffect(() => {
     if (isMeViewMyOpponent0 && isMeViewMyOpponent1) {
@@ -174,6 +220,17 @@ export function useBattle() {
     [account],
   )
 
+  const forceDisconnect = useCallback(() => {
+    socket.emit('force_disconnect')
+    socket.disconnect()
+  }, [])
+
+  const isFinishedGame = useCallback((roomId_: string) => {
+    socket.emit('finish_game', {
+      roomId: roomId_,
+    })
+  }, [])
+
   return {
     makeBet,
     leaveGame,
@@ -185,5 +242,8 @@ export function useBattle() {
     isMeReady,
     isMeViewMyOpponent,
     isMeViewMyOpponentEmit,
+    isFinishedGame,
+    forceDisconnect,
+    isSocketConnected: socket.connected,
   }
 }

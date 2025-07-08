@@ -2,8 +2,7 @@
 import { useEffect, useState } from 'react'
 import { BattleAnimatedBoostButton } from './battle-animated-boost-button'
 import { BattleAnimatedPushButton } from './battle-animated-push-button'
-
-const isSecondaryBustActive = true
+import { useBuyExtraBoost } from '@/hooks/api/use-shop'
 
 export const BattleGameControlsPanel = ({
   disabled = true,
@@ -23,6 +22,8 @@ export const BattleGameControlsPanel = ({
 
   const [isReversing0, setIsReversing0] = useState(false)
   const [isReversing1, setIsReversing1] = useState(false)
+
+  const { extraBoostCount } = useBuyExtraBoost()
 
   // Обратный отсчёт
   useEffect(() => {
@@ -81,7 +82,7 @@ export const BattleGameControlsPanel = ({
       />
       <BattleAnimatedBoostButton
         fillPercentage={fillPercent1}
-        isDisabled={!isSecondaryBustActive || disabled}
+        isDisabled={extraBoostCount <= 0 || disabled}
         onClick={() => {
           setIsReversing1(true)
           onBoostActivate?.()

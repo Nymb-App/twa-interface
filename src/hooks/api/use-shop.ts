@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { useCallback } from 'react'
-import { useTransferTon } from '../use-transfer-ton'
-import { useMint } from '../use-mint'
+import { useCallback, useMemo } from 'react'
 import { useApi } from './use-api'
+import { useAccountMe } from './use-account'
 
 export type TShopItem = 'energy' | 'time' | 'time_one_week' | 'time_one_year'
 // interface IShopItem {
@@ -13,8 +12,6 @@ export type TShopItem = 'energy' | 'time' | 'time_one_week' | 'time_one_year'
 
 export function useShop() {
   const { post, get } = useApi()
-  const { collectionData } = useMint()
-  const { transfer } = useTransferTon()
 
   const {
     data: items,
@@ -37,7 +34,7 @@ export function useShop() {
         hash,
       })
     },
-    [transfer, collectionData, items],
+    [items],
   )
 
   return {
@@ -47,5 +44,25 @@ export function useShop() {
       isError: isItemsError,
     },
     buyItem,
+  }
+}
+
+export function useBuyExtraBoost() {
+  const { post } = useApi()
+
+  const { accountQuery } = useAccountMe()
+
+  const buyExtraBoost = useCallback(async (hash: string) => {
+    return await post('/shop/buy_extra_boost', { hash })
+  }, [])
+
+  const extraBoostCount = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.extraBustCount) return 0
+    return accountQuery.data.extraBustCount
+  }, [accountQuery.data])
+
+  return {
+    buyExtraBoost,
+    extraBoostCount,
   }
 }

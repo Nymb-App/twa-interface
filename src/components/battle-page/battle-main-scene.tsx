@@ -20,6 +20,7 @@ export const BattleMainScene = ({
   myInfo,
   onBattleClick,
   onCountdownCompleted,
+  onGameFinished,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
@@ -28,6 +29,7 @@ export const BattleMainScene = ({
   myInfo: TOpponentUserData | null
   onBattleClick?: (isX2Active: boolean) => void
   onCountdownCompleted?: () => void
+  onGameFinished?: () => void
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
@@ -170,6 +172,7 @@ export const BattleMainScene = ({
                     intervalDelay={1000}
                     precision={0}
                     onComplete={() => {
+                      onGameFinished?.()
                       router.navigate({
                         to: '/minigames/battle-result',
                         search: {

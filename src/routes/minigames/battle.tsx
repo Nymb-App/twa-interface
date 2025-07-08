@@ -38,16 +38,16 @@ function RouteComponent() {
     click,
     isMeReady,
     clickX2,
-    isMeViewMyOpponent,
-    isMeViewMyOpponentEmit,
+    leaveGame,
+    isFinishedGame,
   } = useBattle()
 
   const resetGame = () => {
     setIsStartFindingOpponent(false)
     setIsStartFindingOpponentAnimationEnd(false)
     setIsWinningResult(false)
-
     setIsReset(true)
+    if (roomId) leaveGame(roomId)
   }
 
   const handleJoinGame = (bet: number) => {
@@ -94,7 +94,7 @@ function RouteComponent() {
   useEffect(() => {
     if (areaClaimedPercent >= 80 || areaClaimedPercent <= -80) {
       const isWinner = areaClaimedPercent >= 80
-
+      if (roomId) isFinishedGame(roomId)
       setIsWinningResult(true)
       router.navigate({
         to: '/minigames/battle-result',
@@ -153,6 +153,11 @@ function RouteComponent() {
                 isMeReady(roomId)
               }, 1000)
               return () => clearTimeout(timer)
+            }
+          }}
+          onGameFinished={() => {
+            if (roomId) {
+              isFinishedGame(roomId)
             }
           }}
           onBattleClick={(isX2Active: boolean) => {

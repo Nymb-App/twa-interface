@@ -24,6 +24,7 @@ import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { CloseIcon } from '@/assets/icons/close'
 
 export function ItemTime({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -84,6 +85,12 @@ export function ItemTime({ className }: { className?: string }) {
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
+        >
+          <CloseIcon />
+        </button>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel text-white text-2xl">
             TIME RESERVE

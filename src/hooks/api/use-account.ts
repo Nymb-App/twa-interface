@@ -83,6 +83,7 @@ interface IAccountQuery {
   }
   time: number
   avatarId: string
+  extraBustCount?: number
 }
 
 interface IGetLvlStats {
