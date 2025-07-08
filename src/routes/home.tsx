@@ -1,6 +1,14 @@
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
-import { Suspense, lazy, memo, useCallback, useEffect, useState } from 'react'
+import {
+  Suspense,
+  lazy,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
 import { PageLayout } from '@/components/ui/page-layout'
@@ -8,6 +16,7 @@ import ProgressSection from '@/components/home-page/progress-section'
 import { CardContent } from '@/components/ui/card-content'
 import { FarmingButton } from '@/components/ui/button-farming'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 const SwipeCard = lazy(() =>
   import('@/components/swipe-card').then((m) => ({ default: m.SwipeCard })),
@@ -27,6 +36,13 @@ const HomeComponent = memo(function HomeComponent() {
   }, [])
 
   const { dailyRewardsQuery } = useCheckIn()
+
+  const { accountQuery } = useAccountMe()
+
+  const accountTime = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.time) return 0
+    return accountQuery.data.time * 1000
+  }, [accountQuery.data])
 
   const router = useRouter()
 
@@ -57,7 +73,7 @@ const HomeComponent = memo(function HomeComponent() {
       <ProgressSection isClaimStart={isClaimStart} />
       <div className="mt-5 px-4">
         <div className="grid grid-cols-2 gap-2">
-          <Link to="/minigames/slide">
+          <Link to="/minigames/slide" disabled={accountTime < Date.now()}>
             {isAndroid ? (
               <>
                 <Suspense
@@ -90,7 +106,7 @@ const HomeComponent = memo(function HomeComponent() {
             )}
           </Link>
 
-          <Link to="/minigames/battle">
+          <Link to="/minigames/battle" disabled={accountTime < Date.now()}>
             <Suspense
               fallback={<Skeleton className="w-full h-[232px] rounded-2xl" />}
             >
@@ -104,10 +120,16 @@ const HomeComponent = memo(function HomeComponent() {
           </Link>
         </div>
         <div className="mt-2 mb-[26px] grid grid-cols-2 gap-2">
-          <CardContent link="/shop" />
-          <CardContent isLocked link="/check-in" />
+          <Link to="/shop">
+            <CardContent />
+          </Link>
+          <CardContent isLocked />
         </div>
-        <FarmingButton onClick={handleClaimClick} className="w-full" />
+        <FarmingButton
+          onClick={handleClaimClick}
+          className="w-full disabled:cursor-not-allowed disabled:from-white disabled:to-[#999999]"
+          disabled={accountTime < Date.now()}
+        />
       </div>
     </PageLayout>
   )

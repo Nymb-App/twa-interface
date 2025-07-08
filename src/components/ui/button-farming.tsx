@@ -17,9 +17,11 @@ import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
 export function FarmingButton({
   className,
   onClick,
+  disabled,
 }: {
   className?: string
   onClick?: () => void
+  disabled?: boolean
 }) {
   const [isFarming, setIsFarming] = useState(false)
   const [isClaiming, setIsClaiming] = useState(false)
@@ -88,16 +90,25 @@ export function FarmingButton({
   }, [onClick, setFinishAt, claimReward])
 
   if (!isFarming && !isClaiming) {
-    return <FarmingDefaultButton className={className} onClick={handleStart} />
+    return (
+      <FarmingDefaultButton
+        className={className}
+        onClick={handleStart}
+        disabled={disabled}
+      />
+    )
   }
 
   if (isFarming && startedAt === 0) {
-    return <FarmingDefaultLoadingButton className={className} />
+    return (
+      <FarmingDefaultLoadingButton className={className} disabled={disabled} />
+    )
   }
 
   if (isFarming && startedAt > 0) {
     return (
       <FarmingProgressButton
+        disabled={disabled}
         startAt={startedAt}
         duration={duration}
         className={className}
@@ -112,6 +123,7 @@ export function FarmingButton({
   if (isClaiming) {
     return (
       <FarmingClaimButton
+        disabled={disabled}
         time={reward}
         className={className}
         onClick={handleClaimClick}
@@ -123,12 +135,18 @@ export function FarmingButton({
 function FarmingDefaultButton({
   className,
   onClick,
+  disabled,
 }: {
   className?: string
   onClick?: () => void
+  disabled?: boolean
 }) {
   return (
-    <ActionButton onClick={onClick} className={cn(className)}>
+    <ActionButton
+      onClick={onClick}
+      className={cn(className)}
+      disabled={disabled}
+    >
       <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
       <span className="mix-blend-difference">START FARMING</span>
     </ActionButton>
@@ -139,10 +157,12 @@ function FarmingClaimButton({
   className,
   time,
   onClick,
+  disabled,
 }: {
   className?: string
   time: number
   onClick?: () => void
+  disabled?: boolean
 }) {
   const hours = String(Math.floor(time / 3600000)).padStart(2, '0')
   const minutes = String(Math.floor((time % 3600000) / 60000)).padStart(2, '0')
@@ -152,6 +172,7 @@ function FarmingClaimButton({
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={cn(
         'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]',
         className,
@@ -169,11 +190,13 @@ function FarmingProgressButton({
   startAt,
   duration,
   onComplete,
+  disabled,
 }: {
   className?: string
   startAt: number
   duration: number
   onComplete?: () => void
+  disabled?: boolean
 }) {
   return (
     <Countdown
@@ -187,7 +210,7 @@ function FarmingProgressButton({
         )
         return (
           <button
-            disabled
+            disabled={disabled}
             className={cn(
               'relative h-[56px] overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
               className,
@@ -213,9 +236,11 @@ function FarmingProgressButton({
 function FarmingDefaultLoadingButton({
   className,
   onClick,
+  disabled,
 }: {
   className?: string
   onClick?: () => void
+  disabled?: boolean
 }) {
   return (
     <ActionButton
@@ -224,7 +249,7 @@ function FarmingDefaultLoadingButton({
         'bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
         className,
       )}
-      disabled
+      disabled={disabled}
     >
       <LoaderIcon
         className="mix-blend-difference animate-spin"
