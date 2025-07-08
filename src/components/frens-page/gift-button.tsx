@@ -1,5 +1,6 @@
 import { GiftIcon } from '@/assets/icons/gift'
 import { ActionButton } from '@/components/ui/action-button'
+import { cn } from '@/utils'
 
 export const SendGiftButton = ({
   value = 10,
@@ -21,7 +22,11 @@ export const SendGiftButton = ({
       >
         <GiftIcon fill="white" />
         <span className="ml-3 font-pixel text-[#FFFFFF] font-[400] uppercase text-[18px] leading-[24px]">
-          send gift {value} {unit}
+          send gift{' '}
+          <span className={cn(String(value).startsWith('1') && 'mr-2')}>
+            {value}
+          </span>{' '}
+          {unit}
         </span>
       </ActionButton>
     </div>

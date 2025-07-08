@@ -1,25 +1,16 @@
-import { lazy, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/utils'
 import { useAuth } from '@/hooks/api/use-api'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { HeroSection } from '@/components/hero-section'
+import { MintSection } from '@/components/mint-section'
 
 export const Route = createFileRoute('/')({
   component: App,
 })
-
-const HeroSection = lazy(() =>
-  import('@/components/hero-section').then((m) => ({ default: m.HeroSection })),
-)
-const MintSection = lazy(() =>
-  import('@/components/mint-section').then((m) => ({ default: m.MintSection })),
-)
-const FlickeringGrid = lazy(() =>
-  import('@/components/magicui/flickering-grid').then((m) => ({
-    default: m.FlickeringGrid,
-  })),
-)
 
 function App() {
   const [isAnimationCountdownFinished, setAnimationCountdownFinished] =

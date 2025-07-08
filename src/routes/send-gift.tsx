@@ -4,34 +4,18 @@ import { shareURL } from '@telegram-apps/sdk'
 import { useRive } from '@rive-app/react-canvas'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { cn } from '@/utils'
+import { cn, convertGiftValueToSeconds } from '@/utils'
 // import { SendGift } from '@/assets/icons/send-gift'
 import { RussianRoulette } from '@/components/ui/russian-roullete'
 import { GiftSelector } from '@/components/frens-page/gift-selector'
 import { SendGiftButton } from '@/components/frens-page/gift-button'
 import { ActionButton } from '@/components/ui/action-button'
 import { useReferrals } from '@/hooks/api/use-referrals'
+import { ElectricLines } from '@/components/ui/electric-lines'
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
 })
-
-const convertGiftValueToSeconds = (value: number, unit: string) => {
-  switch (unit) {
-    case 'weeks':
-      return value * 60 * 60 * 24 * 7
-    case 'days':
-      return value * 60 * 60 * 24
-    case 'hours':
-      return value * 60 * 60
-    case 'minutes':
-      return value * 60
-    case 'seconds':
-      return value
-    default:
-      return value
-  }
-}
 
 function RouteComponent() {
   const [giftValue, setGiftValue] = useState(24)
@@ -46,6 +30,17 @@ function RouteComponent() {
   const [referralsPhotoUrl, setReferralsPhotoUrl] = useState<Array<string>>([])
 
   const winnerIndex = Math.floor(Math.random() * referralsNickName.length)
+
+  const [isRiveAnimationEnd, setIsRiveAnimationEnd] = useState(false)
+
+  useEffect(() => {
+    if (isFinishRoulette) {
+      const riveAnimationTimer = setTimeout(() => {
+        setIsRiveAnimationEnd(true)
+      }, 5000)
+      return () => clearTimeout(riveAnimationTimer)
+    }
+  }, [isFinishRoulette])
 
   useEffect(() => {
     if (myReferrals) {
@@ -92,7 +87,40 @@ function RouteComponent() {
             </>
           )}
         </h1>
-        <RiveComponent className="size-126 absolute top-[-104px] z-1 animate-[wiggle_3s_ease-in-out_infinite] left-[51%] -translate-x-1/2 rotate-[15deg]" />
+        <RiveComponent
+          className={cn(
+            'pointer-events-none size-126 absolute top-[-94px] z-1 left-[51%] -translate-x-1/2 rotate-[15deg]',
+            !isFinishRoulette && 'animate-[wiggle_3s_ease-in-out_infinite]',
+            isFinishRoulette &&
+              'delay-2000 transition-all duration-5000 opacity-0',
+          )}
+        />
+        <div
+          className={cn(
+            'opacity-0 transition-all duration-1500 font-400 text-center -mt-[40px] absolute top-[145px]',
+            isRiveAnimationEnd && 'opacity-100',
+          )}
+        >
+          <span
+            className={cn(
+              'font-pixel text-[64px] leading-[120%] [text-shadow:0px_0px_60px_#A55EFF] bg-gradient-to-b from-[#BE8CFF] to-[#8C35FB] bg-clip-text text-transparent',
+              String(giftValue).startsWith('1') && 'mr-6',
+            )}
+          >
+            {giftValue}
+          </span>
+          <p className="font-pixel text-[20px] leading-[24px] mt-2 uppercase">
+            {giftUnits} gets
+          </p>
+          {isRiveAnimationEnd && (
+            <ElectricLines
+              svg1ClassName="top-[-120px] left-[180px]"
+              svg2ClassName="top-[-80px] left-[-30px]"
+              svg3ClassName="top-[30px] left-[-40px]"
+              svg4ClassName="top-[70px]"
+            />
+          )}
+        </div>
       </header>
 
       {!isStartRoulette ? (
@@ -115,12 +143,12 @@ function RouteComponent() {
             isStartRoulette={isStartRoulette}
             items={referralsNickName.map((_, index) => (
               <AvatarCard
-                classNameForSpan="mix-blend-difference"
                 key={index}
                 src={referralsPhotoUrl[index]}
                 label={''}
               />
             ))}
+            // riveAnimation={riveGift || undefined}
             winnerIndex={winnerIndex}
             duration={30000}
             gap={50}

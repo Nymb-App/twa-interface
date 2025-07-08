@@ -8,39 +8,31 @@ import { BattleCard } from './opponent-battle-card'
 import { BattleAnimatedMiddleLine } from './battle-animated-middle-line'
 import { BattleScene } from './battle-scene'
 import { BattleTitle } from './battle-preview-screen'
-import type { Socket } from 'socket.io-client'
 import type { TOpponentUserData } from './battle-intro-scene'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
-// import { useAccount } from '@/hooks/api/use-account'
-// import { useBattle } from '@/hooks/api/use-battle'
 
 export const BattleMainScene = ({
   areaClaimedPercent = 0,
   onAreaClaimedPercentageChange,
   onForcedExitBattle,
-  socket,
-  roomId,
   opponentInfo,
   myInfo,
+  onBattleClick,
+  onCountdownCompleted,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
-  socket?: Socket
-  roomId?: string
   opponentInfo: TOpponentUserData | null
   myInfo: TOpponentUserData | null
+  onBattleClick?: (isX2Active: boolean) => void
+  onCountdownCompleted?: () => void
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
     setIsForcedExitBattleAnimationFinished,
   ] = useState(false)
-
-  // const myNickname = ''
-
-  const opponentNickname = 'igorivanov'
-  const myNickname = 'tevial'
 
   const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(true) // true
@@ -60,8 +52,6 @@ export const BattleMainScene = ({
 
   const [countdownTarget, setCountdownTarget] = useState<number | null>(null)
 
-  // const { opponentInfo, myInfo } = useBattle();
-
   const router = useRouter()
 
   const timeouts = useRef<Array<number>>([])
@@ -73,7 +63,7 @@ export const BattleMainScene = ({
 
   useEffect(() => {
     if (!opponentInfo) {
-      return;
+      return
     }
 
     timeouts.current.forEach(clearTimeout)
@@ -114,14 +104,13 @@ export const BattleMainScene = ({
 
   useEffect(() => {
     if (!isCountdownCompleted) return
-
-    // const intervalId = setInterval(() => {
-    //   setAreaClaimedPercentage((prev) => prev - 1)
-    // }, 150)
-    // return () => {
-    //   clearInterval(intervalId)
-    // }
+    onCountdownCompleted?.()
   }, [isCountdownCompleted])
+
+  useEffect(() => {
+    if (!myInfo || !opponentInfo) return
+    setAreaClaimedPercentage(myInfo.clicks - opponentInfo.clicks)
+  }, [myInfo, opponentInfo])
 
   useEffect(() => {
     onAreaClaimedPercentageChange?.(areaClaimedPercentage)
@@ -184,10 +173,12 @@ export const BattleMainScene = ({
                       router.navigate({
                         to: '/minigames/battle-result',
                         search: {
-                          myNickname: myNickname,
-                          opponentNickname: opponentNickname,
+                          myNickname: myInfo?.nickname ?? 'Unknown',
+                          opponentNickname: opponentInfo?.nickname ?? 'Unknown',
                           isMeWinner: areaClaimedPercentage > 0,
                           bet: battleGameRewardRadioValue,
+                          photoUrl: myInfo?.photoUrl ?? '',
+                          opponentPhotoUrl: opponentInfo?.photoUrl ?? '',
                         },
                       })
                     }}
@@ -281,7 +272,7 @@ export const BattleMainScene = ({
             <BattleGameControlsPanel
               disabled={!isCountdownCompleted}
               onClick={() => {
-                // socket.emit('click', { roomId, userId: myInfo?.id })
+                onBattleClick?.(isBoostActive0 || isBoostActive1)
               }}
               onBoostActivate={() => {
                 if (!isBoostActive0) {

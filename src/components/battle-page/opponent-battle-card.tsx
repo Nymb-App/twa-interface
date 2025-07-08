@@ -185,7 +185,7 @@ const BattleAvatarCard = ({
       <motion.p
         layout
         transition={{ duration: duration, ease: 'easeInOut' }}
-        className={cn('text-center max-w-[120px] truncate', isRow && 'text-sm')}
+        className={cn('text-center max-w-[280px] truncate', isRow && 'text-sm')}
       >
         {nickName}
       </motion.p>

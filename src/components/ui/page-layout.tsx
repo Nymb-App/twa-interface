@@ -2,7 +2,7 @@ import { Link, useMatches } from '@tanstack/react-router'
 import { isMobile } from 'react-device-detect'
 import { Toaster } from 'sonner'
 import { useEffect } from 'react'
-import { SendGiftButton } from './send-gift-button'
+// import { SendGiftButton } from './send-gift-button'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
 import { CheckInButton } from './check-in-button'
 import { JumpToTheNextGateButton } from './jump-to-the-next-gate-button'
@@ -27,7 +27,7 @@ export const PageLayout = ({
   useUnlockGateCloseButton = false,
   className,
   classNameContent,
-  setIsStartRoulette,
+  // setIsStartRoulette,
   setIsShowSendGiftActionButtons,
 }: {
   children: ReactNode
@@ -39,7 +39,7 @@ export const PageLayout = ({
   useUnlockGateCloseButton?: boolean
   className?: string
   classNameContent?: string
-  setIsStartRoulette?: (value: boolean) => void
+  // setIsStartRoulette?: (value: boolean) => void
   setIsShowSendGiftActionButtons?: (value: boolean) => void
 }) => {
   const linkItems = [
@@ -84,9 +84,9 @@ export const PageLayout = ({
         {children}
       </main>
       {useFooter && <NavigationMenu linkItems={linkItems} />}
-      {useSendButton && (
+      {/* {useSendButton && (
         <SendGiftButton setIsStartRoulette={setIsStartRoulette} />
-      )}
+      )} */}
       {useSendGiftActionButtons && (
         <SendGiftActionButtons
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}

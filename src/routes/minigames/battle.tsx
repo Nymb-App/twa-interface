@@ -4,7 +4,6 @@ import { PageLayout } from '@/components/ui/page-layout'
 import { AppContext } from '@/context/app-context'
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
 import { BattleMainScene } from '@/components/battle-page/battle-main-scene'
-import { useAccount } from '@/hooks/api/use-account'
 import { useBattle } from '@/hooks/api/use-battle'
 
 export const Route = createFileRoute('/minigames/battle')({
@@ -26,12 +25,22 @@ function RouteComponent() {
     setIsStartFindingOpponentAnimationEnd,
   ] = useState(false)
   const [isWinningResult, setIsWinningResult] = useState(false)
+  // const [isCountdownCompleted, setIsCountdownCompleted] = useState(false)
 
   const [areaClaimedPercent, setAreaClaimedPercent] = useState(0)
   const router = useRouter()
 
-  const opponentNickname = 'igorivanov'
-  const myNickname = 'tevial'
+  const {
+    makeBet,
+    opponentInfo,
+    myInfo,
+    roomId,
+    click,
+    isMeReady,
+    clickX2,
+    isMeViewMyOpponent,
+    isMeViewMyOpponentEmit,
+  } = useBattle()
 
   const resetGame = () => {
     setIsStartFindingOpponent(false)
@@ -39,6 +48,10 @@ function RouteComponent() {
     setIsWinningResult(false)
 
     setIsReset(true)
+  }
+
+  const handleJoinGame = (bet: number) => {
+    makeBet(bet)
   }
 
   useEffect(() => {
@@ -86,26 +99,22 @@ function RouteComponent() {
       router.navigate({
         to: '/minigames/battle-result',
         search: {
-          myNickname: myNickname,
-          opponentNickname: opponentNickname,
+          myNickname: myInfo.nickname,
+          opponentNickname: opponentInfo?.nickname ?? 'Unknown',
           isMeWinner: isWinner,
           bet: battleGameRewardRadioValue,
+          photoUrl: myInfo.photoUrl,
+          opponentPhotoUrl: opponentInfo?.photoUrl ?? 'Unknown',
         },
       })
     }
   }, [
     areaClaimedPercent,
     battleGameRewardRadioValue,
-    myNickname,
-    opponentNickname,
+    myInfo,
+    opponentInfo,
     router,
   ])
-
-  const { makeBet, opponentInfo, myInfo, roomId } = useBattle();
-
-  const handleJoinGame = (bet: number) => {
-    makeBet(bet);
-  }
 
   return (
     <PageLayout
@@ -133,13 +142,28 @@ function RouteComponent() {
         <BattleMainScene
           opponentInfo={opponentInfo}
           myInfo={myInfo}
-          roomId={roomId}
           areaClaimedPercent={areaClaimedPercent}
           onForcedExitBattle={resetGame}
           onAreaClaimedPercentageChange={(percent) =>
             setAreaClaimedPercent(percent)
           }
-          // socket={socket}
+          onCountdownCompleted={() => {
+            if (roomId) {
+              const timer = setTimeout(() => {
+                isMeReady(roomId)
+              }, 1000)
+              return () => clearTimeout(timer)
+            }
+          }}
+          onBattleClick={(isX2Active: boolean) => {
+            if (roomId) {
+              if (isX2Active) {
+                clickX2(roomId)
+              } else {
+                click(roomId)
+              }
+            }
+          }}
         />
       )}
     </PageLayout>

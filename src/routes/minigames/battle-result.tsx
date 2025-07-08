@@ -14,6 +14,8 @@ export const Route = createFileRoute('/minigames/battle-result')({
     opponentNickname: String(search.opponentNickname ?? ''),
     isMeWinner: Boolean(search.isMeWinner),
     bet: String(search.bet ?? ''),
+    photoUrl: String(search.photoUrl ?? ''),
+    opponentPhotoUrl: String(search.opponentPhotoUrl ?? ''),
   }),
   component: RouteComponent,
 })
@@ -32,27 +34,33 @@ function RouteComponent() {
 
   return (
     <ResultScene
-      myNickname={search.myNickname}
+      // myNickname={search.myNickname}
       opponentNickname={search.opponentNickname}
       bet={search.bet}
       isMeWinner={search.isMeWinner}
       onNewBattle={() => router.navigate({ to: '/minigames/battle' })}
+      photoUrl={search.photoUrl}
+      opponentPhotoUrl={search.opponentPhotoUrl}
     />
   )
 }
 
 const ResultScene = ({
-  myNickname = 'Unknown',
+  // myNickname = 'Unknown',
   opponentNickname = 'Unknown',
   bet,
   onNewBattle,
   isMeWinner = false,
+  photoUrl,
+  opponentPhotoUrl,
 }: {
-  myNickname?: string
+  // myNickname?: string
   opponentNickname?: string
   bet?: string
   onNewBattle?: () => void
   isMeWinner?: boolean
+  photoUrl?: string
+  opponentPhotoUrl?: string
 }) => {
   const rewardTimeValue = bet
 
@@ -92,12 +100,9 @@ const ResultScene = ({
             )}
           >
             <img
-              src={'/roulette-icons/default.webp'}
+              src={photoUrl || '/roulette-icons/default.webp'}
               className="w-full h-auto object-cover absolute"
             />
-            <h2 className="absolute left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
-              {myNickname.slice(0, 2)}
-            </h2>
           </div>
           <div className="relative flex flex-col gap-2 items-center justify-center top-[110px]">
             {isMeWinner ? (
@@ -155,8 +160,8 @@ const ResultScene = ({
               <AvatarCard
                 className="size-[32px]"
                 classNameForSpan="text-[#FFFFFF] text-sm pr-1"
-                src="/roulette-icons/user-2.webp"
-                label={opponentNickname.slice(0, 2)}
+                src={opponentPhotoUrl || '/roulette-icons/user-2.webp'}
+                label={''}
               />
               <span className="font-pixel text-sm font-[400] text-[#FFFFFF] uppercase">
                 {opponentNickname}

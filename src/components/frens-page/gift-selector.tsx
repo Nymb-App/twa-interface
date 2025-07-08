@@ -15,10 +15,10 @@ export const GiftSelector = ({
   maxValue = 100,
   className,
 }: {
-  onAdd?: (value: number) => void
-  onSubtract?: (value: number) => void
-  onUnitChange?: (value: TUnit) => void
-  onValueChange?: (value: number) => void
+  onAdd?: (SelectorValue: number) => void
+  onSubtract?: (SelectorValue: number) => void
+  onUnitChange?: (SelectorValue: TUnit) => void
+  onValueChange?: (SelectorValue: number) => void
   value?: number
   maxValue?: number
   unit?: TUnit | string
@@ -58,7 +58,12 @@ export const GiftSelector = ({
             size={32}
           />
         </HandlerButton>
-        <span className="text-[#8633F1] font-[400] text-[48px] leading-[120%] [text-shadow:0px_0px_60px_#A55EFF]">
+        <span
+          className={cn(
+            'text-[#8633F1] font-[400] text-[48px] mr-3 leading-[120%] [text-shadow:0px_0px_60px_#A55EFF]',
+            String(count).startsWith('1') && 'mr-6',
+          )}
+        >
           {count}
         </span>
         <HandlerButton
@@ -87,8 +92,8 @@ export const GiftSelector = ({
       <RadioGroup
         defaultValue="weeks"
         value={currentUnit}
-        onValueChange={(value: string) => {
-          const newUnit = value as TUnit
+        onValueChange={(selectorValue: string) => {
+          const newUnit = selectorValue as TUnit
           setCurrentUnit(newUnit)
           onUnitChange?.(newUnit)
         }}

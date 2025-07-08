@@ -4,6 +4,7 @@ import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
 import { BattleCard } from './opponent-battle-card'
 import { BattleBustButtons } from './battle-bust-buttons'
 import { cn } from '@/utils'
+import { useAccount } from '@/hooks/api/use-account'
 
 export interface IJoinGameData {
   userId: number
@@ -36,6 +37,8 @@ export const BattleIntroScene = ({
   const [isIntroSceneAnimationsStart, setIsIntroSceneAnimationsStart] =
     useState(false)
 
+  const { user: meUserData } = useAccount()
+
   const [bet, setBet] = useState(60 * 60 * 24 * 7)
 
   return (
@@ -66,7 +69,8 @@ export const BattleIntroScene = ({
         />
         <BattleCard
           showElectricsLines={false}
-          nickname="tevial"
+          nickname={meUserData?.username}
+          photoUrl={meUserData?.photo_url}
           className="opacity-0 animate-battle-intro-slide-card-fade"
         />
       </header>

@@ -131,3 +131,20 @@ export function calculateDaysBetween(date1: Date, date2: Date): number {
   const MS_IN_DAY = 1000 * 60 * 60 * 24
   return Math.floor((utc2 - utc1) / MS_IN_DAY)
 }
+
+export const convertGiftValueToSeconds = (value: number, unit: string) => {
+  switch (unit) {
+    case 'weeks':
+      return value * 60 * 60 * 24 * 7
+    case 'days':
+      return value * 60 * 60 * 24
+    case 'hours':
+      return value * 60 * 60
+    case 'minutes':
+      return value * 60
+    case 'seconds':
+      return value
+    default:
+      return value
+  }
+}
