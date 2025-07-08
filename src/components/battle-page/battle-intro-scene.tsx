@@ -4,7 +4,7 @@ import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
 import { BattleCard } from './opponent-battle-card'
 import { BattleBustButtons } from './battle-bust-buttons'
 import { cn } from '@/utils'
-import { useAccount } from '@/hooks/api/use-account'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 
 export interface IJoinGameData {
   userId: number
@@ -38,6 +38,7 @@ export const BattleIntroScene = ({
     useState(false)
 
   const { user: meUserData } = useAccount()
+  const { accountQuery } = useAccountMe()
 
   const [bet, setBet] = useState(60 * 60 * 24 * 7)
 
@@ -89,14 +90,17 @@ export const BattleIntroScene = ({
           The opponent will be <br /> randomly selected. Commission 1%
         </p>
         <ActionButton
+          className={cn(
+            'font-pixel text-[#121312] rounded-[16px] uppercase opacity-0 animate-battle-preview-find-button-fade disabled:cursor-not-allowed disabled:from-[#ADFA4B]/50 disabled:to-[#B6FF00]/50',
+            !isAnimationsFindButtonEnd && 'pointer-events-none',
+          )}
+          disabled={
+            accountQuery.data && accountQuery.data.time * 1000 < Date.now()
+          }
           onClick={() => {
             onJoinGame?.(bet)
             setIsIntroSceneAnimationsStart(true)
           }}
-          className={cn(
-            'font-pixel text-[#121312] rounded-[16px] uppercase disabled:opacity-50 disabled:cursor-not-allowed opacity-0 animate-battle-preview-find-button-fade',
-            !isAnimationsFindButtonEnd && 'pointer-events-none',
-          )}
           onAnimationEnd={() => setIsAnimationsFindButtonEnd(true)}
         >
           finding the opponent

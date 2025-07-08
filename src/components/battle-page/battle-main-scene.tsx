@@ -12,6 +12,13 @@ import type { TOpponentUserData } from './battle-intro-scene'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
 
+const betConverter: any = {
+  '86400': 'days',
+  '604800': 'weeks',
+  '2592000': 'months',
+  '31536000': 'years',
+}
+
 export const BattleMainScene = ({
   areaClaimedPercent = 0,
   onAreaClaimedPercentageChange,
@@ -57,6 +64,7 @@ export const BattleMainScene = ({
   const router = useRouter()
 
   const timeouts = useRef<Array<number>>([])
+  const forcedExitTimeoutRef = useRef<number | null>(null)
 
   const addTimeout = (fn: () => void, delay: number) => {
     const id = window.setTimeout(fn, delay)
@@ -64,7 +72,15 @@ export const BattleMainScene = ({
   }
 
   useEffect(() => {
+    if (forcedExitTimeoutRef.current) {
+      clearTimeout(forcedExitTimeoutRef.current)
+      forcedExitTimeoutRef.current = null
+    }
+
     if (!opponentInfo) {
+      forcedExitTimeoutRef.current = window.setTimeout(() => {
+        onForcedExitBattle?.()
+      }, 30000)
       return
     }
 
@@ -89,7 +105,7 @@ export const BattleMainScene = ({
       timeouts.current.forEach(clearTimeout)
       timeouts.current = []
     }
-  }, [opponentInfo])
+  }, [opponentInfo, onForcedExitBattle])
 
   useEffect(() => {
     if (isBoostActive0 || isBoostActive1) {
@@ -150,11 +166,9 @@ export const BattleMainScene = ({
                 Winning:
               </dt>
               <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px] uppercase">
-                <span className="mr-1 text-lg">
-                  {battleGameRewardRadioValue.split(' ')[0]}
-                </span>
+                <span className="mr-1 text-lg">1</span>
                 <span className="text-xs">
-                  {battleGameRewardRadioValue.split(' ')[1]}
+                  {myInfo?.bet && betConverter[myInfo.bet]}
                 </span>
               </dd>
             </div>

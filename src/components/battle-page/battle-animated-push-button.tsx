@@ -13,12 +13,12 @@ export const BattleAnimatedPushButton = ({
   const [isPressed, setIsPressed] = useState(false)
 
   return (
-    <motion.button
+    <button
       disabled={isDisabled}
       className={cn(
-        'relative rounded-full overflow-hidden',
+        'relative rounded-full overflow-hidden transition-all duration-100',
         !isDisabled &&
-          'bg-[radial-gradient(farthest-side,_transparent_85%,_rgba(182,255,0,0.2)_100%)]',
+          'active:scale-95 bg-[radial-gradient(farthest-side,_transparent_85%,_rgba(182,255,0,0.2)_100%)]',
         isDisabled && '',
       )}
       onClick={() => {
@@ -32,8 +32,6 @@ export const BattleAnimatedPushButton = ({
           )
         }
       }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: 'spring', stiffness: 200 }}
     >
       <svg
         width="120"
@@ -471,6 +469,6 @@ export const BattleAnimatedPushButton = ({
         }
         transition={{ duration: 0.6, ease: 'easeOut' }}
       />
-    </motion.button>
+    </button>
   )
 }

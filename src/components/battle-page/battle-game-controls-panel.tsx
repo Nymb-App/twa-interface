@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { useEffect, useState } from 'react'
 import { BattleAnimatedBoostButton } from './battle-animated-boost-button'
 import { BattleAnimatedPushButton } from './battle-animated-push-button'

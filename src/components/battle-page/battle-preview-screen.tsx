@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Container } from '../ui/container'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from '../ui/electric-lines'
 import type { ReactNode } from 'react'
 import { cn } from '@/utils'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const BattleTitle = ({
   text,
@@ -35,6 +36,58 @@ export function BattleGameRewardSection({
   const [battleGameRewardRadioValue, setBattleGameRewardRadioValue] =
     useState('1 weeks')
 
+  const { accountQuery } = useAccountMe()
+
+  const betOptions = {
+    '1 days': 86400_000,
+    '1 weeks': 604800_000,
+    '1 month': 2592000_000,
+    '1 years': 31536000_000,
+  }
+
+  const { defaultValue, disabledOptions } = useMemo(() => {
+    if (!accountQuery.data) {
+      return {
+        defaultValue: '1 weeks',
+        disabledOptions: {},
+      }
+    }
+
+    const remainingTimeMs = accountQuery.data.time * 1000 - Date.now()
+
+    const disabled: Record<string, boolean> = {}
+    const availableOptions: Array<string> = []
+
+    for (const label of Object.keys(betOptions)) {
+      const duration = betOptions[label as keyof typeof betOptions]
+      if (remainingTimeMs >= duration) {
+        availableOptions.push(label)
+        disabled[label] = false
+      } else {
+        disabled[label] = true
+      }
+    }
+
+    let newDefaultValue: string | undefined = undefined
+
+    if (availableOptions.includes('1 weeks')) {
+      newDefaultValue = '1 weeks'
+    } else if (availableOptions.length > 0) {
+      newDefaultValue = availableOptions[availableOptions.length - 1]
+    }
+
+    return {
+      defaultValue: newDefaultValue,
+      disabledOptions: disabled,
+    }
+  }, [accountQuery.data])
+
+  useEffect(() => {
+    if (defaultValue) {
+      setBattleGameRewardRadioValue(defaultValue)
+    }
+  }, [defaultValue])
+
   useEffect(() => {
     switch (battleGameRewardRadioValue) {
       case '1 days':
@@ -52,7 +105,7 @@ export function BattleGameRewardSection({
       default:
         onChange?.(60 * 60 * 24 * 7)
     }
-  }, [battleGameRewardRadioValue])
+  }, [battleGameRewardRadioValue, onChange])
 
   return (
     <section className={cn('relative', className)}>
@@ -65,30 +118,30 @@ export function BattleGameRewardSection({
           </div>
           <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
           <RadioGroup
-            defaultValue="1"
+            defaultValue={defaultValue}
             value={battleGameRewardRadioValue}
-            onValueChange={(value) => {
-              setBattleGameRewardRadioValue(value)
-            }}
-            className="flex gap-3 justify-center"
+            onValueChange={setBattleGameRewardRadioValue}
+            className="grid grid-cols-4 gap-2"
           >
-            {['1 days', '1 weeks', '1 month', '1 years'].map((option) => (
-              <div key={option} className="">
+            {Object.keys(betOptions).map((label) => (
+              <div key={label}>
                 <RadioGroupItem
-                  value={option}
-                  id={option}
+                  value={label}
+                  id={label}
                   className="hidden peer"
+                  disabled={disabledOptions[label]}
                 />
                 <label
-                  htmlFor={option}
+                  htmlFor={label}
                   className={cn(
-                    'backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[9.5px] font-[400] uppercase',
-                    battleGameRewardRadioValue === option
+                    'block text-center backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[9.5px] font-[400] uppercase',
+                    battleGameRewardRadioValue === label
                       ? 'border border-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)] backdrop-blur-sm'
                       : 'border border-transparent starboard-result-block-bg text-[#FFFFFF66]',
+                    disabledOptions[label] && 'opacity-50 cursor-not-allowed',
                   )}
                 >
-                  {option}
+                  {label}
                 </label>
               </div>
             ))}

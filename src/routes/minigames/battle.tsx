@@ -1,7 +1,6 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
-import { AppContext } from '@/context/app-context'
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
 import { BattleMainScene } from '@/components/battle-page/battle-main-scene'
 import { useBattle } from '@/hooks/api/use-battle'
@@ -18,14 +17,13 @@ function RouteComponent() {
   const [, setIsOpeningAnimationDelayed] = useState(false)
   const [, setIsReset] = useState(true)
 
-  const { battleGameRewardRadioValue } = useContext(AppContext)
+  // const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(false)
   const [
     isStartFindingOpponentAnimationEnd,
     setIsStartFindingOpponentAnimationEnd,
   ] = useState(false)
   const [isWinningResult, setIsWinningResult] = useState(false)
-  // const [isCountdownCompleted, setIsCountdownCompleted] = useState(false)
 
   const [areaClaimedPercent, setAreaClaimedPercent] = useState(0)
   const router = useRouter()
@@ -96,25 +94,25 @@ function RouteComponent() {
       const isWinner = areaClaimedPercent >= 80
       if (roomId) isFinishedGame(roomId)
       setIsWinningResult(true)
+      const betConverter: any = {
+        '86400': '1 day',
+        '604800': '1 week',
+        '2592000': '1 month',
+        '31536000': '1 year',
+      }
       router.navigate({
         to: '/minigames/battle-result',
         search: {
           myNickname: myInfo.nickname,
           opponentNickname: opponentInfo?.nickname ?? 'Unknown',
           isMeWinner: isWinner,
-          bet: battleGameRewardRadioValue,
+          bet: betConverter[myInfo.bet],
           photoUrl: myInfo.photoUrl,
           opponentPhotoUrl: opponentInfo?.photoUrl ?? 'Unknown',
         },
       })
     }
-  }, [
-    areaClaimedPercent,
-    battleGameRewardRadioValue,
-    myInfo,
-    opponentInfo,
-    router,
-  ])
+  }, [areaClaimedPercent, myInfo, opponentInfo, router])
 
   return (
     <PageLayout
@@ -122,7 +120,6 @@ function RouteComponent() {
       className="flex flex-col justify-between bg-transparent pb-0 overflow-hidden"
       classNameContent="flex flex-col justify-between flex-1"
     >
-      {/* <button onClick={handleJoinGame}>Join room</button> */}
       {!isWinningResult && !isStartFindingOpponentAnimationEnd && (
         <BattleIntroScene
           className="flex-1"
@@ -140,6 +137,7 @@ function RouteComponent() {
       )}
       {isStartFindingOpponent && (
         <BattleMainScene
+          key={roomId}
           opponentInfo={opponentInfo}
           myInfo={myInfo}
           areaClaimedPercent={areaClaimedPercent}
