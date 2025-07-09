@@ -25,63 +25,35 @@ import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
+import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
+import { TicketIcon } from '@/assets/icons/ticket'
 
-export function ItemTicket({ className }: { className?: string }) {
+export function ItemTicket({ className, onClick }: { className?: string, onClick?: () => void }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [radioValue, setRadioValue] = useState('1 week')
+  const [radioValue, setRadioValue] = useState('5 tickets')
   const amount = useMemo(() => {
-    if (radioValue === '1 day') return 0.87
-    if (radioValue === '1 week') return 4.7
-    if (radioValue === '1 year') return 27
+    if (radioValue === '1 ticket') return 1
+    if (radioValue === '5 tickets') return 4
+    if (radioValue === '10 tickets') return 8
   }, [radioValue])
   const itemName = useMemo(() => {
-    if (radioValue === '1 day') return 'time'
-    if (radioValue === '1 week') return 'time_one_week'
-    if (radioValue === '1 year') return 'time_one_year'
+    if (radioValue === '1 ticket') return 'ticket'
+    if (radioValue === '5 ticket') return 'five_tickets'
+    if (radioValue === '10 year') return 'ten_tickets'
   }, [radioValue])
   const { buyItem } = useShop()
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-ticket">
       <DrawerTrigger
+        onClick={onClick}
         className={cn(
-          'w-full h-[128px] bg-gradient-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016] rounded-2xl p-[1px] cursor-pointer outline-none',
+          'w-fit rounded-2xl cursor-pointer outline-none inline-flex justify-center items-center gap-3 py-4 px-6 text-[#B6FF00] bg-[#232A13]',
           className,
         )}
       >
-        <div className="relative flex items-end gap-2 bg-[#0E140E] rounded-2xl px-4 py-2 h-full">
-          <FlickeringGrid
-            className="absolute left-1/2 -translate-x-1/2 w-full h-full top-0 mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
-            squareSize={2}
-            gridGap={12}
-            color="#B6FF00"
-            maxOpacity={1}
-            flickerChance={0.3}
-            autoResize={false}
-          />
-          <div className="absolute left-1/2 -translate-x-1/2 w-full h-full top-0 overflow-hidden rounded-2xl">
-            <div className="absolute left-0 top-[-45px] bg-[#B6FF00] blur-[60px] w-1/3 h-[50px] rounded-full" />
-            <div className="absolute right-0 top-[-45px] bg-[#B6FF00] blur-[60px] w-1/3 h-[50px] rounded-full" />
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 top-[-32px] w-full">
-            <img
-              src="/shop-clock-img.webp"
-              alt="time"
-              className="absolute left-1/2 -translate-x-1/2 w-[96px] h-auto top-0"
-            />
-          </div>
-
-          <div className="inline-flex justify-between w-full font-pixel">
-            <span className="text-white text-base">TIME RESERVE</span>
-            <span className="text-[#B6FF00] text-lg inline-flex items-center gap-1">
-              <span>1D</span>
-              <span className="text-[#B6FF00]/40 text-xs">/</span>
-              <span>1W</span>
-              <span className="text-[#B6FF00]/40 text-xs">/</span>
-              <span>1Y</span>
-            </span>
-          </div>
-        </div>
+        <ShoppingBagIcon />
+        Buy 1 ticket and open the gate 
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
@@ -93,7 +65,7 @@ export function ItemTicket({ className }: { className?: string }) {
         </button>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel text-white text-2xl">
-            TIME RESERVE
+            TICKETS RESERVE
           </DrawerTitle>
           <DrawerDescription className="text-white/60 font-inter text-sm">
             Get what you want right now
@@ -111,22 +83,20 @@ export function ItemTicket({ className }: { className?: string }) {
             autoResize={false}
           />
           <div className="absolute left-1/2 -translate-x-1/2 bg-[#0e2c08] blur-[60px] size-[126px] rounded-full" />
-          <img
-            src="/shop-clock-img.webp"
-            alt="time"
+          <TicketIcon
             className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0"
           />
         </div>
 
         <RadioGroup
-          defaultValue="1 week"
+          defaultValue="5 tickets"
           value={radioValue}
           onValueChange={(value) => {
             setRadioValue(value)
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"
         >
-          {['1 day', '1 week', '1 year'].map((option) => (
+          {['1 ticket', '5 tickets', '10 tickets'].map((option) => (
             <div key={option}>
               <RadioGroupItem
                 value={option}
@@ -150,13 +120,13 @@ export function ItemTicket({ className }: { className?: string }) {
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-[#B6FF00] text-3xl text-center">+1</span>
+            <span className="text-[#B6FF00] text-3xl text-center">+{radioValue === '1 ticket' ? 1 : radioValue === '5 tickets' ? 5 : 10}</span>
             <span className="text-white/40 text-xs text-center">
-              {radioValue === '1 day'
-                ? 'DAY'
-                : radioValue === '1 week'
-                  ? 'WEEK'
-                  : 'YEAR'}
+              {radioValue === '1 ticket'
+                ? 'TICKET'
+                : radioValue === '5 tickets'
+                  ? 'TICKETS'
+                  : 'TICKETS'}
             </span>
           </div>
           <span className="text-white/40 text-5xl font-pixel">:</span>

@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -25,8 +26,9 @@ import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
+import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
 
-export function ItemTime({ className }: { className?: string }) {
+export function ItemTime({ className, onClick }: { className?: string, onClick?: () => void }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
@@ -44,53 +46,20 @@ export function ItemTime({ className }: { className?: string }) {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-time">
       <DrawerTrigger
+        onClick={onClick}
         className={cn(
-          'w-full h-[128px] bg-gradient-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016] rounded-2xl p-[1px] cursor-pointer outline-none',
+          'w-fit rounded-2xl cursor-pointer outline-none inline-flex justify-center items-center gap-3 py-4 px-6 text-[#B6FF00] bg-[#232A13]',
           className,
         )}
       >
-        <div className="relative flex items-end gap-2 bg-[#0E140E] rounded-2xl px-4 py-2 h-full">
-          <FlickeringGrid
-            className="absolute left-1/2 -translate-x-1/2 w-full h-full top-0 mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
-            squareSize={2}
-            gridGap={12}
-            color="#B6FF00"
-            maxOpacity={1}
-            flickerChance={0.3}
-            autoResize={false}
-          />
-          <div className="absolute left-1/2 -translate-x-1/2 w-full h-full top-0 overflow-hidden rounded-2xl">
-            <div className="absolute left-0 top-[-45px] bg-[#B6FF00] blur-[60px] w-1/3 h-[50px] rounded-full" />
-            <div className="absolute right-0 top-[-45px] bg-[#B6FF00] blur-[60px] w-1/3 h-[50px] rounded-full" />
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 top-[-32px] w-full">
-            <img
-              src="/shop-clock-img.webp"
-              alt="time"
-              className="absolute left-1/2 -translate-x-1/2 w-[96px] h-auto top-0"
-            />
-          </div>
-
-          <div className="inline-flex justify-between w-full font-pixel">
-            <span className="text-white text-base">TIME RESERVE</span>
-            <span className="text-[#B6FF00] text-lg inline-flex items-center gap-1">
-              <span>1D</span>
-              <span className="text-[#B6FF00]/40 text-xs">/</span>
-              <span>1W</span>
-              <span className="text-[#B6FF00]/40 text-xs">/</span>
-              <span>1Y</span>
-            </span>
-          </div>
-        </div>
+        <ShoppingBagIcon />
+        Buy 1 year and open the gate 
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
-        <button
-          onClick={() => setIsOpen(false)}
-          className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
-        >
+        <DrawerClose className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer">
           <CloseIcon />
-        </button>
+        </DrawerClose>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel text-white text-2xl">
             TIME RESERVE

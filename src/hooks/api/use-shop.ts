@@ -3,12 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { useApi } from './use-api'
 import { useAccountMe } from './use-account'
 
-export type TShopItem = 'energy' | 'time' | 'time_one_week' | 'time_one_year'
-// interface IShopItem {
-//   item: TShopItem;
-//   pricePerUnit: number;
-//   amountInUnits: number;
-// }
+export type TShopItem = 'energy' | 'time' | 'time_one_week' | 'time_one_year' | 'ticket' | 'five_tickets' | 'ten_tickets'
 
 export function useShop() {
   const { post, get } = useApi()

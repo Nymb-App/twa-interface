@@ -16,6 +16,7 @@ import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
+import { LvlUpButton } from '../gate-page/ui/lvl-up-button'
 
 export const PageLayout = ({
   children,
@@ -92,7 +93,7 @@ export const PageLayout = ({
       {useCheckInButton && (
         <CheckInButton className="fixed bottom-6 w-[calc(100%-2rem)] left-1/2 -translate-x-1/2 max-w-[450px] z-50" />
       )}
-      {useJumpToTheNextGateButton && <JumpToTheNextGateButton />}
+      {useJumpToTheNextGateButton && <LvlUpButton />}
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster
         className="!mb-18"
