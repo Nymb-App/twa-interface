@@ -25,14 +25,14 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger
         className={cn(
-          "font-semibold cursor-pointer bg-[#FFFFFF]/4 rounded-[14px] h-full flex justify-center items-center gap-3 px-3 bg-[url('/minigames/boost-green-bg.webp')] bg-no-repeat bg-[position:bottom_left_-1px]",
+          "font-semibold cursor-pointer bg-[#b6ff00]/10 rounded-[14px] h-full flex justify-center items-center gap-3 px-3 bg-[url('/minigames/boost-green-bg.webp')] bg-no-repeat bg-[position:bottom_left_-1px]",
           className,
         )}
       >
         <span className="ml-[6px]">
           <BustIcon strokeColor="#B6FF00" />
         </span>
-        <span className="text-[#B6FF00]">1 Extra</span>
+        <span className="text-[#B6FF00]">Get Extra</span>
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">

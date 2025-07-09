@@ -111,7 +111,7 @@ const ResultScene = ({
                 CHAMPION!
               </h2>
             ) : (
-              <h2 className="relative font-pixel text-sm text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
+              <h2 className="relative font-pixel text-[24px] text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
                 don't worry!
               </h2>
             )}
