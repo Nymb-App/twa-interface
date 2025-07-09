@@ -1,8 +1,10 @@
-import { Suspense } from 'react'
-
-import { Skeleton } from './ui/skeleton'
-import MintWidget from './mint-widget'
+import { useMemo } from 'react'
 import { Card } from '@/components/ui/card'
+import { TransferTonButton } from './transfer-ton-button'
+import { toast } from 'sonner'
+import { useMint } from '@/hooks/use-mint'
+import { useAccountMe } from '@/hooks/api/use-account'
+import { useTonConnectUI } from '@tonconnect/ui-react'
 
 function LazyVideo({
   src,
@@ -30,9 +32,33 @@ function LazyVideo({
   )
 }
 
-// const MintWidget = lazy(() => import('@/components/mint-widget'))
 
 export function MintSection() {
+  const { mintProgress, mint } = useMint();
+  const { accountQuery } = useAccountMe();
+
+  const isMinted = useMemo(() => {
+    if (accountQuery.data) {
+      return accountQuery.data.isEarlyAccessMinted;
+    }
+    return false;
+  }, [accountQuery.data]);
+
+  const isNftProgressFinished = useMemo(() => {
+    return mintProgress?.progress === 100;
+  }, [mintProgress?.progress]);
+
+  const isMintDisabled = useMemo(() => {
+    if (accountQuery.data) {
+      return accountQuery.data.isEarlyAccessMinted;
+    }
+    if (mintProgress?.progress === 100) {
+      return true;
+    }
+    return false;
+  }, [accountQuery.data, mintProgress?.progress]);
+
+
   return (
     <section className="relative text-white px-3">
       <div className="animate-slide-up-fade-3">
@@ -64,13 +90,28 @@ export function MintSection() {
               <span>MINTED</span>
             </div>
           </div>
-          <Suspense
-            fallback={
-              <Skeleton className="h-10 w-[80%] mx-auto mt-6 rounded-lg" />
-            }
-          >
-            <MintWidget />
-          </Suspense>
+          <div className="mt-6 px-4">
+            <TransferTonButton
+              disabled={isMintDisabled}
+              recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
+              amount={1}
+              className="py-4 w-full inline-flex justify-center items-center gap-1"
+              onTransferSuccess={async (hash) => {
+                toast.success('NFT purchased!')
+                await mint(hash);
+              }}
+              onError={(e) => {
+                if (e.message === 'Insufficient balance') {
+                  toast.error('Insufficient balance')
+                } else {
+                  toast.error('An error occurred during payment')
+                }
+              }}
+            >
+              {isMinted ? 'ALREADY MINTED' : isNftProgressFinished ? 'NO NFT LEFT' : 'MINT FOR 1 TON'}
+            </TransferTonButton>
+
+          </div>
           <span className="mt-3 text-white/60 mx-auto">One for the wallet</span>
         </Card>
       </div>

@@ -23,7 +23,7 @@ export interface IAccountMe {
   voucherCode: string
   referrerId0: number
   referrerId1: number
-  isEarlyAccessMinted: boolean
+  isEarlyAccessMinted?: boolean
   photoUrl: string
   isAdmin: boolean
   farming: IFarming
@@ -84,6 +84,7 @@ interface IAccountQuery {
   time: number
   avatarId: string
   extraBustCount?: number
+  isEarlyAccessMinted?: boolean
 }
 
 interface IGetLvlStats {
