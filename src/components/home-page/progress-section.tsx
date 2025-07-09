@@ -37,23 +37,21 @@ interface EnergyCounterProps {
  * Handles the countdown animation between two timestamps
  */
 const AnimatedCountdown = ({ from, to, onEnd }: AnimatedCountdownProps) => {
-  const [animatedTimestamp, setAnimatedTimestamp] = useState(from * 1000)
-  const duration = 2 // seconds
+  const [animatedTime, setAnimatedTime] = useState(from)
 
   useEffect(() => {
-    const controls = animate(from * 1000, to * 1000, {
-      duration,
-      ease: 'easeOut',
-      onUpdate: (latest) => setAnimatedTimestamp(latest),
+    const controls = animate(from, to, {
+      duration: 1.5, // Animation duration in seconds
+      ease: 'linear',
+      onUpdate: (latest) => setAnimatedTime(latest),
       onComplete: onEnd,
     })
-
     return () => controls.stop()
   }, [from, to, onEnd])
 
   return (
     <Countdown
-      date={animatedTimestamp}
+      date={animatedTime * 1000}
       renderer={(props) => (
         <CountdownTimerDisplay isCountdownHeaderView {...props} />
       )}
@@ -95,11 +93,15 @@ const useCountdownTimer = (isClaimStart: boolean, accountTime?: number) => {
   const { refetch } = accountQuery
 
   useEffect(() => {
-    if (isClaimStart && accountTime !== undefined) {
-      setTimeBeforeClaim(accountTime)
+    // Запускаем refetch при каждом старте клейма
+    if (isClaimStart) {
+      // Сохраняем время только если оно еще не было сохранено
+      if (timeBeforeClaim === null && accountTime !== undefined) {
+        setTimeBeforeClaim(accountTime)
+      }
       refetch()
     }
-  }, [isClaimStart, accountTime, refetch])
+  }, [isClaimStart, accountTime, refetch, timeBeforeClaim])
 
   return { timeBeforeClaim, setTimeBeforeClaim }
 }
@@ -135,7 +137,6 @@ const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
           />
         )
       }
-
       return (
         <Countdown
           date={timeBeforeClaim * 1000}
