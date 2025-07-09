@@ -117,6 +117,13 @@ export function useAccountMe() {
     queryFn: async () => await get<IAccountQuery>('/accounts/me'),
   })
 
+  const accountClaimReferralRewardMutation = useMutation({
+    mutationFn: async () => await post('/accounts/claim_referral_reward'),
+    onSuccess: () => {
+      accountQuery.refetch()
+    },
+  })
+
   const getLvlStatsQuery = useQuery({
     queryKey: ['account', 'lvlStats'],
     queryFn: async () => await get<IGetLvlStats>('/accounts/get_lvl_stats'),
@@ -132,6 +139,7 @@ export function useAccountMe() {
     user,
     initData,
     lvlUpMutation,
+    accountClaimReferralRewardMutation,
     isLoading: getLvlStatsQuery.isLoading || accountQuery.isLoading,
   }
 }

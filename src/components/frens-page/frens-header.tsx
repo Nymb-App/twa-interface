@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import Countdown from 'react-countdown'
 import { Skeleton } from '../ui/skeleton'
+import { AnimatedCountdown } from '../home-page/progress-section'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import FrensImage from '/frens-img.webp'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
-import { TimeCountup } from '@/components/ui/countup-timer-display'
 import { useAccountMe } from '@/hooks/api/use-account'
 
 export const FrensHeader = ({
@@ -18,14 +18,19 @@ export const FrensHeader = ({
 }) => {
   const { accountQuery, isLoading } = useAccountMe()
 
-  const accountClaimedTime = useMemo(() => {
-    if (!accountQuery.data) return 0
-    return accountQuery.data.claimedTime
+  const accountClaimedTimeMs = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.claimedTime) return 0
+    return accountQuery.data.claimedTime * 1000 // milliseconds
   }, [accountQuery.data])
 
-  const accountClaimTime = useMemo(() => {
-    if (!accountQuery.data) return 0
-    return accountQuery.data.claimTime
+  const accountClaimedTimeSec = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.claimedTime) return 0
+    return accountQuery.data.claimedTime // seconds
+  }, [accountQuery.data])
+
+  const accountClaimTimeSec = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.claimTime) return 0
+    return accountQuery.data.claimTime // seconds
   }, [accountQuery.data])
 
   return (
@@ -65,20 +70,7 @@ export const FrensHeader = ({
           <Skeleton className="h-[68px] w-[50px]" />
         </div>
       )}
-      {!isLoading &&
-        accountClaimedTime &&
-        accountClaimedTime > 0 &&
-        !isClaimStart && (
-          <Countdown
-            date={Date.now() + accountClaimedTime}
-            intervalDelay={10}
-            precision={3}
-            renderer={(props: any) => (
-              <CountdownTimerDisplay isCountdownHeaderView {...props} />
-            )}
-          />
-        )}
-      {!isLoading && !accountClaimedTime && !isClaimStart && (
+      {!isLoading && !accountClaimedTimeMs && !isClaimStart && (
         <CountdownTimerDisplay
           isCountdownHeaderView
           days={0}
@@ -87,27 +79,43 @@ export const FrensHeader = ({
           seconds={0}
         />
       )}
+      {!isLoading && isClaimEnd && accountClaimedTimeMs > 0 && (
+        <Countdown
+          date={accountClaimedTimeMs}
+          intervalDelay={1000}
+          precision={3}
+          renderer={(props: any) => (
+            <CountdownTimerDisplay isCountdownHeaderView {...props} />
+          )}
+        />
+      )}
       {!isLoading &&
-        accountClaimedTime &&
-        accountClaimedTime > 0 &&
-        isClaimEnd && (
+        !isClaimStart &&
+        !isClaimEnd &&
+        accountClaimedTimeMs > 0 && (
           <Countdown
-            date={Date.now() + accountClaimedTime}
-            intervalDelay={10}
+            date={accountClaimedTimeMs}
+            intervalDelay={1000}
             precision={3}
             renderer={(props: any) => (
               <CountdownTimerDisplay isCountdownHeaderView {...props} />
             )}
           />
         )}
-
       {!isLoading && isClaimStart && !isClaimEnd && (
-        <TimeCountup
-          initialFinishAtValue={Date.now() + (accountClaimedTime ?? 0)}
-          totalEarnings={accountClaimTime ?? 0}
-          targetTimestamp={Date.now() + (accountClaimedTime ?? 0)}
-          isClaimStart={isClaimStart}
-          setIsClaimEnd={setIsClaimEnd}
+        <AnimatedCountdown
+          from={
+            accountClaimedTimeSec > 0
+              ? accountClaimedTimeSec
+              : Math.floor(Date.now() / 1000)
+          }
+          to={
+            accountClaimTimeSec +
+            (accountClaimedTimeSec > 0
+              ? accountClaimedTimeSec
+              : Math.floor(Date.now() / 1000))
+          }
+          onEnd={() => setIsClaimEnd(true)}
         />
       )}
     </header>

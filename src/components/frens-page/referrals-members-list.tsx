@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Skeleton } from '../ui/skeleton'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { cn } from '@/utils'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 const MIN_ALLOWED_TIME = 86400
 const MIN_FRENS_FOR_A_GIFT = 3
@@ -19,6 +20,13 @@ export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
     return true
   }, [meTime, referralsCount])
 
+  const { accountQuery } = useAccountMe()
+
+  const isDisabledActionButton = useMemo(() => {
+    if (!accountQuery.data) return true
+    return accountQuery.data.time * 1000 < Date.now()
+  }, [accountQuery.data])
+
   return (
     <>
       <div className="font-pixel mb-3 px-3 pt-[40px] pb-4">
@@ -30,10 +38,13 @@ export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
               `${referralsCount} frens`
             )}
           </h2>
-          <Link to="/send-gift" disabled={!isSendGiftEnabled}>
+          <Link
+            to="/send-gift"
+            disabled={!isSendGiftEnabled || isDisabledActionButton}
+          >
             <Button
               className="h-8 bg-gradient-to-b from-[#8C35FB] to-[#6602E7]"
-              disabled={!isSendGiftEnabled}
+              disabled={!isSendGiftEnabled || isDisabledActionButton}
             >
               <svg
                 width="16"

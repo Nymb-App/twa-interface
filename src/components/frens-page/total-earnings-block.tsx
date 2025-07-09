@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Button } from '../ui/button'
 import { useCountdown } from './hooks/use-countdown'
 import { cn } from '@/utils'
@@ -7,6 +8,7 @@ import {
   // NYMB_FARMING_FINISHAT_LS_KEY,
   // useFarming,
 } from '@/context/farming-context'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const TotalEarningsBlock = ({
   value,
@@ -25,6 +27,13 @@ export const TotalEarningsBlock = ({
   const currentEarnings = isClaimStart ? animatedTotalEarnings : value
   // const displayTime = convertTimestampToLargestUnit(currentEarnings, true)
   // const { setFinishAt } = useFarming()
+
+  const { accountQuery, accountClaimReferralRewardMutation } = useAccountMe()
+
+  const isDisabledActionButton = useMemo(() => {
+    if (!accountQuery.data) return true
+    return accountQuery.data.time * 1000 < Date.now()
+  }, [accountQuery.data])
 
   return (
     <div className="font-pixel starboard-result-block-bg mt-2 flex items-center justify-between rounded-[14px] p-4 font-[400] backdrop-blur-[8px]">
@@ -51,9 +60,10 @@ export const TotalEarningsBlock = ({
       </div>
       <div className="inline-flex basis-1/2 justify-center">
         <Button
-          disabled={!value || isClaimStart}
+          disabled={!value || isClaimStart || isDisabledActionButton}
           onClick={() => {
             setIsClaimStart(true)
+            accountClaimReferralRewardMutation.mutate()
             // if (
             //   Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0
             // ) {

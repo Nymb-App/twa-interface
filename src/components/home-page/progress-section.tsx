@@ -5,6 +5,7 @@ import Countdown from 'react-countdown'
 // Components
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CountdownTimerDisplay } from '../ui/countdown-timer-display'
+import { Skeleton } from '../ui/skeleton'
 import { LevelsList } from './levels-list'
 
 // Assets
@@ -36,7 +37,11 @@ interface EnergyCounterProps {
 /**
  * Handles the countdown animation between two timestamps
  */
-const AnimatedCountdown = ({ from, to, onEnd }: AnimatedCountdownProps) => {
+export const AnimatedCountdown = ({
+  from,
+  to,
+  onEnd,
+}: AnimatedCountdownProps) => {
   const [animatedTime, setAnimatedTime] = useState(from)
 
   useEffect(() => {
@@ -124,6 +129,18 @@ const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
     const isClaiming = isClaimStart && timeBeforeClaim !== null
     const newTime = account?.time
 
+    if (isAccountLoading) {
+      return (
+        <div className="flex items-center justify-center gap-6">
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+        </div>
+      )
+    }
+
     // Claim logic
     if (isClaiming) {
       if (newTime !== undefined && newTime > timeBeforeClaim) {
@@ -148,7 +165,7 @@ const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
     }
 
     // Loading state
-    if (isAccountLoading || !account?.time) {
+    if (!account?.time) {
       return (
         <CountdownTimerDisplay
           isCountdownHeaderView

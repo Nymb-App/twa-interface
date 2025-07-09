@@ -1,13 +1,15 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useMemo } from 'react'
 import { TaskCompletedSvgIcon } from '../tasks-daily-block/tasks-daily-block'
 import { InviteFrenSvgIcon, TwitterSvgIcon } from '../task-icons'
 import type { ReactNode } from 'react'
 import type { ITask } from '@/hooks/api/use-tasks'
 import { ActionButton } from '@/components/ui/action-button'
-import { cn, formatTimeReward  } from '@/utils'
+import { cn, formatTimeReward } from '@/utils'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { TWITTER_URL } from '@/constants'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export function TasksTabs() {
   const { tasksQuery, completeTask } = useTasks()
@@ -156,6 +158,13 @@ export const TaskItem = ({
   buttonActionLabel: string
   icon: ReactNode
 }) => {
+  const { accountQuery } = useAccountMe()
+
+  const isDisabledActionButton = useMemo(() => {
+    if (!accountQuery.data) return true
+    return accountQuery.data.time * 1000 < Date.now()
+  }, [accountQuery.data])
+
   return (
     <div
       className={cn(
@@ -186,8 +195,9 @@ export const TaskItem = ({
             <TaskCompletedSvgIcon />
           ) : (
             <ActionButton
+              disabled={isDisabledActionButton}
               onClick={setIsTaskCompleted}
-              className="rounded-[8px] font-[400] w-auto h-[24px] text-[#121312] uppercase leading-[16%] text-[12px]"
+              className="disabled:opacity-50 disabled:cursor-not-allowed rounded-[8px] font-[400] w-auto h-[24px] text-[#121312] uppercase leading-[16%] text-[12px]"
             >
               <span>{buttonActionLabel}</span>
             </ActionButton>
