@@ -12,6 +12,7 @@ import { SendGiftButton } from '@/components/frens-page/gift-button'
 import { ActionButton } from '@/components/ui/action-button'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { ElectricLines } from '@/components/ui/electric-lines'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
@@ -20,6 +21,7 @@ export const Route = createFileRoute('/send-gift')({
 function RouteComponent() {
   const [giftValue, setGiftValue] = useState(24)
   const [giftUnits, setGiftUnits] = useState('weeks')
+  const [daysLeftCount, setDaysLeftCount] = useState(0)
 
   const [isStartRoulette, setIsStartRoulette] = useState(false)
   const [isFinishRoulette, setIsFinishRoulette] = useState(false)
@@ -32,6 +34,23 @@ function RouteComponent() {
   const winnerIndex = Math.floor(Math.random() * referralsNickName.length)
 
   const [isRiveAnimationEnd, setIsRiveAnimationEnd] = useState(false)
+
+  const { accountQuery } = useAccountMe()
+
+  useEffect(() => {
+    if (!accountQuery.data) return
+    const secondsLeft = accountQuery.data.time || 0
+    const daysLeft = Math.floor(
+      Math.abs(secondsLeft * 1000 - Date.now()) / 86400000,
+    )
+    setDaysLeftCount(daysLeft)
+    setGiftValue(daysLeft > 24 ? 24 : daysLeft)
+    if (daysLeft >= 7) {
+      setGiftUnits('weeks')
+    } else {
+      setGiftUnits('days')
+    }
+  }, [accountQuery.data?.time])
 
   useEffect(() => {
     if (isFinishRoulette) {
@@ -128,6 +147,8 @@ function RouteComponent() {
           <GiftSelector
             value={giftValue}
             unit={giftUnits}
+            maxValue={daysLeftCount}
+            maxDays={daysLeftCount}
             onValueChange={(value) => {
               setGiftValue(value)
             }}
@@ -148,7 +169,6 @@ function RouteComponent() {
                 label={''}
               />
             ))}
-            // riveAnimation={riveGift || undefined}
             winnerIndex={winnerIndex}
             duration={30000}
             gap={50}

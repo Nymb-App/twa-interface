@@ -14,6 +14,7 @@ export const GiftSelector = ({
   unit = 'weeks',
   maxValue = 100,
   className,
+  maxDays,
 }: {
   onAdd?: (SelectorValue: number) => void
   onSubtract?: (SelectorValue: number) => void
@@ -23,13 +24,42 @@ export const GiftSelector = ({
   maxValue?: number
   unit?: TUnit | string
   className?: string
+  maxDays?: number
 }) => {
   const [count, setCount] = useState<number>(value)
   const [currentUnit, setCurrentUnit] = useState<TUnit | string>(unit)
 
+  const computedMaxValue = (() => {
+    if (maxDays === undefined) return maxValue
+    switch (currentUnit) {
+      case 'days':
+        return maxDays
+      case 'weeks':
+        return Math.floor(maxDays / 7)
+      case 'years':
+        return Math.floor(maxDays / 365)
+      default:
+        return maxValue
+    }
+  })()
+
+  // значение, отображаемое в UI, не превышает максимально доступного
+  const displayCount = Math.min(count, computedMaxValue)
+
   useEffect(() => {
     setCurrentUnit(unit)
   }, [unit])
+
+  useEffect(() => {
+    if (count > computedMaxValue) {
+      setCount(computedMaxValue)
+      onValueChange?.(computedMaxValue)
+    }
+  }, [computedMaxValue])
+
+  useEffect(() => {
+    setCount(value)
+  }, [value])
 
   return (
     <div
@@ -61,16 +91,16 @@ export const GiftSelector = ({
         <span
           className={cn(
             'text-[#8633F1] font-[400] text-[48px] mr-3 leading-[120%] [text-shadow:0px_0px_60px_#A55EFF]',
-            String(count).startsWith('1') && 'mr-6',
+            String(displayCount).startsWith('1') && 'mr-6',
           )}
         >
-          {count}
+          {displayCount}
         </span>
         <HandlerButton
-          disabled={count >= maxValue}
+          disabled={count >= computedMaxValue}
           onClick={() => {
             setCount((currentCount) => {
-              if (currentCount < maxValue) {
+              if (currentCount < computedMaxValue) {
                 const newCount = currentCount + 1
                 onAdd?.(newCount)
                 onValueChange?.(newCount)
@@ -99,25 +129,45 @@ export const GiftSelector = ({
         }}
         className="flex gap-4 justify-center"
       >
-        {(['days', 'weeks', 'years'] as Array<TUnit>).map((option) => (
-          <div key={option}>
-            <RadioGroupItem
-              value={option}
-              id={option}
-              className="hidden peer"
-            />
-            <label
-              htmlFor={option}
-              className={cn(
-                'py-1.5 px-5 rounded-[8px] cursor-pointer leading-[120%] text-[12px] text-white/50 font-[400] uppercase bg-gradient-to-b from-white/0 to-white/5',
-                currentUnit === option &&
-                  'border border-[#8C35FB] text-[#8633F1] bg-gradient-to-b from-[#8C35FB]/0 to-[#8C35FB]/40',
-              )}
-            >
-              {option}
-            </label>
-          </div>
-        ))}
+        {(['days', 'weeks', 'years'] as Array<TUnit>).map((option) => {
+          const isAvailable = (() => {
+            if (maxDays === undefined) return true
+            switch (option) {
+              case 'days':
+                return maxDays >= 1
+              case 'weeks':
+                return maxDays >= 7
+              case 'years':
+                return maxDays >= 365
+              default:
+                return true
+            }
+          })()
+
+          return (
+            <div key={option}>
+              <RadioGroupItem
+                disabled={!isAvailable}
+                value={option}
+                id={option}
+                className="hidden peer"
+              />
+              <label
+                htmlFor={option}
+                className={cn(
+                  'py-1.5 px-5 rounded-[8px] leading-[120%] text-[12px] font-[400] uppercase bg-gradient-to-b from-white/0 to-white/5',
+                  isAvailable
+                    ? 'cursor-pointer text-white/50'
+                    : 'opacity-30 cursor-not-allowed text-white/30',
+                  currentUnit === option &&
+                    'outline outline-[#8C35FB] text-[#8633F1] bg-gradient-to-b from-[#8C35FB]/0 to-[#8C35FB]/40',
+                )}
+              >
+                {option}
+              </label>
+            </div>
+          )
+        })}
       </RadioGroup>
     </div>
   )
