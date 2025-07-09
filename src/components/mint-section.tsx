@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { Card } from '@/components/ui/card'
-import { TransferTonButton } from './transfer-ton-button'
 import { toast } from 'sonner'
+import { TransferTonButton } from './transfer-ton-button'
+import { Card } from '@/components/ui/card'
 import { useMint } from '@/hooks/use-mint'
 import { useAccountMe } from '@/hooks/api/use-account'
 

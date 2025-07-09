@@ -6,15 +6,28 @@ import { GateNextDisplayBlock } from '../gate-page/gate-next-display-block'
 import { GateProgressDisplay } from '../gate-page/gate-progress-display'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { GateInfoBlockNextLvl } from '../gate-page/ui/info-block'
+import { TransferTonButton } from '../transfer-ton-button'
 import { ActionButton } from './action-button'
 import { Container } from './container'
-import { Drawer, DrawerTrigger } from './drawer'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from './drawer'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { TicketIcon } from '@/assets/icons/ticket'
 import { BuyIcon } from '@/assets/icons/buy'
 import BuyTime from '/buy-time.webp'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { convertTimestampToLargestUnit } from '@/utils'
+import { CloseIcon } from '@/assets/icons/close'
+import { useShop } from '@/hooks/api/use-shop'
+import { ItemTime } from '../gate-page/ui/item-time'
+import { ItemTicket } from '../gate-page/ui/item-ticket'
 
 export const JumpToTheNextGateButton = () => {
   const [buyResource, setBuyResource] = useState('')
@@ -23,6 +36,8 @@ export const JumpToTheNextGateButton = () => {
   const [isOpenDrawerBuyTicket, setIsOpenDrawerBuyTicket] = useState(false)
 
   const { getLvlStats, accountQuery } = useAccountMe()
+
+  const { buyItem } = useShop()
 
   const currentLvl = useMemo(
     () => getLvlStats.data?.currentLevel ?? 12,
@@ -84,7 +99,7 @@ export const JumpToTheNextGateButton = () => {
                 squareSize={2}
                 gridGap={12}
                 color="#b7ff01"
-                maxOpacity={0.5}
+                maxOpacity={1}
                 flickerChance={0.3}
                 autoResize={false}
                 width={450}
@@ -172,7 +187,7 @@ export const JumpToTheNextGateButton = () => {
                   label="ticket"
                 />
               </div>
-              <ActionButton
+              {/* <ActionButton
                 onClick={() => {
                   if (year === 0) {
                     setBuyResource('time')
@@ -189,100 +204,14 @@ export const JumpToTheNextGateButton = () => {
                 <span className="ml-3">
                   Buy 1 {year > 0 ? 'Ticket' : 'year'} and open the gate
                 </span>
-              </ActionButton>
+              </ActionButton> */}
             </GateDrawerContent>
+            <ItemTime />
           </Container>
         </Drawer>
       )}
-      {buyResource === 'time' && (
-        <Drawer open={isOpenDrawerBuyTime}>
-          <Container>
-            <GateDrawerContent
-              title="buy time"
-              description="Get what you want right now"
-              setIsOpenDrawer={setIsOpenDrawerBuyTime}
-            >
-              <GateDrawerBuyResource resource={buyResource} imgUrl={BuyTime} />
-            </GateDrawerContent>
-          </Container>
-        </Drawer>
-      )}
-      {buyResource === 'ticket' && (
-        <Drawer open={isOpenDrawerBuyTicket}>
-          <Container>
-            <GateDrawerContent
-              title="buy time"
-              description="Get what you want right now"
-              setIsOpenDrawer={setIsOpenDrawerBuyTicket}
-            >
-              <GateDrawerBuyResource resource={buyResource} />
-            </GateDrawerContent>
-          </Container>
-        </Drawer>
-      )}
-    </div>
-  )
-}
-
-function GateDrawerBuyResource({
-  resource,
-  imgUrl,
-}: {
-  resource: string
-  imgUrl?: string
-}) {
-  return (
-    <div>
-      <div className="relative mb-8 flex justify-center">
-        {resource === 'time' ? (
-          <img
-            src={imgUrl}
-            alt={`${resource}-image`}
-            width={154}
-            height={166}
-          />
-        ) : (
-          <TicketIcon className="h-[166px] w-[154px]" />
-        )}
-        <FlickeringGrid
-          className="absolute inset-0 z-[-1] mask-[radial-gradient(ellipse_180px_120px_at_center,black,transparent)]"
-          squareSize={2}
-          gridGap={12}
-          color="#b7ff01"
-          maxOpacity={0.5}
-          flickerChance={0.3}
-          autoResize={false}
-          width={450}
-          height={250}
-        />
-      </div>
-      <div className="font-pixel flex items-center justify-evenly font-[400] text-[white] uppercase">
-        <div>
-          <p className="text-[30px] leading-[120%] text-[#B6FF00] [text-shadow:_0px_4.00224px_8.00448px_rgba(182,_255,_0,_0.3),_0px_0px_24.0134px_#B6FF00]">
-            {resource === 'time' ? (
-              <span>01</span>
-            ) : (
-              <span className="mr-3">1</span>
-            )}
-          </p>
-          {resource === 'ticket' ? (
-            <span className="text-[16px] leading-[20px] text-[#FFFFFF]/40">
-              ticket
-            </span>
-          ) : (
-            <span className="text-[16px] leading-[20px] text-[#FFFFFF]/40">
-              years
-            </span>
-          )}
-        </div>
-        <span className="text-[48px] text-[#FFFFFF]/40">:</span>
-        <div>
-          <p className="text-[30px] leading-[120%]">2</p>
-          <span className="text-[16px] leading-[20px] text-[#FFFFFF]/40">
-            ton
-          </span>
-        </div>
-      </div>
+      {buyResource === 'time' && <ItemTime />}
+      {buyResource === 'ticket' && <ItemTicket />}
     </div>
   )
 }

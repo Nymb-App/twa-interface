@@ -84,9 +84,6 @@ export const PageLayout = ({
         {children}
       </main>
       {useFooter && <NavigationMenu linkItems={linkItems} />}
-      {/* {useSendButton && (
-        <SendGiftButton setIsStartRoulette={setIsStartRoulette} />
-      )} */}
       {useSendGiftActionButtons && (
         <SendGiftActionButtons
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
