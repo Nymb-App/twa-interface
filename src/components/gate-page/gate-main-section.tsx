@@ -24,6 +24,8 @@ export const GateMainSection = () => {
     [getLvlStats],
   )
 
+  console.log(isNextLvlUnlocked, '/???')
+
   const accountData = useMemo(() => accountQuery.data, [accountQuery])
 
   const timeLeft = useMemo(() => {
@@ -66,7 +68,7 @@ export const GateMainSection = () => {
         ) : (
           <GateNextDisplayBlock
             className="absolute left-1/2 z-1 -translate-x-1/2"
-            isLockedNewGate={isNextLvlUnlocked}
+            isLockedNewGate={!isNextLvlUnlocked}
             currentLevel={currentLvl}
           />
         )}

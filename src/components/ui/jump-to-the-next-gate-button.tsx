@@ -6,28 +6,13 @@ import { GateNextDisplayBlock } from '../gate-page/gate-next-display-block'
 import { GateProgressDisplay } from '../gate-page/gate-progress-display'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { GateInfoBlockNextLvl } from '../gate-page/ui/info-block'
-import { TransferTonButton } from '../transfer-ton-button'
 import { ActionButton } from './action-button'
 import { Container } from './container'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from './drawer'
+import { Drawer, DrawerTrigger } from './drawer'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { TicketIcon } from '@/assets/icons/ticket'
-import { BuyIcon } from '@/assets/icons/buy'
-import BuyTime from '/buy-time.webp'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { convertTimestampToLargestUnit } from '@/utils'
-import { CloseIcon } from '@/assets/icons/close'
-import { useShop } from '@/hooks/api/use-shop'
-import { ItemTime } from '../gate-page/ui/item-time'
-import { ItemTicket } from '../gate-page/ui/item-ticket'
 
 export const JumpToTheNextGateButton = () => {
   const [buyResource, setBuyResource] = useState('')
@@ -36,8 +21,6 @@ export const JumpToTheNextGateButton = () => {
   const [isOpenDrawerBuyTicket, setIsOpenDrawerBuyTicket] = useState(false)
 
   const { getLvlStats, accountQuery } = useAccountMe()
-
-  const { buyItem } = useShop()
 
   const currentLvl = useMemo(
     () => getLvlStats.data?.currentLevel ?? 12,
@@ -206,12 +189,12 @@ export const JumpToTheNextGateButton = () => {
                 </span>
               </ActionButton> */}
             </GateDrawerContent>
-            <ItemTime />
+            {/* <ItemTime /> */}
           </Container>
         </Drawer>
       )}
-      {buyResource === 'time' && <ItemTime />}
-      {buyResource === 'ticket' && <ItemTicket />}
+      {/* {buyResource === 'time' && <ItemTime />} */}
+      {/* {buyResource === 'ticket' && <ItemTicket />} */}
     </div>
   )
 }

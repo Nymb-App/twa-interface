@@ -3,10 +3,19 @@ import { useCallback, useMemo } from 'react'
 import { useApi } from './use-api'
 import { useAccountMe } from './use-account'
 
-export type TShopItem = 'energy' | 'time' | 'time_one_week' | 'time_one_year' | 'ticket' | 'five_tickets' | 'ten_tickets'
+export type TShopItem =
+  | 'energy'
+  | 'time'
+  | 'time_one_week'
+  | 'time_one_year'
+  | 'ticket'
+  | 'five_tickets'
+  | 'ten_tickets'
 
 export function useShop() {
   const { post, get } = useApi()
+
+  const { accountQuery } = useAccountMe()
 
   const {
     data: items,
@@ -24,12 +33,14 @@ export function useShop() {
 
   const buyItem = useCallback(
     async (itemName: TShopItem, hash: string) => {
-      return await post('/shop/buy_item', {
+      const itemInfo = await post('/shop/buy_item', {
         item: itemName,
         hash,
       })
+      await accountQuery.refetch()
+      return itemInfo
     },
-    [items],
+    [accountQuery],
   )
 
   return {

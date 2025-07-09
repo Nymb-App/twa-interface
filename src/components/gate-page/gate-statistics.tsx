@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { useMemo } from 'react'
 import { Skeleton } from '../ui/skeleton'
 import { GateStatisticsInfoBlock } from './ui'
-import { cn, convertTimestampToDaysUnit } from '@/utils'
+import { gateDataStatistics } from './gate-data-statistics'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { cn } from '@/utils'
 
 export function GateStatistics() {
   const { getLvlStats, isLoading } = useAccountMe()
@@ -12,17 +14,12 @@ export function GateStatistics() {
     [getLvlStats],
   )
 
-  const currentLvlBenefits = useMemo(() => {
-    if (getLvlStats.data?.currentLvlBenefits) {
-      return getLvlStats.data.currentLvlBenefits
+  const statistics = useMemo(() => {
+    if (!gateDataStatistics[currentLvl]) {
+      return gateDataStatistics['12']
     }
-    return {
-      minigameSlidePoints: 1,
-      minigameBattleTime: 86400,
-      farmingTime: 21600,
-      dailyReward: 86400,
-    }
-  }, [getLvlStats])
+    return gateDataStatistics[currentLvl]
+  }, [currentLvl])
 
   return (
     <section className="font-pixel relative rounded-[32px] border-1 border-white/12 bg-[#161816]/80 p-4 pt-3 text-center font-[400] backdrop-blur-[6px]">
@@ -45,47 +42,35 @@ export function GateStatistics() {
       </h2>
       <div className="grid grid-cols-2 gap-3">
         {isLoading ? (
-          <Skeleton className="h-[88px] w-full" />
+          <>
+            <Skeleton className="h-[88px] w-full" />
+            <Skeleton className="h-[88px] w-full" />
+            <Skeleton className="h-[88px] w-full" />
+            <Skeleton className="h-[88px] w-full" />
+          </>
         ) : (
-          <GateStatisticsInfoBlock
-            value={convertTimestampToDaysUnit(currentLvlBenefits.dailyReward)}
-            description="Daily reward"
-            unit="d"
-            isConvertSeconds={false}
-          />
-        )}
-
-        {isLoading ? (
-          <Skeleton className="h-[88px] w-full" />
-        ) : (
-          <GateStatisticsInfoBlock
-            value={currentLvlBenefits.farmingTime * 1000}
-            description="Mining"
-          />
-        )}
-        {isLoading ? (
-          <Skeleton className="h-[88px] w-full" />
-        ) : (
-          <GateStatisticsInfoBlock
-            value={convertTimestampToDaysUnit(
-              currentLvlBenefits.minigameBattleTime,
-            )}
-            description="in Battle"
-            isZeroPad={false}
-            isConvertSeconds={false}
-            unit="/ day"
-          />
-        )}
-        {isLoading ? (
-          <Skeleton className="h-[88px] w-full" />
-        ) : (
-          <GateStatisticsInfoBlock
-            value={currentLvlBenefits.minigameSlidePoints}
-            description="In Swipe"
-            isZeroPad={false}
-            unit="points"
-            isConvertSeconds={false}
-          />
+          <>
+            <GateStatisticsInfoBlock
+              value={statistics.dailyReward}
+              description="Daily reward"
+              unit="d"
+            />
+            <GateStatisticsInfoBlock
+              value={statistics.mining}
+              description="Mining"
+              unit="h"
+            />
+            <GateStatisticsInfoBlock
+              value={statistics.inBattle}
+              description="in Battle"
+              unit="/ day"
+            />
+            <GateStatisticsInfoBlock
+              value={statistics.points}
+              description="In Swipe"
+              unit="points"
+            />
+          </>
         )}
       </div>
     </section>

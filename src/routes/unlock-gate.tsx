@@ -1,36 +1,47 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { createFileRoute } from '@tanstack/react-router'
 import { HiLockClosed, HiLockOpen } from 'react-icons/hi2'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { AnimationEventHandler } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/utils'
 import { GateElectricLines } from '@/components/ui/gate-electric-lines'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { GateInfoBlockNextLvl } from '@/components/gate-page/ui/info-block'
+import { useAccountMe } from '@/hooks/api/use-account'
+import { gateDataStatistics } from '@/components/gate-page/gate-data-statistics'
+import { FallbackLoader } from '@/components/ui/fallback-loader'
 
 export const Route = createFileRoute('/unlock-gate')({
   component: RouteComponent,
   validateSearch: (
     search: Record<string, unknown>,
   ): {
-    dailyReward: number
-    minigameSlidePoints: number
-    farmingTime: number
-    maxEnergy: number
+    nextLvl: number
   } => {
     return {
-      dailyReward: Number(search.dailyReward) || 0,
-      minigameSlidePoints: Number(search.minigameSlidePoints) || 0,
-      farmingTime: Number(search.farmingTime) || 0,
-      maxEnergy: Number(search.maxEnergy) || 0,
+      nextLvl: Number(search.nextLvl) || 12,
     }
   },
 })
 
 function RouteComponent() {
   const [isStartAnimation, setIsStartAnimation] = useState(true)
-  const { dailyReward, minigameSlidePoints, farmingTime, maxEnergy } =
-    Route.useSearch()
+
+  const { isLoading } = useAccountMe()
+
+  const { nextLvl } = Route.useSearch()
+
+  const statistics = useMemo(() => {
+    if (!gateDataStatistics[nextLvl]) {
+      return gateDataStatistics['12']
+    }
+    return gateDataStatistics[nextLvl]
+  }, [nextLvl])
+
+  if (isLoading) {
+    return <FallbackLoader />
+  }
 
   return (
     <PageLayout
@@ -55,7 +66,7 @@ function RouteComponent() {
           autoResize={false}
         />
         <GateLevelBlock
-          nextLevel={11}
+          nextLevel={nextLvl}
           onAnimationEnd={() => setIsStartAnimation(false)}
           className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
@@ -67,10 +78,10 @@ function RouteComponent() {
           className2="animate-slide-up-fade-2"
           className3="animate-slide-up-fade-3"
           className4="animate-slide-up-fade-3"
-          dailyReward={dailyReward}
-          mining={farmingTime}
-          maxEnergy={maxEnergy}
-          swipePoints={minigameSlidePoints}
+          dailyReward={statistics.dailyReward}
+          mining={statistics.mining}
+          maxEnergy={statistics.maxEnergy}
+          swipePoints={statistics.points}
         />
       )}
       <style>{`
@@ -156,6 +167,7 @@ const GateLevelBlock = ({
           className={cn(
             'font-pixel absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30px] text-[#B6FF00]',
             nextLevel.toString().startsWith('1') && '-ml-2',
+            nextLevel === 1 && '-ml-2',
             isScaleBlockAnimation &&
               nextLevel.toString().startsWith('1') &&
               '-ml-5',

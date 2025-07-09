@@ -3,9 +3,9 @@ import { isMobile } from 'react-device-detect'
 import { Toaster } from 'sonner'
 import { useEffect } from 'react'
 // import { SendGiftButton } from './send-gift-button'
+import { LvlUpButton } from '../gate-page/ui/lvl-up-button'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
 import { CheckInButton } from './check-in-button'
-import { JumpToTheNextGateButton } from './jump-to-the-next-gate-button'
 import { UnlockGateCloseButton } from './unlock-gate-close-button'
 import type { ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
@@ -16,7 +16,6 @@ import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
-import { LvlUpButton } from '../gate-page/ui/lvl-up-button'
 
 export const PageLayout = ({
   children,
