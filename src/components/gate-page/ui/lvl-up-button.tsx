@@ -137,7 +137,7 @@ function LvlUpButtonWithShop({
     <Drawer>
       <DrawerTrigger
         className={cn(
-          'fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-[450px] font-pixel text-white text-xl py-4 border-b-4 border-[#232423] bg-gradient-to-b from-[#414241] to-[#363736] rounded-2xl cursor-pointer outline-none',
+          'fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-[450px] font-pixel text-white text-xl py-4 border-b-4 border-[#232423] bg-gradient-to-b from-[#414241] to-[#363736] rounded-2xl cursor-pointer outline-none',
           className,
         )}
       >
@@ -221,7 +221,7 @@ function LvlUpButtonWithNextGateNavigation({
     <Drawer>
       <DrawerTrigger
         className={cn(
-          'fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-[450px] font-pixel text-black text-xl py-4 bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] rounded-2xl cursor-pointer outline-none',
+          'fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-[450px] font-pixel text-black text-xl py-4 bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] rounded-2xl cursor-pointer outline-none',
           className,
         )}
       >

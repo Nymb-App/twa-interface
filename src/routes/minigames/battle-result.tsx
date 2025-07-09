@@ -1,12 +1,12 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { shareURL } from '@telegram-apps/sdk'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-bg'
 import { cn } from '@/utils'
 import { AvatarCard } from '@/routes/send-gift'
 import { ActionButton } from '@/components/ui/action-button'
 import WinningStartImg from '/minigames/winning-stars.webp'
+import { ShareButton } from '@/components/ui/share-button'
 
 export const Route = createFileRoute('/minigames/battle-result')({
   validateSearch: (search) => ({
@@ -64,7 +64,6 @@ const ResultScene = ({
 }) => {
   const rewardTimeValue = bet
 
-  const [isShareBattleDisabled, setIsShareBattleDisabled] = useState(true)
   const [isNewBattleDisabled, setIsNewBattleDisabled] = useState(true)
 
   return (
@@ -170,21 +169,10 @@ const ResultScene = ({
           </div>
         </div>
         <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-          <ActionButton
-            onClick={() => {
-              const telegramLink =
-                import.meta.env.VITE_TELEGRAM_APP_LINK ||
-                'https://telegram-apps.com'
-              if (shareURL.isAvailable()) {
-                shareURL(telegramLink, 'Check out this cool app!')
-              }
-            }}
-            disabled={isShareBattleDisabled}
-            onAnimationEnd={() => setIsShareBattleDisabled(false)}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
-          >
-            Share and get {isMeWinner ? '+1 week' : '+2 hour'}
-          </ActionButton>
+          <ShareButton
+            className="opacity-0 animate-slide-up-fade-swipe-game-6"
+            time={isMeWinner ? 604800 : 7200}
+          />
           <ActionButton
             onClick={onNewBattle}
             disabled={isNewBattleDisabled}

@@ -49,12 +49,10 @@ export function useBattle() {
     })
 
     socket.on('waiting_for_players', (data) => {
-      console.log(`Waiting for players`, data)
       setRoomId(data.roomId)
     })
 
     socket.on('game_started', (data) => {
-      console.log(`Game started`, data)
       const opponent = data.users.filter(
         (user: TOpponentUserData) => user.userId !== account?.id,
       )[0]
@@ -76,20 +74,16 @@ export function useBattle() {
       } else {
         setIsMeViewMyOpponent1(true)
       }
-      console.log(`Me view my opponent`, data)
     })
 
     socket.on('click_update', (data) => {
-      console.log(`Click`, data)
       const opponent = data.users.filter(
         (user: TOpponentUserData) => user.userId !== account?.id,
       )[0]
-      console.log('opponent', opponent)
 
       const me = data.users.filter(
         (user: TOpponentUserData) => user.userId === account?.id,
       )[0]
-      console.log('me', me)
       if (opponent !== undefined || opponent !== null) {
         setOpponentInfo(opponent)
       }
@@ -99,8 +93,6 @@ export function useBattle() {
     })
 
     socket.on('game_finished', (data: IGameFinishedData) => {
-      console.log(`Game finished`, data)
-
       const isWinner = data.winner.userId === account?.id
 
       const me = isWinner ? data.winner : data.loser
@@ -113,6 +105,16 @@ export function useBattle() {
         '2592000': '1 month',
         '31536000': '1 year',
       }
+
+      setMyInfo({
+        userId: Number(account?.id),
+        photoUrl: String(account?.photo_url),
+        nickname: String(account?.username),
+        bet: 0,
+        clicks: 0,
+      })
+      setOpponentInfo(null)
+      setRoomId(null)
 
       router.navigate({
         to: '/minigames/battle-result',
@@ -148,7 +150,6 @@ export function useBattle() {
   }, [])
 
   useEffect(() => {
-    console.log(pathnames)
     if (pathnames[1].pathname !== '/minigames/battle') {
       forceDisconnect()
     }
@@ -159,8 +160,6 @@ export function useBattle() {
       setIsMeViewMyOpponent(true)
     }
   }, [isMeViewMyOpponent0, isMeViewMyOpponent1])
-
-  console.log('OpponentInfo', opponentInfo)
 
   const makeBet = useCallback(
     (bet: number) => {
@@ -178,6 +177,15 @@ export function useBattle() {
     socket.emit('leave_room', {
       roomId: roomId_,
     })
+    setMyInfo({
+      userId: Number(account?.id),
+      photoUrl: String(account?.photo_url),
+      nickname: String(account?.username),
+      bet: 0,
+      clicks: 0,
+    })
+    setOpponentInfo(null)
+    setRoomId(null)
   }, [])
 
   const click = useCallback(

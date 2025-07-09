@@ -11,7 +11,6 @@ export const StarboardPersonalRateBlock = ({
     | undefined
 }) => {
   const { user } = useAccount()
-  console.log(gateCurrentUserData)
 
   return (
     <div className="relative flex gap-4 items-center rounded-[14px] py-[13px] px-[16px] starboard-result-block-bg">
@@ -31,8 +30,6 @@ export const StarboardPersonalRateBlock = ({
           intervalDelay={1000}
           precision={2}
           renderer={({ days, hours, minutes, seconds, completed }) => {
-            console.log(completed)
-
             if (completed) {
               return (
                 <StarboardCountdownDisplay

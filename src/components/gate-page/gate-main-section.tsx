@@ -24,8 +24,6 @@ export const GateMainSection = () => {
     [getLvlStats],
   )
 
-  console.log(isNextLvlUnlocked, '/???')
-
   const accountData = useMemo(() => accountQuery.data, [accountQuery])
 
   const timeLeft = useMemo(() => {

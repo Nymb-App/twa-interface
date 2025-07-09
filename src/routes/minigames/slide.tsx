@@ -2,7 +2,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { shareURL } from '@telegram-apps/sdk'
 import { WatchesIcon } from '@/assets/icons/watches'
 import EnergyIcon from '@/assets/icons/energy'
 import HeaderBg from '@/assets/svg/header-bg'
@@ -13,6 +12,7 @@ import { ActionButton } from '@/components/ui/action-button'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
 import { useSlidesMinigame } from '@/hooks/api/use-slides-minigame'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { ShareButton } from '@/components/ui/share-button'
 // import { SettingsPanel } from './settings-pannel';
 
 export const Route = createFileRoute('/minigames/slide')({
@@ -65,7 +65,6 @@ export function RouteComponent() {
   }, [defaultMinutesWinAmount])
 
   const handleGameFinished = useCallback(() => {
-    console.log(isGameStarted)
     if (isGameFinished) {
       return
     }
@@ -242,17 +241,6 @@ export function RouteComponent() {
           minutesWinned={minutesWinned}
           useRestart={energy > 0}
           onRestart={resetGame}
-          onShare={() => {
-            if (shareURL.isAvailable()) {
-              const telegramLink =
-                import.meta.env.VITE_TELEGRAM_APP_LINK ||
-                'https://telegram-apps.com'
-              shareURL(
-                telegramLink,
-                `Check out my score in the game! ${minutesWinned} in 30 seconds. I'm playing with @nymb_bot`,
-              )
-            }
-          }}
         />
       )}
     </PageLayout>
@@ -263,13 +251,11 @@ function GameFinished({
   minutesWinned = 0,
   useRestart = true,
   onRestart,
-  onShare,
   className,
 }: {
   useRestart?: boolean
   minutesWinned?: number
   onRestart?: () => void
-  onShare?: () => void
   className?: string
 }) {
   return (
@@ -321,12 +307,12 @@ function GameFinished({
       </div>
 
       <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-        <ActionButton
-          onClick={onShare}
+        <ShareButton
           className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
-        >
-          SHARE AND GET +20%
-        </ActionButton>
+          displayPercent={20}
+          isPercent
+          time={minutesWinned * 0.2}
+        />
 
         {useRestart && (
           <ActionButton

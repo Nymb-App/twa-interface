@@ -42,7 +42,6 @@ export function TransferTonButton({
   useEffect(() => {
     if (isTransferTonSuccess) return
     if (hash && isTransactionSuccess) {
-      console.log(hash, isTransactionSuccess)
       onTransferSuccess?.(hash)
       setIsTransferTonSuccess(true)
     }
@@ -81,7 +80,9 @@ export function TransferTonButton({
 
     return () => {
       eventsToBlock.forEach((event) => {
-        document.removeEventListener(event, preventInteraction, { capture: true })
+        document.removeEventListener(event, preventInteraction, {
+          capture: true,
+        })
       })
     }
   }, [isTransactionLoading])

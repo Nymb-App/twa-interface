@@ -314,7 +314,13 @@ export const BattleMainScene = ({
             disabled={
               !isForcedExitBattleAnimationFinished || !isStartFindingOpponent
             }
-            onClick={onForcedExitBattle}
+            onClick={() => {
+              onForcedExitBattle?.()
+              if (forcedExitTimeoutRef.current) {
+                clearTimeout(forcedExitTimeoutRef.current)
+                forcedExitTimeoutRef.current = null
+              }
+            }}
             className={cn(
               'h-full bg-gradient-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
             )}

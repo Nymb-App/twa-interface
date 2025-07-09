@@ -28,7 +28,13 @@ import { CloseIcon } from '@/assets/icons/close'
 import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
 import { TicketIcon } from '@/assets/icons/ticket'
 
-export function ItemTicket({ className, onClick }: { className?: string, onClick?: () => void }) {
+export function ItemTicket({
+  className,
+  onClick,
+}: {
+  className?: string
+  onClick?: () => void
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('5 tickets')
   const amount = useMemo(() => {
@@ -53,7 +59,7 @@ export function ItemTicket({ className, onClick }: { className?: string, onClick
         )}
       >
         <ShoppingBagIcon />
-        Buy 1 ticket and open the gate 
+        Buy 1 ticket and open the gate
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
@@ -83,9 +89,7 @@ export function ItemTicket({ className, onClick }: { className?: string, onClick
             autoResize={false}
           />
           <div className="absolute left-1/2 -translate-x-1/2 bg-[#0e2c08] blur-[60px] size-[126px] rounded-full" />
-          <TicketIcon
-            className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0"
-          />
+          <TicketIcon className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0" />
         </div>
 
         <RadioGroup
@@ -106,7 +110,7 @@ export function ItemTicket({ className, onClick }: { className?: string, onClick
               <label
                 htmlFor={option}
                 className={cn(
-                  'font-pixel py-1.5 px-6 rounded-[8px] cursor-pointer text-xs uppercase',
+                  'font-pixel py-1.5 px-3 rounded-[8px] cursor-pointer text-xs uppercase',
                   radioValue === option
                     ? 'outline outline-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)]'
                     : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
@@ -120,7 +124,14 @@ export function ItemTicket({ className, onClick }: { className?: string, onClick
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-[#B6FF00] text-3xl text-center">+{radioValue === '1 ticket' ? 1 : radioValue === '5 tickets' ? 5 : 10}</span>
+            <span className="text-[#B6FF00] text-3xl text-center">
+              +
+              {radioValue === '1 ticket'
+                ? 1
+                : radioValue === '5 tickets'
+                  ? 5
+                  : 10}
+            </span>
             <span className="text-white/40 text-xs text-center">
               {radioValue === '1 ticket'
                 ? 'TICKET'

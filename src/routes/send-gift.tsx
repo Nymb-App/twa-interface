@@ -1,11 +1,9 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { shareURL } from '@telegram-apps/sdk'
 import { useRive } from '@rive-app/react-canvas'
 import { PageLayout } from '@/components/ui/page-layout'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { cn, convertGiftValueToSeconds } from '@/utils'
-// import { SendGift } from '@/assets/icons/send-gift'
 import { RussianRoulette } from '@/components/ui/russian-roullete'
 import { GiftSelector } from '@/components/frens-page/gift-selector'
 import { SendGiftButton } from '@/components/frens-page/gift-button'
@@ -13,6 +11,7 @@ import { ActionButton } from '@/components/ui/action-button'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { ElectricLines } from '@/components/ui/electric-lines'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { ShareButton } from '@/components/ui/share-button'
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
@@ -196,25 +195,9 @@ function RouteComponent() {
       )}
       {isFinishRoulette && (
         <div className="fixed w-full bottom-0 flex flex-col gap-2 px-4 mb-6 max-w-[450px]">
-          <ActionButton
-            onClick={() => {
-              const telegramLink =
-                import.meta.env.VITE_TELEGRAM_APP_LINK ||
-                'https://telegram-apps.com'
-              if (shareURL.isAvailable()) {
-                shareURL(telegramLink, 'Check out this cool app!')
-              }
-            }}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
-          >
-            Share and get +2 hour
-          </ActionButton>
-
+          <ShareButton time={7200} />
           <Link to="/frens">
-            <ActionButton
-              // onClick={() => setIsShowSendGiftActionButtons?.(false)}
-              className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
-            >
+            <ActionButton className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]">
               <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
                 close
               </span>
