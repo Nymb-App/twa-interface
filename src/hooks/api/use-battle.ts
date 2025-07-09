@@ -22,6 +22,10 @@ export function useBattle() {
   const [opponentInfo, setOpponentInfo] = useState<TOpponentUserData | null>(
     null,
   )
+
+  const [myLastOpponent, setMyLastOpponent] =
+    useState<TOpponentUserData | null>(null)
+
   const [myInfo, setMyInfo] = useState<TOpponentUserData>({
     userId: Number(account?.id),
     photoUrl: String(account?.photo_url),
@@ -61,6 +65,7 @@ export function useBattle() {
       )[0]
       if (opponent !== undefined || opponent !== null) {
         setOpponentInfo((prevInfo) => (prevInfo ? prevInfo : opponent))
+        setMyLastOpponent(opponent)
       }
       if (me !== undefined || me !== null) {
         setMyInfo(me)
@@ -113,6 +118,7 @@ export function useBattle() {
         bet: 0,
         clicks: 0,
       })
+      setMyLastOpponent(opponent)
       setOpponentInfo(null)
       setRoomId(null)
 
@@ -249,6 +255,7 @@ export function useBattle() {
     roomId,
     isMeReady,
     isMeViewMyOpponent,
+    myLastOpponent,
     isMeViewMyOpponentEmit,
     isFinishedGame,
     forceDisconnect,

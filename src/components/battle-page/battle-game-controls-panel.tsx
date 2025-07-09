@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { BattleAnimatedBoostButton } from './battle-animated-boost-button'
-import { BattleAnimatedPushButton } from './battle-animated-push-button'
+import { BattleAnimatedBoostButton } from './ui/battle-animated-boost-button'
+import { BattleAnimatedPushButton } from './ui/battle-animated-push-button'
 import { useBuyExtraBoost } from '@/hooks/api/use-shop'
 
 export const BattleGameControlsPanel = ({

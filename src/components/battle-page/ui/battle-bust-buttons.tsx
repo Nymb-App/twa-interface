@@ -1,4 +1,4 @@
-import { ExtraBoostDrawer } from './ui/extra-boost-drawer'
+import { ExtraBoostDrawer } from './extra-boost-drawer'
 import { cn } from '@/utils'
 import { BustIcon } from '@/assets/icons/bust'
 

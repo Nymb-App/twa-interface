@@ -38,6 +38,7 @@ function RouteComponent() {
     clickX2,
     leaveGame,
     isFinishedGame,
+    myLastOpponent,
   } = useBattle()
 
   const resetGame = () => {
@@ -139,6 +140,7 @@ function RouteComponent() {
         <BattleMainScene
           key={roomId}
           opponentInfo={opponentInfo}
+          myLastOpponent={myLastOpponent}
           myInfo={myInfo}
           areaClaimedPercent={areaClaimedPercent}
           onForcedExitBattle={resetGame}

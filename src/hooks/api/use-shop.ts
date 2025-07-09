@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useCallback, useMemo } from 'react'
 import { useApi } from './use-api'
 import { useAccountMe } from './use-account'
@@ -31,16 +31,33 @@ export function useShop() {
     retry: 3,
   })
 
-  const buyItem = useCallback(
-    async (itemName: TShopItem, hash: string) => {
-      const itemInfo = await post('/shop/buy_item', {
+  // Internal mutation that matches React Query's expected signature (single `variables` argument)
+  const buyItemMutation = useMutation({
+    mutationFn: async ({
+      itemName,
+      hash,
+    }: {
+      itemName: TShopItem
+      hash: string
+    }) => {
+      return await post('/shop/buy_item', {
         item: itemName,
         hash,
       })
-      await accountQuery.refetch()
-      return itemInfo
     },
-    [accountQuery],
+    onSuccess: () => {
+      accountQuery.refetch()
+    },
+    onError: () => {
+      accountQuery.refetch()
+    },
+  })
+
+  // Convenience wrapper so the rest of the codebase can keep calling `buyItem(itemName, hash)`
+  const buyItem = useCallback(
+    (itemName: TShopItem, hash: string) =>
+      buyItemMutation.mutateAsync({ itemName, hash }),
+    [buyItemMutation],
   )
 
   return {

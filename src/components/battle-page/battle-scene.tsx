@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import { NeonRain } from '../ui/neon-rain'
-import { BattleRainSplitLine } from './battle-rain-split-line'
+import { BattleRainSplitLine } from './ui/battle-rain-split-line'
 
 interface BattleSceneProps {
   areaClaimedUnits?: number

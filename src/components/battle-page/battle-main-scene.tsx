@@ -4,8 +4,8 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
 import { CountdownStartGame } from '../minigames/countdown-start-game'
 import { BattleGameControlsPanel } from './battle-game-controls-panel'
-import { BattleCard } from './opponent-battle-card'
-import { BattleAnimatedMiddleLine } from './battle-animated-middle-line'
+import { BattleCard } from './battle-card'
+import { BattleAnimatedMiddleLine } from './ui/battle-animated-middle-line'
 import { BattleScene } from './battle-scene'
 import { BattleTitle } from './battle-preview-screen'
 import type { TOpponentUserData } from './battle-intro-scene'
@@ -28,6 +28,7 @@ export const BattleMainScene = ({
   onBattleClick,
   onCountdownCompleted,
   onGameFinished,
+  myLastOpponent,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
@@ -37,6 +38,7 @@ export const BattleMainScene = ({
   onBattleClick?: (isX2Active: boolean) => void
   onCountdownCompleted?: () => void
   onGameFinished?: () => void
+  myLastOpponent: TOpponentUserData | null
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
@@ -191,11 +193,12 @@ export const BattleMainScene = ({
                         to: '/minigames/battle-result',
                         search: {
                           myNickname: myInfo?.nickname ?? 'Unknown',
-                          opponentNickname: opponentInfo?.nickname ?? 'Unknown',
-                          isMeWinner: areaClaimedPercentage > 0,
+                          opponentNickname:
+                            myLastOpponent?.nickname ?? 'Unknown',
+                          isMeWinner: areaClaimedPercentage > 1,
                           bet: battleGameRewardRadioValue,
                           photoUrl: myInfo?.photoUrl ?? '',
-                          opponentPhotoUrl: opponentInfo?.photoUrl ?? '',
+                          opponentPhotoUrl: myLastOpponent?.photoUrl ?? '',
                         },
                       })
                     }}

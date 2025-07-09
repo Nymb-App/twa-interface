@@ -3,11 +3,7 @@ import { Button } from '../ui/button'
 import { useCountdown } from './hooks/use-countdown'
 import { cn } from '@/utils'
 import { WatchesIcon } from '@/assets/icons/watches'
-import {
-  ANIMATION_DURATION_COUNTUP,
-  // NYMB_FARMING_FINISHAT_LS_KEY,
-  // useFarming,
-} from '@/context/farming-context'
+import { ANIMATION_DURATION_COUNTUP } from '@/context/farming-context'
 import { useAccountMe } from '@/hooks/api/use-account'
 
 export const TotalEarningsBlock = ({
@@ -25,8 +21,6 @@ export const TotalEarningsBlock = ({
     isClaimStart,
   )
   const currentEarnings = isClaimStart ? animatedTotalEarnings : value
-  // const displayTime = convertTimestampToLargestUnit(currentEarnings, true)
-  // const { setFinishAt } = useFarming()
 
   const { accountQuery, accountClaimReferralRewardMutation } = useAccountMe()
 
@@ -64,19 +58,6 @@ export const TotalEarningsBlock = ({
           onClick={() => {
             setIsClaimStart(true)
             accountClaimReferralRewardMutation.mutate()
-            // if (
-            //   Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) === 0
-            // ) {
-            //   setFinishAt(
-            //     Number(Date.now() + value) + ANIMATION_DURATION_COUNTUP + 1000,
-            //   )
-            // } else {
-            //   setFinishAt(
-            //     Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)) +
-            //       value +
-            //       ANIMATION_DURATION_COUNTUP,
-            //   )
-            // }
           }}
           className="h-[40px] rounded-[12px] bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] text-[#121312] uppercase disabled:cursor-not-allowed disabled:from-[#414241] disabled:to-[#363736] disabled:text-white disabled:opacity-100"
         >

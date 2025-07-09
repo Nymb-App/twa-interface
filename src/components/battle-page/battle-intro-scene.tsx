@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
 import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
-import { BattleCard } from './opponent-battle-card'
-import { BattleBustButtons } from './battle-bust-buttons'
-import { cn } from '@/utils'
+import { BattleCard } from './battle-card'
+import { BattleBustButtons } from './ui/battle-bust-buttons'
+import { cn, convertTimestampToDaysUnit } from '@/utils'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 
 export interface IJoinGameData {
@@ -41,6 +41,18 @@ export const BattleIntroScene = ({
   const { accountQuery } = useAccountMe()
 
   const [bet, setBet] = useState(60 * 60 * 24 * 7)
+
+  const isDisabledFindingButton = useMemo(() => {
+    if (!accountQuery.data) return true
+    if (accountQuery.data.time * 1000 < Date.now()) return true
+
+    if (
+      convertTimestampToDaysUnit(accountQuery.data.time - Date.now() / 1000) < 1
+    )
+      return true
+
+    return false
+  }, [accountQuery.data])
 
   return (
     <div
@@ -94,9 +106,7 @@ export const BattleIntroScene = ({
             'font-pixel text-[#121312] rounded-[16px] uppercase opacity-0 animate-battle-preview-find-button-fade disabled:cursor-not-allowed disabled:from-[#ADFA4B]/50 disabled:to-[#B6FF00]/50',
             !isAnimationsFindButtonEnd && 'pointer-events-none',
           )}
-          disabled={
-            accountQuery.data && accountQuery.data.time * 1000 < Date.now()
-          }
+          disabled={isDisabledFindingButton}
           onClick={() => {
             onJoinGame?.(bet)
             setIsIntroSceneAnimationsStart(true)

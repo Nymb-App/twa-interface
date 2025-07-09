@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { WatchesIcon } from '@/assets/icons/watches'
-import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-bg'
+import { BattleResultGameBg } from '@/components/battle-page/ui/battle-result-game-bg'
 import { cn } from '@/utils'
 import { AvatarCard } from '@/routes/send-gift'
 import { ActionButton } from '@/components/ui/action-button'

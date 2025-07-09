@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Container } from '../ui/container'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from '../ui/electric-lines'
 import type { ReactNode } from 'react'
-import { cn } from '@/utils'
+import { cn, convertTimestampToDaysUnit } from '@/utils'
 import { useAccountMe } from '@/hooks/api/use-account'
 
 export const BattleTitle = ({
@@ -50,6 +49,34 @@ export function BattleGameRewardSection({
       return {
         defaultValue: '1 weeks',
         disabledOptions: {},
+      }
+    }
+
+    if (
+      convertTimestampToDaysUnit(accountQuery.data.time - Date.now() / 1000) < 1
+    ) {
+      return {
+        defaultValue: '1 days',
+
+        disabledOptions: {
+          '1 days': true,
+          '1 weeks': true,
+          '1 month': true,
+          '1 years': true,
+        },
+      }
+    }
+
+    if (
+      convertTimestampToDaysUnit(accountQuery.data.time - Date.now() / 1000) < 7
+    ) {
+      return {
+        defaultValue: '1 days',
+        disabledOptions: {
+          '1 weeks': true,
+          '1 month': true,
+          '1 years': true,
+        },
       }
     }
 
@@ -108,46 +135,44 @@ export function BattleGameRewardSection({
   }, [battleGameRewardRadioValue, onChange])
 
   return (
-    <section className={cn('relative', className)}>
-      <Container>
-        <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px] opacity-0 animate-battle-preview-reward-fade">
-          <div className="text-center relative h-[56px]">
-            <span className="text-[#B6FF00] tracking-[5px] font-[400] text-[48px] leading-[120%] [text-shadow:0px_0px_15px_rgba(182,255,0,0.6)]">
-              {battleGameRewardRadioValue}
-            </span>
-          </div>
-          <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
-          <RadioGroup
-            defaultValue={defaultValue}
-            value={battleGameRewardRadioValue}
-            onValueChange={setBattleGameRewardRadioValue}
-            className="grid grid-cols-4 gap-2"
-          >
-            {Object.keys(betOptions).map((label) => (
-              <div key={label}>
-                <RadioGroupItem
-                  value={label}
-                  id={label}
-                  className="hidden peer"
-                  disabled={disabledOptions[label]}
-                />
-                <label
-                  htmlFor={label}
-                  className={cn(
-                    'block text-center backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[9.5px] font-[400] uppercase',
-                    battleGameRewardRadioValue === label
-                      ? 'border border-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)] backdrop-blur-sm'
-                      : 'border border-transparent starboard-result-block-bg text-[#FFFFFF66]',
-                    disabledOptions[label] && 'opacity-50 cursor-not-allowed',
-                  )}
-                >
-                  {label}
-                </label>
-              </div>
-            ))}
-          </RadioGroup>
+    <section className={cn('relative px-4', className)}>
+      <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px] opacity-0 animate-battle-preview-reward-fade">
+        <div className="text-center relative h-[56px]">
+          <span className="text-[#B6FF00] tracking-[5px] font-[400] text-[48px] leading-[120%] [text-shadow:0px_0px_15px_rgba(182,255,0,0.6)]">
+            {battleGameRewardRadioValue}
+          </span>
         </div>
-      </Container>
+        <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
+        <RadioGroup
+          defaultValue={defaultValue}
+          value={battleGameRewardRadioValue}
+          onValueChange={setBattleGameRewardRadioValue}
+          className="grid grid-cols-4 gap-2"
+        >
+          {Object.keys(betOptions).map((label) => (
+            <div key={label}>
+              <RadioGroupItem
+                value={label}
+                id={label}
+                className="hidden peer"
+                disabled={disabledOptions[label]}
+              />
+              <label
+                htmlFor={label}
+                className={cn(
+                  'block text-center backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[9.5px] font-[400] uppercase',
+                  battleGameRewardRadioValue === label
+                    ? 'border border-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)] backdrop-blur-sm'
+                    : 'border border-transparent starboard-result-block-bg text-[#FFFFFF66]',
+                  disabledOptions[label] && 'opacity-50 cursor-not-allowed',
+                )}
+              >
+                {label}
+              </label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
     </section>
   )
 }

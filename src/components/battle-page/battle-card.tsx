@@ -167,10 +167,7 @@ const BattleAvatarCard = ({
 
         <img
           src={src}
-          className={cn(
-            'size-full object-cover shadow-lg rounded-[34px] z-1',
-            // isRow && 'shadow-none',
-          )}
+          className={cn('size-full object-cover shadow-lg rounded-[34px] z-1')}
         />
         <span
           className={cn(

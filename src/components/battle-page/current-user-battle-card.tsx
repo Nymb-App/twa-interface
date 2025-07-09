@@ -29,41 +29,11 @@ export const CurrentUserBattleCard = ({
       onAnimationEnd={onAnimationEnd}
       style={style}
     >
-      {/* <AvatarCard
-                className={cn(
-                  'w-full h-auto object-cover rounded-[34px]',
-                  isTranslateCardsAnimationStart &&
-                    '!animate-battle-final-animation-fade-out !transition-all !duration-1300 !linear',
-                )}
-                classNameForSpan={cn(
-                  'text-3xl text-white font-bold pr-1',
-                  isTranslateCardsAnimationStart &&
-                    '!animate-battle-final-animation-fade-out translate-y-[175px] -translate-x-[67px] text-[14px] !transition-all !duration-1300 !linear',
-                )}
-                classNameForImg={cn(
-                  'rounded-[34px] w-full h-full object-cover shadow-[0px_0px_59.8px_#8C35FB]',
-                  isTranslateCardsAnimationStart &&
-                    'shadow-none -translate-x-[22px] translate-y-[185px] size-[32px] !transition-all !duration-1300 !linear',
-                )}
-                src="/roulette-icons/default.webp"
-                label="IM"
-              />
-            </div>
-            <p
-              className={cn(
-                isTranslateCardsAnimationStart &&
-                  'translate-x-[20px] translate-y-[63px] ml-0 text-[14px] !animate-battle-final-animation-fade-out !transition-all !duration-1300 !linear',
-                // 'translate-x-[20px] translate-y-[63px] ml-0 text-[14px]',
-              )}
-            >
-              igorivanov
-            </p> */}
       <p
         className={cn(
           'opacity-0 animate-battle-preview-username-fade',
           isTranslateCardsAnimationStart &&
             'translate-x-[25px] -translate-y-[55px] text-[14px] opacity-100 !animate-battle-final-animation-fade-out !transition-all !duration-1300 !linear',
-          // !animate-battle-final-animation-fade-out !transition-all !duration-1300 !linear'
         )}
       >
         teviall
@@ -84,12 +54,6 @@ export const CurrentUserBattleCard = ({
             'text-3xl text-white font-bold transition-all duration-1300 linear',
             isTranslateCardsAnimationStart && 'text-[14px]',
           )}
-          // classNameForImg={
-          // cn()
-          // 'w-full h-full object-cover shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)]',
-          // isTranslateCardsAnimationStart &&
-          //   'shadow-none !transition-all !duration-1300 !linear',
-          // }
           src="/roulette-icons/default.webp"
           label="NA"
         />

@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Suspense, lazy, useMemo, useState } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
-import { Container } from '@/components/ui/container'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { convertTimestampToDaysUnit } from '@/utils'
@@ -67,7 +66,7 @@ function RouteComponent() {
           isClaimEnd={isClaimEnd}
           setIsClaimEnd={setIsClaimEnd}
         />
-        <Container>
+        <div className="px-4">
           <TotalEarningsBlock
             value={
               !isClaimEnd ? convertTimestampToDaysUnit(accountClaimTime) : 0
@@ -78,7 +77,7 @@ function RouteComponent() {
           <ReferralsLevelsBlock />
           <ReferralsCodeList />
           <ReferralsMembersList meTime={accountGiftTime} />
-        </Container>
+        </div>
       </Suspense>
     </PageLayout>
   )
