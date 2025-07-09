@@ -73,13 +73,13 @@ export const TimeCountup = ({
   totalEarnings,
   targetTimestamp,
   isClaimStart,
-  setIsClaimEnd,
+  onComplete,
 }: {
   initialFinishAtValue: number
   totalEarnings: number
   targetTimestamp: number
   isClaimStart: boolean
-  setIsClaimEnd: (value: boolean) => void
+  onComplete?: () => void
 }) => {
   const now = Date.now()
   const initialRemaining =
@@ -103,7 +103,7 @@ export const TimeCountup = ({
           setElapsed(latest)
         },
         onComplete: () => {
-          setIsClaimEnd(true)
+          onComplete?.()
         },
       },
     )
