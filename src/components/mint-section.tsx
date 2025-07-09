@@ -4,7 +4,6 @@ import { TransferTonButton } from './transfer-ton-button'
 import { toast } from 'sonner'
 import { useMint } from '@/hooks/use-mint'
 import { useAccountMe } from '@/hooks/api/use-account'
-import { useTonConnectUI } from '@tonconnect/ui-react'
 
 function LazyVideo({
   src,
