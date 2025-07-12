@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
 import { useTransferTon } from '@/hooks/use-transfer-ton'
@@ -28,7 +28,7 @@ export function TransferTonButton({
 }: TransferTonButtonProps) {
   const address = useTonAddress()
   const { open } = useTonConnectModal()
-  const { balance } = useBalance()
+  const { getBalance } = useBalance()
   const {
     transfer,
     isTransactionLoading,
@@ -87,13 +87,14 @@ export function TransferTonButton({
     }
   }, [isTransactionLoading])
 
-  const handleTransfer = async () => {
+  const handleTransfer = useCallback(async () => {
     onClick?.()
     if (!address) {
       onConnect?.()
       open()
       return
     }
+    const balance = await getBalance();
     if (!balance) {
       return
     }
@@ -103,7 +104,7 @@ export function TransferTonButton({
     }
     setIsTransferTonSuccess(false)
     await transfer(recipient, amount)
-  }
+  }, [address, amount, recipient, transfer, open, onClick, onConnect, getBalance])
 
   return (
     <>

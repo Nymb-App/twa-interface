@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 import { ActionButton } from '@/components/ui/action-button'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
 import { useSlidesMinigame } from '@/hooks/api/use-slides-minigame'
-import { useAccountMe } from '@/hooks/api/use-account'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { ShareButton } from '@/components/ui/share-button'
 // import { SettingsPanel } from './settings-pannel';
 
@@ -178,7 +178,7 @@ export function RouteComponent() {
             renderer={({ seconds }) => (
               <div
                 className={cn(
-                  'px-4 py-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
+                  'px-4 pt-3 pb-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
                   isX2Time ? 'translate-y-12 opacity-100' : 'opacity-0',
                 )}
               >
@@ -258,6 +258,9 @@ function GameFinished({
   onRestart?: () => void
   className?: string
 }) {
+
+  const {user} = useAccount()
+
   return (
     <div
       className={cn(
@@ -273,11 +276,11 @@ function GameFinished({
 
         <div className="relative overflow-hidden size-[104px] rounded-[36px] left-1/2 top-[100px] -translate-x-1/2 shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)] opacity-0 animate-slide-up-fade-swipe-game-2">
           <img
-            src={'/roulette-icons/default.webp'}
+            src={user?.photo_url ?? '/roulette-icons/default.webp'}
             className="w-full h-auto object-cover absolute"
           />
           <h2 className="absolute left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
-            NA
+            {user?.photo_url ? '' : 'NA'}
           </h2>
         </div>
 

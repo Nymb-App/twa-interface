@@ -17,7 +17,6 @@ function RouteComponent() {
   const [, setIsOpeningAnimationDelayed] = useState(false)
   const [, setIsReset] = useState(true)
 
-  // const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(false)
   const [
     isStartFindingOpponentAnimationEnd,

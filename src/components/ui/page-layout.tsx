@@ -93,7 +93,7 @@ export const PageLayout = ({
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster
         className="!mb-18"
-        position="bottom-center"
+        position="top-center"
         toastOptions={{
           className:
             '!font-inter !text-[#FFFFFF] !font-[400] !leading-[20px] !text-[16px] !border !rounded-[12px] !p-4 !border-[#FFFFFF1F] !bg-[#171914]',

@@ -44,6 +44,10 @@ export const GateNextDisplayBlock = ({
           )}
         >
           {nextLvl}
+          <LockIcon
+            fillOpacity={1}
+            className="absolute -bottom-3 h-[26px] w-[20px]"
+          />
         </span>
       )}
     </div>

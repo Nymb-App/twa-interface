@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => ({
       'e658-37-1-204-162.ngrok-free.app',
       'administrator-sole-implementing-obvious.trycloudflare.com',
       'exams-repeated-faq-connecticut.trycloudflare.com',
-      'chinese-agreed-written-copyrighted.trycloudflare.com',
+      'marker-sn-accommodation-view.trycloudflare.com',
     ],
   },
 

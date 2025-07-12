@@ -33,7 +33,7 @@ export function HeroSection() {
         ) : (
           <GameCard
             delay={1000}
-            placeholderSrc="/lottie-placeholder/minigames/slide.png"
+            placeholderSrc="/lottie-placeholder/minigames/slide.webp"
             className="w-full"
             classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
             title="Swipes"
