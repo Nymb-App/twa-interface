@@ -10,13 +10,12 @@ export const StarboardPersonalRateBlock = ({
     | { gate: number; ratePosition: number; time: number }
     | undefined
 }) => {
-  const { user } = useAccount();
-  console.log(gateCurrentUserData);
-  
+  const { user } = useAccount()
+
   return (
     <div className="relative flex gap-4 items-center rounded-[14px] py-[13px] px-[16px] starboard-result-block-bg">
       <Avatar className="rounded-[12px]">
-        <AvatarImage src={user?.photo_url ?? '/roulette-icons/default.png'} />
+        <AvatarImage src={user?.photo_url ?? '/roulette-icons/default.webp'} />
         <AvatarFallback>{'ju'.toUpperCase()}</AvatarFallback>
       </Avatar>
 
@@ -25,12 +24,12 @@ export const StarboardPersonalRateBlock = ({
           {user?.username ?? 'unknown'}
         </span>
         <Countdown
-          date={Number(gateCurrentUserData ? gateCurrentUserData.time * 1000 : 0)}
+          date={Number(
+            gateCurrentUserData ? gateCurrentUserData.time * 1000 : 0,
+          )}
           intervalDelay={1000}
           precision={2}
           renderer={({ days, hours, minutes, seconds, completed }) => {
-            console.log(completed)
-            
             if (completed) {
               return (
                 <StarboardCountdownDisplay

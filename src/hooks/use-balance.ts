@@ -1,5 +1,5 @@
 import { useTonAddress } from "@tonconnect/ui-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TonWeb from 'tonweb';
 
 
@@ -14,13 +14,26 @@ export const useBalance = () => {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isError, setError] = useState<boolean>(false);
 
+    const getBalance = useCallback(async () => {
+        if (!address) return;
+
+        setLoading(true);
+        try {
+            const balance = await tonweb.provider.getBalance(address);      
+            return balance;
+        } catch (error) {
+            setError(true);
+        } finally {
+            setLoading(false);
+        }
+    }, [address]);
+
     useEffect(() => {
         if (!address) return;
 
         (async () => {
-            setLoading(true);
             try {
-                const balance = await tonweb.provider.getBalance(address);      
+                const balance = await getBalance();
                 if (balance !== undefined) {
                     setBalance(balance / 1e9);
                 }
@@ -30,7 +43,7 @@ export const useBalance = () => {
                 setLoading(false);
             }
         })();
-    }, [address]);
+    }, [address, getBalance]);
 
-    return { balance, isLoading, isError };
+    return { balance, isLoading, isError, getBalance };
 }

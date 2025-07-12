@@ -1,26 +1,16 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-
 
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/utils'
+import { useAuth } from '@/hooks/api/use-api'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { HeroSection } from '@/components/hero-section'
+import { MintSection } from '@/components/mint-section'
 
 export const Route = createFileRoute('/')({
   component: App,
 })
-
-const HeroSection = lazy(() =>
-  import('@/components/hero-section').then((m) => ({ default: m.HeroSection })),
-)
-const MintSection = lazy(() =>
-  import('@/components/mint-section').then((m) => ({ default: m.MintSection })),
-)
-const FlickeringGrid = lazy(() =>
-  import('@/components/magicui/flickering-grid').then((m) => ({
-    default: m.FlickeringGrid,
-  })),
-)
-
 
 function App() {
   const [isAnimationCountdownFinished, setAnimationCountdownFinished] =
@@ -29,14 +19,14 @@ function App() {
     isAnimationCountdownCooldownFinished,
     setAnimationCountdownCooldownFinished,
   ] = useState<boolean>(false)
-  // const { isAuthTokenValid, authorize } = useAuth()
+  const { login, isAuthenticated } = useAuth()
 
-  // useEffect(() => {
-  //   if (isAuthTokenValid) return
-  //   ;(async () => {
-  //     await authorize()
-  //   })()
-  // }, [authorize, isAuthTokenValid])
+  useEffect(() => {
+    if (isAuthenticated) return
+    ;(async () => {
+      await login()
+    })()
+  }, [login, isAuthenticated])
 
   useEffect(() => {
     const timerId0 = setTimeout(() => {
@@ -53,9 +43,7 @@ function App() {
   }, [])
 
   return (
-    
-    <Suspense fallback={<div>Loading...</div>}>
-        <PageLayout useFooter={false}>
+    <PageLayout useFooter={false}>
       <div
         className={cn(
           'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)] duration-500',
@@ -68,18 +56,16 @@ function App() {
           isAnimationCountdownFinished && 'h-[250px]',
         )}
       >
-        <Suspense fallback={null}>
-          <FlickeringGrid
-            className="absolute inset-0 z-0 size-full left-3"
-            squareSize={2}
-            gridGap={12}
-            color="#b7ff01"
-            maxOpacity={0.5}
-            flickerChance={0.3}
-            autoResize={!isAnimationCountdownFinished}
-            width={450}
-          />
-        </Suspense>
+        <FlickeringGrid
+          className="absolute inset-0 z-0 size-full left-3"
+          squareSize={2}
+          gridGap={12}
+          color="#b7ff01"
+          maxOpacity={0.5}
+          flickerChance={0.3}
+          autoResize={!isAnimationCountdownFinished}
+          width={450}
+        />
 
         <div
           className={cn(
@@ -105,14 +91,11 @@ function App() {
         />
       </div>
       {isAnimationCountdownCooldownFinished && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <div className="flex flex-col gap-12">
-            <HeroSection />
-            <MintSection />
-          </div>
-        </Suspense>
+        <div className="flex flex-col gap-12">
+          <HeroSection />
+          <MintSection />
+        </div>
       )}
-        </PageLayout>
-    </Suspense>
+    </PageLayout>
   )
 }

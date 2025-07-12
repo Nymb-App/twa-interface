@@ -8,6 +8,7 @@ const StarboardPreviewSection = lazy(() =>
     default: m.StarboardPreviewSection,
   })),
 )
+
 const StarboardTabsSection = lazy(() =>
   import(
     '@/components/starboard-page/starboard-tabs-section/starboard-tabs-section'

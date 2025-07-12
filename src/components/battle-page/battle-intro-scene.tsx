@@ -1,18 +1,32 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
 import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
-import { BattleCard } from './opponent-battle-card'
-import { BattleBustButtons } from './battle-bust-buttons'
-import { cn } from '@/utils'
+import { BattleCard } from './battle-card'
+import { BattleBustButtons } from './ui/battle-bust-buttons'
+import { cn, convertTimestampToDaysUnit } from '@/utils'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+
+export interface IJoinGameData {
+  userId: number
+  roomId: string
+  nickname: string
+  photoUrl: string
+  bet: number
+  clicks: number
+}
+
+export type TOpponentUserData = Omit<IJoinGameData, 'roomId'>
 
 export const BattleIntroScene = ({
   onFindingOpponent,
   className,
   onAnimationEnd,
+  onJoinGame,
 }: {
   onFindingOpponent?: () => void
   className?: string
   onAnimationEnd?: React.AnimationEventHandler<HTMLDivElement>
+  onJoinGame?: (bet: number) => void
 }) => {
   const [isAnimationsBustButtonsEnd, setIsAnimationsBustButtonsEnd] =
     useState(false)
@@ -22,6 +36,23 @@ export const BattleIntroScene = ({
 
   const [isIntroSceneAnimationsStart, setIsIntroSceneAnimationsStart] =
     useState(false)
+
+  const { user: meUserData } = useAccount()
+  const { accountQuery } = useAccountMe()
+
+  const [bet, setBet] = useState(60 * 60 * 24 * 7)
+
+  const isDisabledFindingButton = useMemo(() => {
+    if (!accountQuery.data) return true
+    if (accountQuery.data.time * 1000 < Date.now()) return true
+
+    if (
+      convertTimestampToDaysUnit(accountQuery.data.time - Date.now() / 1000) < 1
+    )
+      return true
+
+    return false
+  }, [accountQuery.data])
 
   return (
     <div
@@ -51,12 +82,13 @@ export const BattleIntroScene = ({
         />
         <BattleCard
           showElectricsLines={false}
-          nickname="tevial"
+          nickname={meUserData?.username}
+          photoUrl={meUserData?.photo_url}
           className="opacity-0 animate-battle-intro-slide-card-fade"
         />
       </header>
       <div className="flex-1">
-        <BattleGameRewardSection />
+        <BattleGameRewardSection onChange={setBet} />
         <BattleBustButtons
           className={cn(
             'opacity-0 animate-battle-preview-bust-fade',
@@ -70,13 +102,15 @@ export const BattleIntroScene = ({
           The opponent will be <br /> randomly selected. Commission 1%
         </p>
         <ActionButton
-          onClick={() => {
-            setIsIntroSceneAnimationsStart(true)
-          }}
           className={cn(
-            'font-pixel text-[#121312] rounded-[16px] uppercase opacity-0 animate-battle-preview-find-button-fade',
+            'font-pixel text-[#121312] rounded-[16px] uppercase opacity-0 animate-battle-preview-find-button-fade disabled:cursor-not-allowed disabled:from-[#ADFA4B]/50 disabled:to-[#B6FF00]/50',
             !isAnimationsFindButtonEnd && 'pointer-events-none',
           )}
+          disabled={isDisabledFindingButton}
+          onClick={() => {
+            onJoinGame?.(bet)
+            setIsIntroSceneAnimationsStart(true)
+          }}
           onAnimationEnd={() => setIsAnimationsFindButtonEnd(true)}
         >
           finding the opponent

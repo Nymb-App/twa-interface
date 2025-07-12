@@ -4,29 +4,46 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
 import { CountdownStartGame } from '../minigames/countdown-start-game'
 import { BattleGameControlsPanel } from './battle-game-controls-panel'
-import { BattleCard } from './opponent-battle-card'
-import { BattleAnimatedMiddleLine } from './battle-animated-middle-line'
+import { BattleCard } from './battle-card'
+import { BattleAnimatedMiddleLine } from './ui/battle-animated-middle-line'
 import { BattleScene } from './battle-scene'
 import { BattleTitle } from './battle-preview-screen'
+import type { TOpponentUserData } from './battle-intro-scene'
 import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
+
+const betConverter: any = {
+  '86400': 'days',
+  '604800': 'weeks',
+  '2592000': 'months',
+  '31536000': 'years',
+}
 
 export const BattleMainScene = ({
   areaClaimedPercent = 0,
   onAreaClaimedPercentageChange,
   onForcedExitBattle,
+  opponentInfo,
+  myInfo,
+  onBattleClick,
+  onCountdownCompleted,
+  onGameFinished,
+  myLastOpponent,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
+  opponentInfo: TOpponentUserData | null
+  myInfo: TOpponentUserData | null
+  onBattleClick?: (isX2Active: boolean) => void
+  onCountdownCompleted?: () => void
+  onGameFinished?: () => void
+  myLastOpponent: TOpponentUserData | null
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
     setIsForcedExitBattleAnimationFinished,
   ] = useState(false)
-
-  const opponentNickname = 'igorivanov'
-  const myNickname = 'tevial'
 
   const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(true) // true
@@ -49,6 +66,7 @@ export const BattleMainScene = ({
   const router = useRouter()
 
   const timeouts = useRef<Array<number>>([])
+  const forcedExitTimeoutRef = useRef<number | null>(null)
 
   const addTimeout = (fn: () => void, delay: number) => {
     const id = window.setTimeout(fn, delay)
@@ -56,6 +74,18 @@ export const BattleMainScene = ({
   }
 
   useEffect(() => {
+    if (forcedExitTimeoutRef.current) {
+      clearTimeout(forcedExitTimeoutRef.current)
+      forcedExitTimeoutRef.current = null
+    }
+
+    if (!opponentInfo) {
+      forcedExitTimeoutRef.current = window.setTimeout(() => {
+        onForcedExitBattle?.()
+      }, 30000)
+      return
+    }
+
     timeouts.current.forEach(clearTimeout)
     timeouts.current = []
 
@@ -77,7 +107,7 @@ export const BattleMainScene = ({
       timeouts.current.forEach(clearTimeout)
       timeouts.current = []
     }
-  }, [])
+  }, [opponentInfo, onForcedExitBattle])
 
   useEffect(() => {
     if (isBoostActive0 || isBoostActive1) {
@@ -94,15 +124,13 @@ export const BattleMainScene = ({
 
   useEffect(() => {
     if (!isCountdownCompleted) return
-
-    const intervalId = setInterval(() => {
-      setAreaClaimedPercentage((prev) => prev - 1)
-    }, 150)
-
-    return () => {
-      clearInterval(intervalId)
-    }
+    onCountdownCompleted?.()
   }, [isCountdownCompleted])
+
+  useEffect(() => {
+    if (!myInfo || !opponentInfo) return
+    setAreaClaimedPercentage(myInfo.clicks - opponentInfo.clicks)
+  }, [myInfo, opponentInfo])
 
   useEffect(() => {
     onAreaClaimedPercentageChange?.(areaClaimedPercentage)
@@ -140,11 +168,9 @@ export const BattleMainScene = ({
                 Winning:
               </dt>
               <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px] uppercase">
-                <span className="mr-1 text-lg">
-                  {battleGameRewardRadioValue.split(' ')[0]}
-                </span>
+                <span className="mr-1 text-lg">1</span>
                 <span className="text-xs">
-                  {battleGameRewardRadioValue.split(' ')[1]}
+                  {myInfo?.bet && betConverter[myInfo.bet]}
                 </span>
               </dd>
             </div>
@@ -162,13 +188,17 @@ export const BattleMainScene = ({
                     intervalDelay={1000}
                     precision={0}
                     onComplete={() => {
+                      onGameFinished?.()
                       router.navigate({
                         to: '/minigames/battle-result',
                         search: {
-                          myNickname: myNickname,
-                          opponentNickname: opponentNickname,
-                          isMeWinner: areaClaimedPercentage > 0,
+                          myNickname: myInfo?.nickname ?? 'Unknown',
+                          opponentNickname:
+                            myLastOpponent?.nickname ?? 'Unknown',
+                          isMeWinner: areaClaimedPercentage > 1,
                           bet: battleGameRewardRadioValue,
+                          photoUrl: myInfo?.photoUrl ?? '',
+                          opponentPhotoUrl: myLastOpponent?.photoUrl ?? '',
                         },
                       })
                     }}
@@ -189,7 +219,8 @@ export const BattleMainScene = ({
         <div className="relative flex flex-col h-full flex-1 items-center justify-between mask-[linear-gradient(to_bottom,transparent_0%,black_1%,black_99%,transparent_100%)]">
           <BattleCard
             isFindingUser={isStartFindingOpponent}
-            nickname={opponentNickname}
+            nickname={opponentInfo?.nickname}
+            photoUrl={opponentInfo?.photoUrl}
             isMe={false}
             areaClaimedPercent={areaClaimedPercent}
             isRow={isMorphAnimation}
@@ -233,7 +264,8 @@ export const BattleMainScene = ({
             )}
           />
           <BattleCard
-            nickname={myNickname}
+            nickname={myInfo?.nickname}
+            photoUrl={myInfo?.photoUrl}
             isRow={isMorphAnimation}
             isBgVisible={!isCardBgAnimationStart}
             areaClaimedPercent={areaClaimedPercent}
@@ -260,8 +292,7 @@ export const BattleMainScene = ({
             <BattleGameControlsPanel
               disabled={!isCountdownCompleted}
               onClick={() => {
-                const addUnits = isBoostActive0 || isBoostActive1 ? 2 : 1
-                setAreaClaimedPercentage((prev) => prev + addUnits)
+                onBattleClick?.(isBoostActive0 || isBoostActive1)
               }}
               onBoostActivate={() => {
                 if (!isBoostActive0) {
@@ -286,7 +317,13 @@ export const BattleMainScene = ({
             disabled={
               !isForcedExitBattleAnimationFinished || !isStartFindingOpponent
             }
-            onClick={onForcedExitBattle}
+            onClick={() => {
+              onForcedExitBattle?.()
+              if (forcedExitTimeoutRef.current) {
+                clearTimeout(forcedExitTimeoutRef.current)
+                forcedExitTimeoutRef.current = null
+              }
+            }}
             className={cn(
               'h-full bg-gradient-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
             )}

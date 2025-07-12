@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useEffect } from 'react'
-import { io } from 'socket.io-client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAccount } from './use-account'
 import type { UseQueryOptions } from '@tanstack/react-query'
@@ -170,34 +169,6 @@ export function useApi() {
   }
 }
 
-// WebSocket hook with TanStack Query integration
-export function useWebSocketApi<T = unknown>(eventKey: string) {
-  const queryClient = useQueryClient()
-  const queryKey = ['websocket', eventKey]
-
-  useEffect(() => {
-    const socket = io(baseUrl)
-
-    socket.on(eventKey, (data: T) => {
-      queryClient.setQueryData(queryKey, data)
-    })
-
-    return () => {
-      socket.disconnect()
-    }
-  }, [eventKey, queryKey, queryClient])
-
-  return useQuery<T>({
-    queryKey,
-    queryFn: () => {
-      // Initial data fetch if needed
-      return new Promise(() => {}) // Placeholder, actual implementation depends on your API
-    },
-    staleTime: 0, // Always consider WebSocket data fresh
-    refetchOnWindowFocus: false,
-  })
-}
-
 // Auth related types and functions
 interface AuthResponse {
   token: string
@@ -261,7 +232,7 @@ export function useAuth() {
 
   // Login mutation
   const loginMutation = useMutation<AuthResponse, Error>({
-      retry: false,
+    retry: false,
     mutationFn: () => {
       if (!initData) {
         throw new Error('No initData available')

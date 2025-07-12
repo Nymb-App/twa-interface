@@ -7,16 +7,20 @@ export const StarboardTopRateBlock = ({
   idx,
 }: {
   gateUserData: {
-    name: string,
-    time: number,
-    photoUrl?: string,
+    name: string
+    time: number
+    photoUrl?: string
   }
   idx: number
 }) => {
   return (
     <div className="relative flex gap-4 items-center rounded-[14px] py-[13px] px-[16px] starboard-result-block-bg">
       <Avatar className="rounded-[12px]">
-        <AvatarImage src={gateUserData.photoUrl || 'https://github.com/shadcn.png'} />
+        <AvatarImage
+          src={gateUserData.photoUrl || 'https://github.com/shadcn.png'}
+          loading="lazy"
+          decoding="async"
+        />
         <AvatarFallback>{'ju'.toUpperCase()}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col flex-auto">
@@ -29,9 +33,24 @@ export const StarboardTopRateBlock = ({
           precision={2}
           renderer={({ days, hours, minutes, seconds, completed }) => {
             if (completed) {
-              return <StarboardCountdownDisplay days={0} hours={0} minutes={0} seconds={0} completed />
+              return (
+                <StarboardCountdownDisplay
+                  days={0}
+                  hours={0}
+                  minutes={0}
+                  seconds={0}
+                  completed
+                />
+              )
             }
-            return <StarboardCountdownDisplay days={days} hours={hours} minutes={minutes} seconds={seconds} />
+            return (
+              <StarboardCountdownDisplay
+                days={days}
+                hours={hours}
+                minutes={minutes}
+                seconds={seconds}
+              />
+            )
           }}
         />
       </div>

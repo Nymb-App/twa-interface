@@ -2,10 +2,9 @@ import { Link, useMatches } from '@tanstack/react-router'
 import { isMobile } from 'react-device-detect'
 import { Toaster } from 'sonner'
 import { useEffect } from 'react'
-import { SendGiftButton } from './send-gift-button'
+import { LvlUpButton } from '../gate-page/ui/lvl-up-button'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
 import { CheckInButton } from './check-in-button'
-import { JumpToTheNextGateButton } from './jump-to-the-next-gate-button'
 import { UnlockGateCloseButton } from './unlock-gate-close-button'
 import type { ReactNode } from 'react'
 import type { JSX } from 'react/jsx-runtime'
@@ -27,7 +26,6 @@ export const PageLayout = ({
   useUnlockGateCloseButton = false,
   className,
   classNameContent,
-  setIsStartRoulette,
   setIsShowSendGiftActionButtons,
 }: {
   children: ReactNode
@@ -39,7 +37,6 @@ export const PageLayout = ({
   useUnlockGateCloseButton?: boolean
   className?: string
   classNameContent?: string
-  setIsStartRoulette?: (value: boolean) => void
   setIsShowSendGiftActionButtons?: (value: boolean) => void
 }) => {
   const linkItems = [
@@ -84,9 +81,6 @@ export const PageLayout = ({
         {children}
       </main>
       {useFooter && <NavigationMenu linkItems={linkItems} />}
-      {useSendButton && (
-        <SendGiftButton setIsStartRoulette={setIsStartRoulette} />
-      )}
       {useSendGiftActionButtons && (
         <SendGiftActionButtons
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
@@ -95,11 +89,11 @@ export const PageLayout = ({
       {useCheckInButton && (
         <CheckInButton className="fixed bottom-6 w-[calc(100%-2rem)] left-1/2 -translate-x-1/2 max-w-[450px] z-50" />
       )}
-      {useJumpToTheNextGateButton && <JumpToTheNextGateButton />}
+      {useJumpToTheNextGateButton && <LvlUpButton />}
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster
         className="!mb-18"
-        position="bottom-center"
+        position="top-center"
         toastOptions={{
           className:
             '!font-inter !text-[#FFFFFF] !font-[400] !leading-[20px] !text-[16px] !border !rounded-[12px] !p-4 !border-[#FFFFFF1F] !bg-[#171914]',

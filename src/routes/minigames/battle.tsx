@@ -1,9 +1,9 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
-import { AppContext } from '@/context/app-context'
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
 import { BattleMainScene } from '@/components/battle-page/battle-main-scene'
+import { useBattle } from '@/hooks/api/use-battle'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -12,18 +12,11 @@ export const Route = createFileRoute('/minigames/battle')({
 function RouteComponent() {
   const [, setIsAnimationsEnd] = useState(false)
 
-  useEffect(() => {
-    const originalColor = document.body.style.backgroundColor
-    return () => {
-      document.body.style.backgroundColor = originalColor
-    }
-  }, [])
   const [, setIsClosingAnimation] = useState(false)
   const [isOpeningAnimation] = useState(false)
   const [, setIsOpeningAnimationDelayed] = useState(false)
   const [, setIsReset] = useState(true)
 
-  const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(false)
   const [
     isStartFindingOpponentAnimationEnd,
@@ -34,16 +27,37 @@ function RouteComponent() {
   const [areaClaimedPercent, setAreaClaimedPercent] = useState(0)
   const router = useRouter()
 
-  const opponentNickname = 'igorivanov'
-  const myNickname = 'tevial'
+  const {
+    makeBet,
+    opponentInfo,
+    myInfo,
+    roomId,
+    click,
+    isMeReady,
+    clickX2,
+    leaveGame,
+    isFinishedGame,
+    myLastOpponent,
+  } = useBattle()
 
   const resetGame = () => {
     setIsStartFindingOpponent(false)
     setIsStartFindingOpponentAnimationEnd(false)
     setIsWinningResult(false)
-
     setIsReset(true)
+    if (roomId) leaveGame(roomId)
   }
+
+  const handleJoinGame = (bet: number) => {
+    makeBet(bet)
+  }
+
+  useEffect(() => {
+    const originalColor = document.body.style.backgroundColor
+    return () => {
+      document.body.style.backgroundColor = originalColor
+    }
+  }, [])
 
   useEffect(() => {
     if (!isStartFindingOpponent) return
@@ -78,25 +92,27 @@ function RouteComponent() {
   useEffect(() => {
     if (areaClaimedPercent >= 80 || areaClaimedPercent <= -80) {
       const isWinner = areaClaimedPercent >= 80
-
+      if (roomId) isFinishedGame(roomId)
       setIsWinningResult(true)
+      const betConverter: any = {
+        '86400': '1 day',
+        '604800': '1 week',
+        '2592000': '1 month',
+        '31536000': '1 year',
+      }
       router.navigate({
         to: '/minigames/battle-result',
         search: {
-          myNickname: myNickname,
-          opponentNickname: opponentNickname,
+          myNickname: myInfo.nickname,
+          opponentNickname: opponentInfo?.nickname ?? 'Unknown',
           isMeWinner: isWinner,
-          bet: battleGameRewardRadioValue,
+          bet: betConverter[myInfo.bet],
+          photoUrl: myInfo.photoUrl,
+          opponentPhotoUrl: opponentInfo?.photoUrl ?? 'Unknown',
         },
       })
     }
-  }, [
-    areaClaimedPercent,
-    battleGameRewardRadioValue,
-    myNickname,
-    opponentNickname,
-    router,
-  ])
+  }, [areaClaimedPercent, myInfo, opponentInfo, router])
 
   return (
     <PageLayout
@@ -112,6 +128,7 @@ function RouteComponent() {
             setIsStartFindingOpponentAnimationEnd(true)
             setIsReset(false)
           }}
+          onJoinGame={handleJoinGame}
           onAnimationEnd={(params) => {
             if (params.animationName === 'battle-intro-section-slide-fade')
               setIsAnimationsEnd(true)
@@ -120,11 +137,37 @@ function RouteComponent() {
       )}
       {isStartFindingOpponent && (
         <BattleMainScene
+          key={roomId}
+          opponentInfo={opponentInfo}
+          myLastOpponent={myLastOpponent}
+          myInfo={myInfo}
           areaClaimedPercent={areaClaimedPercent}
           onForcedExitBattle={resetGame}
           onAreaClaimedPercentageChange={(percent) =>
             setAreaClaimedPercent(percent)
           }
+          onCountdownCompleted={() => {
+            if (roomId) {
+              const timer = setTimeout(() => {
+                isMeReady(roomId)
+              }, 1000)
+              return () => clearTimeout(timer)
+            }
+          }}
+          onGameFinished={() => {
+            if (roomId) {
+              isFinishedGame(roomId)
+            }
+          }}
+          onBattleClick={(isX2Active: boolean) => {
+            if (roomId) {
+              if (isX2Active) {
+                clickX2(roomId)
+              } else {
+                click(roomId)
+              }
+            }
+          }}
         />
       )}
     </PageLayout>

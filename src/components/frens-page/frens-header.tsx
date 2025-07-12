@@ -1,13 +1,11 @@
-import { useState } from 'react'
+import { useMemo } from 'react'
 import Countdown from 'react-countdown'
+import { Skeleton } from '../ui/skeleton'
+import { AnimatedCountdown } from '../home-page/progress-section'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import FrensImage from '/frens-img.webp'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
-import { TimeCountup } from '@/components/ui/countup-timer-display'
-import {
-  NYMB_FARMING_FINISHAT_LS_KEY,
-  useFarming,
-} from '@/context/farming-context'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const FrensHeader = ({
   isClaimStart,
@@ -18,12 +16,22 @@ export const FrensHeader = ({
   isClaimEnd: boolean
   setIsClaimEnd: (value: boolean) => void
 }) => {
-  const { finishAt, loading } = useFarming()
+  const { accountQuery, isLoading } = useAccountMe()
 
-  const [initialFinishAtValue, _] = useState(
-    Number(localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY)),
-  )
-  const totalEarnings = 1610000
+  const accountClaimedTimeMs = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.claimedTime) return 0
+    return accountQuery.data.claimedTime * 1000 // milliseconds
+  }, [accountQuery.data])
+
+  const accountClaimedTimeSec = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.claimedTime) return 0
+    return accountQuery.data.claimedTime // seconds
+  }, [accountQuery.data])
+
+  const accountClaimTimeSec = useMemo(() => {
+    if (!accountQuery.data || !accountQuery.data.claimTime) return 0
+    return accountQuery.data.claimTime // seconds
+  }, [accountQuery.data])
 
   return (
     <header className="font-pixel relative w-full bg-[url('/frens-bg.webp')] bg-bottom bg-no-repeat px-3 pb-6 font-[400]">
@@ -53,18 +61,16 @@ export const FrensHeader = ({
       <p className="font-inter mb-2 text-center text-[14px] leading-[140%] text-[#FFFFFF99]">
         Total Earnings:
       </p>
-      {loading && <div>loading...</div>}
-      {finishAt > 0 && !isClaimStart && (
-        <Countdown
-          date={finishAt}
-          intervalDelay={10}
-          precision={3}
-          renderer={(props: any) => (
-            <CountdownTimerDisplay isCountdownHeaderView {...props} />
-          )}
-        />
+      {isLoading && (
+        <div className="flex items-center justify-center gap-6">
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+        </div>
       )}
-      {!loading && !finishAt && !isClaimStart && (
+      {!isLoading && !accountClaimedTimeMs && !isClaimStart && (
         <CountdownTimerDisplay
           isCountdownHeaderView
           days={0}
@@ -73,26 +79,43 @@ export const FrensHeader = ({
           seconds={0}
         />
       )}
-      {finishAt > 0 && isClaimEnd && (
+      {!isLoading && isClaimEnd && accountClaimedTimeMs > 0 && (
         <Countdown
-          date={finishAt}
-          intervalDelay={10}
+          date={accountClaimedTimeMs}
+          intervalDelay={1000}
           precision={3}
           renderer={(props: any) => (
             <CountdownTimerDisplay isCountdownHeaderView {...props} />
           )}
         />
       )}
-
-      {isClaimStart && !isClaimEnd && (
-        <TimeCountup
-          initialFinishAtValue={initialFinishAtValue}
-          totalEarnings={totalEarnings}
-          targetTimestamp={Number(
-            localStorage.getItem(NYMB_FARMING_FINISHAT_LS_KEY),
-          )}
-          isClaimStart={isClaimStart}
-          setIsClaimEnd={setIsClaimEnd}
+      {!isLoading &&
+        !isClaimStart &&
+        !isClaimEnd &&
+        accountClaimedTimeMs > 0 && (
+          <Countdown
+            date={accountClaimedTimeMs}
+            intervalDelay={1000}
+            precision={3}
+            renderer={(props: any) => (
+              <CountdownTimerDisplay isCountdownHeaderView {...props} />
+            )}
+          />
+        )}
+      {!isLoading && isClaimStart && !isClaimEnd && (
+        <AnimatedCountdown
+          from={
+            accountClaimedTimeSec > 0
+              ? accountClaimedTimeSec
+              : Math.floor(Date.now() / 1000)
+          }
+          to={
+            accountClaimTimeSec +
+            (accountClaimedTimeSec > 0
+              ? accountClaimedTimeSec
+              : Math.floor(Date.now() / 1000))
+          }
+          onEnd={() => setIsClaimEnd(true)}
         />
       )}
     </header>

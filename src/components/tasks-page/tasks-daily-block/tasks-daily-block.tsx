@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn, formatDurationFromSeconds } from '@/utils'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const TaskDailyBlock = ({
   title,
@@ -12,19 +14,27 @@ export const TaskDailyBlock = ({
 }: {
   title: string
   reward: {
-    type: "time" | "energy",
-    value: number,
+    type: 'time' | 'energy'
+    value: number
   }
   buttonActionLabel: string
   isTaskCompleted: boolean
   onComplete: () => void
   children: ReactNode
 }) => {
-  const formattedReward = reward.type === 'time'
-    ? formatDurationFromSeconds(reward.value).split(' ')
-    : [String(reward.value), 'e'];
+  const formattedReward =
+    reward.type === 'time'
+      ? formatDurationFromSeconds(reward.value).split(' ')
+      : [String(reward.value), 'e']
 
-  const [value, unit] = formattedReward;
+  const [value, unit] = formattedReward
+
+  const { accountQuery } = useAccountMe()
+
+  const isDisabledActionButton = useMemo(() => {
+    if (!accountQuery.data) return true
+    return accountQuery.data.time * 1000 < Date.now()
+  }, [accountQuery.data])
 
   return (
     <div
@@ -38,14 +48,15 @@ export const TaskDailyBlock = ({
         {title}
       </p>
       <span className="relative font-pixel uppercase leading-[120%] text-[14px] font-[400] text-[#FFFFFF]/40 flex items-center gap-1">
-        <span className='absolute -left-1'>+</span>
+        <span className="absolute -left-1">+</span>
         <span>{value}</span>
         <span>{unit}</span>
       </span>
       {!isTaskCompleted ? (
         <ActionButton
+          disabled={isDisabledActionButton}
           onClick={onComplete}
-          className="rounded-[8px] font-[400] w-auto h-[24px] text-[#121312] uppercase leading-[16%] text-[12px]"
+          className="disabled:opacity-50 disabled:cursor-not-allowed rounded-[8px] font-[400] w-auto h-[24px] text-[#121312] uppercase leading-[16%] text-[12px]"
         >
           <span>{buttonActionLabel}</span>
         </ActionButton>

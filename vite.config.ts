@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => ({
         filename: 'bundle-analyzer-report.html',
         gzipSize: true,
         brotliSize: true,
+        template: 'flamegraph',
       }),
   ].filter(Boolean),
 
@@ -61,6 +62,10 @@ export default defineConfig(({ mode }) => ({
       'administrator-sole-implementing-obvious.trycloudflare.com',
       'ambien-projection-aggregate-proprietary.trycloudflare.com',
       'exp-photographic-continuous-executed.trycloudflare.com',
+      'exams-repeated-faq-connecticut.trycloudflare.com',
+      'chinese-agreed-written-copyrighted.trycloudflare.com',
+      'fan-difficulty-peterson-bailey.trycloudflare.com',
+      'marker-sn-accommodation-view.trycloudflare.com',
     ],
   },
 
@@ -76,12 +81,9 @@ export default defineConfig(({ mode }) => ({
       external: [],
       output: {
         manualChunks: {
-
           'vendor-howler': ['howler'],
 
-          'vendor-tanstack': [
-            '@tanstack/react-query',
-          ],
+          'vendor-tanstack': ['@tanstack/react-query'],
           'vendor-react': ['react', 'react-dom', 'react-icons'],
         },
       },

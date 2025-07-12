@@ -118,7 +118,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
       <div className="font-inter mb-15 flex min-h-[104px] gap-3 px-5 text-center">
         <CheckInInfoBlockItem label="Energy">
           <div className="absolute top-[-15px] left-1/2 -translate-1/2">
-            <img src="/power-img.png" alt="power" />
+            <img src="/power-img.webp" alt="power" />
           </div>
           <p className="font-pixel mt-4 mb-2 text-[24px] leading-[32px] tracking-[0.3px]">
             <span className="mr-2.5 text-[#A45FFF]">+{rewards.energy}</span>
@@ -126,7 +126,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
         </CheckInInfoBlockItem>
         <CheckInInfoBlockItem label="Time">
           <div className="absolute top-[-15px] left-1/2 -translate-1/2">
-            <img src="/clock-img.png" alt="clock" />
+            <img src="/clock-img.webp" alt="clock" />
           </div>
           <p className="font-pixel mt-4 mb-2">
             <span className="mr-2.5 text-[24px] leading-[32px] tracking-[0.3px] text-[#B6FF00]">
@@ -140,7 +140,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
         {rewards.ticket > 0 && (
           <CheckInInfoBlockItem label="Ticket">
             <div className="absolute top-[-15px] left-1/2 -translate-1/2">
-              <img src="/ticket-img.png" alt="ticket" />
+              <img src="/ticket-img.webp" alt="ticket" />
             </div>
             <p className="font-pixel mt-4 mb-2 text-[24px] leading-[32px] tracking-[0.3px]">
               <span className="mr-2.5 text-[#FBB107]">+{rewards.ticket}</span>

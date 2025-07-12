@@ -17,7 +17,10 @@ export const GateNextDisplayBlock = ({
   animationSpanClass,
   onAnimationEnd,
 }: IGateNextDisplayBlock) => {
-  const nextLvl = useMemo(() => currentLevel - 1, [currentLevel])
+  const nextLvl = useMemo(
+    () => (currentLevel - 1 > 0 ? currentLevel - 1 : 1),
+    [currentLevel],
+  )
 
   return (
     <div
@@ -41,6 +44,10 @@ export const GateNextDisplayBlock = ({
           )}
         >
           {nextLvl}
+          <LockIcon
+            fillOpacity={1}
+            className="absolute -bottom-3 h-[26px] w-[20px]"
+          />
         </span>
       )}
     </div>

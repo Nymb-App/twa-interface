@@ -1,12 +1,12 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { shareURL } from '@telegram-apps/sdk'
 import { WatchesIcon } from '@/assets/icons/watches'
-import { BattleResultGameBg } from '@/components/battle-page/battle-result-game-bg'
+import { BattleResultGameBg } from '@/components/battle-page/ui/battle-result-game-bg'
 import { cn } from '@/utils'
 import { AvatarCard } from '@/routes/send-gift'
 import { ActionButton } from '@/components/ui/action-button'
-import WinningStartImg from '/minigames/winning-stars.png'
+import WinningStartImg from '/minigames/winning-stars.webp'
+import { ShareButton } from '@/components/ui/share-button'
 
 export const Route = createFileRoute('/minigames/battle-result')({
   validateSearch: (search) => ({
@@ -14,6 +14,8 @@ export const Route = createFileRoute('/minigames/battle-result')({
     opponentNickname: String(search.opponentNickname ?? ''),
     isMeWinner: Boolean(search.isMeWinner),
     bet: String(search.bet ?? ''),
+    photoUrl: String(search.photoUrl ?? ''),
+    opponentPhotoUrl: String(search.opponentPhotoUrl ?? ''),
   }),
   component: RouteComponent,
 })
@@ -32,31 +34,36 @@ function RouteComponent() {
 
   return (
     <ResultScene
-      myNickname={search.myNickname}
+      // myNickname={search.myNickname}
       opponentNickname={search.opponentNickname}
       bet={search.bet}
       isMeWinner={search.isMeWinner}
       onNewBattle={() => router.navigate({ to: '/minigames/battle' })}
+      photoUrl={search.photoUrl}
+      opponentPhotoUrl={search.opponentPhotoUrl}
     />
   )
 }
 
 const ResultScene = ({
-  myNickname = 'Unknown',
+  // myNickname = 'Unknown',
   opponentNickname = 'Unknown',
   bet,
   onNewBattle,
   isMeWinner = false,
+  photoUrl,
+  opponentPhotoUrl,
 }: {
-  myNickname?: string
+  // myNickname?: string
   opponentNickname?: string
   bet?: string
   onNewBattle?: () => void
   isMeWinner?: boolean
+  photoUrl?: string
+  opponentPhotoUrl?: string
 }) => {
   const rewardTimeValue = bet
 
-  const [isShareBattleDisabled, setIsShareBattleDisabled] = useState(true)
   const [isNewBattleDisabled, setIsNewBattleDisabled] = useState(true)
 
   return (
@@ -92,12 +99,9 @@ const ResultScene = ({
             )}
           >
             <img
-              src={'/roulette-icons/default.png'}
+              src={photoUrl || '/roulette-icons/default.webp'}
               className="w-full h-auto object-cover absolute"
             />
-            <h2 className="absolute left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
-              {myNickname.slice(0, 2)}
-            </h2>
           </div>
           <div className="relative flex flex-col gap-2 items-center justify-center top-[110px]">
             {isMeWinner ? (
@@ -107,7 +111,7 @@ const ResultScene = ({
                 CHAMPION!
               </h2>
             ) : (
-              <h2 className="relative font-pixel text-sm text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
+              <h2 className="relative font-pixel text-[24px] text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
                 don't worry!
               </h2>
             )}
@@ -155,8 +159,8 @@ const ResultScene = ({
               <AvatarCard
                 className="size-[32px]"
                 classNameForSpan="text-[#FFFFFF] text-sm pr-1"
-                src="/roulette-icons/user-2.png"
-                label={opponentNickname.slice(0, 2)}
+                src={opponentPhotoUrl || '/roulette-icons/user-2.webp'}
+                label={''}
               />
               <span className="font-pixel text-sm font-[400] text-[#FFFFFF] uppercase">
                 {opponentNickname}
@@ -165,21 +169,10 @@ const ResultScene = ({
           </div>
         </div>
         <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-          <ActionButton
-            onClick={() => {
-              const telegramLink =
-                import.meta.env.VITE_TELEGRAM_APP_LINK ||
-                'https://telegram-apps.com'
-              if (shareURL.isAvailable()) {
-                shareURL(telegramLink, 'Check out this cool app!')
-              }
-            }}
-            disabled={isShareBattleDisabled}
-            onAnimationEnd={() => setIsShareBattleDisabled(false)}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
-          >
-            Share and get {isMeWinner ? '+1 week' : '+2 hour'}
-          </ActionButton>
+          <ShareButton
+            className="opacity-0 animate-slide-up-fade-swipe-game-6"
+            time={isMeWinner ? 604800 : 7200}
+          />
           <ActionButton
             onClick={onNewBattle}
             disabled={isNewBattleDisabled}

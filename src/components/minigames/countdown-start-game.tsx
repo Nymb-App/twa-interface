@@ -1,5 +1,5 @@
-import Countdown from 'react-countdown';
-import { useEffect, useRef, useState } from 'react'
+import Countdown from 'react-countdown'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/utils'
 
 export const CountdownStartGame = ({
@@ -9,6 +9,10 @@ export const CountdownStartGame = ({
 }) => {
   const [isOnCompleteTimer, setIsCompleteTimer] = useState(false)
 
+  const countdownDate = useMemo(() => {
+    return Date.now() + 4000
+  }, [])
+
   return (
     <div
       className={cn(
@@ -17,7 +21,7 @@ export const CountdownStartGame = ({
       )}
     >
       <Countdown
-        date={Date.now() + 4000}
+        date={countdownDate}
         intervalDelay={1000}
         precision={0}
         renderer={({ seconds }) => (

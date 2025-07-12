@@ -5,6 +5,7 @@ import Countdown from 'react-countdown'
 // Components
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CountdownTimerDisplay } from '../ui/countdown-timer-display'
+import { Skeleton } from '../ui/skeleton'
 import { LevelsList } from './levels-list'
 
 // Assets
@@ -36,24 +37,26 @@ interface EnergyCounterProps {
 /**
  * Handles the countdown animation between two timestamps
  */
-const AnimatedCountdown = ({ from, to, onEnd }: AnimatedCountdownProps) => {
-  const [animatedTimestamp, setAnimatedTimestamp] = useState(from * 1000)
-  const duration = 2 // seconds
+export const AnimatedCountdown = ({
+  from,
+  to,
+  onEnd,
+}: AnimatedCountdownProps) => {
+  const [animatedTime, setAnimatedTime] = useState(from)
 
   useEffect(() => {
-    const controls = animate(from * 1000, to * 1000, {
-      duration,
-      ease: 'easeOut',
-      onUpdate: (latest) => setAnimatedTimestamp(latest),
+    const controls = animate(from, to, {
+      duration: 1.5, // Animation duration in seconds
+      ease: 'linear',
+      onUpdate: (latest) => setAnimatedTime(latest),
       onComplete: onEnd,
     })
-
     return () => controls.stop()
   }, [from, to, onEnd])
 
   return (
     <Countdown
-      date={animatedTimestamp}
+      date={animatedTime * 1000}
       renderer={(props) => (
         <CountdownTimerDisplay isCountdownHeaderView {...props} />
       )}
@@ -95,11 +98,15 @@ const useCountdownTimer = (isClaimStart: boolean, accountTime?: number) => {
   const { refetch } = accountQuery
 
   useEffect(() => {
-    if (isClaimStart && accountTime !== undefined) {
-      setTimeBeforeClaim(accountTime)
+    // Запускаем refetch при каждом старте клейма
+    if (isClaimStart) {
+      // Сохраняем время только если оно еще не было сохранено
+      if (timeBeforeClaim === null && accountTime !== undefined) {
+        setTimeBeforeClaim(accountTime)
+      }
       refetch()
     }
-  }, [isClaimStart, accountTime, refetch])
+  }, [isClaimStart, accountTime, refetch, timeBeforeClaim])
 
   return { timeBeforeClaim, setTimeBeforeClaim }
 }
@@ -107,10 +114,7 @@ const useCountdownTimer = (isClaimStart: boolean, accountTime?: number) => {
 /**
  * Main ProgressSection component
  */
-const ProgressSection = ({
-  isClaimStart,
-  // setIsClaimEnd,
-}: ProgressSectionProps) => {
+const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
   const { accountQuery, user } = useAccountMe()
   const { data: account, isLoading: isAccountLoading } = accountQuery
   const { timeBeforeClaim, setTimeBeforeClaim } = useCountdownTimer(
@@ -125,6 +129,18 @@ const ProgressSection = ({
     const isClaiming = isClaimStart && timeBeforeClaim !== null
     const newTime = account?.time
 
+    if (isAccountLoading) {
+      return (
+        <div className="flex items-center justify-center gap-6">
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+          <Skeleton className="h-[68px] w-[50px]" />
+        </div>
+      )
+    }
+
     // Claim logic
     if (isClaiming) {
       if (newTime !== undefined && newTime > timeBeforeClaim) {
@@ -133,13 +149,11 @@ const ProgressSection = ({
             from={timeBeforeClaim}
             to={newTime}
             onEnd={() => {
-              // setIsClaimEnd(true)
               setTimeBeforeClaim(null)
             }}
           />
         )
       }
-
       return (
         <Countdown
           date={timeBeforeClaim * 1000}
@@ -151,7 +165,7 @@ const ProgressSection = ({
     }
 
     // Loading state
-    if (isAccountLoading || !account?.time) {
+    if (!account?.time) {
       return (
         <CountdownTimerDisplay
           isCountdownHeaderView

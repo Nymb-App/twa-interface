@@ -2,7 +2,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { shareURL } from '@telegram-apps/sdk'
 import { WatchesIcon } from '@/assets/icons/watches'
 import EnergyIcon from '@/assets/icons/energy'
 import HeaderBg from '@/assets/svg/header-bg'
@@ -12,7 +11,8 @@ import { cn } from '@/lib/utils'
 import { ActionButton } from '@/components/ui/action-button'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
 import { useSlidesMinigame } from '@/hooks/api/use-slides-minigame'
-import { useAccountMe } from '@/hooks/api/use-account'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+import { ShareButton } from '@/components/ui/share-button'
 // import { SettingsPanel } from './settings-pannel';
 
 export const Route = createFileRoute('/minigames/slide')({
@@ -20,12 +20,17 @@ export const Route = createFileRoute('/minigames/slide')({
 })
 
 export function RouteComponent() {
-  const defaultMinutesWinAmount = 2
+  const { accountQuery } = useAccountMe()
+
+  const defaultMinutesWinAmount = useMemo(() => {
+    if (!accountQuery.data) return 2
+    return accountQuery.data.lvl === 12 ? 2 : 12 - accountQuery.data.lvl + 2
+  }, [accountQuery.data])
+
   const defaultX2DoubleAmount = defaultMinutesWinAmount * 2
   const defaultX2TimerDuration = 8_000
 
-  const { finishGameMutation } = useSlidesMinigame();
-  const { accountQuery } = useAccountMe();
+  const { finishGameMutation } = useSlidesMinigame()
 
   const [minutesWinAmount, setMinutesWinAmount] = useState<number>(2)
   const [minutesWinned, setMinutesWinned] = useState<number>(0)
@@ -60,7 +65,6 @@ export function RouteComponent() {
   }, [defaultMinutesWinAmount])
 
   const handleGameFinished = useCallback(() => {
-    console.log(isGameStarted)
     if (isGameFinished) {
       return
     }
@@ -71,7 +75,6 @@ export function RouteComponent() {
     }
   }, [isGameStarted, isGameFinished])
 
-
   useEffect(() => {
     if (accountQuery.data) {
       const e = accountQuery.data.energy || 1200
@@ -80,13 +83,12 @@ export function RouteComponent() {
     }
   }, [accountQuery.data])
 
-
   useEffect(() => {
     if (isGameFinished) {
       finishGameMutation.mutate({
         energyConsumed: energyAtStart - energy,
         collectedTime: minutesWinned * 60_000,
-      });
+      })
     }
   }, [isGameFinished])
 
@@ -176,7 +178,7 @@ export function RouteComponent() {
             renderer={({ seconds }) => (
               <div
                 className={cn(
-                  'px-4 py-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
+                  'px-4 pt-3 pb-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
                   isX2Time ? 'translate-y-12 opacity-100' : 'opacity-0',
                 )}
               >
@@ -239,17 +241,6 @@ export function RouteComponent() {
           minutesWinned={minutesWinned}
           useRestart={energy > 0}
           onRestart={resetGame}
-          onShare={() => {
-            if (shareURL.isAvailable()) {
-              const telegramLink =
-                import.meta.env.VITE_TELEGRAM_APP_LINK ||
-                'https://telegram-apps.com'
-              shareURL(
-                telegramLink,
-                `Check out my score in the game! ${minutesWinned} in 30 seconds. I'm playing with @nymb_bot`,
-              )
-            }
-          }}
         />
       )}
     </PageLayout>
@@ -260,15 +251,16 @@ function GameFinished({
   minutesWinned = 0,
   useRestart = true,
   onRestart,
-  onShare,
   className,
 }: {
   useRestart?: boolean
   minutesWinned?: number
   onRestart?: () => void
-  onShare?: () => void
   className?: string
 }) {
+
+  const {user} = useAccount()
+
   return (
     <div
       className={cn(
@@ -278,17 +270,17 @@ function GameFinished({
     >
       <header className="relative w-full h-[310px] top-20">
         <img
-          src={'/minigames/winning-stars.png'}
+          src={'/minigames/winning-stars.webp'}
           className="w-full h-auto p-6 object-cover bg-blend-lighten absolute opacity-0 animate-slide-up-fade-swipe-game-1"
         />
 
         <div className="relative overflow-hidden size-[104px] rounded-[36px] left-1/2 top-[100px] -translate-x-1/2 shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)] opacity-0 animate-slide-up-fade-swipe-game-2">
           <img
-            src={'/roulette-icons/default.png'}
+            src={user?.photo_url ?? '/roulette-icons/default.webp'}
             className="w-full h-auto object-cover absolute"
           />
           <h2 className="absolute left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">
-            NA
+            {user?.photo_url ? '' : 'NA'}
           </h2>
         </div>
 
@@ -318,12 +310,12 @@ function GameFinished({
       </div>
 
       <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-        <ActionButton
-          onClick={onShare}
+        <ShareButton
           className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
-        >
-          SHARE AND GET +20%
-        </ActionButton>
+          displayPercent={20}
+          isPercent
+          time={minutesWinned * 0.2}
+        />
 
         {useRestart && (
           <ActionButton

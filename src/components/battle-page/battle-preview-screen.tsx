@@ -1,11 +1,10 @@
-import { useContext } from 'react'
-import { Container } from '../ui/container'
+import { useEffect, useMemo, useState } from 'react'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from '../ui/electric-lines'
 import type { ReactNode } from 'react'
-import { cn } from '@/utils'
-import { AppContext } from '@/context/app-context'
+import { cn, convertTimestampToDaysUnit } from '@/utils'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 export const BattleTitle = ({
   text,
@@ -26,51 +25,154 @@ export const BattleTitle = ({
   )
 }
 
-export function BattleGameRewardSection({ className }: { className?: string }) {
-  const { battleGameRewardRadioValue, setBattleGameRewardRadioValue } =
-    useContext(AppContext)
+export function BattleGameRewardSection({
+  onChange,
+  className,
+}: {
+  onChange?: (value: number) => void
+  className?: string
+}) {
+  const [battleGameRewardRadioValue, setBattleGameRewardRadioValue] =
+    useState('1 weeks')
+
+  const { accountQuery } = useAccountMe()
+
+  const betOptions = {
+    '1 days': 86400_000,
+    '1 weeks': 604800_000,
+    '1 month': 2592000_000,
+    '1 years': 31536000_000,
+  }
+
+  const { defaultValue, disabledOptions } = useMemo(() => {
+    if (!accountQuery.data) {
+      return {
+        defaultValue: '1 weeks',
+        disabledOptions: {},
+      }
+    }
+
+    if (
+      convertTimestampToDaysUnit(accountQuery.data.time - Date.now() / 1000) < 1
+    ) {
+      return {
+        defaultValue: '1 days',
+
+        disabledOptions: {
+          '1 days': true,
+          '1 weeks': true,
+          '1 month': true,
+          '1 years': true,
+        },
+      }
+    }
+
+    if (
+      convertTimestampToDaysUnit(accountQuery.data.time - Date.now() / 1000) < 7
+    ) {
+      return {
+        defaultValue: '1 days',
+        disabledOptions: {
+          '1 weeks': true,
+          '1 month': true,
+          '1 years': true,
+        },
+      }
+    }
+
+    const remainingTimeMs = accountQuery.data.time * 1000 - Date.now()
+
+    const disabled: Record<string, boolean> = {}
+    const availableOptions: Array<string> = []
+
+    for (const label of Object.keys(betOptions)) {
+      const duration = betOptions[label as keyof typeof betOptions]
+      if (remainingTimeMs >= duration) {
+        availableOptions.push(label)
+        disabled[label] = false
+      } else {
+        disabled[label] = true
+      }
+    }
+
+    let newDefaultValue: string | undefined = undefined
+
+    if (availableOptions.includes('1 weeks')) {
+      newDefaultValue = '1 weeks'
+    } else if (availableOptions.length > 0) {
+      newDefaultValue = availableOptions[availableOptions.length - 1]
+    }
+
+    return {
+      defaultValue: newDefaultValue,
+      disabledOptions: disabled,
+    }
+  }, [accountQuery.data])
+
+  useEffect(() => {
+    if (defaultValue) {
+      setBattleGameRewardRadioValue(defaultValue)
+    }
+  }, [defaultValue])
+
+  useEffect(() => {
+    switch (battleGameRewardRadioValue) {
+      case '1 days':
+        onChange?.(60 * 60 * 24)
+        break
+      case '1 weeks':
+        onChange?.(60 * 60 * 24 * 7)
+        break
+      case '1 month':
+        onChange?.(60 * 60 * 24 * 30)
+        break
+      case '1 years':
+        onChange?.(60 * 60 * 24 * 365)
+        break
+      default:
+        onChange?.(60 * 60 * 24 * 7)
+    }
+  }, [battleGameRewardRadioValue, onChange])
 
   return (
-    <section className={cn('relative', className)}>
-      <Container>
-        <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px] opacity-0 animate-battle-preview-reward-fade">
-          <div className="text-center relative h-[56px]">
-            <span className="text-[#B6FF00] tracking-[5px] font-[400] text-[48px] leading-[120%] [text-shadow:0px_0px_15px_rgba(182,255,0,0.6)]">
-              {battleGameRewardRadioValue}
-            </span>
-          </div>
-          <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
-          <RadioGroup
-            defaultValue="1 weeks"
-            value={battleGameRewardRadioValue}
-            onValueChange={(value) => {
-              setBattleGameRewardRadioValue(value)
-            }}
-            className="flex gap-3 justify-center"
-          >
-            {['1 days', '1 weeks', '1 month', '1 years'].map((option) => (
-              <div key={option} className="">
-                <RadioGroupItem
-                  value={option}
-                  id={option}
-                  className="hidden peer"
-                />
-                <label
-                  htmlFor={option}
-                  className={cn(
-                    'backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[9.5px] font-[400] uppercase',
-                    battleGameRewardRadioValue === option
-                      ? 'border border-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)] backdrop-blur-sm'
-                      : 'border border-transparent starboard-result-block-bg text-[#FFFFFF66]',
-                  )}
-                >
-                  {option}
-                </label>
-              </div>
-            ))}
-          </RadioGroup>
+    <section className={cn('relative px-4', className)}>
+      <div className="font-pixel rounded-[24px] border border-[#2B311C] backdrop-blur-[16px] bg-[rgba(255, 255, 255, 0.01)] p-4 uppercase mb-[21px] opacity-0 animate-battle-preview-reward-fade">
+        <div className="text-center relative h-[56px]">
+          <span className="text-[#B6FF00] tracking-[5px] font-[400] text-[48px] leading-[120%] [text-shadow:0px_0px_15px_rgba(182,255,0,0.6)]">
+            {battleGameRewardRadioValue}
+          </span>
         </div>
-      </Container>
+        <div className="h-[1px] bg-[#FFFFFF1F] my-4" />
+        <RadioGroup
+          defaultValue={defaultValue}
+          value={battleGameRewardRadioValue}
+          onValueChange={setBattleGameRewardRadioValue}
+          className="grid grid-cols-4 gap-2"
+        >
+          {Object.keys(betOptions).map((label) => (
+            <div key={label}>
+              <RadioGroupItem
+                value={label}
+                id={label}
+                className="hidden peer"
+                disabled={disabledOptions[label]}
+              />
+              <label
+                htmlFor={label}
+                className={cn(
+                  'block text-center backdrop-blur-[8px] py-1.5 pl-1 pr-1.5 rounded-[8px] cursor-pointer leading-[120%] text-[9.5px] font-[400] uppercase',
+                  battleGameRewardRadioValue === label
+                    ? 'border border-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)] backdrop-blur-sm'
+                    : 'border border-transparent starboard-result-block-bg text-[#FFFFFF66]',
+                  disabledOptions[label] && 'opacity-50 cursor-not-allowed',
+                )}
+              >
+                {label}
+              </label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
     </section>
   )
 }
@@ -95,7 +197,7 @@ export const CurrentUserBattleCard = ({
   return (
     <div
       className={cn(
-        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.png')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
+        "relative font-pixel flex flex-col items-center gap-6 bg-[url('/minigames/battle-header-bg.webp')] bg-no-repeat bg-bottom bg-[length:100%_100%] pt-[26px] h-[220px] uppercase overflow-hidden",
         className,
       )}
       onAnimationEnd={onAnimationEnd}
@@ -118,7 +220,7 @@ export const CurrentUserBattleCard = ({
         )}
       >
         <img
-          src={'/roulette-icons/default.png'}
+          src={'/roulette-icons/default.webp'}
           className="w-full h-auto object-cover absolute z-1 rounded-[34px] shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)]"
         />
         <p className="absolute z-1 left-1/2 top-1/2 -translate-1/2 text-3xl text-white font-bold">

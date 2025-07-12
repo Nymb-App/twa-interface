@@ -3,7 +3,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { useState } from 'react'
 import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
 import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
-import { Container } from '@/components/ui/container'
 import {
   Carousel,
   CarouselContent,
@@ -48,7 +47,7 @@ export const StarboardTabsSection = () => {
         </Carousel>
       </TabsList>
 
-      <Container className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 px-4">
         <StarboardPersonalRate />
         {lvls.map((lvl) => {
           const levelData = globalStatistics.data[lvl]
@@ -98,7 +97,7 @@ export const StarboardTabsSection = () => {
             </TabsContent>
           )
         })}
-      </Container>
+      </div>
     </Tabs>
   )
 }
