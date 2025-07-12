@@ -62,6 +62,7 @@ export default defineConfig(({ mode }) => ({
       'administrator-sole-implementing-obvious.trycloudflare.com',
       'exams-repeated-faq-connecticut.trycloudflare.com',
       'chinese-agreed-written-copyrighted.trycloudflare.com',
+      'fan-difficulty-peterson-bailey.trycloudflare.com',
     ],
   },
 

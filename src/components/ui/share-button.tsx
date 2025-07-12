@@ -53,7 +53,7 @@ export const ShareButton = ({
       onAnimationEnd={() => setIsAnimationStart(false)}
       onClick={() => {
         const telegramLink =
-          import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://telegram-apps.com'
+          import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
         if (shareURL.isAvailable()) {
           shareURL(telegramLink, comment || 'Check out this cool app!')
         }
