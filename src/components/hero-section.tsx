@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
