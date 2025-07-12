@@ -33,9 +33,9 @@ export const GateProgressDisplay = ({
           )}
         >
           {label === 'years'
-            ? zeroPad(current > 99 ? '+99' : current)
+            ? zeroPad(current > 99 ? '99+' : current)
             : current > 99
-              ? '+99'
+              ? '99+'
               : current}
         </span>
         {!isLockedNewGate && (
@@ -45,9 +45,9 @@ export const GateProgressDisplay = ({
             </span>
             <span className={cn(label === 'ticket' && max === 1 && '-ml-2')}>
               {label === 'years'
-                ? zeroPad(max > 99 ? '+99' : max)
+                ? zeroPad(max > 99 ? '99+' : max)
                 : max > 99
-                  ? '+99'
+                  ? '99+'
                   : max}
             </span>
           </>

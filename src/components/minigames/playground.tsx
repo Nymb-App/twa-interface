@@ -157,7 +157,7 @@ export default function BombField({
   showPlayground = false,
   onInteractionEnter,
   onGameFinished,
-  onPointerUp,
+  // onPointerUp,
 }: BombFieldProps) {
   /* refs / state */
   const containerRef = useRef<HTMLDivElement>(null)
@@ -777,7 +777,7 @@ export default function BombField({
         waveDuration={waveDuration}
         waveColor={waveColor}
         drawEffect={drawEffect}
-        onPointerUp={onPointerUp}
+        // onPointerUp={onPointerUp}
       />
 
       {/* айтемы */}

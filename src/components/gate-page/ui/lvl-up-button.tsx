@@ -163,7 +163,7 @@ function LvlUpButtonWithShop({
           <div className="flex flex-col gap-1 justify-center items-center">
             <WatchesIcon className="size-12" />
             <span className="text-2xl">
-              {timeAmount > 0 ? timeAmount : 0}
+              {timeAmount > 99 ? '99+' : timeAmount}
               <span className="text-white/40 font-inter"> / </span>
               {allowedTime}
             </span>
@@ -172,7 +172,7 @@ function LvlUpButtonWithShop({
           <div className="flex flex-col gap-1 justify-center items-center">
             <TicketIcon className="size-12" />
             <span className="text-2xl">
-              {ticketAmount}
+              {ticketAmount > 99 ? '99+' : ticketAmount}
               <span className="text-white/40 font-inter"> / </span>
               {allowedTickets}
             </span>
@@ -251,7 +251,7 @@ function LvlUpButtonWithNextGateNavigation({
         <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-10">
           <div className="flex flex-col gap-1 justify-center items-center">
             <WatchesIcon className="size-12" />
-            <span className="text-2xl">{timeAmount}</span>
+            <span className="text-2xl">{timeAmount > 99 ? '99+' : timeAmount}</span>
             <span className="text-base">DAYS</span>
           </div>
 
@@ -272,7 +272,7 @@ function LvlUpButtonWithNextGateNavigation({
 
           <div className="flex flex-col gap-1 justify-center items-center">
             <TicketIcon className="size-12" />
-            <span className="text-2xl">{ticketAmount}</span>
+            <span className="text-2xl">{ticketAmount > 99 ? '99+' : ticketAmount}</span>
             <span className="text-base">TICKETS</span>
           </div>
         </div>
