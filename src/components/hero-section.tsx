@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { isAndroid } from 'react-device-detect'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
@@ -13,6 +14,12 @@ export function HeroSection() {
       <h2 className="font-pixel text-center animate-slide-up-fade-0">
         WHAT AWAITS YOU
       </h2>
+
+      <div className="flex flex-col gap-2">
+        <Link to={'/home'} className="text-white z-50 text-xl">
+          Home
+        </Link>
+      </div>
 
       <div className="inline-flex justify-between gap-2 w-full mt-7 animate-slide-up-fade-1">
         {isAndroid ? (
