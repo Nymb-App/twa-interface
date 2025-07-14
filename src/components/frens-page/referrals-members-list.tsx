@@ -8,7 +8,7 @@ import { cn } from '@/utils'
 import { useAccountMe } from '@/hooks/api/use-account'
 
 const MIN_ALLOWED_TIME = 86400
-const MIN_FRENS_FOR_A_GIFT = 3
+const MIN_FRENS_FOR_A_GIFT = 10
 
 export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
   const { myReferrals, isLoadingMyReferrals } = useReferrals()
