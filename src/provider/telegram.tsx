@@ -103,7 +103,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
             ) {
               forceDisconnect()
             }
-            router.navigate({ to: '/home' })
+            router.navigate({ to: '/' })
           })
         }
       }

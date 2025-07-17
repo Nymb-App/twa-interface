@@ -31,12 +31,12 @@ export function useCheckIn() {
     onError: () => {
       dailyRewardsQuery.refetch()
       accountQuery.refetch()
-      router.navigate({ to: '/home' })
+      router.navigate({ to: '/' })
     },
     onSuccess: () => {
       dailyRewardsQuery.refetch()
       accountQuery.refetch()
-      router.navigate({ to: '/home' })
+      router.navigate({ to: '/' })
     },
   })
 

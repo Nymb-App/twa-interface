@@ -24,7 +24,7 @@ export const SendGiftActionButtons = ({
           Share and get +2 hour
         </span>
       </ActionButton>
-      <Link to="/home">
+      <Link to="/">
         <ActionButton
           onClick={() => setIsShowSendGiftActionButtons?.(false)}
           className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
