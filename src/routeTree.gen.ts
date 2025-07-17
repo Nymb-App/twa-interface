@@ -16,7 +16,7 @@ import { Route as TasksImport } from './routes/tasks'
 import { Route as StarBoardImport } from './routes/star-board'
 import { Route as ShopImport } from './routes/shop'
 import { Route as SendGiftImport } from './routes/send-gift'
-import { Route as HomeImport } from './routes/home'
+import { Route as IndexOldImport } from './routes/index-old'
 import { Route as GateImport } from './routes/gate'
 import { Route as FrensImport } from './routes/frens'
 import { Route as CheckInImport } from './routes/check-in'
@@ -58,9 +58,9 @@ const SendGiftRoute = SendGiftImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const HomeRoute = HomeImport.update({
-  id: '/home',
-  path: '/home',
+const IndexOldRoute = IndexOldImport.update({
+  id: '/index-old',
+  path: '/index-old',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -151,11 +151,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GateImport
       parentRoute: typeof rootRoute
     }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeImport
+    '/index-old': {
+      id: '/index-old'
+      path: '/index-old'
+      fullPath: '/index-old'
+      preLoaderRoute: typeof IndexOldImport
       parentRoute: typeof rootRoute
     }
     '/send-gift': {
@@ -225,7 +225,7 @@ export interface FileRoutesByFullPath {
   '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
-  '/home': typeof HomeRoute
+  '/index-old': typeof IndexOldRoute
   '/send-gift': typeof SendGiftRoute
   '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
@@ -242,7 +242,7 @@ export interface FileRoutesByTo {
   '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
-  '/home': typeof HomeRoute
+  '/index-old': typeof IndexOldRoute
   '/send-gift': typeof SendGiftRoute
   '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
@@ -260,7 +260,7 @@ export interface FileRoutesById {
   '/check-in': typeof CheckInRoute
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
-  '/home': typeof HomeRoute
+  '/index-old': typeof IndexOldRoute
   '/send-gift': typeof SendGiftRoute
   '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
@@ -279,7 +279,7 @@ export interface FileRouteTypes {
     | '/check-in'
     | '/frens'
     | '/gate'
-    | '/home'
+    | '/index-old'
     | '/send-gift'
     | '/shop'
     | '/star-board'
@@ -295,7 +295,7 @@ export interface FileRouteTypes {
     | '/check-in'
     | '/frens'
     | '/gate'
-    | '/home'
+    | '/index-old'
     | '/send-gift'
     | '/shop'
     | '/star-board'
@@ -311,7 +311,7 @@ export interface FileRouteTypes {
     | '/check-in'
     | '/frens'
     | '/gate'
-    | '/home'
+    | '/index-old'
     | '/send-gift'
     | '/shop'
     | '/star-board'
@@ -329,7 +329,7 @@ export interface RootRouteChildren {
   CheckInRoute: typeof CheckInRoute
   FrensRoute: typeof FrensRoute
   GateRoute: typeof GateRoute
-  HomeRoute: typeof HomeRoute
+  IndexOldRoute: typeof IndexOldRoute
   SendGiftRoute: typeof SendGiftRoute
   ShopRoute: typeof ShopRoute
   StarBoardRoute: typeof StarBoardRoute
@@ -346,7 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckInRoute: CheckInRoute,
   FrensRoute: FrensRoute,
   GateRoute: GateRoute,
-  HomeRoute: HomeRoute,
+  IndexOldRoute: IndexOldRoute,
   SendGiftRoute: SendGiftRoute,
   ShopRoute: ShopRoute,
   StarBoardRoute: StarBoardRoute,
@@ -372,7 +372,7 @@ export const routeTree = rootRoute
         "/check-in",
         "/frens",
         "/gate",
-        "/home",
+        "/index-old",
         "/send-gift",
         "/shop",
         "/star-board",
@@ -398,8 +398,8 @@ export const routeTree = rootRoute
     "/gate": {
       "filePath": "gate.tsx"
     },
-    "/home": {
-      "filePath": "home.tsx"
+    "/index-old": {
+      "filePath": "index-old.tsx"
     },
     "/send-gift": {
       "filePath": "send-gift.tsx"
