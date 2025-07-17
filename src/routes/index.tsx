@@ -36,7 +36,7 @@ const App = memo(function App() {
     setIsClaimStart(true)
   }, [])
 
-  const { login, isAuthenticated } = useAuth()
+  const { login, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) return
