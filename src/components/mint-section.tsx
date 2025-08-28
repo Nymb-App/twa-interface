@@ -3,7 +3,16 @@ import { toast } from 'sonner'
 import { TransferTonButton } from './transfer-ton-button'
 import { Card } from '@/components/ui/card'
 import { useMint } from '@/hooks/use-mint'
-import { useAccountMe } from '@/hooks/api/use-account'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+import { NumberedItem, NumberedList } from './nymb-list'
+import { FaXTwitter } from "react-icons/fa6";
+import { RiTelegram2Line } from "react-icons/ri";
+import { TbReload } from "react-icons/tb";
+import { CopyButton } from './ui/copy-button'
+import { TELEGRAM_APP_URL } from '@/lib/constants'
+import { useReferrals } from '@/hooks/api/use-referrals'
+import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
+import { OptionalSVG } from '@/assets/svg/optional'
 
 function LazyVideo({
   src,
@@ -35,6 +44,16 @@ function LazyVideo({
 export function MintSection() {
   const { mintProgress, mint } = useMint();
   const { accountQuery } = useAccountMe();
+  const { user } = useAccount();
+  const { myCodes} = useReferrals();
+
+  const code = useMemo(() => {
+    return myCodes && myCodes.length > 0 ? myCodes[0] : {
+      code: 'NYMB123',
+      royalty: 10,
+      referralsCount: 0
+    };
+  }, [myCodes])
 
   const isMinted = useMemo(() => {
     if (accountQuery.data) {
@@ -61,15 +80,106 @@ export function MintSection() {
   return (
     <section className="relative text-white px-3">
       <div className="animate-slide-up-fade-3">
-        <h2 className="font-pixel text-2xl text-center">BE ONE OF</h2>
-        <h2 className="font-pixel text-2xl text-center">THE BEST ALREADY</h2>
+        <h2 className="font-pixel text-2xl text-center">JOIN THE GIVEAWAY</h2>
+        <h2 className="font-pixel text-2xl text-center">AND BE A WINNER</h2>
       </div>
-      <div className="animate-slide-up-fade-4">
-        <h3 className="text-white/60 text-sm text-center mt-2">
-          Get the best deals and benefits
-        </h3>
-        <h3 className="text-white/60 text-sm text-center">along the way</h3>
-      </div>
+
+
+      <NumberedList showLine className="relative flex flex-col gap-3 w-full">
+        <NumberedItem className='w-full'>
+          <NumberedItem.Title>Subscribe to Nymb</NumberedItem.Title>
+          <NumberedItem.Description>
+            To participate in the giveaway, you must be<br />
+            subscribed to social media
+          </NumberedItem.Description>
+
+          <div className='w-full mt-3 mb-4 flex flex-col gap-2'>
+            <div className='rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full'>
+              <div className='inline-flex gap-4 items-center'>
+                <FaXTwitter className='text-white size-5' />
+                <div className='flex flex-col'>
+                  <span className='text-base font-inter font-semibold text-white tracking-normal'>Nymb</span>
+                  <span className='text-xs font-pixel text-white/40 tracking-normal'>X</span>
+                </div>
+              </div>
+
+              <div className='inline-flex gap-2'>
+                <button className='bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1'>
+                  <TbReload className='scale-x-[-1]' />
+                </button>
+                <button className='text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3'>
+                  SUBSCRIBE
+                </button>
+
+              </div>
+            </div>
+
+            <div className='rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full'>
+              <div className='inline-flex gap-4 items-center'>
+                <RiTelegram2Line className='text-white size-7' />
+                <div className='flex flex-col'>
+                  <span className='text-base font-inter font-semibold text-white tracking-normal'>Nymb</span>
+                  <span className='text-xs font-pixel text-white/40 tracking-normal'>TELEGRAM</span>
+                </div>
+              </div>
+
+              <div className='inline-flex gap-2'>
+                <button className='bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1'>
+                  <TbReload className='scale-x-[-1]' />
+                </button>
+                <button className='text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3'>
+                  SUBSCRIBE
+                </button>
+              </div>
+            </div>
+          </div>
+        </NumberedItem>
+
+        <NumberedItem className='w-full'>
+          <NumberedItem.Title>Invite your frens</NumberedItem.Title>
+          <NumberedItem.Description>
+            Increase your chances and receive game<br />
+            bonuses for each friend you refer
+          </NumberedItem.Description>
+
+          <div className='w-full mt-3 mb-4 flex flex-col gap-2'>
+            <div className='rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full'>
+              <div className='inline-flex gap-4 items-center'>
+                <FriendsIcon fillOpacity='1' className='size-6' />
+                <div className='flex flex-col'>
+                  <span className='text-base font-inter font-semibold text-white tracking-normal'>{code.code}</span>
+                  <span className='text-xs font-pixel text-white/40 tracking-normal'>{code.referralsCount} FRENS</span>
+                </div>
+              </div>
+
+              <div className='inline-flex gap-2'>
+                <button className='bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1'>
+                  <TbReload className='scale-x-[-1]' />
+                </button>
+                <CopyButton
+                  content={`${TELEGRAM_APP_URL}?startapp=${user?.id}_${code.code}`}
+                  className='w-fit min-w-[83px] text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3'
+                >
+                  INVITE
+                </CopyButton>
+              </div>
+            </div>
+          </div>
+        </NumberedItem>
+
+        <NumberedItem>
+          <NumberedItem.Title className='relative'>
+            Mint Nymb NFT
+            <OptionalSVG className='absolute left-[51%] -top-4' />
+          </NumberedItem.Title>
+          <NumberedItem.Description>
+            Increase your chances and get the best<br />
+            deals and benefits along the way
+          </NumberedItem.Description>
+        </NumberedItem>
+      </NumberedList>
+
+
       <div className="inline-flex w-full gap-2 mt-6 animate-slide-up-fade-5">
         <Card className="w-full flex flex-col bg-[#161715]">
           <div className="relative">
@@ -80,6 +190,7 @@ export function MintSection() {
             />
             <div className="absolute w-full h-[90px] bg-gradient-to-b from-[#0b0b0b]/50 from-20% to-[#161715] pointer-events-none -bottom-1" />
           </div>
+          <div className="absolute w-full h-full bg-[url('/index-page/nft-bg.png')] bg-cover bg-top pointer-events-none" />
           <div className="inline-flex gap-2 items-center font-pixel mx-auto text-[#B6FF00] z-10 -mt-11">
             <h2 className="text-[32px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]">
               45%
@@ -111,7 +222,7 @@ export function MintSection() {
             </TransferTonButton>
 
           </div>
-          <span className="mt-3 text-white/60 mx-auto">One for the wallet</span>
+          <span className="mt-3 text-[#B6FF00]/60 mx-auto">One for the wallet</span>
         </Card>
       </div>
     </section>
