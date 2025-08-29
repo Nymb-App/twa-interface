@@ -22,10 +22,6 @@
   will-change: transform;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   /* bg-[#121312] */
   @apply m-0 bg-[#121312];
@@ -617,12 +613,17 @@ code {
   }
 }
 
+
 html,
 body {
   /* Отключаем «резиновый» эффект при скролле по всей странице */
   overscroll-behavior: none !important;
   /* для WebKit (iOS Safari) */
   -webkit-overflow-scrolling: auto !important;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 .rfm-child {

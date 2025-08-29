@@ -1,5 +1,5 @@
 import { isAndroid } from 'react-device-detect'
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
@@ -47,10 +47,56 @@ export function HeroSection() {
 }
 
 function SwipeCardDrawer() {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const savedScrollY = useRef(0)
+  const savedHash = useRef<string>("")
+
+  // 1) На маунте один раз убираем хеш, если он есть
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (window.location.hash) {
+      savedHash.current = window.location.hash // если нужно — можно потом вернуть
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+  }, []);
+
+  const openDrawer = useCallback(() => {
+    // 2) Перед открытием ещё раз гарантированно убираем хеш (если вдруг появился)
+    if (window.location.hash) {
+      savedHash.current = window.location.hash
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+
+    // 3) Лочим скролл без дёрганья (фиксируем body)
+    savedScrollY.current = window.scrollY
+    const body = document.body
+    body.style.position = "fixed"
+    body.style.top = `-${savedScrollY.current}px`
+    body.style.left = "0"
+    body.style.right = "0"
+    body.style.width = "100%"
+
+    setIsOpen(true)
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    // 4) Возвращаем body и скролл на прежнее место
+    const body = document.body
+    const top = body.style.top
+    body.style.position = ""
+    body.style.top = ""
+    body.style.left = ""
+    body.style.right = ""
+    body.style.width = ""
+    window.scrollTo(0, Math.abs(parseInt(top || "0", 10)))
+
+    setIsOpen(false)
+  }, []);
+
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer open={isOpen} onOpenChange={(v) => (v ? openDrawer() : closeDrawer())}>
       <DrawerTrigger className="w-full cursor-pointer">
         {isAndroid ? (
           <SwipeCard
@@ -121,8 +167,53 @@ function SwipeCardDrawer() {
 function BattleCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
+    const savedScrollY = useRef(0)
+  const savedHash = useRef<string>("")
+
+  // 1) На маунте один раз убираем хеш, если он есть
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (window.location.hash) {
+      savedHash.current = window.location.hash // если нужно — можно потом вернуть
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+  }, []);
+
+  const openDrawer = useCallback(() => {
+    // 2) Перед открытием ещё раз гарантированно убираем хеш (если вдруг появился)
+    if (window.location.hash) {
+      savedHash.current = window.location.hash
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+
+    // 3) Лочим скролл без дёрганья (фиксируем body)
+    savedScrollY.current = window.scrollY
+    const body = document.body
+    body.style.position = "fixed"
+    body.style.top = `-${savedScrollY.current}px`
+    body.style.left = "0"
+    body.style.right = "0"
+    body.style.width = "100%"
+
+    setIsOpen(true)
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    // 4) Возвращаем body и скролл на прежнее место
+    const body = document.body
+    const top = body.style.top
+    body.style.position = ""
+    body.style.top = ""
+    body.style.left = ""
+    body.style.right = ""
+    body.style.width = ""
+    window.scrollTo(0, Math.abs(parseInt(top || "0", 10)))
+
+    setIsOpen(false)
+  }, []);
+
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer open={isOpen} onOpenChange={(v) => (v ? openDrawer() : closeDrawer())}>
       <DrawerTrigger className="w-full cursor-pointer">
         <BattleCard
           className="w-full"
@@ -179,8 +270,53 @@ function BattleCardDrawer() {
 
 function TasksCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const savedScrollY = useRef(0)
+  const savedHash = useRef<string>("")
+
+  // 1) На маунте один раз убираем хеш, если он есть
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (window.location.hash) {
+      savedHash.current = window.location.hash // если нужно — можно потом вернуть
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+  }, []);
+
+  const openDrawer = useCallback(() => {
+    // 2) Перед открытием ещё раз гарантированно убираем хеш (если вдруг появился)
+    if (window.location.hash) {
+      savedHash.current = window.location.hash
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+
+    // 3) Лочим скролл без дёрганья (фиксируем body)
+    savedScrollY.current = window.scrollY
+    const body = document.body
+    body.style.position = "fixed"
+    body.style.top = `-${savedScrollY.current}px`
+    body.style.left = "0"
+    body.style.right = "0"
+    body.style.width = "100%"
+
+    setIsOpen(true)
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    // 4) Возвращаем body и скролл на прежнее место
+    const body = document.body
+    const top = body.style.top
+    body.style.position = ""
+    body.style.top = ""
+    body.style.left = ""
+    body.style.right = ""
+    body.style.width = ""
+    window.scrollTo(0, Math.abs(parseInt(top || "0", 10)))
+
+    setIsOpen(false)
+  }, []);
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer open={isOpen} onOpenChange={(v) => (v ? openDrawer() : closeDrawer())}>
       <DrawerTrigger className="w-full cursor-pointer">
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
@@ -236,8 +372,54 @@ function TasksCardDrawer() {
 
 function ReferralsCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+    const savedScrollY = useRef(0)
+  const savedHash = useRef<string>("")
+
+  // 1) На маунте один раз убираем хеш, если он есть
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (window.location.hash) {
+      savedHash.current = window.location.hash // если нужно — можно потом вернуть
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+  }, []);
+
+  const openDrawer = useCallback(() => {
+    // 2) Перед открытием ещё раз гарантированно убираем хеш (если вдруг появился)
+    if (window.location.hash) {
+      savedHash.current = window.location.hash
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+
+    // 3) Лочим скролл без дёрганья (фиксируем body)
+    savedScrollY.current = window.scrollY
+    const body = document.body
+    body.style.position = "fixed"
+    body.style.top = `-${savedScrollY.current}px`
+    body.style.left = "0"
+    body.style.right = "0"
+    body.style.width = "100%"
+
+    setIsOpen(true)
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    // 4) Возвращаем body и скролл на прежнее место
+    const body = document.body
+    const top = body.style.top
+    body.style.position = ""
+    body.style.top = ""
+    body.style.left = ""
+    body.style.right = ""
+    body.style.width = ""
+    window.scrollTo(0, Math.abs(parseInt(top || "0", 10)))
+
+    setIsOpen(false)
+  }, []);
+
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer open={isOpen} onOpenChange={(v) => (v ? openDrawer() : closeDrawer())}>
       <DrawerTrigger className="w-full cursor-pointer">
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
@@ -295,8 +477,54 @@ function ReferralsCardDrawer() {
 
 function StarBoardCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const savedScrollY = useRef(0)
+  const savedHash = useRef<string>("")
+
+  // 1) На маунте один раз убираем хеш, если он есть
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (window.location.hash) {
+      savedHash.current = window.location.hash // если нужно — можно потом вернуть
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+  }, []);
+
+  const openDrawer = useCallback(() => {
+    // 2) Перед открытием ещё раз гарантированно убираем хеш (если вдруг появился)
+    if (window.location.hash) {
+      savedHash.current = window.location.hash
+      history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+
+    // 3) Лочим скролл без дёрганья (фиксируем body)
+    savedScrollY.current = window.scrollY
+    const body = document.body
+    body.style.position = "fixed"
+    body.style.top = `-${savedScrollY.current}px`
+    body.style.left = "0"
+    body.style.right = "0"
+    body.style.width = "100%"
+
+    setIsOpen(true)
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    // 4) Возвращаем body и скролл на прежнее место
+    const body = document.body
+    const top = body.style.top
+    body.style.position = ""
+    body.style.top = ""
+    body.style.left = ""
+    body.style.right = ""
+    body.style.width = ""
+    window.scrollTo(0, Math.abs(parseInt(top || "0", 10)))
+
+    setIsOpen(false)
+  }, []);
+
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer open={isOpen} onOpenChange={(v) => (v ? openDrawer() : closeDrawer())}>
       <DrawerTrigger className="w-full cursor-pointer">
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
