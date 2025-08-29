@@ -22,6 +22,10 @@
   will-change: transform;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   /* bg-[#121312] */
   @apply m-0 bg-[#121312];

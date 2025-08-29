@@ -44,7 +44,13 @@ export const TaskIcon = ({ taskName }: { taskName: string }) => {
   return null
 }
 
-export const TaskCompletedSvgIcon = () => (
+export const TaskCompletedSvgIcon = ({
+  fill,
+  stroke,
+}: {
+  fill?: string
+  stroke?: string
+}) => (
   <svg
     width="24"
     height="24"
@@ -52,10 +58,10 @@ export const TaskCompletedSvgIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="12" cy="12" r="12" fill="#B6FF00" />
+    <circle cx="12" cy="12" r="12" fill={fill || '#B6FF00'} />
     <path
       d="M7.7998 12.4L10.5998 15.2L16.1998 9.60001"
-      stroke="#121312"
+      stroke={stroke || '#121312'}
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"

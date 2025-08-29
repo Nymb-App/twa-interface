@@ -85,6 +85,7 @@ interface IAccountQuery {
   avatarId: string
   extraBustCount?: number
   isEarlyAccessMinted?: boolean
+  isSubscribed?: boolean
 }
 
 interface IGetLvlStats {

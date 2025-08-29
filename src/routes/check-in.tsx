@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Countdown, { zeroPad } from 'react-countdown'
+import { zeroPad } from 'react-countdown'
 import type { ReactNode } from 'react'
 import type { CheckInRewards } from '@/hooks/use-get-daily-rewards'
 import { PageLayout } from '@/components/ui/page-layout'
@@ -65,10 +65,7 @@ function RouteComponent() {
         autoResize={false}
         width={450}
       />
-      <CheckInHeader
-        currentDay={currentDay}
-        nextAvailableAt={data.nextAvailableAt * 1000}
-      />
+      <CheckInHeader currentDay={currentDay} />
       <div className="px-4">
         <CheckInInfoBlock rewards={data.rewards} />
         <CheckInDaysBlock currentDay={currentDay} />
@@ -77,13 +74,7 @@ function RouteComponent() {
   )
 }
 
-function CheckInHeader({
-  currentDay,
-  nextAvailableAt,
-}: {
-  currentDay: number
-  nextAvailableAt: number
-}) {
+function CheckInHeader({ currentDay }: { currentDay: number }) {
   return (
     <header className="font-pixel mb-20 text-center text-[24px] font-[400] text-[#FFFFFF] uppercase">
       <h1 className="mt-6 mb-10 leading-[32px]">
@@ -93,15 +84,6 @@ function CheckInHeader({
         <span>{zeroPad(currentDay)}</span>
       </div>
       <h2>day check-in</h2>
-
-      {Date.now() < nextAvailableAt && (
-        <div className="font-inter mt-4 text-center text-[14px] leading-[140%] font-[400] text-[#FFFFFF] normal-case">
-          <p className="mb-1.5">Next reward in:</p>
-          <div className="font-pixel text-[20px] leading-[24px]">
-            <Countdown date={nextAvailableAt} renderer={renderer} />
-          </div>
-        </div>
-      )}
     </header>
   )
 }
@@ -164,27 +146,6 @@ const CheckInInfoBlockItem = ({
       {children}
       <span>{label}</span>
     </div>
-  )
-}
-
-const renderer = ({
-  days,
-  hours,
-  minutes,
-  seconds,
-}: {
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-}) => {
-  const totalHours = days * 24 + hours
-  const format = (value: number) => String(value).padStart(2, '0')
-
-  return (
-    <span>
-      {format(totalHours)}:{format(minutes)}:{format(seconds)}
-    </span>
   )
 }
 

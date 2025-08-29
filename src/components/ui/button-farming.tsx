@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
 import { LoaderIcon } from 'lucide-react'
+import confetti from 'canvas-confetti'
 import {
   ANIMATION_DURATION_COUNTUP,
   FARMING_DURATION,
@@ -169,19 +170,53 @@ function FarmingClaimButton({
   const seconds = String(Math.floor((time % 60000) / 1000)).padStart(2, '0')
   const timeStr = `${hours}:${minutes}:${seconds}`
 
+  const handleClick = () => {
+    const defaults = {
+      spread: 360,
+      ticks: 50,
+      gravity: 0,
+      decay: 0.94,
+      startVelocity: 30,
+      colors: ['#B2FD11', '#202611', '#FF4DFF', '#FFD930', '#D9D9D9'],
+    }
+
+    const shoot = () => {
+      confetti({
+        ...defaults,
+        particleCount: 40,
+        scalar: 1.2,
+      })
+
+      confetti({
+        ...defaults,
+        particleCount: 10,
+        scalar: 0.75,
+      })
+    }
+
+    setTimeout(shoot, 0)
+    setTimeout(shoot, 100)
+    setTimeout(shoot, 200)
+  }
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={cn(
-        'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]',
-        className,
-      )}
-    >
-      <span className="mix-blend-difference">CLAIM</span>
-      <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
-      <span className="mix-blend-difference">{timeStr}</span>
-    </button>
+    <div className="relative">
+      <button
+        onClick={() => {
+          handleClick()
+          onClick?.()
+        }}
+        disabled={disabled}
+        className={cn(
+          'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]',
+          className,
+        )}
+      >
+        <span className="mix-blend-difference">CLAIM</span>
+        <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
+        <span className="mix-blend-difference">{timeStr}</span>
+      </button>
+    </div>
   )
 }
 
