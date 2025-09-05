@@ -16,6 +16,9 @@ import { BustIcon } from '@/assets/icons/bust'
 import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
 import { cn } from '@/utils'
 import { CloseIcon } from '@/assets/icons/close'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { TonIcon } from '@/assets/icons/ton'
+import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -53,25 +56,55 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
 
         <div className="relative">
           <FlickeringGrid
-            className="absolute left-2 w-full h-[200px] mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
+            className="absolute left-2 w-full h-[200px]  mask-[radial-gradient(ellipse_180px_100px_at_center,black,transparent)]"
             squareSize={2}
             gridGap={12}
-            color="#b7ff01"
-            maxOpacity={1}
-            flickerChance={0.3}
+            color="#288CFF"
+            maxOpacity={10}
+            flickerChance={1}
             autoResize={false}
           />
 
           <img
             src={BattleDrawerImage}
             alt="battle-drawer-image"
-            className="absolute left-1/2 -translate-x-1/2 top-0"
+            className="absolute left-1/2 -translate-x-1/2 top-0 size-40"
           />
         </div>
 
-        <div className="font-pixel flex flex-col gap-1 text-center mt-50">
-          <span className="text-[white] text-3xl">0.1</span>
-          <span className="text-white/40 text-xs block">ton</span>
+        <div className='inline-flex justify-around items-center w-full px-8 mt-50'>
+          <div className="font-pixel flex flex-col gap-1 text-center ">
+            <span className="text-[#288CFF] text-3xl [text-shadow:0px_0px_16px_#288CFF]">+1</span>
+            <span className="text-white/40 text-xs block">EXTRA BOOST</span>
+          </div>
+
+          <span className='font-pixel text-4xl text-white/40'>:</span>
+
+          <div className="font-pixel flex flex-col gap-1 text-center">
+            <span className="text-white text-3xl">0.1</span>
+            <Select defaultValue="ton">
+              <SelectTrigger className="text-[12px] font-pixel uppercase rounded-[8px] text-white/40 border-none starboard-result-block-bg">
+                <div className="flex items-center gap-2">
+                  <SelectValue placeholder="Select value" />
+                </div>
+              </SelectTrigger>
+              <SelectContent className="bg-[#121312] border-none !text-white/40 font-pixel">
+                <SelectItem
+                  className="!bg-[#121312] hover:!bg-[#121312] border-none !text-white/40 hover:!text-white"
+                  value="ton"
+                >
+                  <div className="flex items-center gap-2">
+                    <TonIcon /> <span>Ton</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="stars" className="" disabled>
+                  <div className="flex items-center gap-2">
+                    <TelegramStarIcon /> <span>Stars</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <DrawerFooter className="relative mt-6 mb-4">
