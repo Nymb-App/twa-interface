@@ -55,7 +55,7 @@ export default defineConfig(({ mode }) => ({
       'spend-contracting-club-forwarding.trycloudflare.com',
       'lance-opportunities-candy-tuition.trycloudflare.com',
       'localhost:100',
-      'immediately-iceland-leu-evanescence.trycloudflare.com',
+      'exception-bowling-amy-breaking.trycloudflare.com',
       'september-now-five-stakeholders.trycloudflare.com',
       'honest-corruption-grab-leu.trycloudflare.com',
       'e658-37-1-204-162.ngrok-free.app',
