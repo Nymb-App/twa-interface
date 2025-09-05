@@ -15,8 +15,6 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { CloseIcon } from '@/assets/icons/close'
-import { WatchesIcon } from '@/assets/icons/watches'
-import { TicketIcon } from '@/assets/icons/ticket'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { convertTimestampToDaysUnit } from '@/utils'
@@ -161,7 +159,7 @@ function LvlUpButtonWithShop({
 
         <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-10">
           <div className="flex flex-col gap-1 justify-center items-center">
-            <WatchesIcon className="size-12" />
+            <img src="/clock-img.webp" className='size-10'/>
             <span className="text-2xl">
               {timeAmount > 99 ? '99+' : timeAmount}
               <span className="text-white/40 font-inter"> / </span>
@@ -170,7 +168,7 @@ function LvlUpButtonWithShop({
             <span className="text-white/40 text-xs">DAYS</span>
           </div>
           <div className="flex flex-col gap-1 justify-center items-center">
-            <TicketIcon className="size-12" />
+            <img src="/ticket-img.webp" className='size-10'/>
             <span className="text-2xl">
               {ticketAmount > 99 ? '99+' : ticketAmount}
               <span className="text-white/40 font-inter"> / </span>
@@ -250,7 +248,7 @@ function LvlUpButtonWithNextGateNavigation({
 
         <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-10">
           <div className="flex flex-col gap-1 justify-center items-center">
-            <WatchesIcon className="size-12" />
+            <img src="/clock-img.webp" className='size-10'/>
             <span className="text-2xl">{timeAmount > 99 ? '99+' : timeAmount}</span>
             <span className="text-base">DAYS</span>
           </div>
@@ -271,7 +269,7 @@ function LvlUpButtonWithNextGateNavigation({
           </div>
 
           <div className="flex flex-col gap-1 justify-center items-center">
-            <TicketIcon className="size-12" />
+            <img src="/ticket-img.webp" className='size-10'/>
             <span className="text-2xl">{ticketAmount > 99 ? '99+' : ticketAmount}</span>
             <span className="text-base">TICKETS</span>
           </div>
