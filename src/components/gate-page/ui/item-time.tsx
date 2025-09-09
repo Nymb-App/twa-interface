@@ -81,7 +81,7 @@ export function ItemTime({ className, onClick }: { className?: string, onClick?:
           />
           <div className="absolute left-1/2 -translate-x-1/2 bg-[#0e2c08] blur-[60px] size-[126px] rounded-full" />
           <img
-            src="/shop-clock-img.webp"
+            src="/shop/clock.webp"
             alt="time"
             className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0"
           />

@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => ({
       'exams-repeated-faq-connecticut.trycloudflare.com',
       'chinese-agreed-written-copyrighted.trycloudflare.com',
       'fan-difficulty-peterson-bailey.trycloudflare.com',
-      'corporation-dj-directions-divine.trycloudflare.com',
+      'town-suggested-seas-sisters.trycloudflare.com',
     ],
   },
 
