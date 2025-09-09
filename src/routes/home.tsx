@@ -60,6 +60,10 @@ const HomeComponent = memo(function HomeComponent() {
     )
 
     const todayInSeconds = Math.floor(now.getTime() / 1000)
+
+    if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
+      router.navigate({ to: '/onboarding' })
+
     if (
       dailyRewardsQuery.data?.nextAvailableAt &&
       dailyRewardsQuery.data.nextAvailableAt === todayInSeconds

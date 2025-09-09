@@ -9,6 +9,7 @@ import {
 import { PageLayout } from '@/components/ui/page-layout'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn } from '@/utils'
+import { useAccountMe } from '@/hooks/api/use-account'
 
 const slides = [
   {
@@ -85,6 +86,12 @@ function OnboardingScreen() {
   const navigate = useNavigate()
   const [api, setApi] = useState<CarouselApi | undefined>()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const { accountQuery, finishOnboardingMutation } = useAccountMe()
+
+  useEffect(() => {
+    if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
+      finishOnboardingMutation.mutate()
+  }, [accountQuery.data])
 
   useEffect(() => {
     if (!api) return

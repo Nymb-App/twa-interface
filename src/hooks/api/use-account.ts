@@ -76,6 +76,7 @@ interface IAccountQuery {
   lastActiveAt: number
   ticket: number
   boost: number
+  isFinishOnboarding: boolean
   farming: {
     startedAt: string
     duration: number
@@ -134,6 +135,10 @@ export function useAccountMe() {
     mutationFn: async () => await post('/accounts/lvl_up'),
   })
 
+  const finishOnboardingMutation = useMutation({
+    mutationFn: async () => await post('/accounts/finish_onboarding'),
+  })
+
   return {
     getLvlStats: getLvlStatsQuery,
     accountQuery,
@@ -141,6 +146,7 @@ export function useAccountMe() {
     initData,
     lvlUpMutation,
     accountClaimReferralRewardMutation,
+    finishOnboardingMutation,
     isLoading: getLvlStatsQuery.isLoading || accountQuery.isLoading,
   }
 }
