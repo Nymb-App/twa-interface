@@ -90,13 +90,13 @@ export const BattleMainScene = ({
     timeouts.current = []
 
     const animationTimeouts = [
-      { fn: () => setIsVersusAnimationStart(true), delay: 1000 },
-      { fn: () => setIsStartFindingOpponent(false), delay: 5000 },
-      { fn: () => setIsClosingAnimation(true), delay: 5500 },
-      { fn: () => setIsOpeningAnimation(true), delay: 9000 },
-      { fn: () => setIsMorphAnimation(true), delay: 10500 },
-      { fn: () => setIsCardBgAnimationStart(true), delay: 10500 },
-      { fn: () => setIsStartCountdown(true), delay: 15000 },
+      { fn: () => setIsVersusAnimationStart(true), delay: 500 },
+      { fn: () => setIsStartFindingOpponent(false), delay: 2500 },
+      { fn: () => setIsClosingAnimation(true), delay: 2750 },
+      { fn: () => setIsOpeningAnimation(true), delay: 4500 },
+      { fn: () => setIsMorphAnimation(true), delay: 5250 },
+      { fn: () => setIsCardBgAnimationStart(true), delay: 5250 },
+      { fn: () => setIsStartCountdown(true), delay: 7500 },
     ]
 
     animationTimeouts.forEach(({ fn, delay }) => {
@@ -226,14 +226,14 @@ export const BattleMainScene = ({
             isRow={isMorphAnimation}
             isBgVisible={!isCardBgAnimationStart}
             className={cn(
-              'transition-all duration-5000 animate-battle-finding-slide-top-fade',
+              'transition-all duration-2500 animate-battle-finding-slide-top-fade',
               isClosingAnimation &&
                 !isOpeningAnimation &&
                 'flex-1 min-h-[220px]',
               isOpeningAnimation && 'h-[54px]',
             )}
             classNameBg={cn(
-              'transition-all duration-3000 delay-1500',
+              'transition-all duration-1500 delay-750',
               isOpeningAnimation && 'opacity-0',
             )}
           />
@@ -252,15 +252,14 @@ export const BattleMainScene = ({
 
           <BattleAnimatedMiddleLine
             className={cn(
-              'absolute top-1/2 left-1/2 -translate-1/2 z-1 w-[calc(100%-50px)] opacity-0 transition-all duration-600',
+              'absolute top-1/2 left-1/2 -translate-1/2 z-1 w-[calc(100%-50px)] opacity-0 transition-all duration-300',
               isVersusAnimationStart && 'opacity-100',
-              isOpeningAnimation && 'opacity-0 delay-1500',
+              isOpeningAnimation && 'opacity-0 delay-750',
             )}
             classNameForLine={cn(
               'opacity-0 w-0 transition-all',
-              isClosingAnimation &&
-                'w-full opacity-100 delay-1500 duration-1500',
-              isOpeningAnimation && 'w-0 opacity-0 delay-600 duration-1500',
+              isClosingAnimation && 'w-full opacity-100 delay-750 duration-750',
+              isOpeningAnimation && 'w-0 opacity-0 delay-300 duration-750',
             )}
           />
           <BattleCard
@@ -270,21 +269,21 @@ export const BattleMainScene = ({
             isBgVisible={!isCardBgAnimationStart}
             areaClaimedPercent={areaClaimedPercent}
             className={cn(
-              'transition-all duration-5000 w-full h-[220px] animate-battle-finding-slide-bottom-fade',
+              'transition-all duration-2500 w-full h-[220px] animate-battle-finding-slide-bottom-fade',
               isClosingAnimation &&
                 !isOpeningAnimation &&
                 'flex-1 min-h-[220px]',
               isOpeningAnimation && 'h-[54px]',
             )}
             classNameBg={cn(
-              'transition-all duration-3000 delay-1500',
+              'transition-all duration-750 delay-750',
               isOpeningAnimation && 'opacity-0',
             )}
           />
         </div>
         <div
           className={cn(
-            'transition-all duration-4000 delay-1300 h-0',
+            'transition-all duration-2000 delay-650 h-0',
             isOpeningAnimation && 'h-[160px]',
           )}
         >
@@ -308,7 +307,7 @@ export const BattleMainScene = ({
       </div>
       <div
         className={cn(
-          'transition-all duration-4000 delay-1300 px-4 h-[56px]',
+          'transition-all duration-2000 delay-650 px-4 h-[56px]',
           isOpeningAnimation && 'h-0',
         )}
       >
