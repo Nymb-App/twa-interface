@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react'
 import type { ReactNode } from '@tanstack/react-router'
+import type { CarouselApi } from '@/components/ui/carousel'
 
 interface IAppContext {
   giftPeriodRadioValue: string
@@ -8,6 +9,8 @@ interface IAppContext {
   setGiftCountValue: (value: number) => void
   battleGameRewardRadioValue: string
   setBattleGameRewardRadioValue: (value: string) => void
+  currentOnboardingSlide: CarouselApi | undefined
+  setCurrentOnboardingSlide: (value: CarouselApi | undefined) => void
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -17,6 +20,8 @@ export const AppContext = createContext<IAppContext>({
   setGiftCountValue: () => {},
   battleGameRewardRadioValue: '1 weeks',
   setBattleGameRewardRadioValue: () => {},
+  currentOnboardingSlide: undefined,
+  setCurrentOnboardingSlide: () => {},
 })
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -24,6 +29,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [giftCountValue, setGiftCountValue] = useState(24)
   const [battleGameRewardRadioValue, setBattleGameRewardRadioValue] =
     useState('1 weeks')
+  const [currentOnboardingSlide, setCurrentOnboardingSlide] = useState<
+    CarouselApi | undefined
+  >(undefined)
 
   return (
     <AppContext.Provider
@@ -34,6 +42,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setGiftCountValue,
         battleGameRewardRadioValue,
         setBattleGameRewardRadioValue,
+        currentOnboardingSlide,
+        setCurrentOnboardingSlide,
       }}
     >
       {children}

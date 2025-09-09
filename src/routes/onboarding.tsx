@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import type { CarouselApi } from '@/components/ui/carousel'
 import {
   Carousel,
@@ -9,6 +9,7 @@ import {
 import { PageLayout } from '@/components/ui/page-layout'
 import { ActionButton } from '@/components/ui/action-button'
 import { cn } from '@/utils'
+import { AppContext } from '@/context/app-context'
 import { useAccountMe } from '@/hooks/api/use-account'
 
 const slides = [
@@ -87,6 +88,7 @@ function OnboardingScreen() {
   const [api, setApi] = useState<CarouselApi | undefined>()
   const [currentIndex, setCurrentIndex] = useState(0)
   const { accountQuery, finishOnboardingMutation } = useAccountMe()
+  const { setCurrentOnboardingSlide } = useContext(AppContext)
 
   useEffect(() => {
     if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
@@ -95,6 +97,7 @@ function OnboardingScreen() {
 
   useEffect(() => {
     if (!api) return
+    setCurrentOnboardingSlide(api)
     if (currentIndex === slides.length - 1) {
       navigate({ to: '/home' })
     }
