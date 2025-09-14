@@ -20,8 +20,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
-  const { currentOnboardingSlide, setCurrentOnboardingSlide } =
-    useContext(AppContext)
+  const { currentOnboardingSlide } = useContext(AppContext)
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/

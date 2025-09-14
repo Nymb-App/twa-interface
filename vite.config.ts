@@ -66,6 +66,7 @@ export default defineConfig(({ mode }) => ({
       'chinese-agreed-written-copyrighted.trycloudflare.com',
       'fan-difficulty-peterson-bailey.trycloudflare.com',
       'couple-collect-stage-determining.trycloudflare.com',
+      'working-wb-studios-vehicle.trycloudflare.com'
     ],
   },
 

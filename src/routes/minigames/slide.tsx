@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import Countdown from 'react-countdown'
 import { cn } from '@/lib/utils'
 import { PageLayout } from '@/components/ui/page-layout'
@@ -311,20 +311,29 @@ function GameFinished({
 
       <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
         <ShareButton
-          className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
+          className="text-white bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white/40 disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
           displayPercent={20}
           isPercent
           time={minutesWinned * 0.2}
         />
 
+        <div className='inline-flex gap-2 w-full'>
+          <Link to="/home" className='w-full'>
+          <ActionButton
+          className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
+          >
+            CLOSE
+          </ActionButton>
+          </Link>
         {useRestart && (
           <ActionButton
-            onClick={onRestart}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
+          onClick={onRestart}
+          className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
           >
             PLAY MORE
           </ActionButton>
         )}
+        </div>
       </div>
     </div>
   )

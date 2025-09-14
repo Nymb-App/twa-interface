@@ -69,7 +69,6 @@ export const PageLayout = ({
       className={cn(
         'relative top-28 mx-auto min-h-[calc(100vh-10rem)] w-full max-w-[450px] overflow-x-hidden bg-[#121312] pb-6 text-white',
         className,
-        pathnames[1].pathname === '/' && 'top-0',
       )}
     >
       <main
