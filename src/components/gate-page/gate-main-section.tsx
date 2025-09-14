@@ -51,7 +51,7 @@ export const GateMainSection = () => {
           <Skeleton className="w-[68px] h-[115px]" />
         ) : (
           <GateProgressDisplay
-            icon={<img src="/clock-img.webp" className='size-10'/>}
+            icon={<img src="/clock-img.webp" className="size-10" />}
             current={convertTimestampToDaysUnit(timeLeft)}
             max={convertTimestampToDaysUnit(
               getLvlStats.data?.timeRequired ?? 1,
@@ -72,7 +72,7 @@ export const GateMainSection = () => {
           <Skeleton className="w-[68px] h-[115px]" />
         ) : (
           <GateProgressDisplay
-            icon={<img src="/ticket-img.webp" className='size-10'/>}
+            icon={<img src="/ticket-img.webp" className="size-10" />}
             current={accountData?.ticket ?? 0}
             max={getLvlStats.data?.ticketsRequired ?? 1}
             label="ticket"

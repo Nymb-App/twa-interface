@@ -44,11 +44,7 @@ export const GateProgressDisplay = ({
               /
             </span>
             <span className={cn(label === 'ticket' && max === 1 && '-ml-2')}>
-              {label === 'years'
-                ? zeroPad(max > 99 ? '99+' : max)
-                : max > 99
-                  ? '99+'
-                  : max}
+              {label === 'years' ? zeroPad(max > 99 ? '99+' : max) : max}
             </span>
           </>
         )}

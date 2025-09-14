@@ -155,8 +155,7 @@ function LvlUpButtonWithShop({
             the next gate.
           </DrawerDescription>
         </DrawerHeader>
-
-        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-10">
+        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-0 sm:px-10">
           <div className="flex flex-col gap-1 justify-center items-center">
             <img src="/clock-img.webp" className="size-10" />
             <span className="text-2xl">
@@ -235,7 +234,6 @@ function LvlUpButtonWithNextGateNavigation({
           flickerChance={0.3}
           autoResize={false}
         />
-
         <DrawerClose className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer">
           <CloseIcon />
         </DrawerClose>
@@ -244,9 +242,8 @@ function LvlUpButtonWithNextGateNavigation({
             OPEN GATE
           </DrawerTitle>
         </DrawerHeader>
-
-        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-10">
-          <div className="flex flex-col gap-1 justify-center items-center">
+        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-0 sm:px-10">
+          <div className="flex flex-col gap-1 justify-center items-center w-[80px]">
             <img src="/clock-img.webp" className="size-10" />
             <span className="text-2xl">
               {timeAmount > 99 ? '99+' : timeAmount}
@@ -269,7 +266,7 @@ function LvlUpButtonWithNextGateNavigation({
             />
           </div>
 
-          <div className="flex flex-col gap-1 justify-center items-center">
+          <div className="flex flex-col gap-1 justify-center items-center w-[80px]">
             <img src="/ticket-img.webp" className="size-10" />
             <span className="text-2xl">
               {ticketAmount > 99 ? '99+' : ticketAmount}
@@ -277,7 +274,6 @@ function LvlUpButtonWithNextGateNavigation({
             <span className="text-base">TICKETS</span>
           </div>
         </div>
-
         <div className="mt-8">
           <h3 className="text-white/60 text-center text-sm">
             After opening gate, you'll get:
@@ -330,7 +326,6 @@ function LvlUpButtonWithNextGateNavigation({
             </div>
           </div>
         </div>
-
         <DrawerFooter className="relative mt-6 mb-4">
           <Link
             to={'/unlock-gate'}

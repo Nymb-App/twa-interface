@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => ({
       'exams-repeated-faq-connecticut.trycloudflare.com',
       'chinese-agreed-written-copyrighted.trycloudflare.com',
       'fan-difficulty-peterson-bailey.trycloudflare.com',
-      'gravity-largely-exit-invasion.trycloudflare.com',
+      'couple-collect-stage-determining.trycloudflare.com',
     ],
   },
 
