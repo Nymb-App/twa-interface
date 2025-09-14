@@ -28,7 +28,13 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
 import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
 
-export function ItemTime({ className, onClick }: { className?: string, onClick?: () => void }) {
+export function ItemTime({
+  className,
+  onClick,
+}: {
+  className?: string
+  onClick?: () => void
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
@@ -53,7 +59,7 @@ export function ItemTime({ className, onClick }: { className?: string, onClick?:
         )}
       >
         <ShoppingBagIcon />
-        Buy 1 year and open the gate 
+        Buy 1 year and open the gate
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
@@ -119,7 +125,9 @@ export function ItemTime({ className, onClick }: { className?: string, onClick?:
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-[#B6FF00] text-3xl text-center">+1</span>
+            <span className="text-[#B6FF00] text-3xl text-center relative bottom-2">
+              +1
+            </span>
             <span className="text-white/40 text-xs text-center">
               {radioValue === '1 day'
                 ? 'DAY'

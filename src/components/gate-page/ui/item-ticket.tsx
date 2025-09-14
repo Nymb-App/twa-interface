@@ -124,7 +124,7 @@ export function ItemTicket({
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-[#B6FF00] text-3xl text-center">
+            <span className="text-[#B6FF00] text-3xl text-center relative bottom-2">
               +
               {radioValue === '1 ticket'
                 ? 1

@@ -82,7 +82,7 @@ const HomeComponent = memo(function HomeComponent() {
               <>
                 <Suspense
                   fallback={
-                    <Skeleton className="w-full h-[232px] rounded-2xl" />
+                    <Skeleton className="w-full h-[224px] rounded-2xl" />
                   }
                 >
                   <SwipeCard
@@ -95,7 +95,7 @@ const HomeComponent = memo(function HomeComponent() {
               </>
             ) : (
               <Suspense
-                fallback={<Skeleton className="w-full h-[232px] rounded-2xl" />}
+                fallback={<Skeleton className="w-full h-[224px] rounded-2xl" />}
               >
                 <GameCard
                   delay={1000}
@@ -112,7 +112,7 @@ const HomeComponent = memo(function HomeComponent() {
 
           <Link to="/minigames/battle" disabled={accountTime < Date.now()}>
             <Suspense
-              fallback={<Skeleton className="w-full h-[232px] rounded-2xl" />}
+              fallback={<Skeleton className="w-full h-[224px] rounded-2xl" />}
             >
               <BattleCard
                 className="font-pixel w-full"

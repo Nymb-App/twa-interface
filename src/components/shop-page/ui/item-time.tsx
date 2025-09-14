@@ -150,7 +150,9 @@ export function ItemTime({ className }: { className?: string }) {
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-[#B6FF00] text-3xl text-center">+1</span>
+            <span className="text-[#B6FF00] text-3xl text-center relative bottom-2">
+              +1
+            </span>
             <span className="text-white/40 text-xs text-center">
               {radioValue === '1 day'
                 ? 'DAY'

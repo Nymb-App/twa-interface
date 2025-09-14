@@ -52,18 +52,18 @@ export const GameCard = ({
   // Инициализация и управление анимацией
   useEffect(() => {
     if (loadLottie && containerRef.current && !animationRef.current) {
-            import('lottie-web').then((lottie) => {
-                const anim = lottie.default.loadAnimation({
+      import('lottie-web').then((lottie) => {
+        const anim = lottie.default.loadAnimation({
           container: containerRef.current!,
           renderer: 'svg',
           loop: true,
           autoplay: true,
           path: animationData,
-        });
-        anim.setSpeed(0.5);
-        anim.addEventListener('DOMLoaded', () => setLottieReady(true));
-        animationRef.current = anim;
-      });
+        })
+        anim.setSpeed(0.5)
+        anim.addEventListener('DOMLoaded', () => setLottieReady(true))
+        animationRef.current = anim
+      })
     }
     if (animationRef.current) {
       isVisible ? animationRef.current.play() : animationRef.current.pause()
@@ -86,7 +86,7 @@ export const GameCard = ({
           className,
         )}
       >
-        <div className="w-full relative overflow-hidden max-h-[250px] min-h-[160px] h-full">
+        <div className="w-full relative overflow-hidden max-h-[250px] min-h-[155px] h-full">
           {classNameBg && (
             <div
               className={cn(
@@ -109,7 +109,7 @@ export const GameCard = ({
           />
         </div>
         <div>
-          <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
+          <h3 className="mt-2 text-center text-base font-[400]">{title}</h3>
           <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
             {description}
           </p>

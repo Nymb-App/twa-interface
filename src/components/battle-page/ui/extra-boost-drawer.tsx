@@ -16,7 +16,13 @@ import { BustIcon } from '@/assets/icons/bust'
 import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
 import { cn } from '@/utils'
 import { CloseIcon } from '@/assets/icons/close'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { TonIcon } from '@/assets/icons/ton'
 import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 
@@ -72,13 +78,15 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
           />
         </div>
 
-        <div className='inline-flex justify-around items-center w-full px-8 mt-50'>
+        <div className="inline-flex justify-around items-center w-full px-8 mt-50">
           <div className="font-pixel flex flex-col gap-1 text-center ">
-            <span className="text-[#288CFF] text-3xl [text-shadow:0px_0px_16px_#288CFF]">+1</span>
+            <span className="text-[#288CFF] text-3xl relative bottom-2 [text-shadow:0px_0px_16px_#288CFF]">
+              +1
+            </span>
             <span className="text-white/40 text-xs block">EXTRA BOOST</span>
           </div>
 
-          <span className='font-pixel text-4xl text-white/40'>:</span>
+          <span className="font-pixel text-4xl text-white/40">:</span>
 
           <div className="font-pixel flex flex-col gap-1 text-center">
             <span className="text-white text-3xl">0.1</span>

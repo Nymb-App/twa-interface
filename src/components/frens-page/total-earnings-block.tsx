@@ -22,6 +22,11 @@ export const TotalEarningsBlock = ({
   )
   const currentEarnings = isClaimStart ? animatedTotalEarnings : value
 
+  const displayEarnings = useMemo(() => {
+    if (currentEarnings > 9999) return '+9999'
+    return Math.trunc(currentEarnings)
+  }, [currentEarnings])
+
   const { accountQuery, accountClaimReferralRewardMutation } = useAccountMe()
 
   const isDisabledActionButton = useMemo(() => {
@@ -46,7 +51,7 @@ export const TotalEarningsBlock = ({
                   'text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]',
               )}
             >
-              {currentEarnings > 9999 ? '+9999' : currentEarnings}
+              {displayEarnings}
             </span>
             <span className="ml-1 text-[#FFFFFF66]">D</span>
           </div>

@@ -44,7 +44,7 @@ export const TaskDailyBlock = ({
       )}
     >
       {children}
-      <p className="font-inter text-[16px] leading-[20px] font-[600] text-[#FFFFFF]">
+      <p className="flex items-center font-inter min-h-[40px] text-[16px] leading-[20px] font-[600] text-[#FFFFFF]">
         {title}
       </p>
       <span className="relative font-pixel uppercase leading-[120%] text-[14px] font-[400] text-[#FFFFFF]/40 flex items-center gap-1">

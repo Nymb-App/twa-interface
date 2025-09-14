@@ -99,8 +99,11 @@ export function MintSection() {
   }, [accountQuery])
 
   return (
-    <section id="join-giveaway" className="relative text-white px-3">
-      <div className="animate-slide-up-fade-3">
+    <section
+      id="join-giveaway"
+      className="relative text-white px-3 scroll-mt-45"
+    >
+      <div className="animate-slide-up-fade-3 mb-10">
         <h2 className="font-pixel text-2xl text-center">JOIN THE GIVEAWAY</h2>
         <h2 className="font-pixel text-2xl text-center">AND BE A WINNER</h2>
       </div>
@@ -145,7 +148,7 @@ export function MintSection() {
                       }
                       className="text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
                     >
-                      SUBSCRIBE
+                      open
                     </button>
                   </>
                 ) : (
@@ -158,7 +161,7 @@ export function MintSection() {
 
             <div className="rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
               <div className="inline-flex gap-4 items-center">
-                <RiTelegram2Line className="text-white size-7" />
+                <RiTelegram2Line className="text-white size-5" />
                 <div className="flex flex-col">
                   <span className="text-base font-inter font-semibold text-white tracking-normal">
                     Nymb
@@ -184,9 +187,9 @@ export function MintSection() {
                       href={TELEGRAM_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
+                      className="flex items-center text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
                     >
-                      SUBSCRIBE
+                      open
                     </a>
                   </>
                 ) : (
@@ -210,7 +213,7 @@ export function MintSection() {
           <div className="w-full mt-3 mb-4 flex flex-col gap-2">
             <div className="rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
               <div className="inline-flex gap-4 items-center">
-                <FriendsIcon fillOpacity="1" className="size-6" />
+                <FriendsIcon fillOpacity="1" className="size-5" />
                 <div className="flex flex-col">
                   <span className="text-base font-inter font-semibold text-white tracking-normal">
                     {code.code}
@@ -269,7 +272,7 @@ export function MintSection() {
               <span>MINTED</span>
             </div>
           </div>
-          <div className="mt-6 px-4">
+          <div className="mt-6 px-4 relative">
             <TransferTonButton
               disabled={isMintDisabled}
               recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
