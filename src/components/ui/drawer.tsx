@@ -50,7 +50,9 @@ function DrawerContent({
 }: React.ComponentProps<typeof DrawerPrimitive.Content>) {
   return (
     <DrawerPortal data-slot="drawer-portal">
-      <DrawerOverlay />
+      {/* <DrawerOverlay /> */}
+      {/* <div className="fixed inset-0 z-50 bg-black/50" /> */}
+      <DrawerClose className="fixed inset-0 z-50 bg-black/50" />
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(

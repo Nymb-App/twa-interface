@@ -1,5 +1,5 @@
-import { isAndroid } from 'react-device-detect'
-import { useMemo, useState } from 'react'
+import { isAndroid, isIOS } from 'react-device-detect'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
@@ -50,10 +50,108 @@ export function HeroSection() {
 
 function SwipeCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const scrollYRef = useRef(0)
+  const closeUnlockTimerRef = useRef<number | null>(null)
+  const openRestoreTimersRef = useRef<Array<number>>([])
+
+  // Synchronous iOS lock to avoid initial jump when opening below fold
+  const handleOpenChange = (open: boolean) => {
+    if (!isIOS) {
+      setIsOpen(open)
+      return
+    }
+    const body = document.body
+    if (open) {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      scrollYRef.current = window.scrollY || window.pageYOffset || 0
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollYRef.current}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.width = '100%'
+      body.style.touchAction = 'none'
+
+      // Aggressively keep scroll at the saved position to prevent iOS jump-to-top
+      const restore = () => window.scrollTo(0, scrollYRef.current)
+      restore()
+      requestAnimationFrame(restore)
+      openRestoreTimersRef.current.push(
+        setTimeout(restore, 30) as unknown as number,
+      )
+      openRestoreTimersRef.current.push(
+        setTimeout(restore, 120) as unknown as number,
+      )
+    } else {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+      }
+      closeUnlockTimerRef.current = setTimeout(() => {
+        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        body.style.position = ''
+        body.style.top = ''
+        body.style.left = ''
+        body.style.right = ''
+        body.style.width = ''
+        body.style.touchAction = ''
+        window.scrollTo(0, y)
+        closeUnlockTimerRef.current = null
+      }, 350) as unknown as number
+
+      // Clear any pending open-restore timers
+      openRestoreTimersRef.current.forEach((id) => clearTimeout(id))
+      openRestoreTimersRef.current = []
+    }
+    setIsOpen(open)
+  }
+
+  // Cleanup on unmount in case drawer stays open
+  useEffect(() => {
+    return () => {
+      if (!isIOS) return
+      const body = document.body
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      if (openRestoreTimersRef.current.length) {
+        openRestoreTimersRef.current.forEach((id) => clearTimeout(id))
+        openRestoreTimersRef.current = []
+      }
+      const y = scrollYRef.current
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.width = ''
+      body.style.touchAction = ''
+      if (isOpen) requestAnimationFrame(() => window.scrollTo(0, y))
+    }
+  }, [isOpen])
+
+  const preLockOnClickCapture = () => {
+    if (!isIOS) return
+    if (isOpen) return
+    const body = document.body
+    if (body.style.position === 'fixed') return
+    scrollYRef.current =
+      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollYRef.current}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.touchAction = 'none'
+    // Немедленно возвращаем скролл (и на следующий кадр), чтобы блокировать прыжок наверх
+    window.scrollTo(0, scrollYRef.current)
+    requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
+  }
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger className="w-full cursor-pointer">
+    <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
+      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
         {isAndroid ? (
           <SwipeCard
             className="w-full"
@@ -75,7 +173,11 @@ function SwipeCardDrawer() {
           />
         )}
       </DrawerTrigger>
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+        className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3"
+      >
         <DrawerTitle className="sr-only"></DrawerTitle>
         <DrawerDescription className="sr-only"></DrawerDescription>
         <DrawerClose className="absolute top-3 right-3 bg-[#1D1F1D] size-8 rounded-full flex justify-center items-center cursor-pointer">
@@ -124,10 +226,86 @@ function SwipeCardDrawer() {
 
 function BattleCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const scrollYRef = useRef(0)
+  const closeUnlockTimerRef = useRef<number | null>(null)
+
+  const handleOpenChange = (open: boolean) => {
+    if (!isIOS) {
+      setIsOpen(open)
+      return
+    }
+    const body = document.body
+    if (open) {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      scrollYRef.current =
+        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollYRef.current}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.width = '100%'
+      body.style.touchAction = 'none'
+    } else {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+      }
+      closeUnlockTimerRef.current = setTimeout(() => {
+        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        body.style.position = ''
+        body.style.top = ''
+        body.style.left = ''
+        body.style.right = ''
+        body.style.width = ''
+        body.style.touchAction = ''
+        window.scrollTo(0, y)
+        closeUnlockTimerRef.current = null
+      }, 350) as unknown as number
+    }
+    setIsOpen(open)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (!isIOS) return
+      const body = document.body
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      const y = scrollYRef.current
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.width = ''
+      body.style.touchAction = ''
+      if (isOpen) requestAnimationFrame(() => window.scrollTo(0, y))
+    }
+  }, [isOpen])
+
+  const preLockOnClickCapture = () => {
+    if (!isIOS) return
+    if (isOpen) return
+    const body = document.body
+    if (body.style.position === 'fixed') return
+    scrollYRef.current =
+      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollYRef.current}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.touchAction = 'none'
+    window.scrollTo(0, scrollYRef.current)
+    requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
+  }
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger className="w-full cursor-pointer">
+    <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
+      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
         <BattleCard
           className="w-full"
           classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
@@ -136,7 +314,11 @@ function BattleCardDrawer() {
           subdescription="enough?"
         />
       </DrawerTrigger>
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+        className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3"
+      >
         <DrawerTitle className="sr-only"></DrawerTitle>
         <DrawerDescription className="sr-only"></DrawerDescription>
         <DrawerClose className="absolute top-3 right-3 bg-[#1D1F1D] size-8 rounded-full flex justify-center items-center cursor-pointer">
@@ -185,10 +367,86 @@ function BattleCardDrawer() {
 
 function TasksCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const scrollYRef = useRef(0)
+  const closeUnlockTimerRef = useRef<number | null>(null)
+
+  const handleOpenChange = (open: boolean) => {
+    if (!isIOS) {
+      setIsOpen(open)
+      return
+    }
+    const body = document.body
+    if (open) {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      scrollYRef.current =
+        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollYRef.current}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.width = '100%'
+      body.style.touchAction = 'none'
+    } else {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+      }
+      closeUnlockTimerRef.current = setTimeout(() => {
+        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        body.style.position = ''
+        body.style.top = ''
+        body.style.left = ''
+        body.style.right = ''
+        body.style.width = ''
+        body.style.touchAction = ''
+        window.scrollTo(0, y)
+        closeUnlockTimerRef.current = null
+      }, 350) as unknown as number
+    }
+    setIsOpen(open)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (!isIOS) return
+      const body = document.body
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      const y = scrollYRef.current
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.width = ''
+      body.style.touchAction = ''
+      if (isOpen) requestAnimationFrame(() => window.scrollTo(0, y))
+    }
+  }, [isOpen])
+
+  const preLockOnClickCapture = () => {
+    if (!isIOS) return
+    if (isOpen) return
+    const body = document.body
+    if (body.style.position === 'fixed') return
+    scrollYRef.current =
+      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollYRef.current}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.touchAction = 'none'
+    window.scrollTo(0, scrollYRef.current)
+    requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
+  }
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger className="w-full cursor-pointer">
+    <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
+      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <TasksIcon className="size-8" />
@@ -196,7 +454,11 @@ function TasksCardDrawer() {
           </div>
         </Card>
       </DrawerTrigger>
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+        className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3"
+      >
         <DrawerTitle className="sr-only"></DrawerTitle>
         <DrawerDescription className="sr-only"></DrawerDescription>
         <DrawerClose className="absolute top-3 right-3 bg-[#1D1F1D] size-8 rounded-full flex justify-center items-center cursor-pointer">
@@ -245,10 +507,86 @@ function TasksCardDrawer() {
 
 function ReferralsCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const scrollYRef = useRef(0)
+  const closeUnlockTimerRef = useRef<number | null>(null)
+
+  const handleOpenChange = (open: boolean) => {
+    if (!isIOS) {
+      setIsOpen(open)
+      return
+    }
+    const body = document.body
+    if (open) {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      scrollYRef.current =
+        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollYRef.current}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.width = '100%'
+      body.style.touchAction = 'none'
+    } else {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+      }
+      closeUnlockTimerRef.current = setTimeout(() => {
+        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        body.style.position = ''
+        body.style.top = ''
+        body.style.left = ''
+        body.style.right = ''
+        body.style.width = ''
+        body.style.touchAction = ''
+        window.scrollTo(0, y)
+        closeUnlockTimerRef.current = null
+      }, 350) as unknown as number
+    }
+    setIsOpen(open)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (!isIOS) return
+      const body = document.body
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      const y = scrollYRef.current
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.width = ''
+      body.style.touchAction = ''
+      if (isOpen) requestAnimationFrame(() => window.scrollTo(0, y))
+    }
+  }, [isOpen])
+
+  const preLockOnClickCapture = () => {
+    if (!isIOS) return
+    if (isOpen) return
+    const body = document.body
+    if (body.style.position === 'fixed') return
+    scrollYRef.current =
+      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollYRef.current}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.touchAction = 'none'
+    window.scrollTo(0, scrollYRef.current)
+    requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
+  }
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger className="w-full cursor-pointer">
+    <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
+      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <SocialIcon className="size-8" />
@@ -256,7 +594,11 @@ function ReferralsCardDrawer() {
           </div>
         </Card>
       </DrawerTrigger>
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+        className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3"
+      >
         <DrawerTitle className="sr-only"></DrawerTitle>
         <DrawerDescription className="sr-only"></DrawerDescription>
         <DrawerClose className="absolute top-3 right-3 bg-[#1D1F1D] size-8 rounded-full flex justify-center items-center cursor-pointer">
@@ -307,10 +649,86 @@ function ReferralsCardDrawer() {
 
 function StarBoardCardDrawer() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const scrollYRef = useRef(0)
+  const closeUnlockTimerRef = useRef<number | null>(null)
+
+  const handleOpenChange = (open: boolean) => {
+    if (!isIOS) {
+      setIsOpen(open)
+      return
+    }
+    const body = document.body
+    if (open) {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      scrollYRef.current =
+        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollYRef.current}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.width = '100%'
+      body.style.touchAction = 'none'
+    } else {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+      }
+      closeUnlockTimerRef.current = setTimeout(() => {
+        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        body.style.position = ''
+        body.style.top = ''
+        body.style.left = ''
+        body.style.right = ''
+        body.style.width = ''
+        body.style.touchAction = ''
+        window.scrollTo(0, y)
+        closeUnlockTimerRef.current = null
+      }, 350) as unknown as number
+    }
+    setIsOpen(open)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (!isIOS) return
+      const body = document.body
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      const y = scrollYRef.current
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.width = ''
+      body.style.touchAction = ''
+      if (isOpen) requestAnimationFrame(() => window.scrollTo(0, y))
+    }
+  }, [isOpen])
+
+  const preLockOnClickCapture = () => {
+    if (!isIOS) return
+    if (isOpen) return
+    const body = document.body
+    if (body.style.position === 'fixed') return
+    scrollYRef.current =
+      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollYRef.current}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.touchAction = 'none'
+    window.scrollTo(0, scrollYRef.current)
+    requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
+  }
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger className="w-full cursor-pointer">
+    <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
+      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <StatisticsIcon className="size-8" />
@@ -318,7 +736,11 @@ function StarBoardCardDrawer() {
           </div>
         </Card>
       </DrawerTrigger>
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+        className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3"
+      >
         <DrawerTitle className="sr-only"></DrawerTitle>
         <DrawerDescription className="sr-only"></DrawerDescription>
         <DrawerClose className="absolute top-3 right-3 bg-[#1D1F1D] size-8 rounded-full flex justify-center items-center cursor-pointer">
