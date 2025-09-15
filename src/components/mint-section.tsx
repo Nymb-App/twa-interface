@@ -5,7 +5,6 @@ import { RiTelegram2Line } from 'react-icons/ri'
 import { TbReload } from 'react-icons/tb'
 import { TransferTonButton } from './transfer-ton-button'
 import { NumberedItem, NumberedList } from './nymb-list'
-import { CopyButton } from './ui/copy-button'
 import { TaskCompletedSvgIcon } from './tasks-page/task-icons'
 import { Card } from '@/components/ui/card'
 import { useMint } from '@/hooks/use-mint'
@@ -16,6 +15,7 @@ import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { OptionalSVG } from '@/assets/svg/optional'
 import { TELEGRAM_URL, TWITTER_URL } from '@/constants'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import { shareURL } from '@telegram-apps/sdk'
 
 function LazyVideo({
   src,
@@ -146,13 +146,13 @@ export function MintSection() {
                       onClick={() =>
                         handleTwitterTaskAction(TaskNames.SubscribeTwitter)
                       }
-                      className="text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
+                      className="text-sm font-pixel text-black h-6 pt-[1px] bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
                     >
                       open
                     </button>
                   </>
                 ) : (
-                  <div className="bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg">
+                  <div className="bg-[#2c3816] text-[#B6FF00] size-6  flex justify-center items-center rounded-lg">
                     <TaskCompletedSvgIcon fill="none" stroke="#B6FF00" />
                   </div>
                 )}
@@ -187,7 +187,7 @@ export function MintSection() {
                       href={TELEGRAM_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
+                      className="flex items-center text-sm font-pixel text-black h-6 pt-[1px] bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
                     >
                       open
                     </a>
@@ -228,12 +228,19 @@ export function MintSection() {
                 <button className="bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1">
                   <TbReload className="scale-x-[-1]" />
                 </button>
-                <CopyButton
+                <button
+                  onClick={() => {
+                    const telegramLink =
+                      import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
+                    if (shareURL.isAvailable()) {
+                      shareURL(`${telegramLink}?startapp=${user?.id}_${code.code}`, 'Check out this cool app!')
+                    }
+                  }}
                   content={`${TELEGRAM_APP_URL}?startapp=${user?.id}_${code.code}`}
                   className="w-fit min-w-[83px] text-sm font-pixel text-black h-6 bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
                 >
                   INVITE
-                </CopyButton>
+                </button>
               </div>
             </div>
           </div>
