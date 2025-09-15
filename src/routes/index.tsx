@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { Element } from 'react-scroll'
 
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/utils'
@@ -43,11 +44,11 @@ function App() {
   }, [])
 
   return (
-    <PageLayout className='top-8 min-h-screen' useFooter={false}>
+    <PageLayout className="top-8 min-h-screen" useFooter={false}>
       <div
         className={cn(
           'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)] duration-500',
-          // isAnimationCountdownFinished && 'h-[300px]' 
+          // isAnimationCountdownFinished && 'h-[300px]'
         )}
       />
       <div
@@ -67,9 +68,9 @@ function App() {
           width={450}
         />
 
-        <div className='absolute size-full bg-gradient-to-b from-transparent from-50% to-[#121312]'/>
-        <div className='absolute size-full bg-gradient-to-b from-[#121312] to-transparent to-[50%]'/>
-        <div className='absolute size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)]'/>
+        <div className="absolute size-full bg-gradient-to-b from-transparent from-50% to-[#121312]" />
+        <div className="absolute size-full bg-gradient-to-b from-[#121312] to-transparent to-[50%]" />
+        <div className="absolute size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)]" />
         <iframe
           className={cn(
             'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] border-none outline-none duration-700',
@@ -81,7 +82,9 @@ function App() {
       {isAnimationCountdownCooldownFinished && (
         <div className="flex flex-col gap-12">
           <HeroSection />
-          <MintSection />
+          <Element name="mintSection">
+            <MintSection />
+          </Element>
         </div>
       )}
     </PageLayout>

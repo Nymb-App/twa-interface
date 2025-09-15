@@ -1,5 +1,6 @@
 import { isAndroid, isIOS } from 'react-device-detect'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link as ScrollLink } from 'react-scroll'
 import { Link } from '@tanstack/react-router'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
@@ -89,7 +90,8 @@ function SwipeCardDrawer() {
         clearTimeout(closeUnlockTimerRef.current)
       }
       closeUnlockTimerRef.current = setTimeout(() => {
-        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        const y =
+          Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
         body.style.position = ''
         body.style.top = ''
         body.style.left = ''
@@ -137,7 +139,10 @@ function SwipeCardDrawer() {
     const body = document.body
     if (body.style.position === 'fixed') return
     scrollYRef.current =
-      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      0
     body.style.position = 'fixed'
     body.style.top = `-${scrollYRef.current}px`
     body.style.left = '0'
@@ -151,7 +156,10 @@ function SwipeCardDrawer() {
 
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
-      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
+      <DrawerTrigger
+        onClickCapture={preLockOnClickCapture}
+        className="w-full cursor-pointer"
+      >
         {isAndroid ? (
           <SwipeCard
             className="w-full"
@@ -241,7 +249,10 @@ function BattleCardDrawer() {
         closeUnlockTimerRef.current = null
       }
       scrollYRef.current =
-        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+        window.scrollY ||
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        0
       body.style.position = 'fixed'
       body.style.top = `-${scrollYRef.current}px`
       body.style.left = '0'
@@ -253,7 +264,8 @@ function BattleCardDrawer() {
         clearTimeout(closeUnlockTimerRef.current)
       }
       closeUnlockTimerRef.current = setTimeout(() => {
-        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        const y =
+          Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
         body.style.position = ''
         body.style.top = ''
         body.style.left = ''
@@ -292,7 +304,10 @@ function BattleCardDrawer() {
     const body = document.body
     if (body.style.position === 'fixed') return
     scrollYRef.current =
-      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      0
     body.style.position = 'fixed'
     body.style.top = `-${scrollYRef.current}px`
     body.style.left = '0'
@@ -305,7 +320,10 @@ function BattleCardDrawer() {
 
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
-      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
+      <DrawerTrigger
+        onClickCapture={preLockOnClickCapture}
+        className="w-full cursor-pointer"
+      >
         <BattleCard
           className="w-full"
           classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
@@ -382,7 +400,10 @@ function TasksCardDrawer() {
         closeUnlockTimerRef.current = null
       }
       scrollYRef.current =
-        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+        window.scrollY ||
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        0
       body.style.position = 'fixed'
       body.style.top = `-${scrollYRef.current}px`
       body.style.left = '0'
@@ -394,7 +415,8 @@ function TasksCardDrawer() {
         clearTimeout(closeUnlockTimerRef.current)
       }
       closeUnlockTimerRef.current = setTimeout(() => {
-        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        const y =
+          Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
         body.style.position = ''
         body.style.top = ''
         body.style.left = ''
@@ -433,7 +455,10 @@ function TasksCardDrawer() {
     const body = document.body
     if (body.style.position === 'fixed') return
     scrollYRef.current =
-      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      0
     body.style.position = 'fixed'
     body.style.top = `-${scrollYRef.current}px`
     body.style.left = '0'
@@ -446,7 +471,10 @@ function TasksCardDrawer() {
 
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
-      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
+      <DrawerTrigger
+        onClickCapture={preLockOnClickCapture}
+        className="w-full cursor-pointer"
+      >
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <TasksIcon className="size-8" />
@@ -522,7 +550,10 @@ function ReferralsCardDrawer() {
         closeUnlockTimerRef.current = null
       }
       scrollYRef.current =
-        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+        window.scrollY ||
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        0
       body.style.position = 'fixed'
       body.style.top = `-${scrollYRef.current}px`
       body.style.left = '0'
@@ -534,7 +565,8 @@ function ReferralsCardDrawer() {
         clearTimeout(closeUnlockTimerRef.current)
       }
       closeUnlockTimerRef.current = setTimeout(() => {
-        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        const y =
+          Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
         body.style.position = ''
         body.style.top = ''
         body.style.left = ''
@@ -573,7 +605,10 @@ function ReferralsCardDrawer() {
     const body = document.body
     if (body.style.position === 'fixed') return
     scrollYRef.current =
-      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      0
     body.style.position = 'fixed'
     body.style.top = `-${scrollYRef.current}px`
     body.style.left = '0'
@@ -586,7 +621,10 @@ function ReferralsCardDrawer() {
 
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
-      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
+      <DrawerTrigger
+        onClickCapture={preLockOnClickCapture}
+        className="w-full cursor-pointer"
+      >
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <SocialIcon className="size-8" />
@@ -664,7 +702,10 @@ function StarBoardCardDrawer() {
         closeUnlockTimerRef.current = null
       }
       scrollYRef.current =
-        window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+        window.scrollY ||
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        0
       body.style.position = 'fixed'
       body.style.top = `-${scrollYRef.current}px`
       body.style.left = '0'
@@ -676,7 +717,8 @@ function StarBoardCardDrawer() {
         clearTimeout(closeUnlockTimerRef.current)
       }
       closeUnlockTimerRef.current = setTimeout(() => {
-        const y = Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        const y =
+          Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
         body.style.position = ''
         body.style.top = ''
         body.style.left = ''
@@ -715,7 +757,10 @@ function StarBoardCardDrawer() {
     const body = document.body
     if (body.style.position === 'fixed') return
     scrollYRef.current =
-      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      0
     body.style.position = 'fixed'
     body.style.top = `-${scrollYRef.current}px`
     body.style.left = '0'
@@ -728,7 +773,10 @@ function StarBoardCardDrawer() {
 
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
-      <DrawerTrigger onClickCapture={preLockOnClickCapture} className="w-full cursor-pointer">
+      <DrawerTrigger
+        onClickCapture={preLockOnClickCapture}
+        className="w-full cursor-pointer"
+      >
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <StatisticsIcon className="size-8" />
@@ -857,12 +905,15 @@ function StarsCard({ className }: { className?: string }) {
             already joined
           </p>
         ) : (
-          <a
-            href="#join-giveaway"
+          <ScrollLink
+            to="mintSection"
+            smooth={true}
+            duration={500}
+            offset={-50} // Optional offset
             className="relative text-black bg-gradient-to-b from-[#FFD930] to-[#FFDE4D] px-7 py-2.5 rounded-xl font-pixel text-sm mt-4 transition-transform duration-200 cursor-pointer"
           >
             JOIN US
-          </a>
+          </ScrollLink>
         )}
       </div>
     </div>
