@@ -73,7 +73,7 @@ const HomeComponent = memo(function HomeComponent() {
   }, [dailyRewardsQuery, router])
 
   return (
-    <PageLayout>
+    <PageLayout className='top-24'>
       <ProgressSection isClaimStart={isClaimStart} />
       <div className="mt-5 px-4">
         <div className="grid grid-cols-2 gap-2">

@@ -308,29 +308,34 @@ export const DotPatternInteractive = forwardRef<
       return () => void ro.disconnect()
     }, [draw])
 
-    // Decay trailing
+    // Decay trailing (hold until lifetime elapsed, then gradually fade to zero)
     useEffect(() => {
-      if (!trailing) return
       const tick = () => {
         const now = Date.now()
         trailMap.current.forEach((arr, id) => {
-          const last = lastMoveMap.current.get(id) || 0
-          if (now - last > trailingLifetime && arr.length > minTrailLength) {
-            for (let i = 0; i < 5 && arr.length > minTrailLength; i++) {
+          const last = lastMoveMap.current.get(id) || now
+          const dt = now - last
+          if (dt > trailingLifetime) {
+            if (arr.length > 0) {
+              // Pop 1 segment per frame for smooth fade-out
               arr.pop()
             }
-          }
-          if (arr.length === 0) {
-            trailMap.current.delete(id)
-            lastMoveMap.current.delete(id)
+            if (arr.length === 0) {
+              trailMap.current.delete(id)
+              lastMoveMap.current.delete(id)
+            }
           }
         })
+        // Disable forced trailing when nothing to render
+        if (pointerMap.current.size === 0 && trailMap.current.size === 0) {
+          forceTrailRef.current = false
+        }
         draw()
         requestAnimationFrame(tick)
       }
       const id = requestAnimationFrame(tick)
       return () => cancelAnimationFrame(id)
-    }, [draw, trailing, minTrailLength, trailingLifetime])
+    }, [draw, trailing, trailingLifetime])
 
     // Pointer handlers
     useEffect(() => {
@@ -490,21 +495,9 @@ export const DotPatternInteractive = forwardRef<
                 startWaveLoop()
               }
 
-              // Manual decay of trail
-              const decay = () => {
-                const a = trailMap.current.get(PID)
-                if (!a || a.length <= (minTrailLength ?? 1)) {
-                  trailMap.current.delete(PID)
-                  lastMoveMap.current.delete(PID)
-                  forceTrailRef.current = false
-                  draw()
-                  return
-                }
-                for (let i = 0; i < 5 && a.length > (minTrailLength ?? 1); i++) a.pop()
-                draw()
-                requestAnimationFrame(decay)
-              }
-              requestAnimationFrame(decay)
+              // Mark last activity time so decay starts after trailingLifetime
+              lastMoveMap.current.set(PID, Date.now())
+              // Keep forceTrailRef until global decay removes the trail fully
               synthAnimRef.current = null
               return
             }

@@ -65,10 +65,10 @@ function RouteComponent() {
         autoResize={false}
         width={450}
       />
-      <CheckInHeader currentDay={currentDay} />
+      <CheckInHeader currentDay={currentDay === 0 ? 1 : currentDay} />
       <div className="px-4">
         <CheckInInfoBlock rewards={data.rewards} />
-        <CheckInDaysBlock currentDay={currentDay} />
+        <CheckInDaysBlock currentDay={currentDay === 0 ? 1 : currentDay} />
       </div>
     </PageLayout>
   )

@@ -124,7 +124,7 @@ export function RouteComponent() {
           <HeaderBg className="absolute inset-0 w-full h-full scale-110" />
 
           <div className="relative flex items-center justify-between w-full h-full px-4">
-            <div className="flex items-center justify-center w-1/3">
+            <div className="flex items-center justify-center w-1/3 pr-5">
               <EnergyIcon className='min-w-9' />
               <span className="font-pixel text-xl text-[#A45FFF] [text-shadow:0px_0px_12px_#9C1FFD]">
                 {energy}
@@ -133,7 +133,7 @@ export function RouteComponent() {
 
             <div className="w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
 
-            <div className="flex items-center justify-center w-1/8">
+            <div className="flex items-center justify-center w-1/3">
               <WatchesIcon className="size-9 min-w-9" />
               <span className="font-pixel text-2xl text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]">
                 {minutesWinned}
@@ -143,7 +143,7 @@ export function RouteComponent() {
             <div className="w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
             
             {!isGameStarted ? (
-              <span className="font-pixel text-2xl text-white pr-2">00:30</span>
+              <span className="font-pixel text-2xl text-white pl-3 text-center w-1/3">00:30</span>
             ) : (
               <Countdown
                 key={'game-timer'}
@@ -154,7 +154,7 @@ export function RouteComponent() {
                   setIsGameFinished(true)
                 }}
                 renderer={({ seconds }) => (
-                  <span className="font-pixel text-2xl text-white pr-2">
+                  <span className="font-pixel text-2xl text-white pl-3 text-center w-1/3">
                     00:{seconds.toString().padStart(2, '0')}
                   </span>
                 )}
@@ -178,7 +178,7 @@ export function RouteComponent() {
             renderer={({ seconds }) => (
               <div
                 className={cn(
-                  'px-4 pt-3 pb-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
+                  'px-4 pt-3 mt-2 pb-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
                   isX2Time ? 'translate-y-12 opacity-100' : 'opacity-0',
                 )}
               >
@@ -212,6 +212,7 @@ export function RouteComponent() {
           startCooldown={4000}
           gameDuration={34_000}
           className="w-full h-full"
+          trailingLifetime={300}
           onInteractionEnter={({ item }) => {
             if (item === 'time') {
               setMinutesWinned(minutesWinned + minutesWinAmount)
@@ -264,7 +265,7 @@ function GameFinished({
   return (
     <div
       className={cn(
-        'absolute inset-0 flex flex-col items-center justify-between font-pixel z-50',
+        'absolute inset-0 flex flex-col items-center justify-between font-pixel z-50 scrollbar-hide',
         className,
       )}
     >

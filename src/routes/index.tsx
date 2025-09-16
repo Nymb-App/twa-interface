@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { Element } from 'react-scroll'
 
 import { PageLayout } from '@/components/ui/page-layout'
 import { cn } from '@/utils'
@@ -82,9 +81,7 @@ function App() {
       {isAnimationCountdownCooldownFinished && (
         <div className="flex flex-col gap-12">
           <HeroSection />
-          <Element name="mintSection">
-            <MintSection />
-          </Element>
+          <MintSection />
         </div>
       )}
     </PageLayout>

@@ -92,7 +92,7 @@ export const PageLayout = ({
       {useJumpToTheNextGateButton && <LvlUpButton />}
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster
-        className="!mb-18"
+        className="!mt-20"
         position="top-center"
         toastOptions={{
           className:

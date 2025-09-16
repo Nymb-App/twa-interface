@@ -46,9 +46,16 @@ export function LvlUpButton({ className }: { className?: string }) {
     if (accountData.ticket === 0) return false
     return (
       accountData.ticket >=
-      gateDataStatistics[String(accountData.lvl)].ticketsRequired
+      gateDataStatistics[String(accountData.lvl + 1)].ticketsRequired
     )
   }, [accountData.ticket, accountData.lvl])
+
+  const requirements = useMemo(() => {
+    if(!accountData.lvl) return gateDataStatistics['11'];
+
+    return gateDataStatistics[String(accountData.lvl - 1)]
+  }, [accountData]);
+
 
   const isTimeEnough = useMemo(() => {
     if (!accountData.time) return false
@@ -57,7 +64,7 @@ export function LvlUpButton({ className }: { className?: string }) {
       convertTimestampToDaysUnit(accountData.time - Date.now() / 1000) >=
       gateDataStatistics[String(accountData.lvl)].timeRequired
     )
-  }, [accountData.time, accountData.lvl])
+  }, [accountData.time, accountData.lvl]);
 
   if (accountData.lvl === 1 || isLoading) {
     return (
@@ -70,10 +77,12 @@ export function LvlUpButton({ className }: { className?: string }) {
     return (
       <LvlUpButtonWithNextGateNavigation
         onClick={() => lvlUpMutation.mutate()}
-        ticketAmount={accountData.ticket}
-        timeAmount={convertTimestampToDaysUnit(
-          accountData.time - Date.now() / 1000,
-        )}
+        // ticketAmount={accountData.ticket}
+        // timeAmount={convertTimestampToDaysUnit(
+        //   accountData.time - Date.now() / 1000,
+        // )}
+        ticketAmount={requirements.ticketsRequired}
+        timeAmount={requirements.timeRequired}
         lvl={accountData.lvl}
         className={className}
       />
@@ -81,10 +90,12 @@ export function LvlUpButton({ className }: { className?: string }) {
   } else {
     return (
       <LvlUpButtonWithShop
-        ticketAmount={accountData.ticket}
-        timeAmount={convertTimestampToDaysUnit(
-          accountData.time - Date.now() / 1000,
-        )}
+        // ticketAmount={accountData.ticket}
+        // timeAmount={convertTimestampToDaysUnit(
+        //   accountData.time - Date.now() / 1000,
+        // )}
+        ticketAmount={requirements.ticketsRequired}
+        timeAmount={requirements.timeRequired}
         lvl={accountData.lvl}
         className={className}
       />
@@ -159,7 +170,7 @@ function LvlUpButtonWithShop({
           <div className="flex flex-col gap-1 justify-center items-center">
             <img src="/clock-img.webp" className="size-10" />
             <span className="text-2xl">
-              {timeAmount > 99 ? '99+' : timeAmount}
+              {timeAmount}
               <span className="text-white/40 font-inter"> / </span>
               {allowedTime}
             </span>
@@ -246,7 +257,7 @@ function LvlUpButtonWithNextGateNavigation({
           <div className="flex flex-col gap-1 justify-center items-center w-[80px]">
             <img src="/clock-img.webp" className="size-10" />
             <span className="text-2xl">
-              {timeAmount > 99 ? '99+' : timeAmount}
+              {timeAmount}
             </span>
             <span className="text-base">DAYS</span>
           </div>

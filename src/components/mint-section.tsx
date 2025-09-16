@@ -16,6 +16,8 @@ import { OptionalSVG } from '@/assets/svg/optional'
 import { TELEGRAM_URL, TWITTER_URL } from '@/constants'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { shareURL } from '@telegram-apps/sdk'
+import { CopyButton } from './ui/copy-button'
+import { useTonConnectUI } from '@tonconnect/ui-react'
 
 function LazyVideo({
   src,
@@ -44,6 +46,7 @@ function LazyVideo({
 }
 
 export function MintSection() {
+  const tonConnectUI = useTonConnectUI();
   const { mintProgress, mint } = useMint()
   const { accountQuery } = useAccountMe()
   const { user } = useAccount()
@@ -72,6 +75,9 @@ export function MintSection() {
   }, [mintProgress?.progress])
 
   const isMintDisabled = useMemo(() => {
+    if (!tonConnectUI[0].connected) {
+      return false
+    }
     if (accountQuery.data) {
       return accountQuery.data.isEarlyAccessMinted
     }
@@ -79,7 +85,7 @@ export function MintSection() {
       return true
     }
     return false
-  }, [accountQuery.data, mintProgress?.progress])
+  }, [accountQuery.data, mintProgress?.progress, tonConnectUI[0].connected])
 
   const handleTwitterTaskAction = (taskName: TaskNames) => {
     if (taskName === TaskNames.SubscribeTwitter) {
@@ -100,7 +106,6 @@ export function MintSection() {
 
   return (
     <section
-      id="join-giveaway"
       className="relative text-white px-3 scroll-mt-45"
     >
       <div className="animate-slide-up-fade-3 mb-10">
@@ -215,9 +220,12 @@ export function MintSection() {
               <div className="inline-flex gap-4 items-center">
                 <FriendsIcon fillOpacity="1" className="size-5" />
                 <div className="flex flex-col">
-                  <span className="text-base font-inter font-semibold text-white tracking-normal">
-                    {code.code}
-                  </span>
+                  <div className='inline-flex items-center gap-2'>
+                    <span className="text-base font-inter font-semibold text-white tracking-normal">
+                      {code.code}
+                    </span>
+                    <CopyButton content={`${TELEGRAM_APP_URL}?startapp=${user?.id}_${code.code}`} />
+                  </div>
                   <span className="text-xs font-pixel text-white/40 tracking-normal">
                     {code.referralsCount} FRENS
                   </span>
@@ -225,9 +233,9 @@ export function MintSection() {
               </div>
 
               <div className="inline-flex gap-2">
-                <button className="bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1">
+                {/* <button className="bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1">
                   <TbReload className="scale-x-[-1]" />
-                </button>
+                </button> */}
                 <button
                   onClick={() => {
                     const telegramLink =

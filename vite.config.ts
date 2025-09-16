@@ -67,6 +67,7 @@ export default defineConfig(({ mode }) => ({
       'fan-difficulty-peterson-bailey.trycloudflare.com',
       'couple-collect-stage-determining.trycloudflare.com',
       'buttons-radio-teens-sending.trycloudflare.com',
+      'working-wb-studios-vehicle.trycloudflare.com',
     ],
   },
 
