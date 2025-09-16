@@ -41,7 +41,7 @@ export function HeroSection() {
         <BattleCardDrawer />
       </div>
       {/* <div className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2"> */}
-      <Element offset={3} name="mintSection" className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2">
+      <Element name="mintSection" className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2">
         <TasksCardDrawer />
         <ReferralsCardDrawer />
         <StarBoardCardDrawer />
