@@ -1,7 +1,7 @@
 import { isAndroid, isIOS } from 'react-device-detect'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link as ScrollLink, Element } from 'react-scroll'
-import { Link } from '@tanstack/react-router'
+// import { Link } from '@tanstack/react-router'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
 import {
