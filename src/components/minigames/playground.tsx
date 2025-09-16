@@ -182,6 +182,10 @@ export default function BombField({
 
   const [trailLength, setTrailLength] = useState(30)
 
+  // Автожест после завершения игры
+  const autoTrailTimerRef = useRef<number | null>(null)
+  const autoTrailActiveRef = useRef<boolean>(false)
+
   /* ── helpers ───────────────────────────────────────────── */
   const clearTimers = (id: string) => {
     timersRef.current.get(id)?.forEach(clearTimeout)
@@ -495,6 +499,26 @@ export default function BombField({
       gameEndedRef.current = true
       setGameEnded(true) // отключит трейлинг в UI
 
+      // Запускаем непрерывный авто-жест, пока пользователь не выйдет или не перезапустит
+      autoTrailActiveRef.current = true
+
+      const loop = () => {
+        if (!autoTrailActiveRef.current) return
+
+        // Случайные параметры для естественности
+        const duration = 600 + Math.floor(Math.random() * 600) // 600-1200 ms
+        const speed = 6 + Math.random() * 10 // умеренная скорость
+
+        dotRef.current?.spawnRandomTrail?.({ durationMs: duration, speed })
+
+        // Пауза между жестами
+        const gap = 250 + Math.floor(Math.random() * 450) // 250-700 ms
+        autoTrailTimerRef.current = setTimeout(loop, duration + gap) as unknown as number
+      }
+
+      // Небольшая задержка, чтобы эффект начался, когда айтемы скрылись
+      autoTrailTimerRef.current = setTimeout(loop, 80) as unknown as number
+
       // Очищаем все таймеры
       timersRef.current.forEach((arr) => arr.forEach(clearTimeout))
       timersRef.current.clear()
@@ -528,6 +552,12 @@ export default function BombField({
       if (gameTimer) {
         clearTimeout(gameTimer)
         gameTimer = null
+      }
+      // Останавливаем цикл автожестов
+      autoTrailActiveRef.current = false
+      if (autoTrailTimerRef.current != null) {
+        clearTimeout(autoTrailTimerRef.current)
+        autoTrailTimerRef.current = null
       }
     }
   }, [gameDuration, onGameFinished, isForcePause, autoExitMs])

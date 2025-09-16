@@ -19,13 +19,13 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   return (
     <Suspense fallback={<FallbackLoader />}>
       <HeavyProvider>
-        <TelegramProvider>
-          <AppProvider>
+        <AppProvider>
+          <TelegramProvider>
             <GateProvider>
               <FarmingProvider>{children}</FarmingProvider>
             </GateProvider>
-          </AppProvider>
-        </TelegramProvider>
+          </TelegramProvider>
+        </AppProvider>
       </HeavyProvider>
     </Suspense>
   )

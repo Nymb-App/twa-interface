@@ -65,7 +65,7 @@ export function ItemTime({ className }: { className?: string }) {
           </div>
           <div className="absolute left-1/2 -translate-x-1/2 top-[-32px] w-full">
             <img
-              src="/shop-clock-img.webp"
+              src="/shop/clock.webp"
               alt="time"
               className="absolute left-1/2 -translate-x-1/2 w-[96px] h-auto top-0"
             />
@@ -112,7 +112,7 @@ export function ItemTime({ className }: { className?: string }) {
           />
           <div className="absolute left-1/2 -translate-x-1/2 bg-[#0e2c08] blur-[60px] size-[126px] rounded-full" />
           <img
-            src="/shop-clock-img.webp"
+            src="/shop/clock.webp"
             alt="time"
             className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0"
           />
@@ -150,7 +150,9 @@ export function ItemTime({ className }: { className?: string }) {
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-[#B6FF00] text-3xl text-center">+1</span>
+            <span className="text-[#B6FF00] text-3xl text-center relative bottom-2">
+              +1
+            </span>
             <span className="text-white/40 text-xs text-center">
               {radioValue === '1 day'
                 ? 'DAY'

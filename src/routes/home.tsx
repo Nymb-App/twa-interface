@@ -60,6 +60,10 @@ const HomeComponent = memo(function HomeComponent() {
     )
 
     const todayInSeconds = Math.floor(now.getTime() / 1000)
+
+    if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
+      router.navigate({ to: '/onboarding' })
+
     if (
       dailyRewardsQuery.data?.nextAvailableAt &&
       dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
@@ -69,7 +73,7 @@ const HomeComponent = memo(function HomeComponent() {
   }, [dailyRewardsQuery, router])
 
   return (
-    <PageLayout>
+    <PageLayout className='top-24'>
       <ProgressSection isClaimStart={isClaimStart} />
       <div className="mt-5 px-4">
         <div className="grid grid-cols-2 gap-2">
@@ -78,7 +82,7 @@ const HomeComponent = memo(function HomeComponent() {
               <>
                 <Suspense
                   fallback={
-                    <Skeleton className="w-full h-[232px] rounded-2xl" />
+                    <Skeleton className="w-full h-[224px] rounded-2xl" />
                   }
                 >
                   <SwipeCard
@@ -91,7 +95,7 @@ const HomeComponent = memo(function HomeComponent() {
               </>
             ) : (
               <Suspense
-                fallback={<Skeleton className="w-full h-[232px] rounded-2xl" />}
+                fallback={<Skeleton className="w-full h-[224px] rounded-2xl" />}
               >
                 <GameCard
                   delay={1000}
@@ -108,7 +112,7 @@ const HomeComponent = memo(function HomeComponent() {
 
           <Link to="/minigames/battle" disabled={accountTime < Date.now()}>
             <Suspense
-              fallback={<Skeleton className="w-full h-[232px] rounded-2xl" />}
+              fallback={<Skeleton className="w-full h-[224px] rounded-2xl" />}
             >
               <BattleCard
                 className="font-pixel w-full"

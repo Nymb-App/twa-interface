@@ -40,7 +40,7 @@ export const BattleCard = ({
           />
         )}
         {/* Dots pattern background */}
-        <div className="w-full h-[160px] overflow-hidden relative [mask-image:radial-gradient(145px_circle_at_center,white,transparent)]">
+        <div className="w-full h-[155px] overflow-hidden relative [mask-image:radial-gradient(145px_circle_at_center,white,transparent)]">
           <RiveComponent className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[120%]" />
         </div>
         {/* {classNameBg && (
@@ -54,7 +54,7 @@ export const BattleCard = ({
 
         {/* Description section */}
         <div>
-          <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
+          <h3 className="mt-2 text-center text-base font-[400]">{title}</h3>
           <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
             {description}
           </p>

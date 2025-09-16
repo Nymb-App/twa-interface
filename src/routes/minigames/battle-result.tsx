@@ -1,11 +1,12 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { BattleResultGameBg } from '@/components/battle-page/ui/battle-result-game-bg'
 import { cn } from '@/utils'
 import { AvatarCard } from '@/routes/send-gift'
 import { ActionButton } from '@/components/ui/action-button'
-import WinningStartImg from '/minigames/winning-stars.webp'
+import WinningStarsImg from '/minigames/winning-stars-battle.webp'
+import LoosingStartImg from '/minigames/loosing-stars-battle.webp'
 import { ShareButton } from '@/components/ui/share-button'
 
 export const Route = createFileRoute('/minigames/battle-result')({
@@ -86,12 +87,12 @@ const ResultScene = ({
       <div className="absolute top-[-10px] left-0 w-full h-screen backdrop-blur-[4px] opacity-50" />
       <div className="absolute bottom-0 max-h-[1200px] w-full h-full flex flex-col justify-between">
         <header className="relative w-full h-[310px] top-20">
-          {isMeWinner && (
+          {/* {isMeWinner && ( */}
             <img
-              src={WinningStartImg}
-              className="w-full h-auto p-6 object-cover bg-blend-lighten absolute opacity-0 animate-slide-up-fade-swipe-game-1"
+              src={isMeWinner ? WinningStarsImg : LoosingStartImg}
+              className="w-full h-auto object-cover bg-blend-lighten absolute -top-15 opacity-0 animate-slide-up-fade-swipe-game-1"
             />
-          )}
+          {/* // )} */}
           <div
             className={cn(
               'relative overflow-hidden size-[104px] rounded-[36px] left-1/2 top-[100px] -translate-x-1/2 shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)] opacity-0 animate-slide-up-fade-swipe-game-2',
@@ -170,17 +171,29 @@ const ResultScene = ({
         </div>
         <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
           <ShareButton
-            className="opacity-0 animate-slide-up-fade-swipe-game-6"
+            className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white"
             time={isMeWinner ? 604800 : 7200}
           />
-          <ActionButton
-            onClick={onNewBattle}
-            disabled={isNewBattleDisabled}
-            onAnimationEnd={() => setIsNewBattleDisabled(false)}
-            className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:cursor-not-allowed uppercase opacity-0 animate-slide-up-fade-swipe-game-7"
-          >
-            new battle
-          </ActionButton>
+          <div className='inline-flex gap-2 w-full'>
+            <Link className='w-full' to="/home">
+              <ActionButton
+                onClick={onNewBattle}
+                disabled={isNewBattleDisabled}
+                onAnimationEnd={() => setIsNewBattleDisabled(false)}
+                className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:cursor-not-allowed uppercase opacity-0 animate-slide-up-fade-swipe-game-7"
+              >
+                close
+              </ActionButton>
+            </Link>
+            <ActionButton
+              onClick={onNewBattle}
+              disabled={isNewBattleDisabled}
+              onAnimationEnd={() => setIsNewBattleDisabled(false)}
+              className="text-black bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] uppercase opacity-0 animate-slide-up-fade-swipe-game-7"
+            >
+              new battle
+            </ActionButton>
+          </div>
         </div>
       </div>
     </div>

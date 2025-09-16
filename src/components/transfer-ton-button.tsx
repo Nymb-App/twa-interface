@@ -94,7 +94,7 @@ export function TransferTonButton({
       open()
       return
     }
-    const balance = await getBalance();
+    const balance = await getBalance()
     if (!balance) {
       return
     }
@@ -104,7 +104,16 @@ export function TransferTonButton({
     }
     setIsTransferTonSuccess(false)
     await transfer(recipient, amount)
-  }, [address, amount, recipient, transfer, open, onClick, onConnect, getBalance])
+  }, [
+    address,
+    amount,
+    recipient,
+    transfer,
+    open,
+    onClick,
+    onConnect,
+    getBalance,
+  ])
 
   return (
     <>

@@ -5,11 +5,9 @@ import { Skeleton } from '../ui/skeleton'
 import { GateNextDisplayBlock } from './gate-next-display-block'
 import { GateProgressDisplay } from './gate-progress-display'
 import { GateStatistics } from './gate-statistics'
-import { TicketIcon } from '@/assets/icons/ticket'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { cn, convertTimestampToDaysUnit } from '@/utils'
 import { ArrowIcon } from '@/assets/icons/arrow'
-import { WatchesIcon } from '@/assets/icons/watches'
 
 export const GateMainSection = () => {
   const { getLvlStats, accountQuery, isLoading } = useAccountMe()
@@ -53,7 +51,7 @@ export const GateMainSection = () => {
           <Skeleton className="w-[68px] h-[115px]" />
         ) : (
           <GateProgressDisplay
-            icon={<WatchesIcon />}
+            icon={<img src="/clock-img.webp" className="size-10" />}
             current={convertTimestampToDaysUnit(timeLeft)}
             max={convertTimestampToDaysUnit(
               getLvlStats.data?.timeRequired ?? 1,
@@ -74,7 +72,7 @@ export const GateMainSection = () => {
           <Skeleton className="w-[68px] h-[115px]" />
         ) : (
           <GateProgressDisplay
-            icon={<TicketIcon className="h-[45px] w-[45px]" />}
+            icon={<img src="/ticket-img.webp" className="size-10" />}
             current={accountData?.ticket ?? 0}
             max={getLvlStats.data?.ticketsRequired ?? 1}
             label="ticket"

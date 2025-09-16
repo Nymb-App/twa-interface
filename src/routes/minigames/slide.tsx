@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { createFileRoute } from '@tanstack/react-router'
-import Countdown from 'react-countdown'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { WatchesIcon } from '@/assets/icons/watches'
-import EnergyIcon from '@/assets/icons/energy'
-import HeaderBg from '@/assets/svg/header-bg'
-import BombField from '@/components/minigames/playground'
-import { PageLayout } from '@/components/ui/page-layout'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import Countdown from 'react-countdown'
 import { cn } from '@/lib/utils'
+import { PageLayout } from '@/components/ui/page-layout'
 import { ActionButton } from '@/components/ui/action-button'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
 import { useSlidesMinigame } from '@/hooks/api/use-slides-minigame'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { ShareButton } from '@/components/ui/share-button'
-// import { SettingsPanel } from './settings-pannel';
+
+import { WatchesIcon } from '@/assets/icons/watches'
+import EnergyIcon from '@/assets/icons/energy'
+import HeaderBg from '@/assets/svg/header-bg'
+import BombField from '@/components/minigames/playground'
 
 export const Route = createFileRoute('/minigames/slide')({
   component: RouteComponent,
@@ -124,17 +124,26 @@ export function RouteComponent() {
           <HeaderBg className="absolute inset-0 w-full h-full scale-110" />
 
           <div className="relative flex items-center justify-between w-full h-full px-4">
-            <div className="flex items-center justify-center w-1/3">
-              <EnergyIcon />
-              <span className="font-pixel text-xl text-[#B6FF00]">
+            <div className="flex items-center justify-center w-1/3 pr-5">
+              <EnergyIcon className='min-w-9' />
+              <span className="font-pixel text-xl text-[#A45FFF] [text-shadow:0px_0px_12px_#9C1FFD]">
                 {energy}
               </span>
             </div>
 
             <div className="w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
 
+            <div className="flex items-center justify-center w-1/3">
+              <WatchesIcon className="size-9 min-w-9" />
+              <span className="font-pixel text-2xl text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]">
+                {minutesWinned}
+              </span>
+            </div>
+
+            <div className="w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+            
             {!isGameStarted ? (
-              <span className="font-pixel text-2xl text-white">00:30</span>
+              <span className="font-pixel text-2xl text-white pl-3 text-center w-1/3">00:30</span>
             ) : (
               <Countdown
                 key={'game-timer'}
@@ -145,21 +154,12 @@ export function RouteComponent() {
                   setIsGameFinished(true)
                 }}
                 renderer={({ seconds }) => (
-                  <span className="font-pixel text-2xl text-white">
+                  <span className="font-pixel text-2xl text-white pl-3 text-center w-1/3">
                     00:{seconds.toString().padStart(2, '0')}
                   </span>
                 )}
               />
             )}
-
-            <div className="w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-
-            <div className="flex items-center justify-center w-1/3">
-              <WatchesIcon className="size-9" />
-              <span className="font-pixel text-2xl text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]">
-                {minutesWinned}
-              </span>
-            </div>
           </div>
 
           {/* Underheader with x2 time */}
@@ -178,7 +178,7 @@ export function RouteComponent() {
             renderer={({ seconds }) => (
               <div
                 className={cn(
-                  'px-4 pt-3 pb-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
+                  'px-4 pt-3 mt-2 pb-1 flex gap-2 items-center justify-center absolute left-1/2 -translate-x-1/2 rounded-b-2xl border-e border-b border-l border-[#343534] bg-gradient-to-b from-[#111311] to-[#1B1C1B] text-sm transition-all duration-300 -z-10',
                   isX2Time ? 'translate-y-12 opacity-100' : 'opacity-0',
                 )}
               >
@@ -212,6 +212,7 @@ export function RouteComponent() {
           startCooldown={4000}
           gameDuration={34_000}
           className="w-full h-full"
+          trailingLifetime={300}
           onInteractionEnter={({ item }) => {
             if (item === 'time') {
               setMinutesWinned(minutesWinned + minutesWinAmount)
@@ -264,14 +265,14 @@ function GameFinished({
   return (
     <div
       className={cn(
-        'absolute inset-0 flex flex-col items-center justify-between font-pixel z-50',
+        'absolute inset-0 flex flex-col items-center justify-between font-pixel z-50 scrollbar-hide',
         className,
       )}
     >
       <header className="relative w-full h-[310px] top-20">
         <img
           src={'/minigames/winning-stars.webp'}
-          className="w-full h-auto p-6 object-cover bg-blend-lighten absolute opacity-0 animate-slide-up-fade-swipe-game-1"
+          className="w-full h-auto object-cover bg-blend-lighten absolute opacity-0 animate-slide-up-fade-swipe-game-1"
         />
 
         <div className="relative overflow-hidden size-[104px] rounded-[36px] left-1/2 top-[100px] -translate-x-1/2 shadow-[0_0px_50px_rgba(182,_255,_0,_0.3)] opacity-0 animate-slide-up-fade-swipe-game-2">
@@ -311,20 +312,29 @@ function GameFinished({
 
       <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
         <ShareButton
-          className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
+          className="text-white bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white/40 disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
           displayPercent={20}
           isPercent
           time={minutesWinned * 0.2}
         />
 
+        <div className='inline-flex gap-2 w-full'>
+          <Link to="/home" className='w-full'>
+          <ActionButton
+          className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
+          >
+            CLOSE
+          </ActionButton>
+          </Link>
         {useRestart && (
           <ActionButton
-            onClick={onRestart}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
+          onClick={onRestart}
+          className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
           >
             PLAY MORE
           </ActionButton>
         )}
+        </div>
       </div>
     </div>
   )

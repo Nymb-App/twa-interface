@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button"
 type CopyButtonProps = {
   content: string
   copyMessage?: string
+  className?: string
+  children?: React.ReactNode
 }
 
-export function CopyButton({ content, copyMessage }: CopyButtonProps) {
+export function CopyButton({ content, copyMessage, className, children }: CopyButtonProps) {
   const { isCopied, handleCopy } = useCopyToClipboard({
     text: content,
     copyMessage,
@@ -19,7 +21,7 @@ export function CopyButton({ content, copyMessage }: CopyButtonProps) {
     <Button
       variant="ghost"
       size="icon"
-      className="relative h-6 w-6"
+      className={cn("relative h-6 w-6", className)}
       aria-label="Copy to clipboard"
       onClick={handleCopy}
     >
@@ -31,12 +33,7 @@ export function CopyButton({ content, copyMessage }: CopyButtonProps) {
           )}
         />
       </div>
-      <Copy
-        className={cn(
-          "h-4 w-4 transition-transform ease-in-out",
-          isCopied ? "scale-0" : "scale-100"
-        )}
-      />
+      {children ? (isCopied ? null : children) : <Copy className={cn("h-4 w-4 transition-transform ease-in-out", isCopied ? "scale-0" : "scale-100")} />}
     </Button>
   )
 }

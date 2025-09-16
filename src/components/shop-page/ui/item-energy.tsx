@@ -53,7 +53,7 @@ export function ItemEnergy({ className }: { className?: string }) {
               />
             </div>
             <img
-              src="/shop-energy-img.webp"
+              src="/shop/energy.webp"
               alt="energy"
               className="absolute left-1/2 -translate-x-1/2 size-[126px] top-0"
             />
@@ -98,24 +98,26 @@ export function ItemEnergy({ className }: { className?: string }) {
             <img
               src="/shop-intersect.webp"
               alt="energy"
-              className="absolute left-10 top-10 max-w-[126px]"
+              className="absolute left-10 top-10 max-w-[126px] h-[100px]"
             />
             <img
               src="/shop-intersect.webp"
               alt="energy"
-              className="absolute right-10 top-10 scale-x-[-1] max-w-[136px]"
+              className="absolute right-10 top-10 scale-x-[-1] max-w-[136px] h-[100px]"
             />
           </div>
           <img
-            src="/shop-energy-img.webp"
+            src="/shop/energy.webp"
             alt="energy"
-            className="absolute left-1/2 -translate-x-1/2 size-[126px] top-0"
+            className="absolute left-1/2 -translate-x-1/2 size-[146px] top-0"
           />
         </div>
 
         <div className="relative inline-flex justify-around items-center w-full mt-6">
           <div className="font-pixel flex flex-col gap-1">
-            <span className="text-[#9137FF] text-3xl">+1000</span>
+            <span className="text-[#9137FF] text-3xl relative bottom-2">
+              +1000
+            </span>
             <span className="text-white/40 text-xs ml-9">ENERGY</span>
           </div>
           <span className="text-white/40 text-5xl font-pixel">:</span>

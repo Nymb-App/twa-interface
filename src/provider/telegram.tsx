@@ -10,15 +10,17 @@ import {
   swipeBehavior,
   viewport,
 } from '@telegram-apps/sdk'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { ENV } from '@/lib/constants'
 import { useBattle } from '@/hooks/api/use-battle'
+import { AppContext } from '@/context/app-context'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
+  const { currentOnboardingSlide } = useContext(AppContext)
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
@@ -89,6 +91,16 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
+            if (pathnames[1].pathname === '/home') return
+            if (pathnames[1].pathname === '/onboarding') {
+              if (!currentOnboardingSlide) return
+              if (currentOnboardingSlide.selectedScrollSnap() === 0) {
+                return
+              }
+              currentOnboardingSlide.scrollPrev()
+              return
+            }
+
             if (pathnames[1].pathname === '/unlock-gate') {
               router.navigate({ to: '/gate' })
               return
@@ -108,7 +120,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     })()
-  }, [pathnames])
+  }, [pathnames, currentOnboardingSlide])
 
   return children
 }
