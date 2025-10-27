@@ -12,6 +12,7 @@ export default [
     rules: {
       // Автоматически удаляет неиспользуемые импорты
       'unused-imports/no-unused-imports': 'error',
+      'import/order': 'off',
 
       // Также удаляет неиспользуемые переменные (если нужно)
       // 'unused-imports/no-unused-vars': [

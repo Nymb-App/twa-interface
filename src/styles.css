@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Inter:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -13,6 +13,10 @@
 
 .font-pixel {
   font-family: 'PixelNymb', monospace;
+}
+
+.font-gochi {
+  font-family: 'Gochi Hand', cursive;
 }
 
 .overflow-hidden-crossbrowser {
@@ -60,6 +64,7 @@ code {
 
 @theme inline {
   --font-inter: 'Inter', sans-serif;
+  --font-gochi: 'Gochi Hand', cursive;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -613,7 +618,8 @@ code {
   }
 }
 
-html, body {
+html,
+body {
   overscroll-behavior: none;
 }
 

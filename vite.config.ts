@@ -1,12 +1,12 @@
-import { resolve } from 'node:path'
-import { createRequire } from 'node:module'
-import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
-import viteReact from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import viteReact from '@vitejs/plugin-react'
+import { createRequire } from 'node:module'
+import { resolve } from 'node:path'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig } from 'vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import svgr from 'vite-plugin-svgr'
 
 const require = createRequire(import.meta.url)
 
@@ -52,22 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'spend-contracting-club-forwarding.trycloudflare.com',
-      'lance-opportunities-candy-tuition.trycloudflare.com',
-      'localhost:100',
-      'exception-bowling-amy-breaking.trycloudflare.com',
-      'september-now-five-stakeholders.trycloudflare.com',
-      'honest-corruption-grab-leu.trycloudflare.com',
-      'e658-37-1-204-162.ngrok-free.app',
-      'administrator-sole-implementing-obvious.trycloudflare.com',
-      'ambien-projection-aggregate-proprietary.trycloudflare.com',
-      'exp-photographic-continuous-executed.trycloudflare.com',
-      'exams-repeated-faq-connecticut.trycloudflare.com',
-      'chinese-agreed-written-copyrighted.trycloudflare.com',
-      'fan-difficulty-peterson-bailey.trycloudflare.com',
-      'couple-collect-stage-determining.trycloudflare.com',
-      'buttons-radio-teens-sending.trycloudflare.com',
-      'working-wb-studios-vehicle.trycloudflare.com',
+      'burlington-conventions-issue-ipaq.trycloudflare.com',
     ],
   },
 
