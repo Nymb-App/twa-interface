@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react'
+import { TwaAnalyticsProvider } from '@tonsolutions/telemetree-react';
 import { TelegramProvider } from './telegram'
 import { AppProvider } from '@/context/app-context'
 import { FarmingProvider } from '@/context/farming-context'

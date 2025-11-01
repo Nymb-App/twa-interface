@@ -6,6 +6,11 @@ import { BattleBustButtons } from './ui/battle-bust-buttons'
 import { cn, convertTimestampToDaysUnit } from '@/utils'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 
+import { PiShareFatBold } from "react-icons/pi";
+import { FaRandom } from "react-icons/fa";
+import ChooseOpponent from '@/assets/svg/choose-opponent'
+import { ShareBattleInviteButton, ShareButton } from '../ui/share-button'
+
 export interface IJoinGameData {
   userId: number
   roomId: string
@@ -18,15 +23,15 @@ export interface IJoinGameData {
 export type TOpponentUserData = Omit<IJoinGameData, 'roomId'>
 
 export const BattleIntroScene = ({
-  onFindingOpponent,
   className,
+  onFindingOpponent,
   onAnimationEnd,
   onJoinGame,
 }: {
-  onFindingOpponent?: () => void
   className?: string
+  onFindingOpponent?: () => void
   onAnimationEnd?: React.AnimationEventHandler<HTMLDivElement>
-  onJoinGame?: (bet: number) => void
+  onJoinGame?: (bet: number, isPrivate?: boolean) => void
 }) => {
   const [isAnimationsBustButtonsEnd, setIsAnimationsBustButtonsEnd] =
     useState(false)
@@ -59,7 +64,7 @@ export const BattleIntroScene = ({
       className={cn(
         'flex flex-col justify-between',
         isIntroSceneAnimationsStart &&
-          '!animate-battle-intro-section-slide-fade-out',
+        '!animate-battle-intro-section-slide-fade-out',
         className,
       )}
       onAnimationEnd={(e) => {
@@ -98,23 +103,40 @@ export const BattleIntroScene = ({
         />
       </div>
       <div className="px-4">
-        <p className="font-inter text-[#FFFFFF]/40 text-[14px] font-[400] leading-[140%] text-center mb-4 opacity-0 animate-battle-preview-find-text-fade">
+        <div className='inline-flex gap-3 w-full relative opacity-0 animate-battle-preview-find-button-fade' onAnimationEnd={() => setIsAnimationsFindButtonEnd(true)}>
+          <ShareBattleInviteButton
+            onClick={() => {
+              onJoinGame?.(bet, true);
+              setIsIntroSceneAnimationsStart(true);
+            }}
+            comment={'🔥⚔️ Hey there! Ready to prove your strength? 💪\nJoin the battle with me if you’re strong enough! ⚔️🔥\n\n🛡️ Let’s see who’s the real champion! 🏆'}
+            className={cn(
+              'font-pixel text-white rounded-[16px] uppercase bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:cursor-not-allowed disabled:from-[#8C35FB]/50 disabled:to-[#6602E7]/50',
+              !isAnimationsFindButtonEnd && 'pointer-events-none',
+            )}
+            inviteParam={`inviteBy=${meUserData?.id}_type=game-battle_bet=${bet}`}
+          >
+            <PiShareFatBold className='size-6' /> FRIEND
+          </ShareBattleInviteButton>
+          <ActionButton
+            className={cn(
+              'font-pixel text-[#121312] rounded-[16px] uppercase disabled:cursor-not-allowed disabled:from-[#ADFA4B]/50 disabled:to-[#B6FF00]/50',
+              !isAnimationsFindButtonEnd && 'pointer-events-none',
+            )}
+            disabled={isDisabledFindingButton}
+            onClick={() => {
+              onJoinGame?.(bet)
+              setIsIntroSceneAnimationsStart(true)
+            }}
+          >
+            <FaRandom className='size-5' /> RANDOM
+          </ActionButton>
+          <ChooseOpponent className='absolute right-0 bottom-16' />
+        </div>
+
+        <p className="font-inter text-[#FFFFFF]/40 text-[14px] font-[400] mt-4 leading-[140%] text-center mb-4 opacity-0 animate-battle-preview-find-text-fade">
           The opponent will be <br /> randomly selected. Commission 1%
         </p>
-        <ActionButton
-          className={cn(
-            'font-pixel text-[#121312] rounded-[16px] uppercase opacity-0 animate-battle-preview-find-button-fade disabled:cursor-not-allowed disabled:from-[#ADFA4B]/50 disabled:to-[#B6FF00]/50',
-            !isAnimationsFindButtonEnd && 'pointer-events-none',
-          )}
-          disabled={isDisabledFindingButton}
-          onClick={() => {
-            onJoinGame?.(bet)
-            setIsIntroSceneAnimationsStart(true)
-          }}
-          onAnimationEnd={() => setIsAnimationsFindButtonEnd(true)}
-        >
-          finding the opponent
-        </ActionButton>
       </div>
     </div>
   )

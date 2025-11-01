@@ -12,12 +12,14 @@ export const ShareButton = ({
   displayPercent,
   comment,
   className,
+  children,
 }: {
   time: number
   isPercent?: boolean
   displayPercent?: number
   comment?: string
   className?: string
+  children?: React.ReactNode
 }) => {
   const { post } = useApi()
 
@@ -65,7 +67,47 @@ export const ShareButton = ({
         className,
       )}
     >
-      Share and get +{timeDisplay}
+      {children? children : `Share and get +${timeDisplay}`}
+    </ActionButton>
+  )
+}
+
+export const ShareBattleInviteButton = ({
+  className,
+  children,
+  comment,
+  disabled,
+  inviteParam,
+  onAnimationEnd,
+  onClick,
+}: {
+  className?: string,
+  children?: React.ReactNode,
+  comment?: string,
+  disabled?: boolean,
+  inviteParam?: string,
+  onAnimationEnd?: React.AnimationEventHandler<HTMLButtonElement>,
+  onClick?: () => void,
+}) => {
+
+  return (
+    <ActionButton
+      disabled={disabled}
+      onAnimationEnd={onAnimationEnd}
+      onClick={() => {
+        onClick?.();
+        const telegramLink =
+          import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
+        if (shareURL.isAvailable()) {
+          shareURL(!inviteParam ? telegramLink : `${telegramLink}?startapp=${inviteParam}`, comment || 'Check out this cool app!')
+        }
+      }}
+      className={cn(
+        'text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+        className,
+      )}
+    >
+      {children}
     </ActionButton>
   )
 }

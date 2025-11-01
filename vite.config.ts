@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'burlington-conventions-issue-ipaq.trycloudflare.com',
+      'attacks-munich-outlet-catalogue.trycloudflare.com',
     ],
   },
 

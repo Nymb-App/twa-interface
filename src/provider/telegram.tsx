@@ -15,6 +15,7 @@ import type { ReactNode } from 'react'
 import { ENV } from '@/lib/constants'
 import { useBattle } from '@/hooks/api/use-battle'
 import { AppContext } from '@/context/app-context'
+import { TwaAnalyticsProvider } from '@tonsolutions/telemetree-react'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
@@ -122,5 +123,18 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
     })()
   }, [pathnames, currentOnboardingSlide])
 
+  // Production
+  // if (isTMA()) {
+  //   return (
+  //     <TwaAnalyticsProvider
+  //       projectId="Id"
+  //       apiKey="Key"
+  //     >
+  //       children
+  //     </TwaAnalyticsProvider>
+  //   )
+  // }
+
+  // Development
   return children
 }
