@@ -307,11 +307,11 @@ export const BattleMainScene = ({
       </div>
       <div
         className={cn(
-          'transition-all duration-2000 delay-650 px-4 h-[56px]',
+          'transition-all duration-2000 delay-650 px-4 h-[56px] inline-flex gap-2',
           isOpeningAnimation && 'h-0',
         )}
       >
-        {isStartFindingOpponent && (
+        {isStartFindingOpponent && (<>
           <ActionButton
             disabled={
               !isForcedExitBattleAnimationFinished || !isStartFindingOpponent
@@ -329,10 +329,32 @@ export const BattleMainScene = ({
             onAnimationEnd={() => setIsForcedExitBattleAnimationFinished(true)}
           >
             <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
-              close
+              CLOSE
             </span>
           </ActionButton>
-        )}
+
+          {/* This is only shown for invited user */}
+          <ActionButton
+            disabled={
+              !isForcedExitBattleAnimationFinished || !isStartFindingOpponent
+            }
+            onClick={() => {
+              // onForcedExitBattle?.()
+              // if (forcedExitTimeoutRef.current) {
+              //   clearTimeout(forcedExitTimeoutRef.current)
+              //   forcedExitTimeoutRef.current = null
+              // }
+            }}
+            className={cn(
+              'h-full bg-gradient-to-b from-[#8C35FB] to-[#6602E7] opacity-0 animate-fade-in',
+            )}
+            onAnimationEnd={() => setIsForcedExitBattleAnimationFinished(true)}
+          >
+            <span className="font-pixel text-white font-[400] uppercase text-[18px] leading-[24px]">
+              TO BATTLE
+            </span>
+          </ActionButton>
+        </>)}
       </div>
     </>
   )

@@ -168,12 +168,13 @@ export function useBattle() {
   }, [isMeViewMyOpponent0, isMeViewMyOpponent1])
 
   const makeBet = useCallback(
-    (bet: number) => {
+    (bet: number, isPrivate?: boolean) => {
       socket.emit('join_or_create_room', {
         bet,
         userId: Number(account?.id),
         photoUrl: account?.photo_url,
         nickname: account?.username,
+        isPrivate: isPrivate, 
       })
     },
     [account],

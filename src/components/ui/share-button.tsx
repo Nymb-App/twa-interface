@@ -1,4 +1,4 @@
-import { shareURL } from '@telegram-apps/sdk'
+import { shareURL, shareMessage } from '@telegram-apps/sdk'
 import { useMemo, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { ActionButton } from './action-button'
@@ -86,6 +86,7 @@ export const ShareBattleInviteButton = ({
   comment?: string,
   disabled?: boolean,
   inviteParam?: string,
+  useAcceptDeclineButtons?: boolean,
   onAnimationEnd?: React.AnimationEventHandler<HTMLButtonElement>,
   onClick?: () => void,
 }) => {
@@ -96,8 +97,7 @@ export const ShareBattleInviteButton = ({
       onAnimationEnd={onAnimationEnd}
       onClick={() => {
         onClick?.();
-        const telegramLink =
-          import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
+        const telegramLink = import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
         if (shareURL.isAvailable()) {
           shareURL(!inviteParam ? telegramLink : `${telegramLink}?startapp=${inviteParam}`, comment || 'Check out this cool app!')
         }

@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'attacks-munich-outlet-catalogue.trycloudflare.com',
+      'managed-bone-borders-administered.trycloudflare.com',
     ],
   },
 

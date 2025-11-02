@@ -9,7 +9,7 @@ import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { PiShareFatBold } from "react-icons/pi";
 import { FaRandom } from "react-icons/fa";
 import ChooseOpponent from '@/assets/svg/choose-opponent'
-import { ShareBattleInviteButton, ShareButton } from '../ui/share-button'
+import { ShareBattleInviteButton } from '../ui/share-button'
 
 export interface IJoinGameData {
   userId: number
@@ -109,7 +109,11 @@ export const BattleIntroScene = ({
               onJoinGame?.(bet, true);
               setIsIntroSceneAnimationsStart(true);
             }}
-            comment={'🔥⚔️ Hey there! Ready to prove your strength? 💪\nJoin the battle with me if you’re strong enough! ⚔️🔥\n\n🛡️ Let’s see who’s the real champion! 🏆'}
+            comment={[
+              '🔥⚔️ Hey there! Ready to prove your strength?',
+              '💪Join the battle with me if you’re strong enough!⚔️🔥',
+              '🛡️ Let’s see who’s the real champion! 🏆',
+            ].join('\n')}
             className={cn(
               'font-pixel text-white rounded-[16px] uppercase bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:cursor-not-allowed disabled:from-[#8C35FB]/50 disabled:to-[#6602E7]/50',
               !isAnimationsFindButtonEnd && 'pointer-events-none',
