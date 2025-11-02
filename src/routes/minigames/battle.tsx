@@ -1,9 +1,9 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { PageLayout } from '@/components/ui/page-layout'
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
 import { BattleMainScene } from '@/components/battle-page/battle-main-scene'
+import { PageLayout } from '@/components/ui/page-layout'
 import { useBattle } from '@/hooks/api/use-battle'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,

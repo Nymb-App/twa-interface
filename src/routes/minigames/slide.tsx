@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import Countdown from 'react-countdown'
-import { cn } from '@/lib/utils'
-import { PageLayout } from '@/components/ui/page-layout'
-import { ActionButton } from '@/components/ui/action-button'
 import { CountdownStartGame } from '@/components/minigames/countdown-start-game'
-import { useSlidesMinigame } from '@/hooks/api/use-slides-minigame'
+import { ActionButton } from '@/components/ui/action-button'
+import { PageLayout } from '@/components/ui/page-layout'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
-import { ShareButton } from '@/components/ui/share-button'
+import { useSlidesMinigame } from '@/hooks/api/use-slides-minigame'
+import { cn } from '@/lib/utils'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Countdown from 'react-countdown'
 
-import { WatchesIcon } from '@/assets/icons/watches'
 import EnergyIcon from '@/assets/icons/energy'
+import { WatchesIcon } from '@/assets/icons/watches'
 import HeaderBg from '@/assets/svg/header-bg'
+import { AdsButton } from '@/components/ads/index'
 import BombField from '@/components/minigames/playground'
 
 export const Route = createFileRoute('/minigames/slide')({
@@ -125,7 +125,7 @@ export function RouteComponent() {
 
           <div className="relative flex items-center justify-between w-full h-full px-4">
             <div className="flex items-center justify-center w-1/3 pr-5">
-              <EnergyIcon className='min-w-9' />
+              <EnergyIcon className="min-w-9" />
               <span className="font-pixel text-xl text-[#A45FFF] [text-shadow:0px_0px_12px_#9C1FFD]">
                 {energy}
               </span>
@@ -141,9 +141,11 @@ export function RouteComponent() {
             </div>
 
             <div className="w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-            
+
             {!isGameStarted ? (
-              <span className="font-pixel text-2xl text-white pl-3 text-center w-1/3">00:30</span>
+              <span className="font-pixel text-2xl text-white pl-3 text-center w-1/3">
+                00:30
+              </span>
             ) : (
               <Countdown
                 key={'game-timer'}
@@ -259,8 +261,7 @@ function GameFinished({
   onRestart?: () => void
   className?: string
 }) {
-
-  const {user} = useAccount()
+  const { user } = useAccount()
 
   return (
     <div
@@ -311,29 +312,34 @@ function GameFinished({
       </div>
 
       <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-        <ShareButton
+        {/* <ShareButton
           className="text-white bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white/40 disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
           displayPercent={20}
           isPercent
           time={minutesWinned * 0.2}
+        /> */}
+
+        <AdsButton
+          displayPercent={20}
+          isPercent
+          time={minutesWinned * 0.2}
+          className="text-white bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white/40 disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
         />
 
-        <div className='inline-flex gap-2 w-full'>
-          <Link to="/home" className='w-full'>
-          <ActionButton
-          className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
-          >
-            CLOSE
-          </ActionButton>
+        <div className="inline-flex gap-2 w-full">
+          <Link to="/home" className="w-full">
+            <ActionButton className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6">
+              CLOSE
+            </ActionButton>
           </Link>
-        {useRestart && (
-          <ActionButton
-          onClick={onRestart}
-          className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
-          >
-            PLAY MORE
-          </ActionButton>
-        )}
+          {useRestart && (
+            <ActionButton
+              onClick={onRestart}
+              className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
+            >
+              PLAY MORE
+            </ActionButton>
+          )}
         </div>
       </div>
     </div>

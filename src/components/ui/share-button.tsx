@@ -1,10 +1,10 @@
-import { shareURL, shareMessage } from '@telegram-apps/sdk'
-import { useMemo, useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import { ActionButton } from './action-button'
-import { cn, convertTimestampToLargestUnit } from '@/utils'
-import { useApi } from '@/hooks/api/use-api'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { useApi } from '@/hooks/api/use-api'
+import { cn, convertTimestampToLargestUnit } from '@/utils'
+import { useMutation } from '@tanstack/react-query'
+import { shareURL } from '@telegram-apps/sdk'
+import { useMemo, useState } from 'react'
+import { ActionButton } from './action-button'
 
 export const ShareButton = ({
   time,
@@ -55,7 +55,8 @@ export const ShareButton = ({
       onAnimationEnd={() => setIsAnimationStart(false)}
       onClick={() => {
         const telegramLink =
-          import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
+          import.meta.env.VITE_TELEGRAM_APP_LINK ||
+          'https://t.me/nymb_twa_bot/nymb'
         if (shareURL.isAvailable()) {
           shareURL(telegramLink, comment || 'Check out this cool app!')
         }
@@ -67,7 +68,7 @@ export const ShareButton = ({
         className,
       )}
     >
-      {children? children : `Share and get +${timeDisplay}`}
+      {children ? children : `Share and get +${timeDisplay}`}
     </ActionButton>
   )
 }
@@ -81,25 +82,31 @@ export const ShareBattleInviteButton = ({
   onAnimationEnd,
   onClick,
 }: {
-  className?: string,
-  children?: React.ReactNode,
-  comment?: string,
-  disabled?: boolean,
-  inviteParam?: string,
-  useAcceptDeclineButtons?: boolean,
-  onAnimationEnd?: React.AnimationEventHandler<HTMLButtonElement>,
-  onClick?: () => void,
+  className?: string
+  children?: React.ReactNode
+  comment?: string
+  disabled?: boolean
+  inviteParam?: string
+  useAcceptDeclineButtons?: boolean
+  onAnimationEnd?: React.AnimationEventHandler<HTMLButtonElement>
+  onClick?: () => void
 }) => {
-
   return (
     <ActionButton
       disabled={disabled}
       onAnimationEnd={onAnimationEnd}
       onClick={() => {
-        onClick?.();
-        const telegramLink = import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
+        onClick?.()
+        const telegramLink =
+          import.meta.env.VITE_TELEGRAM_APP_LINK ||
+          'https://t.me/nymb_twa_bot/nymb'
         if (shareURL.isAvailable()) {
-          shareURL(!inviteParam ? telegramLink : `${telegramLink}?startapp=${inviteParam}`, comment || 'Check out this cool app!')
+          shareURL(
+            !inviteParam
+              ? telegramLink
+              : `${telegramLink}?startapp=${inviteParam}`,
+            comment || 'Check out this cool app!',
+          )
         }
       }}
       className={cn(

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import {
   Drawer,
   DrawerContent,

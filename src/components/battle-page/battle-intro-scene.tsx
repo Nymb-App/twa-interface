@@ -1,14 +1,14 @@
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+import { cn, convertTimestampToDaysUnit } from '@/utils'
 import { useMemo, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
-import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
 import { BattleCard } from './battle-card'
+import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
 import { BattleBustButtons } from './ui/battle-bust-buttons'
-import { cn, convertTimestampToDaysUnit } from '@/utils'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 
-import { PiShareFatBold } from "react-icons/pi";
-import { FaRandom } from "react-icons/fa";
 import ChooseOpponent from '@/assets/svg/choose-opponent'
+import { FaRandom } from 'react-icons/fa'
+import { PiShareFatBold } from 'react-icons/pi'
 import { ShareBattleInviteButton } from '../ui/share-button'
 
 export interface IJoinGameData {
@@ -64,7 +64,7 @@ export const BattleIntroScene = ({
       className={cn(
         'flex flex-col justify-between',
         isIntroSceneAnimationsStart &&
-        '!animate-battle-intro-section-slide-fade-out',
+          '!animate-battle-intro-section-slide-fade-out',
         className,
       )}
       onAnimationEnd={(e) => {
@@ -103,11 +103,14 @@ export const BattleIntroScene = ({
         />
       </div>
       <div className="px-4">
-        <div className='inline-flex gap-3 w-full relative opacity-0 animate-battle-preview-find-button-fade' onAnimationEnd={() => setIsAnimationsFindButtonEnd(true)}>
+        <div
+          className="inline-flex gap-3 w-full relative opacity-0 animate-battle-preview-find-button-fade"
+          onAnimationEnd={() => setIsAnimationsFindButtonEnd(true)}
+        >
           <ShareBattleInviteButton
             onClick={() => {
-              onJoinGame?.(bet, true);
-              setIsIntroSceneAnimationsStart(true);
+              onJoinGame?.(bet, true)
+              setIsIntroSceneAnimationsStart(true)
             }}
             comment={[
               '🔥⚔️ Hey there! Ready to prove your strength?',
@@ -120,7 +123,7 @@ export const BattleIntroScene = ({
             )}
             inviteParam={`inviteBy=${meUserData?.id}_type=game-battle_bet=${bet}`}
           >
-            <PiShareFatBold className='size-6' /> FRIEND
+            <PiShareFatBold className="size-6" /> FRIEND
           </ShareBattleInviteButton>
           <ActionButton
             className={cn(
@@ -133,9 +136,9 @@ export const BattleIntroScene = ({
               setIsIntroSceneAnimationsStart(true)
             }}
           >
-            <FaRandom className='size-5' /> RANDOM
+            <FaRandom className="size-5" /> RANDOM
           </ActionButton>
-          <ChooseOpponent className='absolute right-0 bottom-16' />
+          <ChooseOpponent className="absolute right-0 bottom-16" />
         </div>
 
         <p className="font-inter text-[#FFFFFF]/40 text-[14px] font-[400] mt-4 leading-[140%] text-center mb-4 opacity-0 animate-battle-preview-find-text-fade">

@@ -14,6 +14,7 @@
     "analyze": "vite build --mode analyze"
   },
   "dependencies": {
+    "@adsgram/react": "^1.0.2",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "@lottiefiles/react-lottie-player": "^3.6.0",

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { BattleResultGameBg } from '@/components/battle-page/ui/battle-result-game-bg'

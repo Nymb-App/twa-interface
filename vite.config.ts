@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'managed-bone-borders-administered.trycloudflare.com',
+      'brokers-dicke-consultant-coming.trycloudflare.com',
     ],
   },
 

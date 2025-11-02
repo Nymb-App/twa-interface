@@ -1,5 +1,4 @@
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
-import { isAndroid, isIOS } from 'react-device-detect'
 import {
   Suspense,
   lazy,
@@ -10,24 +9,38 @@ import {
   useRef,
   useState,
 } from 'react'
+import { isAndroid, isIOS } from 'react-device-detect'
 
-import { useCheckIn } from '@/hooks/use-get-daily-rewards'
-import { PageLayout } from '@/components/ui/page-layout'
+import { TelegramStarIcon } from '@/assets/icons/telegram-star'
+import { TonIcon } from '@/assets/icons/ton'
+import FrostScratchPanel from '@/components/frost-scratch-panel'
 import ProgressSection from '@/components/home-page/progress-section'
-import { CardContent } from '@/components/ui/card-content'
+import { ScratchHint } from '@/components/scratch-hint'
+import { TransferTonButton } from '@/components/transfer-ton-button'
 import { FarmingButton } from '@/components/ui/button-farming'
+import { CardContent } from '@/components/ui/card-content'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerTitle,
+} from '@/components/ui/drawer'
+import { PageLayout } from '@/components/ui/page-layout'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAccountMe } from '@/hooks/api/use-account'
-import FrostScratchPanel from '@/components/frost-scratch-panel'
-import Snowfall from 'react-snowfall'
-import { ScratchHint } from '@/components/scratch-hint'
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerTitle } from '@/components/ui/drawer'
-import { TransferTonButton } from '@/components/transfer-ton-button'
-import { toast } from 'sonner'
-import { TonIcon } from '@/assets/icons/ton'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 import { useShop } from '@/hooks/api/use-shop'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import Snowfall from 'react-snowfall'
+import { toast } from 'sonner'
 
 const SwipeCard = lazy(() =>
   import('@/components/swipe-card').then((m) => ({ default: m.SwipeCard })),
@@ -68,7 +81,7 @@ const HomeComponent = memo(function HomeComponent() {
         0,
         0,
       ),
-    );
+    )
 
     const todayInSeconds = Math.floor(now.getTime() / 1000)
 
@@ -83,54 +96,62 @@ const HomeComponent = memo(function HomeComponent() {
     }
   }, [dailyRewardsQuery, router])
 
-  const [revealed, setRevealed] = useState<boolean>(false);
-  const [isPurchaseSuccess, setPurchaseSuccess] = useState<boolean>(false);
+  const [revealed, setRevealed] = useState<boolean>(false)
+  const [isPurchaseSuccess, setPurchaseSuccess] = useState<boolean>(false)
 
   return (
-    <PageLayout className='top-0'>
+    <PageLayout className="top-0">
       {!accountQuery.isLoading && accountTime < Date.now() && (
         <>
-          {!revealed && (<>
-            <FrostScratchPanel
-              backgroundImage="/frozen-account-bg.jpg"   // картинка рисуется ВНУТРИ canvas и стирается
-              backgroundFit="cover"
-              backgroundPosition="center"
-              className='fixed w-full max-w-[450px] min-h-screen z-[1000]'
-              revealThreshold={0.2}
-              brushRadius={34}
-              brushHardness={0.5}
-              eraseStrength={1}
-              tintColor="#000"
-              tintOpacity={0}
-              onReveal={() => setRevealed(true)}
-            />
-            <Snowfall
-              style={{
-                zIndex: 100000,
-              }}
-              wind={[-0.5, 1]}
-              snowflakeCount={20}
-              radius={[1, 1.5]}
-            />
-            <ScratchHint variant="circle" top="65%" left="55%" color="#95D9EF" />
-          </>)}
+          {!revealed && (
+            <>
+              <FrostScratchPanel
+                backgroundImage="/frozen-account-bg.jpg" // картинка рисуется ВНУТРИ canvas и стирается
+                backgroundFit="cover"
+                backgroundPosition="center"
+                className="fixed w-full max-w-[450px] min-h-screen z-[1000]"
+                revealThreshold={0.2}
+                brushRadius={34}
+                brushHardness={0.5}
+                eraseStrength={1}
+                tintColor="#000"
+                tintOpacity={0}
+                onReveal={() => setRevealed(true)}
+              />
+              <Snowfall
+                style={{
+                  zIndex: 100000,
+                }}
+                wind={[-0.5, 1]}
+                snowflakeCount={20}
+                radius={[1, 1.5]}
+              />
+              <ScratchHint
+                variant="circle"
+                top="65%"
+                left="55%"
+                color="#95D9EF"
+              />
+            </>
+          )}
 
           <UnfreezeAccountDrawer
             value={2.5}
             open={revealed && !isPurchaseSuccess ? true : false}
             onOpenChange={(open) => {
               if (open === false && !isPurchaseSuccess) {
-                setRevealed(false);
+                setRevealed(false)
               }
             }}
             onSuccess={async (hash) => {
-              toast.success('Time restored');
-              await buyItem("time", hash);
-              setPurchaseSuccess(true);
+              toast.success('Time restored')
+              await buyItem('time', hash)
+              setPurchaseSuccess(true)
             }}
           />
-        </>)}
-      <div className='h-24' />
+        </>
+      )}
+      <div className="h-24" />
 
       <ProgressSection isClaimStart={isClaimStart} />
       <div className="mt-5 px-4">
@@ -201,7 +222,6 @@ export const Route = createFileRoute('/home')({
   component: HomeComponent,
 })
 
-
 function UnfreezeAccountDrawer({
   value,
   open,
@@ -209,11 +229,11 @@ function UnfreezeAccountDrawer({
   onSuccess,
   onError,
 }: {
-  value: number,
-  open: boolean,
-  onOpenChange?: (open: boolean) => void,
-  onSuccess?: (hash: string) => void,
-  onError?: (e: any) => void,
+  value: number
+  open: boolean
+  onOpenChange?: (open: boolean) => void
+  onSuccess?: (hash: string) => void
+  onError?: (e: any) => void
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(open)
   const scrollYRef = useRef(0)
@@ -280,13 +300,8 @@ function UnfreezeAccountDrawer({
     }
   }, [isOpen, open])
 
-
   return (
-    <Drawer
-      open={open}
-      onOpenChange={onOpenChange}
-      modal={false}
-    >
+    <Drawer open={open} onOpenChange={onOpenChange} modal={false}>
       <DrawerContent
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
@@ -322,12 +337,15 @@ function UnfreezeAccountDrawer({
 
         <div className="p-4 mt-38">
           <h3 className="font-pixel text-3xl text-white text-center uppercase">
-            get <span className='text-[#B6FF00]'>3 days,</span><br />
-            <span className='text-[#B6FF00]'>Unfreeze</span> your<br />
+            get <span className="text-[#B6FF00]">3 days,</span>
+            <br />
+            <span className="text-[#B6FF00]">Unfreeze</span> your
+            <br />
             account
           </h3>
           <p className="text-white/60 font-inter text-sm text-center mt-2">
-            Swipe every day to build your time bank.<br />
+            Swipe every day to build your time bank.
+            <br />
             Skip bombs, grab multipliers, win big!
           </p>
         </div>
@@ -364,7 +382,7 @@ function UnfreezeAccountDrawer({
             className="py-4 w-full inline-flex justify-center items-center gap-1"
             onTransferSuccess={onSuccess}
             onError={(e) => {
-              onError?.(e);
+              onError?.(e)
               if (e.message === 'Insufficient balance') {
                 toast.error('Insufficient balance')
               } else {
@@ -372,7 +390,7 @@ function UnfreezeAccountDrawer({
               }
             }}
           >
-            UNFREEZE <TonIcon fill="black" className='size-6' /> {value} TON
+            UNFREEZE <TonIcon fill="black" className="size-6" /> {value} TON
           </TransferTonButton>
         </DrawerFooter>
       </DrawerContent>
