@@ -5,7 +5,7 @@ import { cn, convertTimestampToLargestUnit } from '@/utils'
 import { useAdsgram } from '@adsgram/react'
 import { useMutation } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-import { ActionButton } from '../../ui/action-button'
+import { ActionButton } from '../ui/action-button'
 
 export const AdsButton = ({
   className,
@@ -14,8 +14,10 @@ export const AdsButton = ({
   displayPercent,
   isPercent,
   children,
+  classNameText,
 }: {
   className?: string
+  classNameText?: string
   onClick?: () => void
   time: number
   displayPercent?: number
@@ -77,8 +79,11 @@ export const AdsButton = ({
       )}
       onClick={() => show()}
     >
-      {/* <span>get +{rewardValue}% reward</span> */}
-      {children ? children : `get +${timeDisplay}% reward`}
+      {children ? (
+        children
+      ) : (
+        <span className={classNameText}>get +{timeDisplay} reward</span>
+      )}
       <AdsLabelSvg className="absolute top-2 right-2" />
     </ActionButton>
   )

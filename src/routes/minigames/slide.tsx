@@ -12,7 +12,7 @@ import Countdown from 'react-countdown'
 import EnergyIcon from '@/assets/icons/energy'
 import { WatchesIcon } from '@/assets/icons/watches'
 import HeaderBg from '@/assets/svg/header-bg'
-import { AdsButton } from '@/components/ads/index'
+import { AdsButton } from '@/components/ads/ads-button'
 import BombField from '@/components/minigames/playground'
 
 export const Route = createFileRoute('/minigames/slide')({

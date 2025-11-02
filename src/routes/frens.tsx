@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Suspense, lazy, useMemo, useState } from 'react'
-import { PageLayout } from '@/components/ui/page-layout'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { PageLayout } from '@/components/ui/page-layout'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { convertTimestampToDaysUnit } from '@/utils'
+import { createFileRoute } from '@tanstack/react-router'
+import { Suspense, lazy, useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/frens')({
   component: RouteComponent,

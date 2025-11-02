@@ -1,13 +1,13 @@
+import { WatchesIcon } from '@/assets/icons/watches'
+import { AdsButton } from '@/components/ads/ads-button'
+import { BattleResultGameBg } from '@/components/battle-page/ui/battle-result-game-bg'
+import { ActionButton } from '@/components/ui/action-button'
+import { AvatarCard } from '@/routes/send-gift'
+import { cn } from '@/utils'
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { WatchesIcon } from '@/assets/icons/watches'
-import { BattleResultGameBg } from '@/components/battle-page/ui/battle-result-game-bg'
-import { cn } from '@/utils'
-import { AvatarCard } from '@/routes/send-gift'
-import { ActionButton } from '@/components/ui/action-button'
-import WinningStarsImg from '/minigames/winning-stars-battle.webp'
 import LoosingStartImg from '/minigames/loosing-stars-battle.webp'
-import { ShareButton } from '@/components/ui/share-button'
+import WinningStarsImg from '/minigames/winning-stars-battle.webp'
 
 export const Route = createFileRoute('/minigames/battle-result')({
   validateSearch: (search) => ({
@@ -88,10 +88,10 @@ const ResultScene = ({
       <div className="absolute bottom-0 max-h-[1200px] w-full h-full flex flex-col justify-between">
         <header className="relative w-full h-[310px] top-20">
           {/* {isMeWinner && ( */}
-            <img
-              src={isMeWinner ? WinningStarsImg : LoosingStartImg}
-              className="w-full h-auto object-cover bg-blend-lighten absolute -top-15 opacity-0 animate-slide-up-fade-swipe-game-1"
-            />
+          <img
+            src={isMeWinner ? WinningStarsImg : LoosingStartImg}
+            className="w-full h-auto object-cover bg-blend-lighten absolute -top-15 opacity-0 animate-slide-up-fade-swipe-game-1"
+          />
           {/* // )} */}
           <div
             className={cn(
@@ -170,12 +170,16 @@ const ResultScene = ({
           </div>
         </div>
         <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-          <ShareButton
+          {/* <ShareButton
             className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white"
             time={isMeWinner ? 604800 : 7200}
+          /> */}
+          <AdsButton
+            time={isMeWinner ? 604800 : 7200}
+            className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white"
           />
-          <div className='inline-flex gap-2 w-full'>
-            <Link className='w-full' to="/home">
+          <div className="inline-flex gap-2 w-full">
+            <Link className="w-full" to="/home">
               <ActionButton
                 onClick={onNewBattle}
                 disabled={isNewBattleDisabled}

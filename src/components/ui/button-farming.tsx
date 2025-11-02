@@ -1,7 +1,13 @@
+import { WatchesIcon } from '@/assets/icons/watches'
+import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
+import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
+import { ADSGRAM_APP_ID } from '@/lib/constants'
+import { cn } from '@/utils'
+import { useAdsgram } from '@adsgram/react'
+import confetti from 'canvas-confetti'
+import { LoaderIcon } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
-import { LoaderIcon } from 'lucide-react'
-import confetti from 'canvas-confetti'
 import {
   ANIMATION_DURATION_COUNTUP,
   FARMING_DURATION,
@@ -10,10 +16,8 @@ import {
   useFarming,
 } from '../../context/farming-context'
 import { ActionButton } from './action-button'
-import { cn } from '@/utils'
-import { WatchesIcon } from '@/assets/icons/watches'
-import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
-import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
+
+const NYMB_FARMING_CLAIM_ADS_COUNT_KEY = 'NYMB_FARMING_CLAIM_ADS_COUNT'
 
 export function FarmingButton({
   className,
@@ -29,6 +33,8 @@ export function FarmingButton({
 
   const { setFinishAt } = useFarming()
   const { farmingStatusQuery, startFarming, claimReward } = useFarmingApi()
+
+  const { show } = useAdsgram({ blockId: ADSGRAM_APP_ID, debug: false })
 
   const duration = useMemo(() => {
     if (!farmingStatusQuery.data) return FARMING_DURATION
@@ -70,6 +76,16 @@ export function FarmingButton({
   }, [startFarming, farmingStatusQuery])
 
   const handleClaimClick = useCallback(() => {
+    const current =
+      Number(localStorage.getItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY)) || 0
+    const next = current + 1
+    localStorage.setItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY, String(next))
+    if (next === 7) {
+      try {
+        show()
+      } catch {}
+      localStorage.setItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY, '0')
+    }
     setIsClaiming(false)
     claimReward(undefined, {
       onSuccess: () => {
@@ -88,7 +104,7 @@ export function FarmingButton({
         localStorage.removeItem(NYMB_FARMING_CLAIM_TIME_KEY)
       },
     })
-  }, [onClick, setFinishAt, claimReward])
+  }, [onClick, setFinishAt, claimReward, show])
 
   if (!isFarming && !isClaiming) {
     return (
