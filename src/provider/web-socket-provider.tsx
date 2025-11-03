@@ -3,12 +3,10 @@ import { WebSocketService } from '../services/web-socket-service'
 
 class WebSocketManager {
   private apiBaseUrl: string
-  private token?: string
   private services = new Map<string, WebSocketService>()
 
-  constructor(apiBaseUrl: string, token?: string) {
+  constructor(apiBaseUrl: string) {
     this.apiBaseUrl = apiBaseUrl
-    this.token = token
   }
 
   get(namespace: string): WebSocketService {
@@ -16,7 +14,7 @@ class WebSocketManager {
     const existing = this.services.get(key)
     if (existing) return existing
     const url = `${this.apiBaseUrl}${namespace}`
-    const service = new WebSocketService(url, this.token)
+    const service = new WebSocketService(url)
     this.services.set(key, service)
     return service
   }
@@ -27,18 +25,13 @@ const WebSocketContext = createContext<WebSocketManager | null>(null)
 interface IWebSocketProviderProps {
   children: React.ReactNode
   apiBaseUrl: string
-  token?: string
 }
 
 export function WebSocketProvider({
   children,
   apiBaseUrl,
-  token,
 }: IWebSocketProviderProps) {
-  const manager = useMemo(
-    () => new WebSocketManager(apiBaseUrl, token),
-    [apiBaseUrl, token],
-  )
+  const manager = useMemo(() => new WebSocketManager(apiBaseUrl), [apiBaseUrl])
 
   return (
     <WebSocketContext.Provider value={manager}>
