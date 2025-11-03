@@ -1,16 +1,17 @@
-import { useRouter } from '@tanstack/react-router'
-import Countdown from 'react-countdown'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { ActionButton } from '../ui/action-button'
-import { CountdownStartGame } from '../minigames/countdown-start-game'
-import { BattleGameControlsPanel } from './battle-game-controls-panel'
-import { BattleCard } from './battle-card'
-import { BattleAnimatedMiddleLine } from './ui/battle-animated-middle-line'
-import { BattleScene } from './battle-scene'
-import { BattleTitle } from './battle-preview-screen'
-import type { TOpponentUserData } from './battle-intro-scene'
-import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
+import { useBattle } from '@/hooks/api/use-battle'
+import { cn } from '@/utils'
+import { useRouter, useSearch } from '@tanstack/react-router'
+import { useContext, useEffect, useRef, useState } from 'react'
+import Countdown from 'react-countdown'
+import { CountdownStartGame } from '../minigames/countdown-start-game'
+import { ActionButton } from '../ui/action-button'
+import { BattleCard } from './battle-card'
+import { BattleGameControlsPanel } from './battle-game-controls-panel'
+import type { TOpponentUserData } from './battle-intro-scene'
+import { BattleTitle } from './battle-preview-screen'
+import { BattleScene } from './battle-scene'
+import { BattleAnimatedMiddleLine } from './ui/battle-animated-middle-line'
 
 const betConverter: any = {
   '86400': 'days',
@@ -29,6 +30,7 @@ export const BattleMainScene = ({
   onCountdownCompleted,
   onGameFinished,
   myLastOpponent,
+  isPrivateBattle,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
@@ -39,6 +41,7 @@ export const BattleMainScene = ({
   onCountdownCompleted?: () => void
   onGameFinished?: () => void
   myLastOpponent: TOpponentUserData | null
+  isPrivateBattle?: boolean
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
@@ -73,16 +76,42 @@ export const BattleMainScene = ({
     timeouts.current.push(id)
   }
 
+  // const waitingStartDate = useMemo(() => Date.now() + 60_000, [])
+
+  const { makeBet } = useBattle()
+
+  const search = useSearch({ from: '/minigames/battle' })
+  // useEffect(() => {
+
+  // }, [search.invitedBy, search.bet])
+
   useEffect(() => {
     if (forcedExitTimeoutRef.current) {
       clearTimeout(forcedExitTimeoutRef.current)
       forcedExitTimeoutRef.current = null
     }
 
+    console.log(myInfo, 'myInfo')
+    console.log(isPrivateBattle, 'isPrivateBattle')
+
+    // if (
+    //   myInfo?.invitedBy &&
+    //   isPrivateBattle &&
+    //   myInfo.invitedBy !== myInfo.userId
+    // ) {
+    //   forcedExitTimeoutRef.current = window.setTimeout(() => {
+    //     onForcedExitBattle?.()
+    //   }, 60000)
+    //   return
+    // }
+
     if (!opponentInfo) {
-      forcedExitTimeoutRef.current = window.setTimeout(() => {
-        onForcedExitBattle?.()
-      }, 30000)
+      // forcedExitTimeoutRef.current = window.setTimeout(
+      //   () => {
+      //     onForcedExitBattle?.()
+      //   },
+      //   isPrivateBattle ? 120000 : 30000,
+      // )
       return
     }
 
@@ -107,7 +136,7 @@ export const BattleMainScene = ({
       timeouts.current.forEach(clearTimeout)
       timeouts.current = []
     }
-  }, [opponentInfo, onForcedExitBattle])
+  }, [opponentInfo, onForcedExitBattle, isPrivateBattle])
 
   useEffect(() => {
     if (isBoostActive0 || isBoostActive1) {
@@ -148,6 +177,8 @@ export const BattleMainScene = ({
       clearTimeout(timeoutId)
     }
   }, [isForcedExit, onForcedExitBattle])
+
+  // if (!opponentInfo) return <FallbackLoader />
 
   return (
     <>
@@ -311,50 +342,100 @@ export const BattleMainScene = ({
           isOpeningAnimation && 'h-0',
         )}
       >
-        {isStartFindingOpponent && (<>
-          <ActionButton
-            disabled={
-              !isForcedExitBattleAnimationFinished || !isStartFindingOpponent
-            }
-            onClick={() => {
-              onForcedExitBattle?.()
-              if (forcedExitTimeoutRef.current) {
-                clearTimeout(forcedExitTimeoutRef.current)
-                forcedExitTimeoutRef.current = null
-              }
-            }}
-            className={cn(
-              'h-full bg-gradient-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
-            )}
-            onAnimationEnd={() => setIsForcedExitBattleAnimationFinished(true)}
-          >
-            <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
-              CLOSE
-            </span>
-          </ActionButton>
-
-          {/* This is only shown for invited user */}
-          <ActionButton
-            disabled={
-              !isForcedExitBattleAnimationFinished || !isStartFindingOpponent
-            }
-            onClick={() => {
-              // onForcedExitBattle?.()
-              // if (forcedExitTimeoutRef.current) {
-              //   clearTimeout(forcedExitTimeoutRef.current)
-              //   forcedExitTimeoutRef.current = null
-              // }
-            }}
-            className={cn(
-              'h-full bg-gradient-to-b from-[#8C35FB] to-[#6602E7] opacity-0 animate-fade-in',
-            )}
-            onAnimationEnd={() => setIsForcedExitBattleAnimationFinished(true)}
-          >
-            <span className="font-pixel text-white font-[400] uppercase text-[18px] leading-[24px]">
-              TO BATTLE
-            </span>
-          </ActionButton>
-        </>)}
+        {isStartFindingOpponent && (
+          <div className="w-full h-full relative">
+            {/* {isPrivateBattle && myInfo?.invitedBy !== myInfo?.userId && (
+              <Countdown
+                key={'to-private-battle-accept'}
+                date={waitingStartDate}
+                intervalDelay={1000}
+                precision={0}
+                onComplete={() => {
+                  // onGameFinished?.()
+                  // router.navigate({
+                  //   to: '/minigames/battle-result',
+                  //   search: {
+                  //     myNickname: myInfo?.nickname ?? 'Unknown',
+                  //     opponentNickname: myLastOpponent?.nickname ?? 'Unknown',
+                  //     isMeWinner: areaClaimedPercentage > 1,
+                  //     bet: battleGameRewardRadioValue,
+                  //     photoUrl: myInfo?.photoUrl ?? '',
+                  //     opponentPhotoUrl: myLastOpponent?.photoUrl ?? '',
+                  //   },
+                  // })
+                }}
+                renderer={({ seconds }) => (
+                  <span className="absolute top-[-25px] left-1/2 -translate-x-1/2 text-sm text-white/40 text-center">
+                    Waiting time:
+                    <span className="text-white/60"> {seconds} </span>
+                    seconds
+                  </span>
+                )}
+              />
+            )} */}
+            <div className="inline-flex gap-2 w-full h-full">
+              <ActionButton
+                disabled={
+                  !isForcedExitBattleAnimationFinished ||
+                  !isStartFindingOpponent
+                }
+                onClick={() => {
+                  onForcedExitBattle?.()
+                  if (forcedExitTimeoutRef.current) {
+                    clearTimeout(forcedExitTimeoutRef.current)
+                    forcedExitTimeoutRef.current = null
+                  }
+                }}
+                className={cn(
+                  'h-full bg-gradient-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
+                )}
+                onAnimationEnd={() =>
+                  setIsForcedExitBattleAnimationFinished(true)
+                }
+              >
+                <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
+                  CLOSE
+                </span>
+              </ActionButton>
+              {/* This is only shown for invited user */}
+              {isPrivateBattle && myInfo?.invitedBy !== myInfo?.userId && (
+                <ActionButton
+                  disabled={
+                    !isForcedExitBattleAnimationFinished ||
+                    !isStartFindingOpponent
+                  }
+                  onClick={() => {
+                    if (
+                      search.invitedBy !== undefined &&
+                      search.bet !== undefined
+                    ) {
+                      makeBet(
+                        Number(search.bet),
+                        true,
+                        Number(search.invitedBy),
+                      )
+                    }
+                    // onForcedExitBattle?.()
+                    // if (forcedExitTimeoutRef.current) {
+                    //   clearTimeout(forcedExitTimeoutRef.current)
+                    //   forcedExitTimeoutRef.current = null
+                    // }
+                  }}
+                  className={cn(
+                    'h-full bg-gradient-to-b from-[#8C35FB] to-[#6602E7] opacity-0 animate-fade-in',
+                  )}
+                  onAnimationEnd={() =>
+                    setIsForcedExitBattleAnimationFinished(true)
+                  }
+                >
+                  <span className="font-pixel text-white font-[400] uppercase text-[18px] leading-[24px]">
+                    TO BATTLE
+                  </span>
+                </ActionButton>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </>
   )

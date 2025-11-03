@@ -67,9 +67,9 @@ export const NeonRain = ({
   // Id of the currently scheduled animation frame so we can cancel it on cleanup
   const animationFrameId = useRef<number | null>(null)
 
-  const normalCount = 80 // default 120
+  const normalCount = 120 // default 120
   const chargedCountMax = 10
-  const chargedSpawnIntervalMs = 5000 // default 1000
+  const chargedSpawnIntervalMs = 1000 // default 1000
   const gradientBucketSize = 10
   const rampDurationMs = 4500
   const minInitialNormalDrops = Math.min(normalCount, 8)

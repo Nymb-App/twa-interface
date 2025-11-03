@@ -1,12 +1,17 @@
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
 import { BattleMainScene } from '@/components/battle-page/battle-main-scene'
 import { PageLayout } from '@/components/ui/page-layout'
+import { useAccount } from '@/hooks/api/use-account'
 import { useBattle } from '@/hooks/api/use-battle'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, useRouter, useSearch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
+  validateSearch: (search) => ({
+    bet: search.bet,
+    invitedBy: search.invitedBy,
+  }),
 })
 
 function RouteComponent() {
@@ -38,7 +43,10 @@ function RouteComponent() {
     leaveGame,
     isFinishedGame,
     myLastOpponent,
+    postPrivateRoomDataQuery,
   } = useBattle()
+
+  const { user } = useAccount()
 
   const resetGame = () => {
     setIsStartFindingOpponent(false)
@@ -48,9 +56,30 @@ function RouteComponent() {
     if (roomId) leaveGame(roomId)
   }
 
-  const handleJoinGame = (bet: number) => {
-    makeBet(bet)
+  const handleJoinGame = (
+    bet: number,
+    isPrivate?: boolean,
+    invitedBy?: number,
+  ) => {
+    makeBet(bet, isPrivate, invitedBy)
   }
+
+  const search = useSearch({ from: '/minigames/battle' })
+  useEffect(() => {
+    if (search.invitedBy !== undefined && search.bet !== undefined) {
+      // handleJoinGame(Number(search.bet), true, Number(search.invitedBy))
+      postPrivateRoomDataQuery.mutate({
+        bet: Number(search.bet),
+        invitedBy: Number(search.invitedBy),
+      })
+      setIsStartFindingOpponent(true)
+      setIsStartFindingOpponentAnimationEnd(true)
+      setIsReset(false)
+    }
+  }, [search.invitedBy, search.bet, user?.id])
+
+  console.log(opponentInfo, 'opponentInfo222')
+  console.log(myInfo, 'myInfo333')
 
   useEffect(() => {
     const originalColor = document.body.style.backgroundColor
@@ -114,6 +143,9 @@ function RouteComponent() {
     }
   }, [areaClaimedPercent, myInfo, opponentInfo, router])
 
+  console.log(opponentInfo, 'opponentInfo')
+  console.log(myInfo, 'myInfo')
+
   return (
     <PageLayout
       useFooter={false}
@@ -138,6 +170,7 @@ function RouteComponent() {
       {isStartFindingOpponent && (
         <BattleMainScene
           key={roomId}
+          isPrivateBattle={myInfo.invitedBy !== undefined}
           opponentInfo={opponentInfo}
           myLastOpponent={myLastOpponent}
           myInfo={myInfo}

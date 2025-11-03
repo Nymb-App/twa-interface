@@ -1,9 +1,10 @@
-import { Suspense, lazy, useEffect } from 'react'
-import { TelegramProvider } from './telegram'
+import { FallbackLoader } from '@/components/ui/fallback-loader'
 import { AppProvider } from '@/context/app-context'
 import { FarmingProvider } from '@/context/farming-context'
 import { GateProvider } from '@/context/gate-context'
-import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { Suspense, lazy, useEffect } from 'react'
+import { BattleMinigamesRouting } from './battle-minigames-routing'
+import { TelegramProvider } from './telegram'
 
 const HeavyProvider = lazy(() =>
   import('./heavy-provider').then((m) => ({ default: m.HeavyProvider })),
@@ -21,9 +22,11 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       <HeavyProvider>
         <AppProvider>
           <TelegramProvider>
-            <GateProvider>
-              <FarmingProvider>{children}</FarmingProvider>
-            </GateProvider>
+            <BattleMinigamesRouting>
+              <GateProvider>
+                <FarmingProvider>{children}</FarmingProvider>
+              </GateProvider>
+            </BattleMinigamesRouting>
           </TelegramProvider>
         </AppProvider>
       </HeavyProvider>

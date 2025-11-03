@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'pride-movies-rachel-having.trycloudflare.com',
+      'marker-markers-clip-referral.trycloudflare.com',
     ],
   },
 

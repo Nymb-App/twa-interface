@@ -17,6 +17,7 @@ export interface IJoinGameData {
   nickname: string
   photoUrl: string
   bet: number
+  invitedBy?: number
   clicks: number
 }
 
@@ -121,7 +122,7 @@ export const BattleIntroScene = ({
               'font-pixel text-white rounded-[16px] uppercase bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:cursor-not-allowed disabled:from-[#8C35FB]/50 disabled:to-[#6602E7]/50',
               !isAnimationsFindButtonEnd && 'pointer-events-none',
             )}
-            inviteParam={`inviteBy=${meUserData?.id}_type=game-battle_bet=${bet}`}
+            inviteParam={`invitedBy=${meUserData?.id}_type=game-battle_bet=${bet}`}
           >
             <PiShareFatBold className="size-6" /> FRIEND
           </ShareBattleInviteButton>

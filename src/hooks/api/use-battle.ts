@@ -1,8 +1,10 @@
+import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene'
+import { useMutation } from '@tanstack/react-query'
+import { useMatches, useRouter } from '@tanstack/react-router'
 import { useCallback, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
-import { useMatches, useRouter } from '@tanstack/react-router'
 import { useAccount } from './use-account'
-import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene'
+import { useApi } from './use-api'
 
 const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
 const socket = io(`${baseUrl}/battle`, {
@@ -22,6 +24,7 @@ export function useBattle() {
   const [opponentInfo, setOpponentInfo] = useState<TOpponentUserData | null>(
     null,
   )
+  const { post } = useApi()
 
   const [myLastOpponent, setMyLastOpponent] =
     useState<TOpponentUserData | null>(null)
@@ -32,6 +35,7 @@ export function useBattle() {
     nickname: String(account?.username),
     bet: 0,
     clicks: 0,
+    invitedBy: Number(account?.id),
   })
 
   const [isMeViewMyOpponent, setIsMeViewMyOpponent] = useState(false)
@@ -53,6 +57,23 @@ export function useBattle() {
     })
 
     socket.on('waiting_for_players', (data) => {
+      setRoomId(data.roomId)
+    })
+
+    socket.on('get_private_room_data', (data) => {
+      const opponent = data.roomInfo.filter(
+        (user: TOpponentUserData) => user.userId !== account?.id,
+      )[0]
+      const me = data.roomInfo.filter(
+        (user: TOpponentUserData) => user.userId === account?.id,
+      )[0]
+      if (opponent !== undefined || opponent !== null) {
+        setOpponentInfo(opponent)
+        setMyLastOpponent(opponent)
+      }
+      if (me !== undefined || me !== null) {
+        setMyInfo(me)
+      }
       setRoomId(data.roomId)
     })
 
@@ -146,6 +167,7 @@ export function useBattle() {
     return () => {
       socket.off('connect')
       socket.off('waiting_for_players')
+      socket.off('get_private_room_data')
       socket.off('game_started')
       socket.off('me_view_my_opponent')
       socket.off('click_update')
@@ -168,17 +190,59 @@ export function useBattle() {
   }, [isMeViewMyOpponent0, isMeViewMyOpponent1])
 
   const makeBet = useCallback(
-    (bet: number, isPrivate?: boolean) => {
+    (bet: number, isPrivate?: boolean, invitedBy?: number) => {
+      if(isPrivate) {
+        socket.emit('join_or_create_private_room', {
+        bet,
+        userId: Number(account?.id),
+        photoUrl: account?.photo_url,
+        nickname: account?.username,
+        invitedBy: Number(invitedBy),
+      })
+      return 
+      }
       socket.emit('join_or_create_room', {
         bet,
         userId: Number(account?.id),
         photoUrl: account?.photo_url,
         nickname: account?.username,
-        isPrivate: isPrivate, 
       })
     },
     [account],
   )
+
+
+
+    // socket.emit('get_private_room_data', {
+    //   bet,
+    //   invitedBy,
+    //   userId: Number(account?.id),
+    //   photoUrl: String(account?.photo_url),
+    //   nickname: String(account?.username),
+    //   clicks: 0,    
+    // })
+
+// minigame/battle/get_private_room_data
+// post('minigame/battle/get_private_room_data', {
+//   bet,
+//   invitedBy,
+//   userId: Number(account?.id),
+//   photoUrl: String(account?.photo_url),
+//   nickname: String(account?.username),
+//   clicks: 0,
+// })
+
+const postPrivateRoomDataQuery = useMutation({
+  // mutationFn: async () => await post('/accounts/claim_referral_reward'),
+  mutationFn: async (params: {bet: number, invitedBy: number}) => await post('/minigame/battle/get_private_room_data', {
+    bet: params.bet,
+    invitedBy: params.invitedBy,
+    userId: Number(account?.id),
+    photoUrl: String(account?.photo_url),
+    nickname: String(account?.username),
+    clicks: 0,
+  })
+})
 
   const leaveGame = useCallback((roomId_: string) => {
     socket.emit('leave_room', {
@@ -257,6 +321,7 @@ export function useBattle() {
     isMeReady,
     isMeViewMyOpponent,
     myLastOpponent,
+    postPrivateRoomDataQuery,
     isMeViewMyOpponentEmit,
     isFinishedGame,
     forceDisconnect,

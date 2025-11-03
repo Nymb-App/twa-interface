@@ -28,7 +28,7 @@ export const BattleScene = memo(
     }, [areaClaimedUnits])
 
     return (
-      <div className="absolute inset-0 z-1000">
+      <div className="absolute inset-0">
         {/* Верхняя секция с неоновым дождем */}
         <div
           className="absolute top-0 w-full transition-all duration-50"
