@@ -1,15 +1,10 @@
 import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene'
-import { useMutation } from '@tanstack/react-query'
+import { useWebSocket } from '@/provider/web-socket-provider'
 import { useMatches, useRouter } from '@tanstack/react-router'
 import { useCallback, useEffect, useState } from 'react'
-import { io } from 'socket.io-client'
 import { useAccount } from './use-account'
-import { useApi } from './use-api'
 
-const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
-const socket = io(`${baseUrl}/battle`, {
-  autoConnect: false, // Рекомендуется для лучшего контроля
-})
+ 
 
 interface IGameFinishedData {
   roomId: string
@@ -17,14 +12,14 @@ interface IGameFinishedData {
   loser: TOpponentUserData
 }
 
-// WebSocket hook with TanStack Query integration
+
 export function useBattle() {
   const { user: account } = useAccount()
   const [roomId, setRoomId] = useState<string | null>(null)
   const [opponentInfo, setOpponentInfo] = useState<TOpponentUserData | null>(
     null,
   )
-  const { post } = useApi()
+  const ws = useWebSocket('/battle')
 
   const [myLastOpponent, setMyLastOpponent] =
     useState<TOpponentUserData | null>(null)
@@ -46,84 +41,89 @@ export function useBattle() {
 
   const router = useRouter()
   const pathnames = useMatches()
+  const [isSocketConnected, setIsSocketConnected] = useState(false)
 
   useEffect(() => {
-    if (!socket.connected) {
-      socket.connect()
-    }
+    ws.connect()
 
-    socket.on('connect', () => {
-      console.log(`Connected with id: ${socket.id}`)
+    ws.on('connect', () => {
+      setIsSocketConnected(true)
     })
 
-    socket.on('waiting_for_players', (data) => {
-      setRoomId(data.roomId)
+    ws.on('waiting_for_players', (data: unknown) => {
+      const d = data as { roomId: string }
+      setRoomId(d.roomId)
     })
 
-    socket.on('get_private_room_data', (data) => {
-      const opponent = data.roomInfo.filter(
+    ws.on('get_private_room_data', (data: unknown) => {
+      const d = data as { roomId: string; roomInfo: Array<TOpponentUserData> }
+      const opponent = d.roomInfo.find(
         (user: TOpponentUserData) => user.userId !== account?.id,
-      )[0]
-      const me = data.roomInfo.filter(
+      )
+      const me = d.roomInfo.find(
         (user: TOpponentUserData) => user.userId === account?.id,
-      )[0]
-      if (opponent !== undefined || opponent !== null) {
+      )
+      if (opponent) {
         setOpponentInfo(opponent)
         setMyLastOpponent(opponent)
       }
-      if (me !== undefined || me !== null) {
+      if (me) {
         setMyInfo(me)
       }
-      setRoomId(data.roomId)
+      setRoomId(d.roomId)
     })
 
-    socket.on('game_started', (data) => {
-      const opponent = data.users.filter(
+    ws.on('game_started', (data: unknown) => {
+      const d = data as { roomId: string; users: Array<TOpponentUserData> }
+      const opponent = d.users.find(
         (user: TOpponentUserData) => user.userId !== account?.id,
-      )[0]
-      const me = data.users.filter(
+      )
+      const me = d.users.find(
         (user: TOpponentUserData) => user.userId === account?.id,
-      )[0]
-      if (opponent !== undefined || opponent !== null) {
+      )
+      if (opponent) {
         setOpponentInfo((prevInfo) => (prevInfo ? prevInfo : opponent))
         setMyLastOpponent(opponent)
       }
-      if (me !== undefined || me !== null) {
+      if (me) {
         setMyInfo(me)
       }
-      setRoomId(data.roomId)
+      setRoomId(d.roomId)
     })
 
-    socket.on('me_view_my_opponent', (data) => {
-      if (data.userId === account?.id) {
+    ws.on('me_view_my_opponent', (data: unknown) => {
+      const d = data as { userId: number }
+      if (d.userId === account?.id) {
         setIsMeViewMyOpponent0(true)
       } else {
         setIsMeViewMyOpponent1(true)
       }
     })
 
-    socket.on('click_update', (data) => {
-      const opponent = data.users.filter(
+    ws.on('click_update', (data: unknown) => {
+      const d = data as { users: Array<TOpponentUserData> }
+      const opponent = d.users.find(
         (user: TOpponentUserData) => user.userId !== account?.id,
-      )[0]
+      )
 
-      const me = data.users.filter(
+      const me = d.users.find(
         (user: TOpponentUserData) => user.userId === account?.id,
-      )[0]
-      if (opponent !== undefined || opponent !== null) {
+      )
+      if (opponent) {
         setOpponentInfo(opponent)
       }
-      if (me !== undefined || me !== null) {
+      if (me) {
         setMyInfo(me)
       }
     })
 
-    socket.on('game_finished', (data: IGameFinishedData) => {
-      const isWinner = data.winner.userId === account?.id
+    ws.on('game_finished', (data: unknown) => {
+      const d = data as IGameFinishedData
+      const isWinner = d.winner.userId === account?.id
 
-      const me = isWinner ? data.winner : data.loser
+      const me = isWinner ? d.winner : d.loser
 
-      const opponent = isWinner ? data.loser : data.winner
+      const opponent = isWinner ? d.loser : d.winner
 
       const betConverter: any = {
         '86400': '1 day',
@@ -149,31 +149,31 @@ export function useBattle() {
           myNickname: me.nickname,
           opponentNickname: opponent.nickname,
           isMeWinner: isWinner,
-          bet: betConverter[String(data.winner.bet)],
+          bet: betConverter[String(d.winner.bet)],
           photoUrl: me.photoUrl,
           opponentPhotoUrl: opponent.photoUrl,
         },
       })
     })
 
-    socket.on('error', () => {
+    ws.on('error', () => {
       console.log('socket error')
     })
 
-    socket.on('disconnect', () => {
-      console.log('disconnect')
+    ws.on('disconnect', () => {
+      setIsSocketConnected(false)
     })
 
     return () => {
-      socket.off('connect')
-      socket.off('waiting_for_players')
-      socket.off('get_private_room_data')
-      socket.off('game_started')
-      socket.off('me_view_my_opponent')
-      socket.off('click_update')
-      socket.off('game_finished')
-      socket.off('error')
-      socket.off('disconnect')
+      ws.off('connect')
+      ws.off('waiting_for_players')
+      ws.off('get_private_room_data')
+      ws.off('game_started')
+      ws.off('me_view_my_opponent')
+      ws.off('click_update')
+      ws.off('game_finished')
+      ws.off('error')
+      ws.off('disconnect')
     }
   }, [])
 
@@ -192,16 +192,15 @@ export function useBattle() {
   const makeBet = useCallback(
     (bet: number, isPrivate?: boolean, invitedBy?: number) => {
       if(isPrivate) {
-        socket.emit('join_or_create_private_room', {
+        ws.emit('join_or_create_private_room', {
         bet,
         userId: Number(account?.id),
         photoUrl: account?.photo_url,
         nickname: account?.username,
         invitedBy: Number(invitedBy),
       })
-      return 
       }
-      socket.emit('join_or_create_room', {
+      ws.emit('join_or_create_room', {
         bet,
         userId: Number(account?.id),
         photoUrl: account?.photo_url,
@@ -232,20 +231,8 @@ export function useBattle() {
 //   clicks: 0,
 // })
 
-const postPrivateRoomDataQuery = useMutation({
-  // mutationFn: async () => await post('/accounts/claim_referral_reward'),
-  mutationFn: async (params: {bet: number, invitedBy: number}) => await post('/minigame/battle/get_private_room_data', {
-    bet: params.bet,
-    invitedBy: params.invitedBy,
-    userId: Number(account?.id),
-    photoUrl: String(account?.photo_url),
-    nickname: String(account?.username),
-    clicks: 0,
-  })
-})
-
   const leaveGame = useCallback((roomId_: string) => {
-    socket.emit('leave_room', {
+    ws.emit('leave_room', {
       roomId: roomId_,
     })
     setMyInfo({
@@ -261,7 +248,7 @@ const postPrivateRoomDataQuery = useMutation({
 
   const click = useCallback(
     (roomId_: string) => {
-      socket.emit('click', {
+      ws.emit('click', {
         roomId: roomId_,
         userId: account?.id,
       })
@@ -271,7 +258,7 @@ const postPrivateRoomDataQuery = useMutation({
 
   const clickX2 = useCallback(
     (roomId_: string) => {
-      socket.emit('click_x2', {
+      ws.emit('click_x2', {
         roomId: roomId_,
         userId: account?.id,
       })
@@ -281,7 +268,7 @@ const postPrivateRoomDataQuery = useMutation({
 
   const isMeViewMyOpponentEmit = useCallback(
     (roomId_: string) => {
-      socket.emit('is_me_view_my_opponent', {
+      ws.emit('is_me_view_my_opponent', {
         roomId: roomId_,
         userId: account?.id,
       })
@@ -291,7 +278,7 @@ const postPrivateRoomDataQuery = useMutation({
 
   const isMeReady = useCallback(
     (roomId_: string) => {
-      socket.emit('is_me_ready', {
+      ws.emit('is_me_ready', {
         roomId: roomId_,
         userId: account?.id,
       })
@@ -300,12 +287,12 @@ const postPrivateRoomDataQuery = useMutation({
   )
 
   const forceDisconnect = useCallback(() => {
-    socket.emit('force_disconnect')
-    socket.disconnect()
+    ws.emit('force_disconnect', {})
+    ws.disconnect()
   }, [])
 
   const isFinishedGame = useCallback((roomId_: string) => {
-    socket.emit('finish_game', {
+    ws.emit('finish_game', {
       roomId: roomId_,
     })
   }, [])
@@ -321,10 +308,9 @@ const postPrivateRoomDataQuery = useMutation({
     isMeReady,
     isMeViewMyOpponent,
     myLastOpponent,
-    postPrivateRoomDataQuery,
     isMeViewMyOpponentEmit,
     isFinishedGame,
     forceDisconnect,
-    isSocketConnected: socket.connected,
+    isSocketConnected,
   }
 }

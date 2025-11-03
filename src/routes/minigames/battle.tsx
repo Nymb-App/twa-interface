@@ -43,7 +43,6 @@ function RouteComponent() {
     leaveGame,
     isFinishedGame,
     myLastOpponent,
-    postPrivateRoomDataQuery,
   } = useBattle()
 
   const { user } = useAccount()
@@ -68,10 +67,6 @@ function RouteComponent() {
   useEffect(() => {
     if (search.invitedBy !== undefined && search.bet !== undefined) {
       // handleJoinGame(Number(search.bet), true, Number(search.invitedBy))
-      postPrivateRoomDataQuery.mutate({
-        bet: Number(search.bet),
-        invitedBy: Number(search.invitedBy),
-      })
       setIsStartFindingOpponent(true)
       setIsStartFindingOpponentAnimationEnd(true)
       setIsReset(false)

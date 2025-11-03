@@ -5,6 +5,7 @@ import { GateProvider } from '@/context/gate-context'
 import { Suspense, lazy, useEffect } from 'react'
 import { BattleMinigamesRouting } from './battle-minigames-routing'
 import { TelegramProvider } from './telegram'
+import { WebSocketProvider } from './web-socket-provider'
 
 const HeavyProvider = lazy(() =>
   import('./heavy-provider').then((m) => ({ default: m.HeavyProvider })),
@@ -17,18 +18,23 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [])
 
+  const baseUrl = (import.meta.env.VITE_PUBLIC_API_URL ||
+    'http://localhost:100') as string
+
   return (
     <Suspense fallback={<FallbackLoader />}>
       <HeavyProvider>
-        <AppProvider>
-          <TelegramProvider>
-            <BattleMinigamesRouting>
-              <GateProvider>
-                <FarmingProvider>{children}</FarmingProvider>
-              </GateProvider>
-            </BattleMinigamesRouting>
-          </TelegramProvider>
-        </AppProvider>
+        <WebSocketProvider apiBaseUrl={baseUrl}>
+          <AppProvider>
+            <TelegramProvider>
+              <BattleMinigamesRouting>
+                <GateProvider>
+                  <FarmingProvider>{children}</FarmingProvider>
+                </GateProvider>
+              </BattleMinigamesRouting>
+            </TelegramProvider>
+          </AppProvider>
+        </WebSocketProvider>
       </HeavyProvider>
     </Suspense>
   )
