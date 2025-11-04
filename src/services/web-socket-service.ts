@@ -33,7 +33,7 @@ export class WebSocketService {
     this.socket.disconnect()
   }
 
-  emit(event: string, payload: unknown) {
+  emit(event: string, payload?: unknown) {
     if (!this.socket.connected) {
       this.queue.push({ event, payload })
       this.connect()

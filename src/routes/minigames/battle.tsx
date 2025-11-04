@@ -37,9 +37,9 @@ function RouteComponent() {
     opponentInfo,
     myInfo,
     roomId,
+    roomData,
     click,
     isMeReady,
-    clickX2,
     leaveGame,
     isFinishedGame,
     myLastOpponent,
@@ -52,29 +52,44 @@ function RouteComponent() {
     setIsStartFindingOpponentAnimationEnd(false)
     setIsWinningResult(false)
     setIsReset(true)
-    if (roomId) leaveGame(roomId)
+    if (roomId) leaveGame()
   }
 
-  const handleJoinGame = (
-    bet: number,
-    isPrivate?: boolean,
-    invitedBy?: number,
-  ) => {
-    makeBet(bet, isPrivate, invitedBy)
-  }
+  // const handleJoinGame = (
+  //   bet: number,
+  //   isPrivate?: boolean,
+  //   invitedBy?: number,
+  // ) => {
+  //   makeBet({
+  //     user: {
+  //       id: Number(user?.id),
+  //       photoUrl: String(user?.photo_url),
+  //       nickname: String(user?.username),
+  //     },
+  //     bet,
+  //     isPrivate,
+  //     invitedBy,
+  //   })
+  // }
 
   const search = useSearch({ from: '/minigames/battle' })
   useEffect(() => {
     if (search.invitedBy !== undefined && search.bet !== undefined) {
-      // handleJoinGame(Number(search.bet), true, Number(search.invitedBy))
+      makeBet({
+        user: {
+          id: Number(user?.id),
+          photoUrl: String(user?.photo_url),
+          nickname: String(user?.username),
+        },
+        bet: Number(search.bet),
+        isPrivate: true,
+        invitedBy: Number(search.invitedBy),
+      })
       setIsStartFindingOpponent(true)
       setIsStartFindingOpponentAnimationEnd(true)
       setIsReset(false)
     }
   }, [search.invitedBy, search.bet, user?.id])
-
-  console.log(opponentInfo, 'opponentInfo222')
-  console.log(myInfo, 'myInfo333')
 
   useEffect(() => {
     const originalColor = document.body.style.backgroundColor
@@ -116,9 +131,9 @@ function RouteComponent() {
   useEffect(() => {
     if (areaClaimedPercent >= 80 || areaClaimedPercent <= -80) {
       const isWinner = areaClaimedPercent >= 80
-      if (roomId) isFinishedGame(roomId)
+      if (roomId) isFinishedGame()
       setIsWinningResult(true)
-      const betConverter: any = {
+      const betConverter: Record<string, string> = {
         '86400': '1 day',
         '604800': '1 week',
         '2592000': '1 month',
@@ -127,19 +142,16 @@ function RouteComponent() {
       router.navigate({
         to: '/minigames/battle-result',
         search: {
-          myNickname: myInfo.nickname,
+          myNickname: myInfo.nickname as string,
           opponentNickname: opponentInfo?.nickname ?? 'Unknown',
           isMeWinner: isWinner,
-          bet: betConverter[myInfo.bet],
-          photoUrl: myInfo.photoUrl,
+          bet: betConverter[search.bet as string],
+          photoUrl: myInfo.photoUrl as string,
           opponentPhotoUrl: opponentInfo?.photoUrl ?? 'Unknown',
         },
       })
     }
   }, [areaClaimedPercent, myInfo, opponentInfo, router])
-
-  console.log(opponentInfo, 'opponentInfo')
-  console.log(myInfo, 'myInfo')
 
   return (
     <PageLayout
@@ -155,7 +167,17 @@ function RouteComponent() {
             setIsStartFindingOpponentAnimationEnd(true)
             setIsReset(false)
           }}
-          onJoinGame={handleJoinGame}
+          onJoinGame={(bet: number, isPrivate?: boolean) => {
+            makeBet({
+              user: {
+                id: Number(user?.id),
+                photoUrl: String(user?.photo_url),
+                nickname: String(user?.username),
+              },
+              isPrivate,
+              bet,
+            })
+          }}
           onAnimationEnd={(params) => {
             if (params.animationName === 'battle-intro-section-slide-fade')
               setIsAnimationsEnd(true)
@@ -169,6 +191,7 @@ function RouteComponent() {
           opponentInfo={opponentInfo}
           myLastOpponent={myLastOpponent}
           myInfo={myInfo}
+          roomData={roomData}
           areaClaimedPercent={areaClaimedPercent}
           onForcedExitBattle={resetGame}
           onAreaClaimedPercentageChange={(percent) =>
@@ -177,7 +200,7 @@ function RouteComponent() {
           onCountdownCompleted={() => {
             if (roomId) {
               const timer = setTimeout(() => {
-                isMeReady(roomId)
+                isMeReady()
               }, 1000)
               return () => clearTimeout(timer)
             }
@@ -190,9 +213,9 @@ function RouteComponent() {
           onBattleClick={(isX2Active: boolean) => {
             if (roomId) {
               if (isX2Active) {
-                clickX2(roomId)
+                click(true)
               } else {
-                click(roomId)
+                click(false)
               }
             }
           }}

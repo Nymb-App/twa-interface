@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'marker-markers-clip-referral.trycloudflare.com',
+      'climate-segment-solo-dee.trycloudflare.com',
     ],
   },
 

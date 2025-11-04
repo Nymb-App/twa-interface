@@ -1,4 +1,5 @@
 import { AppContext } from '@/context/app-context'
+import type { IRoom } from '@/hooks/api/use-battle'
 import { useBattle } from '@/hooks/api/use-battle'
 import { cn } from '@/utils'
 import { useRouter, useSearch } from '@tanstack/react-router'
@@ -13,7 +14,7 @@ import { BattleTitle } from './battle-preview-screen'
 import { BattleScene } from './battle-scene'
 import { BattleAnimatedMiddleLine } from './ui/battle-animated-middle-line'
 
-const betConverter: any = {
+const betConverter: Record<string, string> = {
   '86400': 'days',
   '604800': 'weeks',
   '2592000': 'months',
@@ -26,6 +27,7 @@ export const BattleMainScene = ({
   onForcedExitBattle,
   opponentInfo,
   myInfo,
+  roomData,
   onBattleClick,
   onCountdownCompleted,
   onGameFinished,
@@ -37,6 +39,7 @@ export const BattleMainScene = ({
   onForcedExitBattle?: () => void
   opponentInfo: TOpponentUserData | null
   myInfo: TOpponentUserData | null
+  roomData: IRoom | null
   onBattleClick?: (isX2Active: boolean) => void
   onCountdownCompleted?: () => void
   onGameFinished?: () => void
@@ -91,8 +94,7 @@ export const BattleMainScene = ({
       forcedExitTimeoutRef.current = null
     }
 
-    console.log(myInfo, 'myInfo')
-    console.log(isPrivateBattle, 'isPrivateBattle')
+    console.log(roomData, 'roomData')
 
     // if (
     //   myInfo?.invitedBy &&
@@ -201,7 +203,7 @@ export const BattleMainScene = ({
               <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px] uppercase">
                 <span className="mr-1 text-lg">1</span>
                 <span className="text-xs">
-                  {myInfo?.bet && betConverter[myInfo.bet]}
+                  {roomData && betConverter[roomData.bet]}
                 </span>
               </dd>
             </div>
@@ -409,11 +411,16 @@ export const BattleMainScene = ({
                       search.invitedBy !== undefined &&
                       search.bet !== undefined
                     ) {
-                      makeBet(
-                        Number(search.bet),
-                        true,
-                        Number(search.invitedBy),
-                      )
+                      makeBet({
+                        user: {
+                          id: Number(myInfo?.userId),
+                          photoUrl: String(myInfo?.photoUrl),
+                          nickname: String(myInfo?.nickname),
+                        },
+                        bet: Number(search.bet),
+                        isPrivate: true,
+                        invitedBy: Number(search.invitedBy),
+                      })
                     }
                     // onForcedExitBattle?.()
                     // if (forcedExitTimeoutRef.current) {

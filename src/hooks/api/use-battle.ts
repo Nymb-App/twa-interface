@@ -1,36 +1,55 @@
-import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene'
 import { useWebSocket } from '@/provider/web-socket-provider'
 import { useMatches, useRouter } from '@tanstack/react-router'
 import { useCallback, useEffect, useState } from 'react'
+import { useEffectEvent } from 'use-effect-event'
 import { useAccount } from './use-account'
 
  
 
+export interface IUser {
+    id: number,
+    clicks?: number,
+    photoUrl?: string,
+    nickname?: string,
+
+}
+export interface IRoom {
+    id: string,
+    bet: number,
+    isPrivate: boolean,
+    maxUsersCount: number,
+    createdAt: number,
+    createdBy: number,
+    users: Array<IUser>,
+    deadline?: number,
+}
+
 interface IGameFinishedData {
   roomId: string
-  winner: TOpponentUserData
-  loser: TOpponentUserData
+  winner: IUser
+  loser: IUser
 }
 
 
 export function useBattle() {
   const { user: account } = useAccount()
   const [roomId, setRoomId] = useState<string | null>(null)
-  const [opponentInfo, setOpponentInfo] = useState<TOpponentUserData | null>(
+  const [opponentInfo, setOpponentInfo] = useState<IUser | null>(
     null,
   )
+  const [roomData, setRoomData] = useState<IRoom | null>(null)
   const ws = useWebSocket('/battle')
 
   const [myLastOpponent, setMyLastOpponent] =
-    useState<TOpponentUserData | null>(null)
+    useState<IUser | null>(null)
 
-  const [myInfo, setMyInfo] = useState<TOpponentUserData>({
-    userId: Number(account?.id),
+  const [myInfo, setMyInfo] = useState<IUser>({
+    id: Number(account?.id),
     photoUrl: String(account?.photo_url),
     nickname: String(account?.username),
-    bet: 0,
+    // bet: 0,
     clicks: 0,
-    invitedBy: Number(account?.id),
+    // invitedBy: Number(account?.id),
   })
 
   const [isMeViewMyOpponent, setIsMeViewMyOpponent] = useState(false)
@@ -43,139 +62,168 @@ export function useBattle() {
   const pathnames = useMatches()
   const [isSocketConnected, setIsSocketConnected] = useState(false)
 
+  const onConnect = useEffectEvent(() => {
+    setIsSocketConnected(true)
+  })
+
+  const onWaitingForPlayers = useEffectEvent((data: IRoom) => {
+    setRoomId(data.id)
+    setRoomData(data)
+  })
+
+  // const onPrivateRoomData = useEffectEvent((data: unknown) => {
+  //   const d = data as { roomId: string; roomInfo: Array<TOpponentUserData> }
+  //   const opponent = d.roomInfo.find(
+  //     (user: TOpponentUserData) => user.userId !== account?.id,
+  //   )
+  //   const me = d.roomInfo.find(
+  //     (user: TOpponentUserData) => user.userId === account?.id,
+  //   )
+  //   if (opponent) {
+  //     setOpponentInfo(opponent)
+  //     setMyLastOpponent(opponent)
+  //   }
+  //   if (me) {
+  //     setMyInfo(me)
+  //   }
+  //   setRoomId(d.roomId)
+  // })
+
+  const onGameStarted = useEffectEvent((data: unknown) => {
+    if(!account) return
+    // console.log(account,'account')
+    const d = data as IRoom
+    // console.log(d, 'room data on game started')
+    const opponent = d.users.find(
+      (user: IUser) => user.id !== account.id,
+    )
+    // console.log(opponent, 'opponent')
+    const me = d.users.find(
+      (user: IUser) => user.id === account.id,
+    )
+    // console.log(me, 'me')
+    if (opponent) {
+      setOpponentInfo((prevInfo) => (prevInfo ? prevInfo : opponent))
+      setMyLastOpponent(opponent)
+    }
+    if (me) {
+      setMyInfo(me)
+    }
+    setRoomId(d.id)
+    setRoomData(d)
+  })
+
+  const onMeViewMyOpponent = useEffectEvent((data: unknown) => {
+    const d = data as { userId: number }
+    if (d.userId === account?.id) {
+      setIsMeViewMyOpponent0(true)
+    } else {
+      setIsMeViewMyOpponent1(true)
+    }
+  })
+
+  const onClickUpdate = useEffectEvent((data: unknown) => {
+    const d = data as { users: Array<IUser> }
+    const opponent = d.users.find(
+      (user: IUser) => user.id !== account?.id,
+    )
+    const me = d.users.find(
+      (user: IUser) => user.id === account?.id,
+    )
+    if (opponent) {
+      setOpponentInfo(opponent)
+    }
+    if (me) {
+      setMyInfo(me)
+    }
+  })
+
+  const onGameFinished = useEffectEvent((data: unknown) => {
+    const d = data as IGameFinishedData
+    const isWinner = d.winner.id === account?.id
+    const me = isWinner ? d.winner : d.loser
+    const opponent = isWinner ? d.loser : d.winner
+    const betConverter = {
+      '86400': '1 day',
+      '604800': '1 week',
+      '2592000': '1 month',
+      '31536000': '1 year',
+    }
+
+    setMyInfo({
+      id: Number(account?.id),
+      photoUrl: String(account?.photo_url),
+      nickname: String(account?.username),
+      // bet: 0,
+      clicks: 0,
+    })
+    setMyLastOpponent(opponent)
+    setOpponentInfo(null)
+    setRoomId(null)
+
+    router.navigate({
+      to: '/minigames/battle-result',
+      search: {
+        myNickname: me.nickname as string,
+        opponentNickname: opponent.nickname as string,
+        isMeWinner: isWinner,
+        // bet: betConverter[String(d.winner.bet)],
+        bet: betConverter['86400'],
+        photoUrl: me.photoUrl as string,
+        opponentPhotoUrl: opponent.photoUrl as string,
+      },
+    })
+  })
+
+  const onError = useEffectEvent((err?: unknown) => {
+    console.log('socket error', err)
+  })
+
+  const onDisconnect = useEffectEvent(() => {
+    setIsSocketConnected(false)
+  })
+
+  const onReady = useEffectEvent((data: unknown) => {
+    const d = data as { userId: number }
+    // if (d.userId === account?.id) {
+    //   setIsReady(true)
+    // }
+  })
+
   useEffect(() => {
     ws.connect()
 
-    ws.on('connect', () => {
-      setIsSocketConnected(true)
-    })
+    const hConnect = () => onConnect()
+    const hWaiting = (p: unknown) => onWaitingForPlayers(p as IRoom)
+    const hGameStarted = (p: unknown) => onGameStarted(p as IRoom)
+    const hMeView = (p: unknown) => onMeViewMyOpponent(p)
+    const hClickUpdate = (p: unknown) => onClickUpdate(p)
+    const hGameFinished = (p: unknown) => onGameFinished(p)
+    const hReady = (p: unknown) => onReady(p)
+    const hError = (e?: unknown) => onError(e)
+    const hDisconnect = () => onDisconnect()
 
-    ws.on('waiting_for_players', (data: unknown) => {
-      const d = data as { roomId: string }
-      setRoomId(d.roomId)
-    })
-
-    ws.on('get_private_room_data', (data: unknown) => {
-      const d = data as { roomId: string; roomInfo: Array<TOpponentUserData> }
-      const opponent = d.roomInfo.find(
-        (user: TOpponentUserData) => user.userId !== account?.id,
-      )
-      const me = d.roomInfo.find(
-        (user: TOpponentUserData) => user.userId === account?.id,
-      )
-      if (opponent) {
-        setOpponentInfo(opponent)
-        setMyLastOpponent(opponent)
-      }
-      if (me) {
-        setMyInfo(me)
-      }
-      setRoomId(d.roomId)
-    })
-
-    ws.on('game_started', (data: unknown) => {
-      const d = data as { roomId: string; users: Array<TOpponentUserData> }
-      const opponent = d.users.find(
-        (user: TOpponentUserData) => user.userId !== account?.id,
-      )
-      const me = d.users.find(
-        (user: TOpponentUserData) => user.userId === account?.id,
-      )
-      if (opponent) {
-        setOpponentInfo((prevInfo) => (prevInfo ? prevInfo : opponent))
-        setMyLastOpponent(opponent)
-      }
-      if (me) {
-        setMyInfo(me)
-      }
-      setRoomId(d.roomId)
-    })
-
-    ws.on('me_view_my_opponent', (data: unknown) => {
-      const d = data as { userId: number }
-      if (d.userId === account?.id) {
-        setIsMeViewMyOpponent0(true)
-      } else {
-        setIsMeViewMyOpponent1(true)
-      }
-    })
-
-    ws.on('click_update', (data: unknown) => {
-      const d = data as { users: Array<TOpponentUserData> }
-      const opponent = d.users.find(
-        (user: TOpponentUserData) => user.userId !== account?.id,
-      )
-
-      const me = d.users.find(
-        (user: TOpponentUserData) => user.userId === account?.id,
-      )
-      if (opponent) {
-        setOpponentInfo(opponent)
-      }
-      if (me) {
-        setMyInfo(me)
-      }
-    })
-
-    ws.on('game_finished', (data: unknown) => {
-      const d = data as IGameFinishedData
-      const isWinner = d.winner.userId === account?.id
-
-      const me = isWinner ? d.winner : d.loser
-
-      const opponent = isWinner ? d.loser : d.winner
-
-      const betConverter: any = {
-        '86400': '1 day',
-        '604800': '1 week',
-        '2592000': '1 month',
-        '31536000': '1 year',
-      }
-
-      setMyInfo({
-        userId: Number(account?.id),
-        photoUrl: String(account?.photo_url),
-        nickname: String(account?.username),
-        bet: 0,
-        clicks: 0,
-      })
-      setMyLastOpponent(opponent)
-      setOpponentInfo(null)
-      setRoomId(null)
-
-      router.navigate({
-        to: '/minigames/battle-result',
-        search: {
-          myNickname: me.nickname,
-          opponentNickname: opponent.nickname,
-          isMeWinner: isWinner,
-          bet: betConverter[String(d.winner.bet)],
-          photoUrl: me.photoUrl,
-          opponentPhotoUrl: opponent.photoUrl,
-        },
-      })
-    })
-
-    ws.on('error', () => {
-      console.log('socket error')
-    })
-
-    ws.on('disconnect', () => {
-      setIsSocketConnected(false)
-    })
+    ws.on('connect', hConnect)
+    ws.on('ready', hReady)
+    ws.on('waiting_for_players', hWaiting)
+    ws.on('game_started', hGameStarted)
+    ws.on('me_view_my_opponent', hMeView)
+    ws.on('click', hClickUpdate)
+    ws.on('finish_game', hGameFinished)
+    ws.on('error', hError)
+    ws.on('disconnect', hDisconnect)
 
     return () => {
-      ws.off('connect')
-      ws.off('waiting_for_players')
-      ws.off('get_private_room_data')
-      ws.off('game_started')
-      ws.off('me_view_my_opponent')
-      ws.off('click_update')
-      ws.off('game_finished')
-      ws.off('error')
-      ws.off('disconnect')
+      ws.off('connect', hConnect)
+      ws.off('waiting_for_players', hWaiting)
+      ws.off('game_started', hGameStarted)
+      ws.off('me_view_my_opponent', hMeView)
+      ws.off('click', hClickUpdate)
+      ws.off('finish_game', hGameFinished)
+      ws.off('error', hError)
+      ws.off('disconnect', hDisconnect)
     }
-  }, [])
+  }, [ws])
 
   useEffect(() => {
     if (pathnames[1].pathname !== '/minigames/battle') {
@@ -190,24 +238,22 @@ export function useBattle() {
   }, [isMeViewMyOpponent0, isMeViewMyOpponent1])
 
   const makeBet = useCallback(
-    (bet: number, isPrivate?: boolean, invitedBy?: number) => {
-      if(isPrivate) {
-        ws.emit('join_or_create_private_room', {
-        bet,
-        userId: Number(account?.id),
-        photoUrl: account?.photo_url,
-        nickname: account?.username,
-        invitedBy: Number(invitedBy),
+    (params: {user: IUser, bet?: number, isPrivate?: boolean, invitedBy?: number}) => {
+      if(!params.isPrivate) {
+        ws.emit('join_or_create_room', {
+          user: params.user,
+          bet: params.bet,
       })
+      return
       }
       ws.emit('join_or_create_room', {
-        bet,
-        userId: Number(account?.id),
-        photoUrl: account?.photo_url,
-        nickname: account?.username,
+        user: params.user,
+        bet: params.bet,
+        invitedBy: params.invitedBy,
+        isPrivate: params.isPrivate,
       })
     },
-    [account],
+    [],
   )
 
 
@@ -231,15 +277,13 @@ export function useBattle() {
 //   clicks: 0,
 // })
 
-  const leaveGame = useCallback((roomId_: string) => {
-    ws.emit('leave_room', {
-      roomId: roomId_,
-    })
+  const leaveGame = useCallback(() => {
+    ws.emit('finish_game')
     setMyInfo({
-      userId: Number(account?.id),
+      id: Number(account?.id),
       photoUrl: String(account?.photo_url),
       nickname: String(account?.username),
-      bet: 0,
+      // bet: 0,
       clicks: 0,
     })
     setOpponentInfo(null)
@@ -247,24 +291,23 @@ export function useBattle() {
   }, [])
 
   const click = useCallback(
-    (roomId_: string) => {
+    (isX2: boolean = false) => {
       ws.emit('click', {
-        roomId: roomId_,
-        userId: account?.id,
+        isX2,
       })
     },
-    [account],
+    [],
   )
 
-  const clickX2 = useCallback(
-    (roomId_: string) => {
-      ws.emit('click_x2', {
-        roomId: roomId_,
-        userId: account?.id,
-      })
-    },
-    [account],
-  )
+  // const clickX2 = useCallback(
+  //   (roomId_: string) => {
+  //     ws.emit('click_x2', {
+  //       roomId: roomId_,
+  //       userId: account?.id,
+  //     })
+  //   },
+  //   [account],
+  // )
 
   const isMeViewMyOpponentEmit = useCallback(
     (roomId_: string) => {
@@ -277,24 +320,19 @@ export function useBattle() {
   )
 
   const isMeReady = useCallback(
-    (roomId_: string) => {
-      ws.emit('is_me_ready', {
-        roomId: roomId_,
-        userId: account?.id,
-      })
+    () => {
+      ws.emit('ready')
     },
     [account],
   )
 
   const forceDisconnect = useCallback(() => {
-    ws.emit('force_disconnect', {})
+    ws.emit('finish_game')
     ws.disconnect()
   }, [])
 
-  const isFinishedGame = useCallback((roomId_: string) => {
-    ws.emit('finish_game', {
-      roomId: roomId_,
-    })
+  const isFinishedGame = useCallback(() => {
+    ws.emit('finish_game')
   }, [])
 
   return {
@@ -302,8 +340,8 @@ export function useBattle() {
     leaveGame,
     click,
     opponentInfo,
-    clickX2,
     myInfo,
+    roomData,
     roomId,
     isMeReady,
     isMeViewMyOpponent,
