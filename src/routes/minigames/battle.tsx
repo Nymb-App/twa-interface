@@ -198,16 +198,14 @@ function RouteComponent() {
             setAreaClaimedPercent(percent)
           }
           onCountdownCompleted={() => {
-            if (roomId) {
-              const timer = setTimeout(() => {
-                isMeReady()
-              }, 1000)
-              return () => clearTimeout(timer)
-            }
+            const timer = setTimeout(() => {
+              isMeReady()
+            }, 1000)
+            return () => clearTimeout(timer)
           }}
           onGameFinished={() => {
             if (roomId) {
-              isFinishedGame(roomId)
+              isFinishedGame()
             }
           }}
           onBattleClick={(isX2Active: boolean) => {

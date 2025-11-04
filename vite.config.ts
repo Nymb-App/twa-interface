@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'climate-segment-solo-dee.trycloudflare.com',
+      'flavor-marker-stadium-semiconductor.trycloudflare.com',
     ],
   },
 

@@ -37,13 +37,13 @@ export const BattleMainScene = ({
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
-  opponentInfo: TOpponentUserData | null
-  myInfo: TOpponentUserData | null
+  opponentInfo: TOpponentUserData | null | any
+  myInfo: TOpponentUserData | null | any
   roomData: IRoom | null
   onBattleClick?: (isX2Active: boolean) => void
   onCountdownCompleted?: () => void
   onGameFinished?: () => void
-  myLastOpponent: TOpponentUserData | null
+  myLastOpponent: TOpponentUserData | null | any
   isPrivateBattle?: boolean
 }) => {
   const [
@@ -160,7 +160,9 @@ export const BattleMainScene = ({
 
   useEffect(() => {
     if (!myInfo || !opponentInfo) return
-    setAreaClaimedPercentage(myInfo.clicks - opponentInfo.clicks)
+    const myClicks = Number(myInfo.clicks) || 0
+    const oppClicks = Number(opponentInfo.clicks) || 0
+    setAreaClaimedPercentage(myClicks - oppClicks)
   }, [myInfo, opponentInfo])
 
   useEffect(() => {

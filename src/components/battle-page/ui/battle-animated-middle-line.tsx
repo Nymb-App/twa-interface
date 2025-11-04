@@ -1,5 +1,5 @@
-import { BattleRainSplitLine } from './battle-rain-split-line'
 import { cn } from '@/utils'
+import { BattleRainSplitLine } from './battle-rain-split-line'
 
 export const BattleAnimatedMiddleLine = ({
   onAnimationEnd,
