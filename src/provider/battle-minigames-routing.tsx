@@ -28,8 +28,8 @@ export const BattleMinigamesRouting = ({
   const navigate = useNavigate()
   useEffect(() => {
     if (!accountQuery.data) return
-    // if (accountQuery.data.joinedAt + 3600 > Math.floor(Date.now() / 1000))
-    //   return
+    if (accountQuery.data.joinedAt + 3600 > Math.floor(Date.now() / 1000))
+      return
     if (!parsedInitData || !parsedInitData.start_param) return
     if (!parsedInitData.start_param.includes('type=game-battle')) return
     const parsedParams = parseParams(parsedInitData.start_param)
