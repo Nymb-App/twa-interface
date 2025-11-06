@@ -53,7 +53,7 @@ export function useBattle() {
 
   const [isMeViewMyOpponent1, setIsMeViewMyOpponent1] = useState(false)
 
-  const [resultData, setResultData] = useState<IBattleResult | null>(null)
+  const [resultData, _] = useState<IBattleResult | null>(null)
 
   const router = useRouter()
   const pathnames = useMatches()
@@ -121,31 +121,31 @@ export function useBattle() {
 
     const onGameFinished = useEffectEvent((data: unknown) => {
     const d = data as IBattleResult
-    const isWinner = d.isDraw ? false : d.winner.id === account?.id
-    const opponent = isWinner ? d.loser : d.winner
+    // const isWinner = d.isDraw ? false : d.winner.id === account?.id
+    // const opponent = isWinner ? d.loser : d.winner
     const betConverter: Record<string, string> = {
       '86400': '1 day',
       '604800': '1 week',
       '2592000': '1 month',
       '31536000': '1 year',
     }
-    setResultData({
-      isDraw: d.isDraw,
-      bet: d.bet,
-      winner: d.winner,
-      loser: d.loser,
-    })
+    // setResultData({
+    //   isDraw: d.isDraw,
+    //   bet: d.bet,
+    //   winner: d.winner,
+    //   loser: d.loser,
+    // })
 
-    setMyInfo({
-      id: Number(account?.id),
-      photoUrl: String(account?.photo_url),
-      nickname: String(account?.username),
-      clicks: 0,
-    })
-    setMyLastOpponent(opponent)
+    // setMyInfo({
+    //   id: Number(account?.id),
+    //   photoUrl: String(account?.photo_url),
+    //   nickname: String(account?.username),
+    //   clicks: 0,
+    // })
+    // setMyLastOpponent(opponent)
     // setOpponentInfo(resultData && resultData.winner.id === resultData.loser.id ? resultData.winner : null)   
-    setOpponentInfo(null)   
-    setRoomId(null)
+    // setOpponentInfo(null)   
+    // setRoomId(null)
 
     // if(resultData?.winner.id === resultData?.loser.id) {
     //   return
@@ -213,6 +213,8 @@ export function useBattle() {
       ws.off('game_started', hGameStarted)
       ws.off('me_view_my_opponent', hMeView)
       ws.off('click', hClickUpdate)
+      ws.off('ready', hReady)
+      ws.off('get_room', hGetRoom)
       ws.off('finish_game', hGameFinished)
       ws.off('error', hError)
       ws.off('disconnect', hDisconnect)
@@ -307,6 +309,7 @@ export function useBattle() {
     makeBet,
     leaveGame,
     click,
+    ws,
     opponentInfo,
     myInfo,
     roomData,

@@ -113,7 +113,7 @@ export function ItemNFT({ className }: { className?: string }) {
             <TransferTonButton
               // disabled={isMintDisabled}
               recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
-              amount={1}
+              amount={amount}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onTransferSuccess={async (hash) => {
                 toast.success('NFT purchased!')
@@ -127,7 +127,7 @@ export function ItemNFT({ className }: { className?: string }) {
                 }
               }}
             >
-              MINT FOR 1 TON
+              MINT FOR {amount} TON
             </TransferTonButton>
           </div>
           <span className="mt-3 text-[#B6FF00]/60 mx-auto">

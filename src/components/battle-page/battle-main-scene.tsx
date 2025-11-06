@@ -80,7 +80,6 @@ export const BattleMainScene = ({
     }
 
     if (!opponentInfo) {
-      console.log('opponentInfo????', opponentInfo)
       // Автодисконнект при длительном ожидании оппонента
       // forcedExitTimeoutRef.current = window.setTimeout(() => {
       //   forceDisconnect()
