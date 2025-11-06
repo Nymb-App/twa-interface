@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { PageLayout } from '@/components/ui/page-layout'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 import { ItemEnergy, ItemNFT, ItemTime } from '@/components/shop-page/index'
+import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
+import { PageLayout } from '@/components/ui/page-layout'
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/shop')({
   component: RouteComponent,

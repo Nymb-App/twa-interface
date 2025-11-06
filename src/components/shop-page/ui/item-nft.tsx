@@ -34,13 +34,15 @@ export function ItemNFT({ className }: { className?: string }) {
 
             <div className="absolute right-[-50px] top-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
 
-            <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00] blur-[30px] w-full h-[50px] rounded-full" />
+            <div className="absolute left-[-105px] top-14 bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
 
-            <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00] blur-[500px] w-full h-full rounded-full" />
+            <div className="absolute left-[-120px] top-0 bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
 
             <div className="absolute right-[10px] top-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
 
             <div className="absolute right-[-50px] bottom-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
+
+            <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00]/50 blur-[30px] w-full h-[50px] rounded-full" />
           </div>
 
           <div className="inline-flex justify-between w-full font-pixel">
@@ -63,21 +65,21 @@ export function ItemNFT({ className }: { className?: string }) {
             </div>
 
             <img
-              src="/shop/nft.webp"
+              src="/shop/nft.png"
               alt="time"
-              className="absolute bottom-0 right-3 max-w-[180px] h-auto"
+              className="absolute bottom-0 right-2.5 max-w-[180px] h-auto"
             />
             <div className="absolute left-[0px] rounded-3xl bottom-[0px] overflow-hidden size-full">
-              <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00] blur-[30px] w-full h-[50px] rounded-full" />
+              <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00]/50 blur-[30px] w-full h-[50px] rounded-full" />
             </div>
           </div>
         </div>
       </DrawerTrigger>
 
-      <DrawerContent className="overflow-hidden h-[690px] bg-[#0b0b0b] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="overflow-hidden h-[750px] bg-[#0b0b0b] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
         <button
           onClick={() => setIsOpen(false)}
-          className="absolute z-10 flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
+          className="absolute z-50 flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
         >
           <CloseIcon />
         </button>
@@ -100,7 +102,7 @@ export function ItemNFT({ className }: { className?: string }) {
             {/* <div className="absolute w-full h-[90px] bg-gradient-to-b from-[#0b0b0b]/50 from-20% to-[#161715] pointer-events-none -bottom-1" /> */}
           </div>
           <div className="absolute w-full h-full bg-[url('/index-page/nft-bg.png')] bg-cover bg-top pointer-events-none" />
-          <div className="inline-flex gap-2 items-center font-pixel mx-auto text-[#B6FF00] z-10 -mt-11">
+          <div className="inline-flex gap-2 items-center font-pixel mx-auto text-[#B6FF00] z-10 -mt-17">
             <h2 className="text-[32px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]">
               45%
             </h2>
