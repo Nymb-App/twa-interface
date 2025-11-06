@@ -27,7 +27,7 @@ export const BattleMainScene = ({
   roomData,
   onBattleClick,
   onCountdownCompleted,
-  onJoinGame,
+  // onJoinGame,
   onGameFinished,
 }: {
   areaClaimedPercent?: number
@@ -37,7 +37,7 @@ export const BattleMainScene = ({
   myInfo?: IUser | null
   roomData: IRoom | null
   onBattleClick?: (isX2Active: boolean) => void
-  onJoinGame?: (bet: number, isPrivate?: boolean) => void
+  // onJoinGame?: (bet: number, isPrivate?: boolean) => void
   onCountdownCompleted?: () => void
   onGameFinished?: () => void
 }) => {
@@ -80,6 +80,7 @@ export const BattleMainScene = ({
     }
 
     if (!opponentInfo) {
+      console.log('opponentInfo????', opponentInfo)
       // Автодисконнект при длительном ожидании оппонента
       // forcedExitTimeoutRef.current = window.setTimeout(() => {
       //   forceDisconnect()

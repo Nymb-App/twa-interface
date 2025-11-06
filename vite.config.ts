@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'inform-broker-assured-arrives.trycloudflare.com',
+      'unfortunately-smithsonian-contains-example.trycloudflare.com',
     ],
   },
 

@@ -33,7 +33,7 @@ export const BattleMainScenePrivate = ({
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
-  opponentInfo: IUser | null
+  opponentInfo?: IUser | null
   myInfo: IUser | null
   roomData: IRoom | null
   onBattleClick?: (isX2Active: boolean) => void
@@ -74,7 +74,7 @@ export const BattleMainScenePrivate = ({
   }
 
   const waitingStartDate = useMemo(() => {
-    return Date.now() + 300_000
+    return Date.now() + 60_000
   }, [])
 
   const { forceDisconnect } = useBattle()
@@ -91,11 +91,6 @@ export const BattleMainScenePrivate = ({
     }
 
     if (roomData && roomData.users.length < roomData.maxUsersCount) {
-      // Автодисконнект при длительном ожидании оппонента
-      // forcedExitTimeoutRef.current = window.setTimeout(() => {
-      //   forceDisconnect()
-      //   onForcedExitBattle?.()
-      // }, 300_000)
       return
     }
 
@@ -332,13 +327,11 @@ export const BattleMainScenePrivate = ({
                 intervalDelay={1000}
                 precision={0}
                 onComplete={() => {
-                  // onGameFinished?.()
-                  // forceDisconnect(roomData?.createdBy)
-                  // onForcedExitBattle?.()
-                  // if (forcedExitTimeoutRef.current) {
-                  //   clearTimeout(forcedExitTimeoutRef.current)
-                  //   forcedExitTimeoutRef.current = null
-                  // }
+                  onForcedExitBattle?.()
+                  if (forcedExitTimeoutRef.current) {
+                    clearTimeout(forcedExitTimeoutRef.current)
+                    forcedExitTimeoutRef.current = null
+                  }
                 }}
                 renderer={({ seconds }) => (
                   <span className="absolute top-[-25px] left-1/2 -translate-x-1/2 text-sm text-white/40 text-center">

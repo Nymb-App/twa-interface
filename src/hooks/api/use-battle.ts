@@ -143,8 +143,8 @@ export function useBattle() {
       clicks: 0,
     })
     setMyLastOpponent(opponent)
-    setOpponentInfo(resultData && resultData.winner.id === resultData.loser.id ? resultData.winner : null)   
-    // setOpponentInfo(null)   
+    // setOpponentInfo(resultData && resultData.winner.id === resultData.loser.id ? resultData.winner : null)   
+    setOpponentInfo(null)   
     setRoomId(null)
 
     // if(resultData?.winner.id === resultData?.loser.id) {
@@ -175,7 +175,7 @@ export function useBattle() {
     setIsSocketConnected(false)
   })
 
-  const onReady = useEffectEvent((data: unknown) => {
+  const onReady = useEffectEvent(() => {
     // const d = data as { userId: number }
     // if (d.userId !== account?.id) {
     //   setIsReady(true)
@@ -192,7 +192,7 @@ export function useBattle() {
     const hMeView = (p: unknown) => onMeViewMyOpponent(p)
     const hClickUpdate = (p: unknown) => onClickUpdate(p)
     const hGameFinished = (p: unknown) => onGameFinished(p)
-    const hReady = (p: unknown) => onReady(p)
+    const hReady = () => onReady()
     const hError = (e?: unknown) => onError(e)
     const hDisconnect = () => onDisconnect()
 

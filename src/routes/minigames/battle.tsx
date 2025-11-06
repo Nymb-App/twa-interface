@@ -155,7 +155,7 @@ function RouteComponent() {
       )}
       {isStartFindingOpponent && (
         <>
-          {roomData?.isPrivate ? (
+          {roomData === null ? null : roomData.isPrivate ? (
             <BattleMainScenePrivate
               key={roomId}
               opponentInfo={
@@ -216,18 +216,18 @@ function RouteComponent() {
               onAreaClaimedPercentageChange={(percent) =>
                 setAreaClaimedPercent(percent)
               }
-              onJoinGame={() => {
-                makeBet({
-                  user: {
-                    id: Number(user?.id),
-                    photoUrl: String(user?.photo_url),
-                    nickname: String(user?.username),
-                  },
-                  bet: Number(search.bet),
-                  isPrivate: true,
-                  invitedBy: Number(search.invitedBy),
-                })
-              }}
+              // onJoinGame={() => {
+              //   makeBet({
+              //     user: {
+              //       id: Number(user?.id),
+              //       photoUrl: String(user?.photo_url),
+              //       nickname: String(user?.username),
+              //     },
+              //     bet: Number(search.bet),
+              //     isPrivate: true,
+              //     invitedBy: Number(search.invitedBy),
+              //   })
+              // }}
               onCountdownCompleted={() => {
                 const timer = setTimeout(() => {
                   isMeReady()

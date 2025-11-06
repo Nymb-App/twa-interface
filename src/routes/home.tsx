@@ -191,12 +191,10 @@ const HomeComponent = memo(function HomeComponent() {
 
           <Link
             to="/minigames/battle"
-            search={
-              {
-                // bet: undefined as unknown as number,
-                // invitedBy: undefined as unknown as number,
-              }
-            }
+            search={{
+              bet: undefined as unknown as number,
+              invitedBy: undefined as unknown as number,
+            }}
             disabled={accountTime < Date.now()}
           >
             <Suspense
@@ -240,7 +238,7 @@ function UnfreezeAccountDrawer({
 }: {
   value: number
   open: boolean
-  onOpenChange?: (open: boolean) => void
+  onOpenChange?: (_open: boolean) => void
   onSuccess?: (hash: string) => void
   onError?: (e: any) => void
 }) {

@@ -35,11 +35,7 @@ export const BattleMinigamesRouting = ({
     const parsedParams = parseParams(parsedInitData.start_param)
     if (parsedParams.invitedBy === String(user?.id)) return
 
-    if (
-      location.pathname === '/minigames/battle-result' ||
-      location.pathname === '/minigames/battle'
-    )
-      return
+    if (location.pathname !== '/') return
 
     navigate({
       to: '/minigames/battle',
