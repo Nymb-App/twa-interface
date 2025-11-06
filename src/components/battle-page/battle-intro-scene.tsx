@@ -11,18 +11,6 @@ import { FaRandom } from 'react-icons/fa'
 import { PiShareFatBold } from 'react-icons/pi'
 import { ShareBattleInviteButton } from '../ui/share-button'
 
-export interface IJoinGameData {
-  userId: number
-  roomId: string
-  nickname: string
-  photoUrl: string
-  bet: number
-  invitedBy?: number
-  clicks: number
-}
-
-export type TOpponentUserData = Omit<IJoinGameData, 'roomId'>
-
 export const BattleIntroScene = ({
   className,
   onFindingOpponent,

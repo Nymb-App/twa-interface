@@ -1,10 +1,12 @@
 import { BattleIntroScene } from '@/components/battle-page/battle-intro-scene'
 import { BattleMainScene } from '@/components/battle-page/battle-main-scene'
+import { BattleMainScenePrivate } from '@/components/battle-page/battle-main-scene-private'
 import { PageLayout } from '@/components/ui/page-layout'
-import { useAccount } from '@/hooks/api/use-account'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { useBattle } from '@/hooks/api/use-battle'
 import { createFileRoute, useRouter, useSearch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/minigames/battle')({
   component: RouteComponent,
@@ -15,6 +17,7 @@ export const Route = createFileRoute('/minigames/battle')({
 })
 
 function RouteComponent() {
+  const search = useSearch({ from: '/minigames/battle' })
   const [, setIsAnimationsEnd] = useState(false)
 
   const [, setIsClosingAnimation] = useState(false)
@@ -38,11 +41,13 @@ function RouteComponent() {
     myInfo,
     roomId,
     roomData,
+    resultData,
+    getRoomData,
     click,
     isMeReady,
     leaveGame,
+    forceDisconnect,
     isFinishedGame,
-    myLastOpponent,
   } = useBattle()
 
   const { user } = useAccount()
@@ -55,41 +60,24 @@ function RouteComponent() {
     if (roomId) leaveGame()
   }
 
-  // const handleJoinGame = (
-  //   bet: number,
-  //   isPrivate?: boolean,
-  //   invitedBy?: number,
-  // ) => {
-  //   makeBet({
-  //     user: {
-  //       id: Number(user?.id),
-  //       photoUrl: String(user?.photo_url),
-  //       nickname: String(user?.username),
-  //     },
-  //     bet,
-  //     isPrivate,
-  //     invitedBy,
-  //   })
-  // }
+  const { accountQuery } = useAccountMe()
 
-  const search = useSearch({ from: '/minigames/battle' })
   useEffect(() => {
-    if (search.invitedBy !== undefined && search.bet !== undefined) {
-      makeBet({
-        user: {
-          id: Number(user?.id),
-          photoUrl: String(user?.photo_url),
-          nickname: String(user?.username),
-        },
-        bet: Number(search.bet),
-        isPrivate: true,
-        invitedBy: Number(search.invitedBy),
-      })
-      setIsStartFindingOpponent(true)
-      setIsStartFindingOpponentAnimationEnd(true)
-      setIsReset(false)
+    if (search.invitedBy === undefined || search.bet === undefined) return
+
+    const time = accountQuery.data?.time
+    if (time && time < Math.floor(Date.now() / 1000) + Number(search.bet)) {
+      resetGame()
+      forceDisconnect(Number(search.invitedBy))
+      toast.error('Not enough time for bet')
+      return
     }
-  }, [search.invitedBy, search.bet, user?.id])
+
+    getRoomData(Number(search.invitedBy))
+    setIsStartFindingOpponent(true)
+    setIsStartFindingOpponentAnimationEnd(true)
+    setIsReset(false)
+  }, [search.invitedBy, search.bet, accountQuery.data])
 
   useEffect(() => {
     const originalColor = document.body.style.backgroundColor
@@ -130,29 +118,10 @@ function RouteComponent() {
 
   useEffect(() => {
     if (areaClaimedPercent >= 80 || areaClaimedPercent <= -80) {
-      const isWinner = areaClaimedPercent >= 80
       if (roomId) isFinishedGame()
       setIsWinningResult(true)
-      const betConverter: Record<string, string> = {
-        '86400': '1 day',
-        '604800': '1 week',
-        '2592000': '1 month',
-        '31536000': '1 year',
-      }
-      router.navigate({
-        to: '/minigames/battle-result',
-        search: {
-          myNickname: myInfo.nickname as string,
-          opponentNickname: opponentInfo?.nickname ?? 'Unknown',
-          isMeWinner: isWinner,
-          bet: betConverter[search.bet as string],
-          photoUrl: myInfo.photoUrl as string,
-          opponentPhotoUrl: opponentInfo?.photoUrl ?? 'Unknown',
-        },
-      })
     }
-  }, [areaClaimedPercent, myInfo, opponentInfo, router])
-
+  }, [areaClaimedPercent, myInfo, opponentInfo, resultData, router])
   return (
     <PageLayout
       useFooter={false}
@@ -185,39 +154,103 @@ function RouteComponent() {
         />
       )}
       {isStartFindingOpponent && (
-        <BattleMainScene
-          key={roomId}
-          isPrivateBattle={myInfo.invitedBy !== undefined}
-          opponentInfo={opponentInfo}
-          myLastOpponent={myLastOpponent}
-          myInfo={myInfo}
-          roomData={roomData}
-          areaClaimedPercent={areaClaimedPercent}
-          onForcedExitBattle={resetGame}
-          onAreaClaimedPercentageChange={(percent) =>
-            setAreaClaimedPercent(percent)
-          }
-          onCountdownCompleted={() => {
-            const timer = setTimeout(() => {
-              isMeReady()
-            }, 1000)
-            return () => clearTimeout(timer)
-          }}
-          onGameFinished={() => {
-            if (roomId) {
-              isFinishedGame()
-            }
-          }}
-          onBattleClick={(isX2Active: boolean) => {
-            if (roomId) {
-              if (isX2Active) {
-                click(true)
-              } else {
-                click(false)
+        <>
+          {roomData?.isPrivate ? (
+            <BattleMainScenePrivate
+              key={roomId}
+              opponentInfo={
+                opponentInfo === null
+                  ? roomData.users.find(
+                      (userInfo) => userInfo.id !== myInfo?.id,
+                    )
+                  : opponentInfo
               }
-            }
-          }}
-        />
+              myInfo={myInfo}
+              roomData={roomData}
+              areaClaimedPercent={areaClaimedPercent}
+              onForcedExitBattle={resetGame}
+              onAreaClaimedPercentageChange={(percent) =>
+                setAreaClaimedPercent(percent)
+              }
+              onJoinGame={() => {
+                makeBet({
+                  user: {
+                    id: Number(user?.id),
+                    photoUrl: String(user?.photo_url),
+                    nickname: String(user?.username),
+                  },
+                  bet: Number(search.bet),
+                  isPrivate: true,
+                  invitedBy: Number(search.invitedBy),
+                })
+              }}
+              onCountdownCompleted={() => {
+                const timer = setTimeout(() => {
+                  isMeReady()
+                }, 1000)
+                return () => clearTimeout(timer)
+              }}
+              onGameFinished={() => {
+                if (roomId) {
+                  isFinishedGame()
+                }
+              }}
+              onBattleClick={(isX2Active: boolean) => {
+                if (roomId) {
+                  if (isX2Active) {
+                    click(true)
+                  } else {
+                    click(false)
+                  }
+                }
+              }}
+            />
+          ) : (
+            <BattleMainScene
+              key={roomId}
+              opponentInfo={opponentInfo}
+              myInfo={myInfo}
+              roomData={roomData}
+              areaClaimedPercent={areaClaimedPercent}
+              onForcedExitBattle={resetGame}
+              onAreaClaimedPercentageChange={(percent) =>
+                setAreaClaimedPercent(percent)
+              }
+              onJoinGame={() => {
+                makeBet({
+                  user: {
+                    id: Number(user?.id),
+                    photoUrl: String(user?.photo_url),
+                    nickname: String(user?.username),
+                  },
+                  bet: Number(search.bet),
+                  isPrivate: true,
+                  invitedBy: Number(search.invitedBy),
+                })
+              }}
+              onCountdownCompleted={() => {
+                const timer = setTimeout(() => {
+                  isMeReady()
+                }, 1000)
+                return () => clearTimeout(timer)
+              }}
+              onGameFinished={() => {
+                if (roomId) {
+                  isFinishedGame()
+                }
+              }}
+              onBattleClick={(isX2Active: boolean) => {
+                if (roomId) {
+                  if (isX2Active) {
+                    click(true)
+                  } else {
+                    click(false)
+                  }
+                }
+              }}
+            />
+          )}
+        </>
       )}
     </PageLayout>
   )

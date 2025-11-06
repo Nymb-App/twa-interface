@@ -5,18 +5,21 @@ import { ActionButton } from '@/components/ui/action-button'
 import { AvatarCard } from '@/routes/send-gift'
 import { cn } from '@/utils'
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import LoosingStartImg from '/minigames/loosing-stars-battle.webp'
 import WinningStarsImg from '/minigames/winning-stars-battle.webp'
 
 export const Route = createFileRoute('/minigames/battle-result')({
   validateSearch: (search) => ({
-    myNickname: String(search.myNickname ?? ''),
-    opponentNickname: String(search.opponentNickname ?? ''),
-    isMeWinner: Boolean(search.isMeWinner),
-    bet: String(search.bet ?? ''),
-    photoUrl: String(search.photoUrl ?? ''),
-    opponentPhotoUrl: String(search.opponentPhotoUrl ?? ''),
+    isDraw: Boolean(search.isDraw),
+    bet: String(search.bet),
+    myId: Number(search.myId),
+    winnerId: Number(search.winnerId),
+    winnerName: String(search.winnerName),
+    winnerPhotoUrl: String(search.winnerPhotoUrl),
+    loserId: Number(search.loserId),
+    loserName: String(search.loserName),
+    loserPhotoUrl: String(search.loserPhotoUrl),
   }),
   component: RouteComponent,
 })
@@ -26,7 +29,7 @@ function RouteComponent() {
   const search = Route.useSearch()
 
   useEffect(() => {
-    if (search.isMeWinner) {
+    if (search.winnerId === search.myId) {
       document.body.style.backgroundColor = '#0a1309'
     } else {
       document.body.style.backgroundColor = '#110522'
@@ -35,37 +38,61 @@ function RouteComponent() {
 
   return (
     <ResultScene
-      // myNickname={search.myNickname}
-      opponentNickname={search.opponentNickname}
       bet={search.bet}
-      isMeWinner={search.isMeWinner}
-      onNewBattle={() => router.navigate({ to: '/minigames/battle' })}
-      photoUrl={search.photoUrl}
-      opponentPhotoUrl={search.opponentPhotoUrl}
+      isDraw={search.isDraw}
+      winner={{
+        id: search.winnerId,
+        name: search.winnerName,
+        photoUrl: search.winnerPhotoUrl,
+      }}
+      loser={{
+        id: search.loserId,
+        name: search.loserName,
+        photoUrl: search.loserPhotoUrl,
+      }}
+      myId={Number(search.myId)}
+      onNewBattle={() =>
+        router.navigate({
+          to: '/minigames/battle',
+          search: {
+            bet: undefined as unknown as number,
+            invitedBy: undefined as unknown as number,
+          },
+        })
+      }
     />
   )
 }
 
+interface IUserResultData {
+  id: number
+  name: string
+  photoUrl: string
+}
+
 const ResultScene = ({
-  // myNickname = 'Unknown',
-  opponentNickname = 'Unknown',
   bet,
   onNewBattle,
-  isMeWinner = false,
-  photoUrl,
-  opponentPhotoUrl,
+  isDraw = false,
+  winner,
+  loser,
+  myId,
 }: {
-  // myNickname?: string
-  opponentNickname?: string
+  winner: IUserResultData
+  loser: IUserResultData
   bet?: string
   onNewBattle?: () => void
-  isMeWinner?: boolean
-  photoUrl?: string
-  opponentPhotoUrl?: string
+  isDraw?: boolean
+  myId?: number
 }) => {
   const rewardTimeValue = bet
 
   const [isNewBattleDisabled, setIsNewBattleDisabled] = useState(true)
+
+  const isMeWinner = useMemo(() => {
+    if (isDraw) return false
+    return winner.id === myId
+  }, [isDraw, winner, myId])
 
   return (
     <div
@@ -100,7 +127,15 @@ const ResultScene = ({
             )}
           >
             <img
-              src={photoUrl || '/roulette-icons/default.webp'}
+              src={
+                isDraw
+                  ? winner.id === myId
+                    ? winner.photoUrl
+                    : loser.photoUrl
+                  : isMeWinner
+                    ? winner.photoUrl
+                    : loser.photoUrl || '/roulette-icons/default.webp'
+              }
               className="w-full h-auto object-cover absolute"
             />
           </div>
@@ -152,22 +187,28 @@ const ResultScene = ({
               </span>
             </div>
           </div>
-          <div>
-            <div className="flex items-center gap-4 mt-[41px]">
-              <span className="font-inter text-sm leading-[140%] text-[#FFFFFF]/60">
-                {isMeWinner ? 'Loser' : 'Winner'}:
-              </span>
-              <AvatarCard
-                className="size-[32px]"
-                classNameForSpan="text-[#FFFFFF] text-sm pr-1"
-                src={opponentPhotoUrl || '/roulette-icons/user-2.webp'}
-                label={''}
-              />
-              <span className="font-pixel text-sm font-[400] text-[#FFFFFF] uppercase">
-                {opponentNickname}
-              </span>
+          {!isDraw && (
+            <div>
+              <div className="flex items-center gap-4 mt-[41px]">
+                <span className="font-inter text-sm leading-[140%] text-[#FFFFFF]/60">
+                  {isMeWinner ? 'Loser' : 'Winner'}:
+                </span>
+                <AvatarCard
+                  className="size-[32px]"
+                  classNameForSpan="text-[#FFFFFF] text-sm pr-1"
+                  src={
+                    isMeWinner
+                      ? loser.photoUrl
+                      : winner.photoUrl || '/roulette-icons/user-2.webp'
+                  }
+                  label={''}
+                />
+                <span className="font-pixel text-sm font-[400] text-[#FFFFFF] uppercase">
+                  {isMeWinner ? loser.name : winner.name}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
           {/* <ShareButton

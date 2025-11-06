@@ -189,7 +189,16 @@ const HomeComponent = memo(function HomeComponent() {
             )}
           </Link>
 
-          <Link to="/minigames/battle" disabled={accountTime < Date.now()}>
+          <Link
+            to="/minigames/battle"
+            search={
+              {
+                // bet: undefined as unknown as number,
+                // invitedBy: undefined as unknown as number,
+              }
+            }
+            disabled={accountTime < Date.now()}
+          >
             <Suspense
               fallback={<Skeleton className="w-full h-[224px] rounded-2xl" />}
             >
@@ -235,51 +244,53 @@ function UnfreezeAccountDrawer({
   onSuccess?: (hash: string) => void
   onError?: (e: any) => void
 }) {
-  const [isOpen, setIsOpen] = useState<boolean>(open)
+  // const [isOpen, setIsOpen] = useState<boolean>(open)
+  const [isOpen] = useState<boolean>(open)
+
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
 
-  const handleOpenChange = (open: boolean) => {
-    if (!isIOS) {
-      setIsOpen(open)
-      return
-    }
-    const body = document.body
-    if (open) {
-      if (closeUnlockTimerRef.current != null) {
-        clearTimeout(closeUnlockTimerRef.current)
-        closeUnlockTimerRef.current = null
-      }
-      scrollYRef.current =
-        window.scrollY ||
-        window.pageYOffset ||
-        document.documentElement.scrollTop ||
-        0
-      body.style.position = 'fixed'
-      body.style.top = `-${scrollYRef.current}px`
-      body.style.left = '0'
-      body.style.right = '0'
-      body.style.width = '100%'
-      body.style.touchAction = 'none'
-    } else {
-      if (closeUnlockTimerRef.current != null) {
-        clearTimeout(closeUnlockTimerRef.current)
-      }
-      closeUnlockTimerRef.current = setTimeout(() => {
-        const y =
-          Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
-        body.style.position = ''
-        body.style.top = ''
-        body.style.left = ''
-        body.style.right = ''
-        body.style.width = ''
-        body.style.touchAction = ''
-        window.scrollTo(0, y)
-        closeUnlockTimerRef.current = null
-      }, 350) as unknown as number
-    }
-    setIsOpen(open)
-  }
+  // const handleOpenChange = (open: boolean) => {
+  //   if (!isIOS) {
+  //     setIsOpen(open)
+  //     return
+  //   }
+  //   const body = document.body
+  //   if (open) {
+  //     if (closeUnlockTimerRef.current != null) {
+  //       clearTimeout(closeUnlockTimerRef.current)
+  //       closeUnlockTimerRef.current = null
+  //     }
+  //     scrollYRef.current =
+  //       window.scrollY ||
+  //       window.pageYOffset ||
+  //       document.documentElement.scrollTop ||
+  //       0
+  //     body.style.position = 'fixed'
+  //     body.style.top = `-${scrollYRef.current}px`
+  //     body.style.left = '0'
+  //     body.style.right = '0'
+  //     body.style.width = '100%'
+  //     body.style.touchAction = 'none'
+  //   } else {
+  //     if (closeUnlockTimerRef.current != null) {
+  //       clearTimeout(closeUnlockTimerRef.current)
+  //     }
+  //     closeUnlockTimerRef.current = setTimeout(() => {
+  //       const y =
+  //         Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+  //       body.style.position = ''
+  //       body.style.top = ''
+  //       body.style.left = ''
+  //       body.style.right = ''
+  //       body.style.width = ''
+  //       body.style.touchAction = ''
+  //       window.scrollTo(0, y)
+  //       closeUnlockTimerRef.current = null
+  //     }, 350) as unknown as number
+  //   }
+  //   setIsOpen(open)
+  // }
 
   useEffect(() => {
     return () => {

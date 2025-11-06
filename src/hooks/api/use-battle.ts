@@ -4,14 +4,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { useEffectEvent } from 'use-effect-event'
 import { useAccount } from './use-account'
 
- 
-
 export interface IUser {
     id: number,
     clicks?: number,
     photoUrl?: string,
     nickname?: string,
-
 }
 export interface IRoom {
     id: string,
@@ -24,12 +21,12 @@ export interface IRoom {
     deadline?: number,
 }
 
-interface IGameFinishedData {
-  roomId: string
-  winner: IUser
-  loser: IUser
+export interface IBattleResult {
+  isDraw?: true,
+  bet: number,
+  winner: IUser,
+  loser: IUser,
 }
-
 
 export function useBattle() {
   const { user: account } = useAccount()
@@ -43,13 +40,11 @@ export function useBattle() {
   const [myLastOpponent, setMyLastOpponent] =
     useState<IUser | null>(null)
 
-  const [myInfo, setMyInfo] = useState<IUser>({
+  const [myInfo, setMyInfo] = useState<IUser | any>({
     id: Number(account?.id),
     photoUrl: String(account?.photo_url),
     nickname: String(account?.username),
-    // bet: 0,
     clicks: 0,
-    // invitedBy: Number(account?.id),
   })
 
   const [isMeViewMyOpponent, setIsMeViewMyOpponent] = useState(false)
@@ -57,6 +52,8 @@ export function useBattle() {
   const [isMeViewMyOpponent0, setIsMeViewMyOpponent0] = useState(false)
 
   const [isMeViewMyOpponent1, setIsMeViewMyOpponent1] = useState(false)
+
+  const [resultData, setResultData] = useState<IBattleResult | null>(null)
 
   const router = useRouter()
   const pathnames = useMatches()
@@ -71,37 +68,21 @@ export function useBattle() {
     setRoomData(data)
   })
 
-  // const onPrivateRoomData = useEffectEvent((data: unknown) => {
-  //   const d = data as { roomId: string; roomInfo: Array<TOpponentUserData> }
-  //   const opponent = d.roomInfo.find(
-  //     (user: TOpponentUserData) => user.userId !== account?.id,
-  //   )
-  //   const me = d.roomInfo.find(
-  //     (user: TOpponentUserData) => user.userId === account?.id,
-  //   )
-  //   if (opponent) {
-  //     setOpponentInfo(opponent)
-  //     setMyLastOpponent(opponent)
-  //   }
-  //   if (me) {
-  //     setMyInfo(me)
-  //   }
-  //   setRoomId(d.roomId)
-  // })
+  const onGetRoom = useEffectEvent((data: IRoom) => {
+    setOpponentInfo(data.users[0])
+    setRoomId(data.id)
+    setRoomData(data)
+  })
 
   const onGameStarted = useEffectEvent((data: unknown) => {
     if(!account) return
-    // console.log(account,'account')
     const d = data as IRoom
-    // console.log(d, 'room data on game started')
     const opponent = d.users.find(
       (user: IUser) => user.id !== account.id,
     )
-    // console.log(opponent, 'opponent')
     const me = d.users.find(
       (user: IUser) => user.id === account.id,
     )
-    // console.log(me, 'me')
     if (opponent) {
       setOpponentInfo((prevInfo) => (prevInfo ? prevInfo : opponent))
       setMyLastOpponent(opponent)
@@ -138,39 +119,50 @@ export function useBattle() {
     }
   })
 
-  const onGameFinished = useEffectEvent((data: unknown) => {
-    const d = data as IGameFinishedData
-    const isWinner = d.winner.id === account?.id
-    const me = isWinner ? d.winner : d.loser
+    const onGameFinished = useEffectEvent((data: unknown) => {
+    const d = data as IBattleResult
+    const isWinner = d.isDraw ? false : d.winner.id === account?.id
     const opponent = isWinner ? d.loser : d.winner
-    const betConverter = {
+    const betConverter: Record<string, string> = {
       '86400': '1 day',
       '604800': '1 week',
       '2592000': '1 month',
       '31536000': '1 year',
     }
+    setResultData({
+      isDraw: d.isDraw,
+      bet: d.bet,
+      winner: d.winner,
+      loser: d.loser,
+    })
 
     setMyInfo({
       id: Number(account?.id),
       photoUrl: String(account?.photo_url),
       nickname: String(account?.username),
-      // bet: 0,
       clicks: 0,
     })
     setMyLastOpponent(opponent)
-    setOpponentInfo(null)
+    setOpponentInfo(resultData && resultData.winner.id === resultData.loser.id ? resultData.winner : null)   
+    // setOpponentInfo(null)   
     setRoomId(null)
+
+    // if(resultData?.winner.id === resultData?.loser.id) {
+    //   return
+    // }
 
     router.navigate({
       to: '/minigames/battle-result',
       search: {
-        myNickname: me.nickname as string,
-        opponentNickname: opponent.nickname as string,
-        isMeWinner: isWinner,
-        // bet: betConverter[String(d.winner.bet)],
-        bet: betConverter['86400'],
-        photoUrl: me.photoUrl as string,
-        opponentPhotoUrl: opponent.photoUrl as string,
+        isDraw: d.isDraw || false,
+        bet: betConverter[d.bet],
+        myId: account && account.id || 0,
+        winnerId: d.winner.id,
+        winnerName: String(d.winner.nickname || d.winner.id),
+        winnerPhotoUrl: String(d.winner.photoUrl),
+        loserId: d.loser.id,
+        loserName: String(d.loser.nickname || d.loser.id),
+        loserPhotoUrl: String(d.loser.photoUrl),
       },
     })
   })
@@ -184,8 +176,8 @@ export function useBattle() {
   })
 
   const onReady = useEffectEvent((data: unknown) => {
-    const d = data as { userId: number }
-    // if (d.userId === account?.id) {
+    // const d = data as { userId: number }
+    // if (d.userId !== account?.id) {
     //   setIsReady(true)
     // }
   })
@@ -195,6 +187,7 @@ export function useBattle() {
 
     const hConnect = () => onConnect()
     const hWaiting = (p: unknown) => onWaitingForPlayers(p as IRoom)
+    const hGetRoom = (p: unknown) => onGetRoom(p as IRoom)
     const hGameStarted = (p: unknown) => onGameStarted(p as IRoom)
     const hMeView = (p: unknown) => onMeViewMyOpponent(p)
     const hClickUpdate = (p: unknown) => onClickUpdate(p)
@@ -206,6 +199,7 @@ export function useBattle() {
     ws.on('connect', hConnect)
     ws.on('ready', hReady)
     ws.on('waiting_for_players', hWaiting)
+    ws.on('get_room', hGetRoom)
     ws.on('game_started', hGameStarted)
     ws.on('me_view_my_opponent', hMeView)
     ws.on('click', hClickUpdate)
@@ -256,26 +250,11 @@ export function useBattle() {
     [],
   )
 
-
-
-    // socket.emit('get_private_room_data', {
-    //   bet,
-    //   invitedBy,
-    //   userId: Number(account?.id),
-    //   photoUrl: String(account?.photo_url),
-    //   nickname: String(account?.username),
-    //   clicks: 0,    
-    // })
-
-// minigame/battle/get_private_room_data
-// post('minigame/battle/get_private_room_data', {
-//   bet,
-//   invitedBy,
-//   userId: Number(account?.id),
-//   photoUrl: String(account?.photo_url),
-//   nickname: String(account?.username),
-//   clicks: 0,
-// })
+  const getRoomData = useCallback((creatorId: number) => {
+    ws.emit('get_room', {
+      creatorId
+    })
+  }, [])
 
   const leaveGame = useCallback(() => {
     ws.emit('finish_game')
@@ -283,7 +262,6 @@ export function useBattle() {
       id: Number(account?.id),
       photoUrl: String(account?.photo_url),
       nickname: String(account?.username),
-      // bet: 0,
       clicks: 0,
     })
     setOpponentInfo(null)
@@ -298,16 +276,6 @@ export function useBattle() {
     },
     [],
   )
-
-  // const clickX2 = useCallback(
-  //   (roomId_: string) => {
-  //     ws.emit('click_x2', {
-  //       roomId: roomId_,
-  //       userId: account?.id,
-  //     })
-  //   },
-  //   [account],
-  // )
 
   const isMeViewMyOpponentEmit = useCallback(
     (roomId_: string) => {
@@ -326,8 +294,8 @@ export function useBattle() {
     [account],
   )
 
-  const forceDisconnect = useCallback(() => {
-    ws.emit('finish_game')
+  const forceDisconnect = useCallback((invitedBy?: number) => {
+    ws.emit('finish_game', {isLeave: true, invitedBy})
     ws.disconnect()
   }, [])
 
@@ -342,6 +310,8 @@ export function useBattle() {
     opponentInfo,
     myInfo,
     roomData,
+    resultData,
+    getRoomData,
     roomId,
     isMeReady,
     isMeViewMyOpponent,

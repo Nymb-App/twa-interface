@@ -1,13 +1,13 @@
-import Marquee from 'react-fast-marquee'
+import { ArrowIcon } from '@/assets/icons/arrow'
+import { useAccountMe } from '@/hooks/api/use-account'
+import { cn, convertTimestampToDaysUnit } from '@/utils'
 import { useMemo } from 'react'
+import Marquee from 'react-fast-marquee'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { Skeleton } from '../ui/skeleton'
 import { GateNextDisplayBlock } from './gate-next-display-block'
 import { GateProgressDisplay } from './gate-progress-display'
 import { GateStatistics } from './gate-statistics'
-import { useAccountMe } from '@/hooks/api/use-account'
-import { cn, convertTimestampToDaysUnit } from '@/utils'
-import { ArrowIcon } from '@/assets/icons/arrow'
 
 export const GateMainSection = () => {
   const { getLvlStats, accountQuery, isLoading } = useAccountMe()

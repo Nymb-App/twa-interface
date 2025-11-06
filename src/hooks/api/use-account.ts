@@ -68,6 +68,7 @@ interface IAccountQuery {
   telegramId: number
   energy: number
   lvl: number
+  isNew?: boolean 
   claimTime?: number
   claimAtTime?: number
   claimedTime?: number

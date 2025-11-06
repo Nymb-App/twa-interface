@@ -1,7 +1,7 @@
 import type { IRoom, IUser } from '@/hooks/api/use-battle'
 import { useBattle } from '@/hooks/api/use-battle'
 import { cn } from '@/utils'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Countdown from 'react-countdown'
 import { CountdownStartGame } from '../minigames/countdown-start-game'
 import { ActionButton } from '../ui/action-button'
@@ -18,7 +18,7 @@ const betConverter: Record<string, string> = {
   '31536000': 'years',
 }
 
-export const BattleMainScene = ({
+export const BattleMainScenePrivate = ({
   areaClaimedPercent = 0,
   onAreaClaimedPercentageChange,
   onForcedExitBattle,
@@ -33,8 +33,8 @@ export const BattleMainScene = ({
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
-  opponentInfo?: IUser | null
-  myInfo?: IUser | null
+  opponentInfo: IUser | null
+  myInfo: IUser | null
   roomData: IRoom | null
   onBattleClick?: (isX2Active: boolean) => void
   onJoinGame?: (bet: number, isPrivate?: boolean) => void
@@ -63,6 +63,8 @@ export const BattleMainScene = ({
 
   const [countdownTarget, setCountdownTarget] = useState<number | null>(null)
 
+  const [isToBattleReady, setIsToBattleReady] = useState(false)
+
   const timeouts = useRef<Array<number>>([])
   const forcedExitTimeoutRef = useRef<number | null>(null)
 
@@ -70,6 +72,10 @@ export const BattleMainScene = ({
     const id = window.setTimeout(fn, delay)
     timeouts.current.push(id)
   }
+
+  const waitingStartDate = useMemo(() => {
+    return Date.now() + 300_000
+  }, [])
 
   const { forceDisconnect } = useBattle()
 
@@ -79,12 +85,17 @@ export const BattleMainScene = ({
       forcedExitTimeoutRef.current = null
     }
 
-    if (!opponentInfo) {
+    if (opponentInfo?.id === myInfo?.id) {
+      onForcedExitBattle?.()
+      return
+    }
+
+    if (roomData && roomData.users.length < roomData.maxUsersCount) {
       // Автодисконнект при длительном ожидании оппонента
       // forcedExitTimeoutRef.current = window.setTimeout(() => {
       //   forceDisconnect()
       //   onForcedExitBattle?.()
-      // }, 30_000)
+      // }, 300_000)
       return
     }
 
@@ -109,8 +120,7 @@ export const BattleMainScene = ({
       timeouts.current.forEach(clearTimeout)
       timeouts.current = []
     }
-  }, [opponentInfo, onForcedExitBattle])
-
+  }, [opponentInfo, onForcedExitBattle, roomData, myInfo])
   useEffect(() => {
     if (isBoostActive0 || isBoostActive1) {
       const boostTimeoutId = window.setTimeout(() => {
@@ -153,7 +163,15 @@ export const BattleMainScene = ({
     }
   }, [isForcedExit, onForcedExitBattle])
 
-  // if (!opponentInfo) return <FallbackLoader />
+  // if (!opponentInfo && roomData?.createdBy !== myInfo?.id)
+  //   return <FallbackLoader />
+
+  const isFindingOpponent = useMemo(() => {
+    if (isToBattleReady) return false
+    if (myInfo?.id !== roomData?.createdBy) return false
+    if (roomData && roomData.users.length < roomData.maxUsersCount) return true
+    return isStartFindingOpponent
+  }, [roomData, isStartFindingOpponent, isToBattleReady])
 
   return (
     <>
@@ -212,7 +230,7 @@ export const BattleMainScene = ({
       <div className="flex flex-col gap-2 justify-between flex-1">
         <div className="relative flex flex-col h-full flex-1 items-center justify-between mask-[linear-gradient(to_bottom,transparent_0%,black_1%,black_99%,transparent_100%)]">
           <BattleCard
-            isFindingUser={isStartFindingOpponent}
+            isFindingUser={isFindingOpponent}
             nickname={opponentInfo?.nickname}
             photoUrl={opponentInfo?.photoUrl}
             isMe={false}
@@ -305,22 +323,40 @@ export const BattleMainScene = ({
           isOpeningAnimation && 'h-0',
         )}
       >
-        {isStartFindingOpponent && (
+        {isStartFindingOpponent && !isToBattleReady && (
           <div className="w-full h-full relative">
-            <div
-              className={cn(
-                'inline-flex gap-2 w-full h-full',
-                opponentInfo && 'opacity-60',
-              )}
-            >
+            {roomData?.createdBy !== myInfo?.id && (
+              <Countdown
+                key={'to-private-battle-accept'}
+                date={waitingStartDate}
+                intervalDelay={1000}
+                precision={0}
+                onComplete={() => {
+                  // onGameFinished?.()
+                  // forceDisconnect(roomData?.createdBy)
+                  // onForcedExitBattle?.()
+                  // if (forcedExitTimeoutRef.current) {
+                  //   clearTimeout(forcedExitTimeoutRef.current)
+                  //   forcedExitTimeoutRef.current = null
+                  // }
+                }}
+                renderer={({ seconds }) => (
+                  <span className="absolute top-[-25px] left-1/2 -translate-x-1/2 text-sm text-white/40 text-center">
+                    Waiting time:
+                    <span className="text-white/60"> {seconds} </span>
+                    seconds
+                  </span>
+                )}
+              />
+            )}
+            <div className={cn('inline-flex gap-2 w-full h-full')}>
               <ActionButton
                 disabled={
                   !isForcedExitBattleAnimationFinished ||
                   !isStartFindingOpponent
                 }
                 onClick={() => {
-                  if (opponentInfo) return
-                  forceDisconnect()
+                  forceDisconnect(roomData?.createdBy)
                   onForcedExitBattle?.()
                   if (forcedExitTimeoutRef.current) {
                     clearTimeout(forcedExitTimeoutRef.current)
@@ -339,29 +375,28 @@ export const BattleMainScene = ({
                 </span>
               </ActionButton>
               {/* This is only shown for invited user */}
-              {/* {roomData &&
-                roomData.isPrivate &&
-                roomData.createdBy !== Number(myInfo?.id) && (
-                  <ActionButton
-                    disabled={
-                      !isForcedExitBattleAnimationFinished ||
-                      !isStartFindingOpponent
-                    }
-                    onClick={() => {
-                      onJoinGame?.(Number(roomData.bet), true)
-                    }}
-                    className={cn(
-                      'h-full bg-gradient-to-b from-[#8C35FB] to-[#6602E7] opacity-0 animate-fade-in',
-                    )}
-                    onAnimationEnd={() =>
-                      setIsForcedExitBattleAnimationFinished(true)
-                    }
-                  >
-                    <span className="font-pixel text-white font-[400] uppercase text-[18px] leading-[24px]">
-                      TO BATTLE
-                    </span>
-                  </ActionButton>
-                )} */}
+              {roomData && roomData.createdBy !== Number(myInfo?.id) && (
+                <ActionButton
+                  disabled={
+                    !isForcedExitBattleAnimationFinished ||
+                    !isStartFindingOpponent
+                  }
+                  onClick={() => {
+                    onJoinGame?.(Number(roomData.bet), true)
+                    setIsToBattleReady(true)
+                  }}
+                  className={cn(
+                    'h-full bg-gradient-to-b from-[#8C35FB] to-[#6602E7] opacity-0 animate-fade-in',
+                  )}
+                  onAnimationEnd={() =>
+                    setIsForcedExitBattleAnimationFinished(true)
+                  }
+                >
+                  <span className="font-pixel text-white font-[400] uppercase text-[18px] leading-[24px]">
+                    TO BATTLE
+                  </span>
+                </ActionButton>
+              )}
             </div>
           </div>
         )}
