@@ -1,7 +1,7 @@
+import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { PageLayout } from '@/components/ui/page-layout'
 import { createFileRoute } from '@tanstack/react-router'
 import { Suspense, lazy } from 'react'
-import { PageLayout } from '@/components/ui/page-layout'
-import { FallbackLoader } from '@/components/ui/fallback-loader'
 
 export const Route = createFileRoute('/gate')({
   component: RouteComponent,

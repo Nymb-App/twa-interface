@@ -1,0 +1,243 @@
+// import { useEffect, useRef } from 'react'
+
+// const NORMAL_DENSITY = 0.0003
+// const CHARGED_DENSITY = 0.00004
+// const MIN_NORMAL_DROPS = 150 // default 50
+// const MAX_NORMAL_DROPS = 750 // default 150
+// const MIN_CHARGED_DROPS = 2 // default 2
+// const MAX_CHARGED_DROPS = 10 // default 10
+
+// export const NeonRain = ({
+//   gradColorGradient0 = 'rgba(255,255,255,1)',
+//   gradColorGradient1 = 'rgba(180,120,255,1)',
+//   gradColorGradient2 = 'rgba(116,29,227,1)',
+//   gradColorGradient3 = 'rgba(74,29,227,0)',
+//   className,
+//   fillStyle = 'rgba(0, 0, 30, 0.2)',
+// }: {
+//   className?: string
+//   fillStyle?: string
+//   gradColorGradient0?: string
+//   gradColorGradient1?: string
+//   gradColorGradient2?: string
+//   gradColorGradient3?: string
+// }) => {
+//   const gradColorGradient0Value = gradColorGradient0.trim()
+//   const gradColorGradient1Value = gradColorGradient1.trim()
+//   const gradColorGradient2Value = gradColorGradient2.trim()
+//   const gradColorGradient3Value = gradColorGradient3.trim()
+
+//   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+//   const animationFrameId = useRef<number | null>(null)
+
+//   const addAlpha = (rgba: string, alpha: number): string => {
+//     const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/)
+
+//     if (!match) {
+//       throw new Error('Invalid RGBA string')
+//     }
+
+//     const [, r, g, b] = match
+//     return `rgba(${r}, ${g}, ${b}, ${alpha})`
+//   }
+
+//   useEffect(() => {
+//     const canvas = canvasRef.current
+//     if (!canvas) return
+
+//     const ctx = canvas.getContext('2d')
+//     if (!ctx) return
+//     const renderCtx = ctx
+
+//     const parent = canvas.parentElement ?? canvas
+//     let canvasWidth = 0
+//     let canvasHeight = 0
+
+//     const chargedHeadColor = addAlpha(gradColorGradient0Value, 0)
+//     const normalHeadColor = addAlpha(gradColorGradient1Value, 0)
+//     const bodyColor = addAlpha(gradColorGradient2Value, 0.65)
+//     const tailColor = addAlpha(gradColorGradient3Value, 0)
+
+//     class RainDrop {
+//       private gradient: CanvasGradient | null = null
+//       private width = 1
+//       private speed = 0
+//       private length = 0
+//       private y = 0
+//       private x = 0
+
+//       constructor(
+//         private readonly context: CanvasRenderingContext2D,
+//         private readonly charged: boolean,
+//       ) {
+//         this.reset(true)
+//       }
+
+//       reset(spawnFromTop: boolean) {
+//         if (!canvasWidth || !canvasHeight) return
+
+//         this.x = Math.random() * canvasWidth
+//         this.y = spawnFromTop
+//           ? Math.random() * -canvasHeight
+//           : Math.random() * canvasHeight
+
+//         this.length = this.charged
+//           ? 60 + Math.random() * 160
+//           : 18 + Math.random() * 80
+
+//         this.speed = this.charged
+//           ? 14 + Math.random() * 14
+//           : 4 + Math.random() * 5
+
+//         this.width = this.charged
+//           ? 2.5 + Math.random() * 1.2
+//           : 0.9 + Math.random() * 1.2
+
+//         this.gradient = this.context.createLinearGradient(0, 0, 0, this.length)
+//         this.gradient.addColorStop(
+//           0,
+//           this.charged ? chargedHeadColor : normalHeadColor,
+//         )
+//         this.gradient.addColorStop(0.45, bodyColor)
+//         this.gradient.addColorStop(1, tailColor)
+//       }
+
+//       update(deltaY: number) {
+//         this.y += this.speed + deltaY
+
+//         if (this.y - this.length > canvasHeight) {
+//           this.reset(true)
+//         }
+//       }
+
+//       draw() {
+//         if (!this.gradient) return
+
+//         this.context.save()
+//         this.context.translate(this.x, this.y)
+//         this.context.beginPath()
+//         this.context.lineWidth = this.width
+//         this.context.lineCap = 'round'
+//         this.context.strokeStyle = this.gradient
+//         this.context.moveTo(0, 0)
+//         this.context.lineTo(0, this.length)
+//         this.context.stroke()
+//         this.context.restore()
+//       }
+//     }
+
+//     const normalDrops: Array<RainDrop> = []
+//     const chargedDrops: Array<RainDrop> = []
+
+//     const resizeCanvas = () => {
+//       const dpr = window.devicePixelRatio || 1
+//       const parentWidth = parent.clientWidth || canvas.width
+//       const parentHeight = parent.clientHeight || canvas.height
+
+//       if (!parentWidth || !parentHeight) return
+
+//       canvasWidth = parentWidth
+//       canvasHeight = parentHeight
+
+//       canvas.width = Math.round(parentWidth * dpr)
+//       canvas.height = Math.round(parentHeight * dpr)
+//       canvas.style.width = `${parentWidth}px`
+//       canvas.style.height = `${parentHeight}px`
+
+//       renderCtx.setTransform(1, 0, 0, 1, 0, 0)
+//       renderCtx.scale(dpr, dpr)
+
+//       updateDensity()
+//       normalDrops.forEach((drop) => drop.reset(false))
+//       chargedDrops.forEach((drop) => drop.reset(false))
+//     }
+
+//     const resizeObserver = new ResizeObserver(resizeCanvas)
+//     resizeObserver.observe(parent)
+//     resizeCanvas()
+
+//     function ensureDropAmount(
+//       list: Array<RainDrop>,
+//       target: number,
+//       charged: boolean,
+//     ) {
+//       while (list.length < target) {
+//         const drop = new RainDrop(renderCtx, charged)
+//         list.push(drop)
+//       }
+
+//       if (list.length > target) {
+//         list.splice(target)
+//       }
+//     }
+
+//     function updateDensity() {
+//       const area = canvasWidth * canvasHeight
+
+//       const targetNormal = Math.max(
+//         MIN_NORMAL_DROPS,
+//         Math.min(MAX_NORMAL_DROPS, Math.round(area * NORMAL_DENSITY)),
+//       )
+
+//       const targetCharged = Math.max(
+//         MIN_CHARGED_DROPS,
+//         Math.min(MAX_CHARGED_DROPS, Math.round(area * CHARGED_DENSITY)),
+//       )
+
+//       ensureDropAmount(normalDrops, targetNormal, false)
+//       ensureDropAmount(chargedDrops, targetCharged, true)
+//     }
+
+//     const animate = () => {
+//       renderCtx.fillStyle = fillStyle
+//       renderCtx.fillRect(0, 0, canvasWidth, canvasHeight)
+
+//       for (const drop of normalDrops) {
+//         drop.update(0)
+//         drop.draw()
+//       }
+
+//       for (const drop of chargedDrops) {
+//         drop.update(0.3)
+//         drop.draw()
+//         if (chargedDrops.length > MIN_CHARGED_DROPS && Math.random() < 0.005) {
+//           drop.reset(true)
+//         }
+//       }
+
+//       animationFrameId.current = requestAnimationFrame(animate)
+//     }
+
+//     animationFrameId.current = requestAnimationFrame(animate)
+
+//     return () => {
+//       if (animationFrameId.current) {
+//         cancelAnimationFrame(animationFrameId.current)
+//       }
+//       resizeObserver.disconnect()
+//     }
+//   }, [
+//     fillStyle,
+//     gradColorGradient0Value,
+//     gradColorGradient1Value,
+//     gradColorGradient2Value,
+//     gradColorGradient3Value,
+//   ])
+
+//   return (
+//     <canvas
+//       className={className}
+//       ref={canvasRef}
+//       style={{
+//         position: 'absolute',
+//         top: 0,
+//         left: 0,
+//         width: '100%',
+//         height: '100%',
+//         zIndex: -1,
+//         pointerEvents: 'none',
+//         display: 'block',
+//       }}
+//     ></canvas>
+//   )
+// }

@@ -1,6 +1,6 @@
 import { isAndroid, isIOS } from 'react-device-detect'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link as ScrollLink, Element } from 'react-scroll'
+import { Element, Link as ScrollLink } from 'react-scroll'
 // import { Link } from '@tanstack/react-router'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
@@ -21,6 +21,7 @@ import { SocialIcon } from '@/assets/icons/social'
 import { SwipeCard } from '@/components/swipe-card'
 import { cn } from '@/lib/utils'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { Link } from '@tanstack/react-router'
 
 export function HeroSection() {
   return (
@@ -29,10 +30,10 @@ export function HeroSection() {
         WHAT AWAITS YOU
       </h2>
 
-      {/* <div className="flex flex-col gap-4"> */}
+      <div className="flex flex-col gap-4">
         {/* <Link to="/onboarding">onboarding</Link> */}
-        {/* <Link to="/home">home</Link> */}
-      {/* </div> */}
+        <Link to="/home">home</Link>
+      </div>
 
       <StarsCard className="mt-10 animate-slide-up-fade-0" />
 

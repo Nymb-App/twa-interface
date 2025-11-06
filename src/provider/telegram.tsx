@@ -1,5 +1,8 @@
 'use client'
 
+import { AppContext } from '@/context/app-context'
+import { useBattle } from '@/hooks/api/use-battle'
+import { ENV } from '@/lib/constants'
 import { useMatches, useRouter } from '@tanstack/react-router'
 import {
   backButton,
@@ -10,11 +13,8 @@ import {
   swipeBehavior,
   viewport,
 } from '@telegram-apps/sdk'
-import { useContext, useEffect } from 'react'
 import type { ReactNode } from 'react'
-import { ENV } from '@/lib/constants'
-import { useBattle } from '@/hooks/api/use-battle'
-import { AppContext } from '@/context/app-context'
+import { useContext, useEffect } from 'react'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
@@ -122,5 +122,18 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
     })()
   }, [pathnames, currentOnboardingSlide])
 
+  // Production
+  // if (isTMA()) {
+  //   return (
+  //     <TwaAnalyticsProvider
+  //       projectId="Id"
+  //       apiKey="Key"
+  //     >
+  //       children
+  //     </TwaAnalyticsProvider>
+  //   )
+  // }
+
+  // Development
   return children
 }

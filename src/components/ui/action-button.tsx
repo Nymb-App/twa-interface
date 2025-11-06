@@ -4,14 +4,14 @@ import { cn } from '@/utils'
 export const ActionButton = ({
   children,
   className,
-  onClick,
   disabled,
+  onClick,
   onAnimationEnd,
 }: {
   children: ReactNode
   className?: string
-  onClick?: () => void
   disabled?: boolean
+  onClick?: () => void
   onAnimationEnd?: React.AnimationEventHandler<HTMLButtonElement>
 }) => {
   return (

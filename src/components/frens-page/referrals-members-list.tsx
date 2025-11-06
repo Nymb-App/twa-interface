@@ -1,11 +1,11 @@
-import { Link } from '@tanstack/react-router'
-import { useMemo } from 'react'
-import { Button } from '../ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Skeleton } from '../ui/skeleton'
+import { useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { cn } from '@/utils'
-import { useAccountMe } from '@/hooks/api/use-account'
+import { Link } from '@tanstack/react-router'
+import { useMemo } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Button } from '../ui/button'
+import { Skeleton } from '../ui/skeleton'
 
 const MIN_ALLOWED_TIME = 86400
 const MIN_FRENS_FOR_A_GIFT = 10

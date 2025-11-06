@@ -18,32 +18,7 @@ import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { shareURL } from '@telegram-apps/sdk'
 import { CopyButton } from './ui/copy-button'
 import { useTonConnectUI } from '@tonconnect/ui-react'
-
-function LazyVideo({
-  src,
-  className,
-  style,
-  poster,
-}: {
-  src?: string
-  className?: string
-  style?: React.CSSProperties
-  poster?: string
-}) {
-  // Basic implementation of LazyVideo, you might want to enhance this
-  return (
-    <video
-      src={src}
-      className={className}
-      style={style}
-      poster={poster}
-      autoPlay
-      loop
-      muted
-      playsInline
-    />
-  )
-}
+import { LazyVideo } from './lazy-video'
 
 export function MintSection() {
   const tonConnectUI = useTonConnectUI();
