@@ -31,7 +31,6 @@ function App() {
 
   useEffect(() => {
     if (!isAppStarted) return
-
     const timerId0 = setTimeout(() => {
       setAnimationCountdownFinished(true)
     }, 5000)
@@ -45,8 +44,24 @@ function App() {
     }
   }, [isAppStarted])
 
+  useEffect(() => {
+    document.documentElement.style.overflow = 'hidden'
+
+    if (isAppStarted && isAnimationCountdownFinished) {
+      document.documentElement.style.overflow = 'auto'
+    }
+
+    return () => {
+      document.documentElement.style.overflow = 'auto'
+    }
+  }, [isAppStarted, isAnimationCountdownFinished])
+
   return (
-    <PageLayout className="top-8 min-h-screen" useFooter={false}>
+    <PageLayout
+      className={cn('top-8 min-h-screen', !isAppStarted && '')}
+      classNameContent="!overflow-y-hidden"
+      useFooter={false}
+    >
       {!isAppStarted && (
         <AnimationStartOverlay onStart={() => setAppStarted(true)} />
       )}
