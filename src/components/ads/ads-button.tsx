@@ -15,6 +15,8 @@ export const AdsButton = ({
   isPercent,
   children,
   classNameText,
+  onReward,
+  onError,
 }: {
   className?: string
   classNameText?: string
@@ -23,6 +25,8 @@ export const AdsButton = ({
   displayPercent?: number
   isPercent?: boolean
   children?: React.ReactNode
+  onReward?: () => void
+  onError?: () => void
 }) => {
   const { post } = useApi()
 
@@ -56,10 +60,12 @@ export const AdsButton = ({
     setIsDisabled(true)
     share.mutate(time)
     onClick?.()
+    onReward?.()
   }
 
   const handleError = (): void => {
     console.error('Task error')
+    onError?.()
   }
 
   const { show } = useAdsgram({

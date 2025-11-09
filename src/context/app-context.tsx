@@ -1,6 +1,6 @@
-import { createContext, useState } from 'react'
-import type { ReactNode } from '@tanstack/react-router'
 import type { CarouselApi } from '@/components/ui/carousel'
+import type { ReactNode } from '@tanstack/react-router'
+import { createContext, useState } from 'react'
 
 interface IAppContext {
   giftPeriodRadioValue: string
