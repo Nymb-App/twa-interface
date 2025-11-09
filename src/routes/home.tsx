@@ -127,8 +127,8 @@ const HomeComponent = memo(function HomeComponent() {
                 radius={[1, 1.5]}
               />
               <ScratchHint
-                variant="circle"
-                top="65%"
+                variant="swipe"
+                top="70%"
                 left="55%"
                 color="#95D9EF"
               />
@@ -339,15 +339,15 @@ function UnfreezeAccountDrawer({
           className="w-full h-auto select-none pointer-events-none absolute"
         />
         <img
-          src="/unfreeze-drawer-timer.png"
+          src="/unfreeze-drawer-timer.webp"
           alt="Battle Card Top"
-          className="absolute top-0 left-1/2 mt-10 -translate-x-1/2 w-full h-auto select-none pointer-events-none"
+          className="absolute top-0 left-1/2 mt-10 -translate-x-1/2 w-full max-w-[70%] h-auto select-none pointer-events-none"
         />
 
-        <div className="p-4 mt-38">
+        <div className="p-4 mt-50">
           <h3 className="font-pixel text-3xl text-white text-center uppercase">
-            get <span className="text-[#B6FF00]">3 days,</span>
-            <br />
+            {/* get <span className="text-[#B6FF00]">3 days,</span> */}
+            {/* <br /> */}
             <span className="text-[#B6FF00]">Unfreeze</span> your
             <br />
             account

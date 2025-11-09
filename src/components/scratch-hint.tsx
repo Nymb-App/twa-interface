@@ -49,7 +49,7 @@ export function ScratchHint({
       ? 'hint-tap 1.1s ease-in-out infinite'
       : variant === 'circle'
         ? 'hint-circle 1.6s linear infinite'
-        : 'hint-swipe 1.8s ease-in-out infinite'
+        : 'hint-swipe-zigzag-return 3s ease-in-out infinite'
 
   return (
     <>
@@ -73,6 +73,26 @@ export function ScratchHint({
           50%  { transform:${baseTransform} translateX(36px) rotate(6deg);   opacity:1; }
           90%  { opacity:1; }
           100% { transform:${baseTransform} translateX(-36px) rotate(-6deg); opacity:.95; }
+        }
+        /* Forward: vertical zigzag (3 passes). Return: smooth straight back to start. */
+        @keyframes hint-swipe-zigzag-return {
+          /* start at top-left */
+          0%   { transform:${baseTransform} translate(-24px, -36px) rotate(-8deg); opacity:.95; }
+          10%  { opacity:1; }
+          /* forward (3 passes) compressed into first half */
+          17%  { transform:${baseTransform} translate( 24px, -12px) rotate(6deg);  opacity:1; }
+          33%  { transform:${baseTransform} translate(-24px,  12px) rotate(-6deg); opacity:1; }
+          50%  { transform:${baseTransform} translate( 24px,  36px) rotate(6deg);  opacity:1; }
+          /* return: smooth straight line back to start */
+          100% { transform:${baseTransform} translate(-24px, -36px) rotate(-8deg); opacity:.95; }
+        }
+        /* Trail: follow forward zigzag in first half; then fade while returning straight */
+        @keyframes hint-swipe-zigzag-trail-return {
+          0%   { transform:${baseTransform} translate(-24px, -36px); opacity:.35; }
+          17%  { transform:${baseTransform} translate( 24px, -12px); opacity:.28; }
+          33%  { transform:${baseTransform} translate(-24px,  12px); opacity:.22; }
+          50%  { transform:${baseTransform} translate( 24px,  36px); opacity:.16; }
+          100% { transform:${baseTransform} translate(-24px, -36px); opacity:0; }
         }
         @keyframes hint-circle {
           0%   { transform:${baseTransform} rotate(0deg)   translateX(24px) rotate(0deg); }
@@ -124,7 +144,7 @@ export function ScratchHint({
           }}
         />
 
-        {/* Optional swipe trail dots */}
+        {/* Swipe trail following the zigzag path with delays for smear effect */}
         {variant === 'swipe' && (
           <>
             <span
@@ -132,12 +152,15 @@ export function ScratchHint({
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                transform: `translate(calc(-50% - 36px), -50%)`,
-                width: size * 0.35,
-                height: size * 0.35,
+                width: size * 0.32,
+                height: size * 0.32,
+                transform: baseTransform,
                 borderRadius: '9999px',
-                background: `${color}4D`, // 30% alpha
-                animation: 'hint-trail 1.8s ease-in-out infinite',
+                background: color,
+                filter: 'blur(1.5px)',
+                opacity: 0.3,
+                animation:
+                  'hint-swipe-zigzag-trail-return 3s ease-in-out infinite',
               }}
             />
             <span
@@ -145,12 +168,31 @@ export function ScratchHint({
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                transform: `translate(calc(-50% + 36px), -50%)`,
-                width: size * 0.35,
-                height: size * 0.35,
+                width: size * 0.28,
+                height: size * 0.28,
+                transform: baseTransform,
                 borderRadius: '9999px',
-                background: `${color}4D`,
-                animation: 'hint-trail 1.8s ease-in-out infinite .9s',
+                background: color,
+                filter: 'blur(1.5px)',
+                opacity: 0.25,
+                animation:
+                  'hint-swipe-zigzag-trail-return 3s ease-in-out infinite .12s',
+              }}
+            />
+            <span
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: size * 0.24,
+                height: size * 0.24,
+                transform: baseTransform,
+                borderRadius: '9999px',
+                background: color,
+                filter: 'blur(1.5px)',
+                opacity: 0.2,
+                animation:
+                  'hint-swipe-zigzag-trail-return 3s ease-in-out infinite .24s',
               }}
             />
           </>
