@@ -25,7 +25,7 @@ function RouteComponent() {
       />
       <h1 className="font-pixel text-center text-2xl mt-28">SHOP</h1>
 
-      <div className="relative flex flex-col gap-10 w-full px-4 mt-6">
+      <div className="relative flex flex-col gap-9 w-full px-4 mt-6">
         <ItemNFT className="animate-slide-up-fade-0" />
         <ItemEnergy className="animate-slide-up-fade-1" />
         <ItemTime className="animate-slide-up-fade-2" />
