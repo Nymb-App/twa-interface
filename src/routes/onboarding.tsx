@@ -1,5 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useContext, useEffect, useState } from 'react'
+import { ActionButton } from '@/components/ui/action-button'
 import type { CarouselApi } from '@/components/ui/carousel'
 import {
   Carousel,
@@ -7,10 +6,11 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel'
 import { PageLayout } from '@/components/ui/page-layout'
-import { ActionButton } from '@/components/ui/action-button'
-import { cn } from '@/utils'
 import { AppContext } from '@/context/app-context'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { cn } from '@/utils'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useContext, useEffect, useState } from 'react'
 
 const slides = [
   {
@@ -88,7 +88,8 @@ function OnboardingScreen() {
   const [api, setApi] = useState<CarouselApi | undefined>()
   const [currentIndex, setCurrentIndex] = useState(0)
   const { accountQuery, finishOnboardingMutation } = useAccountMe()
-  const { setCurrentOnboardingSlide } = useContext(AppContext)
+  const { setCurrentOnboardingSlide, setIsOnboardingCompleted } =
+    useContext(AppContext)
 
   useEffect(() => {
     if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
@@ -99,6 +100,7 @@ function OnboardingScreen() {
     if (!api) return
     setCurrentOnboardingSlide(api)
     if (currentIndex === slides.length - 1) {
+      setIsOnboardingCompleted(true)
       navigate({ to: '/home' })
     }
     const onSelect = () => setCurrentIndex(api.selectedScrollSnap())
@@ -113,6 +115,7 @@ function OnboardingScreen() {
     if (currentIndex < slides.length - 1) {
       api?.scrollNext()
     } else {
+      setIsOnboardingCompleted(true)
       navigate({ to: '/home' })
     }
   }

@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'assignment-supporting-deutschland-twice.trycloudflare.com',
+      'https://agree-exercises-endless-applicant.trycloudflare.com',
     ],
   },
 

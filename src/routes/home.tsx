@@ -71,7 +71,7 @@ const HomeComponent = memo(function HomeComponent() {
   }, [accountQuery.data])
 
   const router = useRouter()
-  const { isGetCheckInReward } = useContext(AppContext)
+  const { isGetCheckInReward, isOnboardingCompleted } = useContext(AppContext)
 
   useEffect(() => {
     const now = new Date(
@@ -88,7 +88,11 @@ const HomeComponent = memo(function HomeComponent() {
 
     const todayInSeconds = Math.floor(now.getTime() / 1000)
 
-    if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
+    if (
+      accountQuery.data &&
+      !accountQuery.data.isFinishOnboarding &&
+      !isOnboardingCompleted
+    )
       router.navigate({ to: '/onboarding' })
 
     if (

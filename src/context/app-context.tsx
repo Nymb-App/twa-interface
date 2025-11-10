@@ -14,6 +14,8 @@ interface IAppContext {
   setCurrentOnboardingSlide: (value: CarouselApi | undefined) => void
   isGetCheckInReward: boolean
   setIsGetCheckInReward: (value: boolean) => void
+  isOnboardingCompleted: boolean
+  setIsOnboardingCompleted: (value: boolean) => void
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -27,6 +29,8 @@ export const AppContext = createContext<IAppContext>({
   setCurrentOnboardingSlide: () => {},
   isGetCheckInReward: false,
   setIsGetCheckInReward: () => {},
+  isOnboardingCompleted: false,
+  setIsOnboardingCompleted: () => {},
 })
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -38,12 +42,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     CarouselApi | undefined
   >(undefined)
   const [isGetCheckInReward, setIsGetCheckInReward] = useState<boolean>(false)
+  const [isOnboardingCompleted, setIsOnboardingCompleted] =
+    useState<boolean>(false)
 
   return (
     <AppContext.Provider
       value={{
         isGetCheckInReward,
         setIsGetCheckInReward,
+        isOnboardingCompleted,
+        setIsOnboardingCompleted,
         giftPeriodRadioValue,
         giftCountValue,
         setGiftPeriodRadioValue,
