@@ -65,7 +65,7 @@ export function ItemNFT({ className }: { className?: string }) {
             </div>
 
             <img
-              src="/shop/nft.webp"
+              src="/shop/nft4x.webp"
               alt="time"
               className="absolute bottom-0 right-2.5 max-w-[160px] h-auto"
             />

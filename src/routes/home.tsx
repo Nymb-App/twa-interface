@@ -4,6 +4,7 @@ import {
   lazy,
   memo,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -36,6 +37,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AppContext } from '@/context/app-context'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { useShop } from '@/hooks/api/use-shop'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
@@ -69,6 +71,7 @@ const HomeComponent = memo(function HomeComponent() {
   }, [accountQuery.data])
 
   const router = useRouter()
+  const { isGetCheckInReward } = useContext(AppContext)
 
   useEffect(() => {
     const now = new Date(
@@ -90,11 +93,13 @@ const HomeComponent = memo(function HomeComponent() {
 
     if (
       dailyRewardsQuery.data?.nextAvailableAt &&
-      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
+      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds &&
+      accountTime >= Date.now() &&
+      !isGetCheckInReward
     ) {
       router.navigate({ to: '/check-in' })
     }
-  }, [dailyRewardsQuery, router])
+  }, [dailyRewardsQuery, router, accountTime, isGetCheckInReward])
 
   const [revealed, setRevealed] = useState<boolean>(false)
   const [isPurchaseSuccess, setPurchaseSuccess] = useState<boolean>(false)

@@ -1,15 +1,21 @@
-import { ActionButton } from './action-button'
-import { cn } from '@/utils'
+import { AppContext } from '@/context/app-context'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { cn } from '@/utils'
 import { Link } from '@tanstack/react-router'
+import { useContext } from 'react'
+import { ActionButton } from './action-button'
 
 export const CheckInButton = ({ className }: { className?: string }) => {
   const { checkIn, isCheckingIn } = useCheckIn()
+  const { setIsGetCheckInReward } = useContext(AppContext)
 
   return (
     <Link
-      to="/home" 
-      onClick={() => checkIn()}
+      to="/home"
+      onClick={() => {
+        checkIn()
+        setIsGetCheckInReward(true)
+      }}
     >
       <ActionButton
         className={cn('', isCheckingIn && 'bg-[#222A10]', className)}

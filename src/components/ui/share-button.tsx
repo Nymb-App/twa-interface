@@ -2,7 +2,7 @@ import { useAccountMe } from '@/hooks/api/use-account'
 import { useApi } from '@/hooks/api/use-api'
 import { cn, convertTimestampToLargestUnit } from '@/utils'
 import { useMutation } from '@tanstack/react-query'
-import { shareURL } from '@telegram-apps/sdk'
+import { shareURL } from '@tma.js/sdk'
 import { useMemo, useState } from 'react'
 import { ActionButton } from './action-button'
 

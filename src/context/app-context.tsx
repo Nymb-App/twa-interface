@@ -1,6 +1,7 @@
+/* eslint-disable import/consistent-type-specifier-style */
 import type { CarouselApi } from '@/components/ui/carousel'
-import type { ReactNode } from '@tanstack/react-router'
-import { createContext, useState } from 'react'
+// eslint-disable-next-line sort-imports
+import { createContext, useState, type ReactNode } from 'react'
 
 interface IAppContext {
   giftPeriodRadioValue: string
@@ -11,6 +12,8 @@ interface IAppContext {
   setBattleGameRewardRadioValue: (value: string) => void
   currentOnboardingSlide: CarouselApi | undefined
   setCurrentOnboardingSlide: (value: CarouselApi | undefined) => void
+  isGetCheckInReward: boolean
+  setIsGetCheckInReward: (value: boolean) => void
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -22,6 +25,8 @@ export const AppContext = createContext<IAppContext>({
   setBattleGameRewardRadioValue: () => {},
   currentOnboardingSlide: undefined,
   setCurrentOnboardingSlide: () => {},
+  isGetCheckInReward: false,
+  setIsGetCheckInReward: () => {},
 })
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -32,10 +37,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [currentOnboardingSlide, setCurrentOnboardingSlide] = useState<
     CarouselApi | undefined
   >(undefined)
+  const [isGetCheckInReward, setIsGetCheckInReward] = useState<boolean>(false)
 
   return (
     <AppContext.Provider
       value={{
+        isGetCheckInReward,
+        setIsGetCheckInReward,
         giftPeriodRadioValue,
         giftCountValue,
         setGiftPeriodRadioValue,
