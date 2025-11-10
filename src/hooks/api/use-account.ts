@@ -1,8 +1,7 @@
 import { ENV } from '@/lib/constants'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { InitData } from '@tma.js/sdk'
-import { initData, isTMA, parseInitDataQuery } from '@tma.js/sdk'
-import { useEffect, useState } from 'react'
+import { isTMA } from '@telegram-apps/sdk'
+import { parseInitDataQuery, useRawInitData } from '@telegram-apps/sdk-react'
 import { useApi } from './use-api'
 
 const devInitData =
@@ -36,24 +35,24 @@ export interface IAccountMe {
  * Хук для получения и парсинга данных из Telegram InitData.
  */
 export function  useAccount() {
-  const [originalInitData, setOriginalInitData] = useState('')
-  const [parsedInitData, setParsedInitData] = useState<InitData>()
+  let initData: string | undefined
+  let parsedInitData
 
-  useEffect(() => {
-    if(!isTMA()) {
-      if(ENV !== 'production') {
-        setOriginalInitData(devInitData)
-        setParsedInitData(parseInitDataQuery(devInitData))
-      }
-      return
-    }
-    initData.restore()
-    setOriginalInitData(initData.raw() as string)
-    setParsedInitData(parseInitDataQuery(initData.raw() || ''))
-  }, [isTMA])
+  try {
+    const originalInitData = isTMA() ? useRawInitData()! : ''
+    initData =
+      originalInitData.length > 0
+        ? originalInitData
+        : ENV === 'production'
+          ? originalInitData
+          : devInitData
+    parsedInitData = parseInitDataQuery(initData)
+  } catch (error) {
+    console.error(error)
+  }
 
   return {
-    initData: originalInitData,
+    initData,
     parsedInitData,
     user: parsedInitData?.user,
   }

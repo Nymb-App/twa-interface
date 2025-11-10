@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { createContext, useState } from 'react'
-import type { ReactNode } from '@tanstack/react-router'
 
 const currentLevel = 12
 const year = 1
@@ -20,7 +19,7 @@ export const GateContext = createContext<IGateContext>({
   isLockedNewGate: false,
 })
 
-export const GateProvider = ({ children }: { children: ReactNode }) => {
+export const GateProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLockedNewGate, _] = useState(Boolean(year > 0 && ticket > 0))
 
   return (

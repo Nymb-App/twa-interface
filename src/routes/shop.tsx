@@ -1,6 +1,5 @@
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { ItemEnergy, ItemNFT, ItemTime } from '@/components/shop-page/index'
-import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 import { PageLayout } from '@/components/ui/page-layout'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -31,12 +30,11 @@ function RouteComponent() {
         <ItemEnergy />
         <ItemTime />
       </div>
-
-      <NoTasksBlock
+      {/* <NoTasksBlock
         className="absolute left-1/2 -translate-x-1/2"
         classNameText="font-inter text-white/60 text-sm"
         title="More coming soon"
-      />
+      /> */}
     </PageLayout>
   )
 }
