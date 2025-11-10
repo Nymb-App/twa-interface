@@ -1,6 +1,13 @@
+import { WatchesIcon } from '@/assets/icons/watches'
+import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
+import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
+import { ADSGRAM_APP_ID } from '@/lib/constants'
+import { cn } from '@/utils'
+import { useAdsgram } from '@adsgram/react'
+import confetti from 'canvas-confetti'
+import { LoaderIcon } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
-import { LoaderIcon } from 'lucide-react'
 import {
   ANIMATION_DURATION_COUNTUP,
   FARMING_DURATION,
@@ -9,10 +16,8 @@ import {
   useFarming,
 } from '../../context/farming-context'
 import { ActionButton } from './action-button'
-import { cn } from '@/utils'
-import { WatchesIcon } from '@/assets/icons/watches'
-import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
-import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
+
+const NYMB_FARMING_CLAIM_ADS_COUNT_KEY = 'NYMB_FARMING_CLAIM_ADS_COUNT'
 
 export function FarmingButton({
   className,
@@ -28,6 +33,8 @@ export function FarmingButton({
 
   const { setFinishAt } = useFarming()
   const { farmingStatusQuery, startFarming, claimReward } = useFarmingApi()
+
+  const { show } = useAdsgram({ blockId: ADSGRAM_APP_ID, debug: false })
 
   const duration = useMemo(() => {
     if (!farmingStatusQuery.data) return FARMING_DURATION
@@ -69,6 +76,16 @@ export function FarmingButton({
   }, [startFarming, farmingStatusQuery])
 
   const handleClaimClick = useCallback(() => {
+    const current =
+      Number(localStorage.getItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY)) || 0
+    const next = current + 1
+    localStorage.setItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY, String(next))
+    if (next === 7) {
+      try {
+        show()
+      } catch {}
+      localStorage.setItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY, '0')
+    }
     setIsClaiming(false)
     claimReward(undefined, {
       onSuccess: () => {
@@ -87,7 +104,7 @@ export function FarmingButton({
         localStorage.removeItem(NYMB_FARMING_CLAIM_TIME_KEY)
       },
     })
-  }, [onClick, setFinishAt, claimReward])
+  }, [onClick, setFinishAt, claimReward, show])
 
   if (!isFarming && !isClaiming) {
     return (
@@ -169,19 +186,53 @@ function FarmingClaimButton({
   const seconds = String(Math.floor((time % 60000) / 1000)).padStart(2, '0')
   const timeStr = `${hours}:${minutes}:${seconds}`
 
+  const handleClick = () => {
+    const defaults = {
+      spread: 360,
+      ticks: 50,
+      gravity: 0,
+      decay: 0.94,
+      startVelocity: 30,
+      colors: ['#B2FD11', '#202611', '#FF4DFF', '#FFD930', '#D9D9D9'],
+    }
+
+    const shoot = () => {
+      confetti({
+        ...defaults,
+        particleCount: 40,
+        scalar: 1.2,
+      })
+
+      confetti({
+        ...defaults,
+        particleCount: 10,
+        scalar: 0.75,
+      })
+    }
+
+    setTimeout(shoot, 0)
+    setTimeout(shoot, 100)
+    setTimeout(shoot, 200)
+  }
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={cn(
-        'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]',
-        className,
-      )}
-    >
-      <span className="mix-blend-difference">CLAIM</span>
-      <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
-      <span className="mix-blend-difference">{timeStr}</span>
-    </button>
+    <div className="relative">
+      <button
+        onClick={() => {
+          handleClick()
+          onClick?.()
+        }}
+        disabled={disabled}
+        className={cn(
+          'h-[56px] p-2 inline-flex justify-center items-center gap-1 font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]',
+          className,
+        )}
+      >
+        <span className="mix-blend-difference">CLAIM</span>
+        <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
+        <span className="mix-blend-difference">{timeStr}</span>
+      </button>
+    </div>
   )
 }
 

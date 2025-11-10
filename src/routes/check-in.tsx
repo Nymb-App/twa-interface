@@ -1,21 +1,22 @@
-import { createFileRoute } from '@tanstack/react-router'
-import Countdown, { zeroPad } from 'react-countdown'
-import type { ReactNode } from 'react'
-import type { CheckInRewards } from '@/hooks/use-get-daily-rewards'
-import { PageLayout } from '@/components/ui/page-layout'
-import {
-  calculateDaysBetween,
-  cn,
-  convertTimestampToLargestUnit,
-} from '@/utils'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { CheckInButton } from '@/components/ui/check-in-button'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { PageLayout } from '@/components/ui/page-layout'
+import type { CheckInRewards } from '@/hooks/use-get-daily-rewards'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import {
+  calculateDaysBetween,
+  cn,
+  convertTimestampToLargestUnit,
+} from '@/utils'
+import { createFileRoute } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
+import { zeroPad } from 'react-countdown'
 
 export const Route = createFileRoute('/check-in')({
   component: RouteComponent,
@@ -28,7 +29,7 @@ function RouteComponent() {
 
   if (isLoading) {
     return (
-      <PageLayout useFooter={false} useCheckInButton={true}>
+      <PageLayout useFooter={false}>
         <div className="flex items-center justify-center h-64">
           <FallbackLoader />
         </div>
@@ -38,7 +39,7 @@ function RouteComponent() {
 
   if (isError || !data) {
     return (
-      <PageLayout useFooter={false} useCheckInButton={true}>
+      <PageLayout useFooter={false}>
         <div className="flex items-center justify-center h-64">
           <p className="text-xl text-red-500">
             Error: {error?.message || 'Something went wrong'}
@@ -54,7 +55,7 @@ function RouteComponent() {
   )
 
   return (
-    <PageLayout className="relative" useFooter={false} useCheckInButton={true}>
+    <PageLayout className="relative" useFooter={false}>
       <FlickeringGrid
         className="absolute inset-0 z-0 mask-[radial-gradient(ellipse_250px_400px_at_center,black,transparent)]"
         squareSize={2}
@@ -65,25 +66,17 @@ function RouteComponent() {
         autoResize={false}
         width={450}
       />
-      <CheckInHeader
-        currentDay={currentDay}
-        nextAvailableAt={data.nextAvailableAt * 1000}
-      />
+      <CheckInHeader currentDay={currentDay === 0 ? 1 : currentDay + 1} />
       <div className="px-4">
         <CheckInInfoBlock rewards={data.rewards} />
-        <CheckInDaysBlock currentDay={currentDay} />
+        <CheckInDaysBlock currentDay={currentDay === 0 ? 1 : currentDay + 1} />
       </div>
+      <CheckInButton className="fixed bottom-6 w-[calc(100%-2rem)] left-1/2 -translate-x-1/2 max-w-[450px] z-50" />
     </PageLayout>
   )
 }
 
-function CheckInHeader({
-  currentDay,
-  nextAvailableAt,
-}: {
-  currentDay: number
-  nextAvailableAt: number
-}) {
+function CheckInHeader({ currentDay }: { currentDay: number }) {
   return (
     <header className="font-pixel mb-20 text-center text-[24px] font-[400] text-[#FFFFFF] uppercase">
       <h1 className="mt-6 mb-10 leading-[32px]">
@@ -93,15 +86,6 @@ function CheckInHeader({
         <span>{zeroPad(currentDay)}</span>
       </div>
       <h2>day check-in</h2>
-
-      {Date.now() < nextAvailableAt && (
-        <div className="font-inter mt-4 text-center text-[14px] leading-[140%] font-[400] text-[#FFFFFF] normal-case">
-          <p className="mb-1.5">Next reward in:</p>
-          <div className="font-pixel text-[20px] leading-[24px]">
-            <Countdown date={nextAvailableAt} renderer={renderer} />
-          </div>
-        </div>
-      )}
     </header>
   )
 }
@@ -164,27 +148,6 @@ const CheckInInfoBlockItem = ({
       {children}
       <span>{label}</span>
     </div>
-  )
-}
-
-const renderer = ({
-  days,
-  hours,
-  minutes,
-  seconds,
-}: {
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-}) => {
-  const totalHours = days * 24 + hours
-  const format = (value: number) => String(value).padStart(2, '0')
-
-  return (
-    <span>
-      {format(totalHours)}:{format(minutes)}:{format(seconds)}
-    </span>
   )
 }
 

@@ -50,7 +50,9 @@ function DrawerContent({
 }: React.ComponentProps<typeof DrawerPrimitive.Content>) {
   return (
     <DrawerPortal data-slot="drawer-portal">
-      <DrawerOverlay />
+      {/* <DrawerOverlay /> */}
+      {/* <div className="fixed inset-0 z-50 bg-black/50" /> */}
+      <DrawerClose className="fixed inset-0 z-50 bg-black/50" />
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(
@@ -62,6 +64,9 @@ function DrawerContent({
           'max-w-[450px] mx-auto',
           className,
         )}
+        // Prevent auto focus scrolling the page on open/close (iOS Safari)
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
         {...props}
       >
         <div className="bg-muted mx-auto mb-3 hidden h-[5px] w-10 !bg-[#FFFFFF]/20 shrink-0 rounded-[100px] group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />

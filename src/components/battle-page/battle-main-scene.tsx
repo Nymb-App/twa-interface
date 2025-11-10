@@ -1,18 +1,17 @@
-import { useRouter } from '@tanstack/react-router'
-import Countdown from 'react-countdown'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { ActionButton } from '../ui/action-button'
-import { CountdownStartGame } from '../minigames/countdown-start-game'
-import { BattleGameControlsPanel } from './battle-game-controls-panel'
-import { BattleCard } from './battle-card'
-import { BattleAnimatedMiddleLine } from './ui/battle-animated-middle-line'
-import { BattleScene } from './battle-scene'
-import { BattleTitle } from './battle-preview-screen'
-import type { TOpponentUserData } from './battle-intro-scene'
+import type { IRoom, IUser } from '@/hooks/api/use-battle'
+import { useBattle } from '@/hooks/api/use-battle'
 import { cn } from '@/utils'
-import { AppContext } from '@/context/app-context'
+import { useEffect, useRef, useState } from 'react'
+import Countdown from 'react-countdown'
+import { CountdownStartGame } from '../minigames/countdown-start-game'
+import { ActionButton } from '../ui/action-button'
+import { BattleCard } from './battle-card'
+import { BattleGameControlsPanel } from './battle-game-controls-panel'
+import { BattleTitle } from './battle-preview-screen'
+import { BattleScene } from './battle-scene'
+import { BattleAnimatedMiddleLine } from './ui/battle-animated-middle-line'
 
-const betConverter: any = {
+const betConverter: Record<string, string> = {
   '86400': 'days',
   '604800': 'weeks',
   '2592000': 'months',
@@ -25,27 +24,28 @@ export const BattleMainScene = ({
   onForcedExitBattle,
   opponentInfo,
   myInfo,
+  roomData,
   onBattleClick,
   onCountdownCompleted,
+  // onJoinGame,
   onGameFinished,
-  myLastOpponent,
 }: {
   areaClaimedPercent?: number
   onAreaClaimedPercentageChange?: (percent: number) => void
   onForcedExitBattle?: () => void
-  opponentInfo: TOpponentUserData | null
-  myInfo: TOpponentUserData | null
+  opponentInfo?: IUser | null
+  myInfo?: IUser | null
+  roomData: IRoom | null
   onBattleClick?: (isX2Active: boolean) => void
+  // onJoinGame?: (bet: number, isPrivate?: boolean) => void
   onCountdownCompleted?: () => void
   onGameFinished?: () => void
-  myLastOpponent: TOpponentUserData | null
 }) => {
   const [
     isForcedExitBattleAnimationFinished,
     setIsForcedExitBattleAnimationFinished,
   ] = useState(false)
 
-  const { battleGameRewardRadioValue } = useContext(AppContext)
   const [isStartFindingOpponent, setIsStartFindingOpponent] = useState(true) // true
   const [isVersusAnimationStart, setIsVersusAnimationStart] = useState(false) // false
   const [isClosingAnimation, setIsClosingAnimation] = useState(false) // false
@@ -63,8 +63,6 @@ export const BattleMainScene = ({
 
   const [countdownTarget, setCountdownTarget] = useState<number | null>(null)
 
-  const router = useRouter()
-
   const timeouts = useRef<Array<number>>([])
   const forcedExitTimeoutRef = useRef<number | null>(null)
 
@@ -73,6 +71,8 @@ export const BattleMainScene = ({
     timeouts.current.push(id)
   }
 
+  const { forceDisconnect } = useBattle()
+
   useEffect(() => {
     if (forcedExitTimeoutRef.current) {
       clearTimeout(forcedExitTimeoutRef.current)
@@ -80,9 +80,11 @@ export const BattleMainScene = ({
     }
 
     if (!opponentInfo) {
-      forcedExitTimeoutRef.current = window.setTimeout(() => {
-        onForcedExitBattle?.()
-      }, 30000)
+      // Автодисконнект при длительном ожидании оппонента
+      // forcedExitTimeoutRef.current = window.setTimeout(() => {
+      //   forceDisconnect()
+      //   onForcedExitBattle?.()
+      // }, 30_000)
       return
     }
 
@@ -90,13 +92,13 @@ export const BattleMainScene = ({
     timeouts.current = []
 
     const animationTimeouts = [
-      { fn: () => setIsVersusAnimationStart(true), delay: 1000 },
-      { fn: () => setIsStartFindingOpponent(false), delay: 5000 },
-      { fn: () => setIsClosingAnimation(true), delay: 5500 },
-      { fn: () => setIsOpeningAnimation(true), delay: 9000 },
-      { fn: () => setIsMorphAnimation(true), delay: 10500 },
-      { fn: () => setIsCardBgAnimationStart(true), delay: 10500 },
-      { fn: () => setIsStartCountdown(true), delay: 15000 },
+      { fn: () => setIsVersusAnimationStart(true), delay: 500 },
+      { fn: () => setIsStartFindingOpponent(false), delay: 2500 },
+      { fn: () => setIsClosingAnimation(true), delay: 2750 },
+      { fn: () => setIsOpeningAnimation(true), delay: 4500 },
+      { fn: () => setIsMorphAnimation(true), delay: 5250 },
+      { fn: () => setIsCardBgAnimationStart(true), delay: 5250 },
+      { fn: () => setIsStartCountdown(true), delay: 7500 },
     ]
 
     animationTimeouts.forEach(({ fn, delay }) => {
@@ -129,7 +131,9 @@ export const BattleMainScene = ({
 
   useEffect(() => {
     if (!myInfo || !opponentInfo) return
-    setAreaClaimedPercentage(myInfo.clicks - opponentInfo.clicks)
+    const myClicks = Number(myInfo.clicks)
+    const oppClicks = Number(opponentInfo.clicks)
+    setAreaClaimedPercentage(myClicks - oppClicks)
   }, [myInfo, opponentInfo])
 
   useEffect(() => {
@@ -148,6 +152,8 @@ export const BattleMainScene = ({
       clearTimeout(timeoutId)
     }
   }, [isForcedExit, onForcedExitBattle])
+
+  // if (!opponentInfo) return <FallbackLoader />
 
   return (
     <>
@@ -170,7 +176,7 @@ export const BattleMainScene = ({
               <dd className="leading-[120%] text-[#B6FF00] text-shadow-[0px_0px_8px_#B6FF00] mr-2 font-pixel mt-[-9px] uppercase">
                 <span className="mr-1 text-lg">1</span>
                 <span className="text-xs">
-                  {myInfo?.bet && betConverter[myInfo.bet]}
+                  {roomData && betConverter[roomData.bet]}
                 </span>
               </dd>
             </div>
@@ -189,18 +195,6 @@ export const BattleMainScene = ({
                     precision={0}
                     onComplete={() => {
                       onGameFinished?.()
-                      router.navigate({
-                        to: '/minigames/battle-result',
-                        search: {
-                          myNickname: myInfo?.nickname ?? 'Unknown',
-                          opponentNickname:
-                            myLastOpponent?.nickname ?? 'Unknown',
-                          isMeWinner: areaClaimedPercentage > 1,
-                          bet: battleGameRewardRadioValue,
-                          photoUrl: myInfo?.photoUrl ?? '',
-                          opponentPhotoUrl: myLastOpponent?.photoUrl ?? '',
-                        },
-                      })
                     }}
                     renderer={({ minutes, seconds }) => (
                       <span>
@@ -226,14 +220,14 @@ export const BattleMainScene = ({
             isRow={isMorphAnimation}
             isBgVisible={!isCardBgAnimationStart}
             className={cn(
-              'transition-all duration-5000 animate-battle-finding-slide-top-fade',
+              'transition-all duration-2500 animate-battle-finding-slide-top-fade',
               isClosingAnimation &&
                 !isOpeningAnimation &&
                 'flex-1 min-h-[220px]',
               isOpeningAnimation && 'h-[54px]',
             )}
             classNameBg={cn(
-              'transition-all duration-3000 delay-1500',
+              'transition-all duration-1500 delay-750',
               isOpeningAnimation && 'opacity-0',
             )}
           />
@@ -252,15 +246,14 @@ export const BattleMainScene = ({
 
           <BattleAnimatedMiddleLine
             className={cn(
-              'absolute top-1/2 left-1/2 -translate-1/2 z-1 w-[calc(100%-50px)] opacity-0 transition-all duration-600',
+              'absolute top-1/2 left-1/2 -translate-1/2 z-1 w-[calc(100%-50px)] opacity-0 transition-all duration-300',
               isVersusAnimationStart && 'opacity-100',
-              isOpeningAnimation && 'opacity-0 delay-1500',
+              isOpeningAnimation && 'opacity-0 delay-750',
             )}
             classNameForLine={cn(
               'opacity-0 w-0 transition-all',
-              isClosingAnimation &&
-                'w-full opacity-100 delay-1500 duration-1500',
-              isOpeningAnimation && 'w-0 opacity-0 delay-600 duration-1500',
+              isClosingAnimation && 'w-full opacity-100 delay-750 duration-750',
+              isOpeningAnimation && 'w-0 opacity-0 delay-300 duration-750',
             )}
           />
           <BattleCard
@@ -270,21 +263,21 @@ export const BattleMainScene = ({
             isBgVisible={!isCardBgAnimationStart}
             areaClaimedPercent={areaClaimedPercent}
             className={cn(
-              'transition-all duration-5000 w-full h-[220px] animate-battle-finding-slide-bottom-fade',
+              'transition-all duration-2500 w-full h-[220px] animate-battle-finding-slide-bottom-fade',
               isClosingAnimation &&
                 !isOpeningAnimation &&
                 'flex-1 min-h-[220px]',
               isOpeningAnimation && 'h-[54px]',
             )}
             classNameBg={cn(
-              'transition-all duration-3000 delay-1500',
+              'transition-all duration-750 delay-750',
               isOpeningAnimation && 'opacity-0',
             )}
           />
         </div>
         <div
           className={cn(
-            'transition-all duration-4000 delay-1300 h-0',
+            'transition-all duration-2000 delay-650 h-0',
             isOpeningAnimation && 'h-[160px]',
           )}
         >
@@ -308,31 +301,69 @@ export const BattleMainScene = ({
       </div>
       <div
         className={cn(
-          'transition-all duration-4000 delay-1300 px-4 h-[56px]',
+          'transition-all duration-2000 delay-650 px-4 h-[56px] inline-flex gap-2',
           isOpeningAnimation && 'h-0',
         )}
       >
         {isStartFindingOpponent && (
-          <ActionButton
-            disabled={
-              !isForcedExitBattleAnimationFinished || !isStartFindingOpponent
-            }
-            onClick={() => {
-              onForcedExitBattle?.()
-              if (forcedExitTimeoutRef.current) {
-                clearTimeout(forcedExitTimeoutRef.current)
-                forcedExitTimeoutRef.current = null
-              }
-            }}
-            className={cn(
-              'h-full bg-gradient-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
-            )}
-            onAnimationEnd={() => setIsForcedExitBattleAnimationFinished(true)}
-          >
-            <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
-              close
-            </span>
-          </ActionButton>
+          <div className="w-full h-full relative">
+            <div
+              className={cn(
+                'inline-flex gap-2 w-full h-full',
+                opponentInfo && 'opacity-60',
+              )}
+            >
+              <ActionButton
+                disabled={
+                  !isForcedExitBattleAnimationFinished ||
+                  !isStartFindingOpponent
+                }
+                onClick={() => {
+                  if (opponentInfo) return
+                  forceDisconnect()
+                  onForcedExitBattle?.()
+                  if (forcedExitTimeoutRef.current) {
+                    clearTimeout(forcedExitTimeoutRef.current)
+                    forcedExitTimeoutRef.current = null
+                  }
+                }}
+                className={cn(
+                  'h-full bg-gradient-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
+                )}
+                onAnimationEnd={() =>
+                  setIsForcedExitBattleAnimationFinished(true)
+                }
+              >
+                <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
+                  CLOSE
+                </span>
+              </ActionButton>
+              {/* This is only shown for invited user */}
+              {/* {roomData &&
+                roomData.isPrivate &&
+                roomData.createdBy !== Number(myInfo?.id) && (
+                  <ActionButton
+                    disabled={
+                      !isForcedExitBattleAnimationFinished ||
+                      !isStartFindingOpponent
+                    }
+                    onClick={() => {
+                      onJoinGame?.(Number(roomData.bet), true)
+                    }}
+                    className={cn(
+                      'h-full bg-gradient-to-b from-[#8C35FB] to-[#6602E7] opacity-0 animate-fade-in',
+                    )}
+                    onAnimationEnd={() =>
+                      setIsForcedExitBattleAnimationFinished(true)
+                    }
+                  >
+                    <span className="font-pixel text-white font-[400] uppercase text-[18px] leading-[24px]">
+                      TO BATTLE
+                    </span>
+                  </ActionButton>
+                )} */}
+            </div>
+          </div>
         )}
       </div>
     </>

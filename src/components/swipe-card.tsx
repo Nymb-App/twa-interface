@@ -37,10 +37,10 @@ export const SwipeCard = ({
         )}
       >
         {/* Dots pattern background */}
-        <div className="w-full h-[160px] overflow-hidden relative [mask-image:radial-gradient(140px_circle_at_center,white,transparent)]">
+        <div className="w-full h-[155px] overflow-hidden relative [mask-image:radial-gradient(140px_circle_at_center,white,transparent)]">
           <DotBackground />
         </div>
-        <div className="w-full h-[160px] overflow-hidden absolute top-0">
+        <div className="w-full h-[155px] overflow-hidden absolute top-0">
           <WatchesIcon className="absolute top-[40%] left-[40%] -rotate-45 animate-delay-pop-0" />
           <WatchesIcon className="absolute top-[12%] right-[8%] -rotate-[80deg] animate-delay-pop-1" />
           <WatchesIcon className="absolute -bottom-[15%] left-[50%] rotate-0 animate-delay-pop-2" />
@@ -52,7 +52,7 @@ export const SwipeCard = ({
 
         {/* Description section */}
         <div>
-          <h3 className="mt-3 text-center text-base font-[400]">{title}</h3>
+          <h3 className="mt-2 text-center text-base font-[400]">{title}</h3>
           <p className="mt-1 font-light text-xs text-white/50 text-center leading-3 font-inter tracking-[0.3px]">
             {description}
           </p>

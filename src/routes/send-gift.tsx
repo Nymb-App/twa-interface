@@ -1,17 +1,17 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { useRive } from '@rive-app/react-canvas'
-import { PageLayout } from '@/components/ui/page-layout'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { cn, convertGiftValueToSeconds } from '@/utils'
-import { RussianRoulette } from '@/components/ui/russian-roullete'
+import { AdsButton } from '@/components/ads/ads-button'
 import { GiftSelector } from '@/components/frens-page/gift-selector'
 import { SendGiftButton } from '@/components/frens-page/ui/gift-button'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { ActionButton } from '@/components/ui/action-button'
-import { useReferrals } from '@/hooks/api/use-referrals'
 import { ElectricLines } from '@/components/ui/electric-lines'
+import { PageLayout } from '@/components/ui/page-layout'
+import { RussianRoulette } from '@/components/ui/russian-roullete'
 import { useAccountMe } from '@/hooks/api/use-account'
-import { ShareButton } from '@/components/ui/share-button'
+import { useReferrals } from '@/hooks/api/use-referrals'
+import { cn, convertGiftValueToSeconds } from '@/utils'
+import { useRive } from '@rive-app/react-canvas'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
@@ -195,7 +195,15 @@ function RouteComponent() {
       )}
       {isFinishRoulette && (
         <div className="fixed w-full bottom-0 flex flex-col gap-2 px-4 mb-6 max-w-[450px]">
-          <ShareButton time={7200} />
+          {/* <ShareButton time={7200} /> */}
+          <AdsButton
+            disabled={false}
+            time={7200}
+            labelColor="black"
+            labelOpacity={1}
+            className="text-black from-[#ADFA4B] to-[#B6FF00] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
+          />
+
           <Link to="/frens">
             <ActionButton className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]">
               <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">

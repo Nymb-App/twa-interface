@@ -1,19 +1,18 @@
+import { cn } from '@/utils'
 import { Link, useMatches } from '@tanstack/react-router'
-import { isMobile } from 'react-device-detect'
-import { Toaster } from 'sonner'
+import type { ReactNode } from 'react'
 import { useEffect } from 'react'
+import { isMobile } from 'react-device-detect'
+import type { JSX } from 'react/jsx-runtime'
+import { Toaster } from 'sonner'
 import { LvlUpButton } from '../gate-page/ui/lvl-up-button'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
-import { CheckInButton } from './check-in-button'
 import { UnlockGateCloseButton } from './unlock-gate-close-button'
-import type { ReactNode } from 'react'
-import type { JSX } from 'react/jsx-runtime'
-import { cn } from '@/utils'
 
 // SVG Icons
-import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
-import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
+import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
+import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
 
 export const PageLayout = ({
@@ -21,7 +20,6 @@ export const PageLayout = ({
   useFooter = true,
   useSendButton = false,
   useSendGiftActionButtons = false,
-  useCheckInButton = false,
   useJumpToTheNextGateButton = false,
   useUnlockGateCloseButton = false,
   className,
@@ -32,7 +30,6 @@ export const PageLayout = ({
   useFooter?: boolean
   useSendButton?: boolean
   useSendGiftActionButtons?: boolean
-  useCheckInButton?: boolean
   useJumpToTheNextGateButton?: boolean
   useUnlockGateCloseButton?: boolean
   className?: string
@@ -86,13 +83,10 @@ export const PageLayout = ({
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
       )}
-      {useCheckInButton && (
-        <CheckInButton className="fixed bottom-6 w-[calc(100%-2rem)] left-1/2 -translate-x-1/2 max-w-[450px] z-50" />
-      )}
       {useJumpToTheNextGateButton && <LvlUpButton />}
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster
-        className="!mb-18"
+        className="!mt-20"
         position="top-center"
         toastOptions={{
           className:

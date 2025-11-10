@@ -1,36 +1,49 @@
-import { useCallback, useEffect, useState } from 'react'
-import { io } from 'socket.io-client'
+import { useWebSocket } from '@/provider/web-socket-provider'
 import { useMatches, useRouter } from '@tanstack/react-router'
+import { useCallback, useEffect, useState } from 'react'
+import { useEffectEvent } from 'use-effect-event'
 import { useAccount } from './use-account'
-import type { TOpponentUserData } from '@/components/battle-page/battle-intro-scene'
 
-const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
-const socket = io(`${baseUrl}/battle`, {
-  autoConnect: false, // Рекомендуется для лучшего контроля
-})
-
-interface IGameFinishedData {
-  roomId: string
-  winner: TOpponentUserData
-  loser: TOpponentUserData
+export interface IUser {
+    id: number,
+    clicks?: number,
+    photoUrl?: string,
+    nickname?: string,
+}
+export interface IRoom {
+    id: string,
+    bet: number,
+    isPrivate: boolean,
+    maxUsersCount: number,
+    createdAt: number,
+    createdBy: number,
+    users: Array<IUser>,
+    deadline?: number,
 }
 
-// WebSocket hook with TanStack Query integration
+export interface IBattleResult {
+  isDraw?: true,
+  bet: number,
+  winner: IUser,
+  loser: IUser,
+}
+
 export function useBattle() {
   const { user: account } = useAccount()
   const [roomId, setRoomId] = useState<string | null>(null)
-  const [opponentInfo, setOpponentInfo] = useState<TOpponentUserData | null>(
+  const [opponentInfo, setOpponentInfo] = useState<IUser | null>(
     null,
   )
+  const [roomData, setRoomData] = useState<IRoom | null>(null)
+  const ws = useWebSocket('/battle')
 
   const [myLastOpponent, setMyLastOpponent] =
-    useState<TOpponentUserData | null>(null)
+    useState<IUser | null>(null)
 
-  const [myInfo, setMyInfo] = useState<TOpponentUserData>({
-    userId: Number(account?.id),
+  const [myInfo, setMyInfo] = useState<IUser | any>({
+    id: Number(account?.id),
     photoUrl: String(account?.photo_url),
     nickname: String(account?.username),
-    bet: 0,
     clicks: 0,
   })
 
@@ -40,120 +53,173 @@ export function useBattle() {
 
   const [isMeViewMyOpponent1, setIsMeViewMyOpponent1] = useState(false)
 
+  const [resultData, _] = useState<IBattleResult | null>(null)
+
   const router = useRouter()
   const pathnames = useMatches()
+  const [isSocketConnected, setIsSocketConnected] = useState(false)
+
+  const onConnect = useEffectEvent(() => {
+    setIsSocketConnected(true)
+  })
+
+  const onWaitingForPlayers = useEffectEvent((data: IRoom) => {
+    setRoomId(data.id)
+    setRoomData(data)
+  })
+
+  const onGetRoom = useEffectEvent((data: IRoom) => {
+    setOpponentInfo(data.users[0])
+    setRoomId(data.id)
+    setRoomData(data)
+  })
+
+  const onGameStarted = useEffectEvent((data: unknown) => {
+    if(!account) return
+    const d = data as IRoom
+    const opponent = d.users.find(
+      (user: IUser) => user.id !== account.id,
+    )
+    const me = d.users.find(
+      (user: IUser) => user.id === account.id,
+    )
+    if (opponent) {
+      setOpponentInfo((prevInfo) => (prevInfo ? prevInfo : opponent))
+      setMyLastOpponent(opponent)
+    }
+    if (me) {
+      setMyInfo(me)
+    }
+    setRoomId(d.id)
+    setRoomData(d)
+  })
+
+  const onMeViewMyOpponent = useEffectEvent((data: unknown) => {
+    const d = data as { userId: number }
+    if (d.userId === account?.id) {
+      setIsMeViewMyOpponent0(true)
+    } else {
+      setIsMeViewMyOpponent1(true)
+    }
+  })
+
+  const onClickUpdate = useEffectEvent((data: unknown) => {
+    const d = data as { users: Array<IUser> }
+    const opponent = d.users.find(
+      (user: IUser) => user.id !== account?.id,
+    )
+    const me = d.users.find(
+      (user: IUser) => user.id === account?.id,
+    )
+    if (opponent) {
+      setOpponentInfo(opponent)
+    }
+    if (me) {
+      setMyInfo(me)
+    }
+  })
+
+    const onGameFinished = useEffectEvent((data: unknown) => {
+    const d = data as IBattleResult
+    // const isWinner = d.isDraw ? false : d.winner.id === account?.id
+    // const opponent = isWinner ? d.loser : d.winner
+    const betConverter: Record<string, string> = {
+      '86400': '1 day',
+      '604800': '1 week',
+      '2592000': '1 month',
+      '31536000': '1 year',
+    }
+    // setResultData({
+    //   isDraw: d.isDraw,
+    //   bet: d.bet,
+    //   winner: d.winner,
+    //   loser: d.loser,
+    // })
+
+    // setMyInfo({
+    //   id: Number(account?.id),
+    //   photoUrl: String(account?.photo_url),
+    //   nickname: String(account?.username),
+    //   clicks: 0,
+    // })
+    // setMyLastOpponent(opponent)
+    // setOpponentInfo(resultData && resultData.winner.id === resultData.loser.id ? resultData.winner : null)   
+    // setOpponentInfo(null)   
+    // setRoomId(null)
+
+    // if(resultData?.winner.id === resultData?.loser.id) {
+    //   return
+    // }
+
+    router.navigate({
+      to: '/minigames/battle-result',
+      search: {
+        isDraw: d.isDraw || false,
+        bet: betConverter[d.bet],
+        myId: account && account.id || 0,
+        winnerId: d.winner.id,
+        winnerName: String(d.winner.nickname || d.winner.id),
+        winnerPhotoUrl: String(d.winner.photoUrl),
+        loserId: d.loser.id,
+        loserName: String(d.loser.nickname || d.loser.id),
+        loserPhotoUrl: String(d.loser.photoUrl),
+      },
+    })
+  })
+
+  const onError = useEffectEvent((err?: unknown) => {
+    console.log('socket error', err)
+  })
+
+  const onDisconnect = useEffectEvent(() => {
+    setIsSocketConnected(false)
+  })
+
+  const onReady = useEffectEvent(() => {
+    // const d = data as { userId: number }
+    // if (d.userId !== account?.id) {
+    //   setIsReady(true)
+    // }
+  })
 
   useEffect(() => {
-    if (!socket.connected) {
-      socket.connect()
-    }
+    ws.connect()
 
-    socket.on('connect', () => {
-      console.log(`Connected with id: ${socket.id}`)
-    })
+    const hConnect = () => onConnect()
+    const hWaiting = (p: unknown) => onWaitingForPlayers(p as IRoom)
+    const hGetRoom = (p: unknown) => onGetRoom(p as IRoom)
+    const hGameStarted = (p: unknown) => onGameStarted(p as IRoom)
+    const hMeView = (p: unknown) => onMeViewMyOpponent(p)
+    const hClickUpdate = (p: unknown) => onClickUpdate(p)
+    const hGameFinished = (p: unknown) => onGameFinished(p)
+    const hReady = () => onReady()
+    const hError = (e?: unknown) => onError(e)
+    const hDisconnect = () => onDisconnect()
 
-    socket.on('waiting_for_players', (data) => {
-      setRoomId(data.roomId)
-    })
-
-    socket.on('game_started', (data) => {
-      const opponent = data.users.filter(
-        (user: TOpponentUserData) => user.userId !== account?.id,
-      )[0]
-      const me = data.users.filter(
-        (user: TOpponentUserData) => user.userId === account?.id,
-      )[0]
-      if (opponent !== undefined || opponent !== null) {
-        setOpponentInfo((prevInfo) => (prevInfo ? prevInfo : opponent))
-        setMyLastOpponent(opponent)
-      }
-      if (me !== undefined || me !== null) {
-        setMyInfo(me)
-      }
-      setRoomId(data.roomId)
-    })
-
-    socket.on('me_view_my_opponent', (data) => {
-      if (data.userId === account?.id) {
-        setIsMeViewMyOpponent0(true)
-      } else {
-        setIsMeViewMyOpponent1(true)
-      }
-    })
-
-    socket.on('click_update', (data) => {
-      const opponent = data.users.filter(
-        (user: TOpponentUserData) => user.userId !== account?.id,
-      )[0]
-
-      const me = data.users.filter(
-        (user: TOpponentUserData) => user.userId === account?.id,
-      )[0]
-      if (opponent !== undefined || opponent !== null) {
-        setOpponentInfo(opponent)
-      }
-      if (me !== undefined || me !== null) {
-        setMyInfo(me)
-      }
-    })
-
-    socket.on('game_finished', (data: IGameFinishedData) => {
-      const isWinner = data.winner.userId === account?.id
-
-      const me = isWinner ? data.winner : data.loser
-
-      const opponent = isWinner ? data.loser : data.winner
-
-      const betConverter: any = {
-        '86400': '1 day',
-        '604800': '1 week',
-        '2592000': '1 month',
-        '31536000': '1 year',
-      }
-
-      setMyInfo({
-        userId: Number(account?.id),
-        photoUrl: String(account?.photo_url),
-        nickname: String(account?.username),
-        bet: 0,
-        clicks: 0,
-      })
-      setMyLastOpponent(opponent)
-      setOpponentInfo(null)
-      setRoomId(null)
-
-      router.navigate({
-        to: '/minigames/battle-result',
-        search: {
-          myNickname: me.nickname,
-          opponentNickname: opponent.nickname,
-          isMeWinner: isWinner,
-          bet: betConverter[String(data.winner.bet)],
-          photoUrl: me.photoUrl,
-          opponentPhotoUrl: opponent.photoUrl,
-        },
-      })
-    })
-
-    socket.on('error', () => {
-      console.log('socket error')
-    })
-
-    socket.on('disconnect', () => {
-      console.log('disconnect')
-    })
+    ws.on('connect', hConnect)
+    ws.on('ready', hReady)
+    ws.on('waiting_for_players', hWaiting)
+    ws.on('get_room', hGetRoom)
+    ws.on('game_started', hGameStarted)
+    ws.on('me_view_my_opponent', hMeView)
+    ws.on('click', hClickUpdate)
+    ws.on('finish_game', hGameFinished)
+    ws.on('error', hError)
+    ws.on('disconnect', hDisconnect)
 
     return () => {
-      socket.off('connect')
-      socket.off('waiting_for_players')
-      socket.off('game_started')
-      socket.off('me_view_my_opponent')
-      socket.off('click_update')
-      socket.off('game_finished')
-      socket.off('error')
-      socket.off('disconnect')
+      ws.off('connect', hConnect)
+      ws.off('waiting_for_players', hWaiting)
+      ws.off('game_started', hGameStarted)
+      ws.off('me_view_my_opponent', hMeView)
+      ws.off('click', hClickUpdate)
+      ws.off('ready', hReady)
+      ws.off('get_room', hGetRoom)
+      ws.off('finish_game', hGameFinished)
+      ws.off('error', hError)
+      ws.off('disconnect', hDisconnect)
     }
-  }, [])
+  }, [ws])
 
   useEffect(() => {
     if (pathnames[1].pathname !== '/minigames/battle') {
@@ -168,26 +234,36 @@ export function useBattle() {
   }, [isMeViewMyOpponent0, isMeViewMyOpponent1])
 
   const makeBet = useCallback(
-    (bet: number) => {
-      socket.emit('join_or_create_room', {
-        bet,
-        userId: Number(account?.id),
-        photoUrl: account?.photo_url,
-        nickname: account?.username,
+    (params: {user: IUser, bet?: number, isPrivate?: boolean, invitedBy?: number}) => {
+      if(!params.isPrivate) {
+        ws.emit('join_or_create_room', {
+          user: params.user,
+          bet: params.bet,
+      })
+      return
+      }
+      ws.emit('join_or_create_room', {
+        user: params.user,
+        bet: params.bet,
+        invitedBy: params.invitedBy,
+        isPrivate: params.isPrivate,
       })
     },
-    [account],
+    [],
   )
 
-  const leaveGame = useCallback((roomId_: string) => {
-    socket.emit('leave_room', {
-      roomId: roomId_,
+  const getRoomData = useCallback((creatorId: number) => {
+    ws.emit('get_room', {
+      creatorId
     })
+  }, [])
+
+  const leaveGame = useCallback(() => {
+    ws.emit('finish_game')
     setMyInfo({
-      userId: Number(account?.id),
+      id: Number(account?.id),
       photoUrl: String(account?.photo_url),
       nickname: String(account?.username),
-      bet: 0,
       clicks: 0,
     })
     setOpponentInfo(null)
@@ -195,28 +271,17 @@ export function useBattle() {
   }, [])
 
   const click = useCallback(
-    (roomId_: string) => {
-      socket.emit('click', {
-        roomId: roomId_,
-        userId: account?.id,
+    (isX2: boolean = false) => {
+      ws.emit('click', {
+        isX2,
       })
     },
-    [account],
-  )
-
-  const clickX2 = useCallback(
-    (roomId_: string) => {
-      socket.emit('click_x2', {
-        roomId: roomId_,
-        userId: account?.id,
-      })
-    },
-    [account],
+    [],
   )
 
   const isMeViewMyOpponentEmit = useCallback(
     (roomId_: string) => {
-      socket.emit('is_me_view_my_opponent', {
+      ws.emit('is_me_view_my_opponent', {
         roomId: roomId_,
         userId: account?.id,
       })
@@ -225,33 +290,31 @@ export function useBattle() {
   )
 
   const isMeReady = useCallback(
-    (roomId_: string) => {
-      socket.emit('is_me_ready', {
-        roomId: roomId_,
-        userId: account?.id,
-      })
+    () => {
+      ws.emit('ready')
     },
     [account],
   )
 
-  const forceDisconnect = useCallback(() => {
-    socket.emit('force_disconnect')
-    socket.disconnect()
+  const forceDisconnect = useCallback((invitedBy?: number) => {
+    ws.emit('finish_game', {isLeave: true, invitedBy})
+    ws.disconnect()
   }, [])
 
-  const isFinishedGame = useCallback((roomId_: string) => {
-    socket.emit('finish_game', {
-      roomId: roomId_,
-    })
+  const isFinishedGame = useCallback(() => {
+    ws.emit('finish_game')
   }, [])
 
   return {
     makeBet,
     leaveGame,
     click,
+    ws,
     opponentInfo,
-    clickX2,
     myInfo,
+    roomData,
+    resultData,
+    getRoomData,
     roomId,
     isMeReady,
     isMeViewMyOpponent,
@@ -259,6 +322,6 @@ export function useBattle() {
     isMeViewMyOpponentEmit,
     isFinishedGame,
     forceDisconnect,
-    isSocketConnected: socket.connected,
+    isSocketConnected,
   }
 }

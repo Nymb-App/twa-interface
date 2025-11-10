@@ -3,6 +3,8 @@ import { animate } from 'framer-motion'
 import Countdown from 'react-countdown'
 
 // Components
+import { TbReload } from 'react-icons/tb'
+import { Link } from '@tanstack/react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CountdownTimerDisplay } from '../ui/countdown-timer-display'
 import { Skeleton } from '../ui/skeleton'
@@ -13,6 +15,8 @@ import EnergyIcon from '@/assets/icons/energy'
 
 // Hooks
 import { useAccountMe } from '@/hooks/api/use-account'
+import EnergyEmptyIcon from '@/assets/icons/energy-empty'
+import { cn } from '@/utils'
 
 // Types
 interface AnimatedCountdownProps {
@@ -68,9 +72,28 @@ export const AnimatedCountdown = ({
  * Displays the user's energy level
  */
 const EnergyCounter = ({ energy }: EnergyCounterProps) => (
-  <div className="inline-flex items-center justify-between bg-[#1D1F1D] rounded-2xl h-[40px] pl-2 pr-3">
-    <EnergyIcon className="size-[28px]" />
-    <span className="text-base">{energy ?? '...'}</span>
+  <div
+    className={cn(
+      'inline-flex items-center justify-between bg-[#1d1f1d] rounded-2xl h-[40px] pl-2 pr-3',
+      energy === 0 && 'pl-0 pr-0 px-2',
+    )}
+  >
+    {energy === 0 ? (
+      <Link to="/shop" className="inline-flex items-center gap-1">
+        <EnergyEmptyIcon className="size-[16px]" />
+        <div className="relative">
+          <TbReload className="size-5 text-[#A45FFF] scale-x-[-1] rounded-full" />
+          <TbReload className="size-5 text-[#A45FFF] blur scale-x-[-1] rounded-full absolute left-1/2 top-1/2 -translate-1/2" />
+        </div>
+      </Link>
+    ) : (
+      <>
+        <EnergyIcon className="size-[28px]" />
+        <span className="text-base text-[#A45FFF] [text-shadow:0px_0px_12px_#9C1FFD]">
+          {energy ?? '...'}
+        </span>
+      </>
+    )}
   </div>
 )
 
@@ -207,7 +230,7 @@ const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
 
   return (
     <header
-      className="relative w-full font-pixel px-3 bg-no-repeat bg-bottom pb-6"
+      className="relative w-full font-pixel px-3 bg-no-repeat bg-bottom pb-5"
       style={headerStyle}
     >
       <div className="inline-flex justify-between w-full">

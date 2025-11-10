@@ -22,6 +22,12 @@ export interface DotPatternHandle {
     waveReach?: number
     waveColor?: string
   }) => void
+  /** Programmatically draw a short trailing gesture (random start/curve). */
+  spawnRandomTrail?: (options?: {
+    durationMs?: number
+    speed?: number
+    wave?: boolean
+  }) => void
 }
 export interface DotPatternProps {
   gap?: number
@@ -103,6 +109,10 @@ export const DotPatternInteractive = forwardRef<
     // Волны для эффекта "wave"
     const waves = useRef<Array<{ x: number; y: number; start: number }>>([])
     const active = useRef<boolean>(animate === 'on-hover')
+
+    // Allow rendering trails even if trailing is disabled via props
+    const forceTrailRef = useRef<boolean>(false)
+    const synthAnimRef = useRef<number | null>(null)
 
     const lerpColor = useCallback((a: string, b: string, t: number) => {
       const ca = parseInt(a.slice(1), 16),
@@ -220,8 +230,8 @@ export const DotPatternInteractive = forwardRef<
         }
       }
 
-      // Trailing
-      if (trailing) {
+      // Trailing (also render if programmatic trail is active)
+      if (trailing || forceTrailRef.current) {
         ctx.filter = 'none'
         ctx.lineCap = 'round'
         const head = (trailingRadius ?? maxRadius) * dpr
@@ -298,29 +308,34 @@ export const DotPatternInteractive = forwardRef<
       return () => void ro.disconnect()
     }, [draw])
 
-    // Decay trailing
+    // Decay trailing (hold until lifetime elapsed, then gradually fade to zero)
     useEffect(() => {
-      if (!trailing) return
       const tick = () => {
         const now = Date.now()
         trailMap.current.forEach((arr, id) => {
-          const last = lastMoveMap.current.get(id) || 0
-          if (now - last > trailingLifetime && arr.length > minTrailLength) {
-            for (let i = 0; i < 5 && arr.length > minTrailLength; i++) {
+          const last = lastMoveMap.current.get(id) || now
+          const dt = now - last
+          if (dt > trailingLifetime) {
+            if (arr.length > 0) {
+              // Pop 1 segment per frame for smooth fade-out
               arr.pop()
             }
-          }
-          if (arr.length === 0) {
-            trailMap.current.delete(id)
-            lastMoveMap.current.delete(id)
+            if (arr.length === 0) {
+              trailMap.current.delete(id)
+              lastMoveMap.current.delete(id)
+            }
           }
         })
+        // Disable forced trailing when nothing to render
+        if (pointerMap.current.size === 0 && trailMap.current.size === 0) {
+          forceTrailRef.current = false
+        }
         draw()
         requestAnimationFrame(tick)
       }
       const id = requestAnimationFrame(tick)
       return () => cancelAnimationFrame(id)
-    }, [draw, trailing, minTrailLength, trailingLifetime])
+    }, [draw, trailing, trailingLifetime])
 
     // Pointer handlers
     useEffect(() => {
@@ -436,9 +451,101 @@ export const DotPatternInteractive = forwardRef<
           if (params.waveColor !== undefined)
             setCurrentWaveColor(params.waveColor)
         },
+        spawnRandomTrail: (options) => {
+          const cvs = canvasRef.current
+          if (!cvs) return
+
+          const duration = Math.max(300, Math.min(1500, options?.durationMs ?? 800))
+          const speed = Math.max(2, Math.min(40, options?.speed ?? 8)) * dpr
+
+          // Random start inside canvas with margins
+          const margin = 40 * dpr
+          let x = margin + Math.random() * Math.max(1, cvs.width - margin * 2)
+          let y = margin + Math.random() * Math.max(1, cvs.height - margin * 2)
+          let angle = Math.random() * Math.PI * 2
+
+          const PID = -1 // synthetic pointer id
+          const arr: Array<{ x: number; y: number }> = [{ x, y }]
+          pointerMap.current.set(PID, { x, y })
+          trailMap.current.set(PID, arr)
+          lastMoveMap.current.set(PID, Date.now())
+          forceTrailRef.current = true
+
+          // Optional wave at the start for visual punch
+          if (drawEffect === 'wave' && options?.wave) {
+            waves.current.push({ x, y, start: Date.now() })
+            startWaveLoop()
+          }
+
+          draw()
+
+          const start = performance.now()
+          const step = (ts: number, prevTs: number) => {
+            if (!canvasRef.current) return
+            const dt = Math.max(0, ts - prevTs)
+            const elapsed = ts - start
+            if (elapsed >= duration) {
+              // End gesture
+              pointerMap.current.delete(PID)
+              lastMoveMap.current.delete(PID)
+
+              // Wave on release (if requested)
+              if (drawEffect === 'wave' && options?.wave) {
+                waves.current.push({ x, y, start: Date.now() })
+                startWaveLoop()
+              }
+
+              // Mark last activity time so decay starts after trailingLifetime
+              lastMoveMap.current.set(PID, Date.now())
+              // Keep forceTrailRef until global decay removes the trail fully
+              synthAnimRef.current = null
+              return
+            }
+
+            // Slightly change direction over time
+            angle += (Math.random() - 0.5) * 0.2
+
+            // Move and bounce within bounds
+            x += Math.cos(angle) * speed * (dt / 16.7)
+            y += Math.sin(angle) * speed * (dt / 16.7)
+
+            if (x < margin) {
+              x = margin
+              angle = Math.PI - angle
+            } else if (x > cvs.width - margin) {
+              x = cvs.width - margin
+              angle = Math.PI - angle
+            }
+            if (y < margin) {
+              y = margin
+              angle = -angle
+            } else if (y > cvs.height - margin) {
+              y = cvs.height - margin
+              angle = -angle
+            }
+
+            pointerMap.current.set(PID, { x, y })
+            lastMoveMap.current.set(PID, Date.now())
+            arr.unshift({ x, y })
+            if (arr.length > trailLength) arr.pop()
+            draw()
+            synthAnimRef.current = requestAnimationFrame((t) => step(t, ts))
+          }
+
+          if (synthAnimRef.current != null) cancelAnimationFrame(synthAnimRef.current)
+          synthAnimRef.current = requestAnimationFrame((t) => step(t, t))
+        },
       }),
       [startWaveLoop, dpr],
     )
+
+    // Cleanup synthetic trail animation on unmount
+    useEffect(() => {
+      return () => {
+        if (synthAnimRef.current != null)
+          cancelAnimationFrame(synthAnimRef.current)
+      }
+    }, [])
 
     return (
       <canvas

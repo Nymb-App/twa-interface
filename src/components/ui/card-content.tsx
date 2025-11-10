@@ -2,7 +2,7 @@ import { Card } from './card'
 
 export const CardContent = ({ isLocked = false }: { isLocked?: boolean }) => {
   return (
-    <Card className="p-4 min-h-[104px] flex flex-col justify-center">
+    <Card className="px-4 py-2 min-h-[104px] flex flex-col justify-center">
       <div className="flex flex-col items-center gap-2">
         {isLocked && (
           <svg

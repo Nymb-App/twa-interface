@@ -14,6 +14,7 @@ import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as StarBoardRouteImport } from './routes/star-board'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SendGiftRouteImport } from './routes/send-gift'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as GateRouteImport } from './routes/gate'
 import { Route as FrensRouteImport } from './routes/frens'
@@ -47,6 +48,11 @@ const ShopRoute = ShopRouteImport.update({
 const SendGiftRoute = SendGiftRouteImport.update({
   id: '/send-gift',
   path: '/send-gift',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
+  '/onboarding': typeof OnboardingRoute
   '/send-gift': typeof SendGiftRoute
   '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
+  '/onboarding': typeof OnboardingRoute
   '/send-gift': typeof SendGiftRoute
   '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/frens': typeof FrensRoute
   '/gate': typeof GateRoute
   '/home': typeof HomeRoute
+  '/onboarding': typeof OnboardingRoute
   '/send-gift': typeof SendGiftRoute
   '/shop': typeof ShopRoute
   '/star-board': typeof StarBoardRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/frens'
     | '/gate'
     | '/home'
+    | '/onboarding'
     | '/send-gift'
     | '/shop'
     | '/star-board'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/frens'
     | '/gate'
     | '/home'
+    | '/onboarding'
     | '/send-gift'
     | '/shop'
     | '/star-board'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/frens'
     | '/gate'
     | '/home'
+    | '/onboarding'
     | '/send-gift'
     | '/shop'
     | '/star-board'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   FrensRoute: typeof FrensRoute
   GateRoute: typeof GateRoute
   HomeRoute: typeof HomeRoute
+  OnboardingRoute: typeof OnboardingRoute
   SendGiftRoute: typeof SendGiftRoute
   ShopRoute: typeof ShopRoute
   StarBoardRoute: typeof StarBoardRoute
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/send-gift'
       fullPath: '/send-gift'
       preLoaderRoute: typeof SendGiftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -322,6 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   FrensRoute: FrensRoute,
   GateRoute: GateRoute,
   HomeRoute: HomeRoute,
+  OnboardingRoute: OnboardingRoute,
   SendGiftRoute: SendGiftRoute,
   ShopRoute: ShopRoute,
   StarBoardRoute: StarBoardRoute,

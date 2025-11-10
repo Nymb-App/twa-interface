@@ -1,27 +1,31 @@
-'use client'
-
+import { AppContext } from '@/context/app-context'
+import { useBattle } from '@/hooks/api/use-battle'
+import { ENV } from '@/lib/constants'
 import { useMatches, useRouter } from '@tanstack/react-router'
 import {
   backButton,
   closingBehavior,
-  init,
+  initFp,
   isTMA,
   miniApp,
   swipeBehavior,
   viewport,
-} from '@telegram-apps/sdk'
-import { useEffect } from 'react'
+} from '@tma.js/sdk'
 import type { ReactNode } from 'react'
-import { ENV } from '@/lib/constants'
-import { useBattle } from '@/hooks/api/use-battle'
+import { useContext, useEffect } from 'react'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
+  const { currentOnboardingSlide } = useContext(AppContext)
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
+
+  useEffect(() => {
+    initFp()
+  }, [])
 
   useEffect(() => {
     if (ENV === 'production' && !isTMA()) {
@@ -31,14 +35,11 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
     ;(async () => {
       if (isTMA()) {
-        init()
-        miniApp.mountSync()
-
+        initFp()
+        // miniApp.mountSync()
         // fullscreen mode - ON
         if (viewport.mount.isAvailable()) {
           await viewport.mount()
-        }
-        if (viewport.requestFullscreen.isAvailable()) {
           await viewport.requestFullscreen()
         }
 
@@ -58,8 +59,8 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
           await swipeBehavior.disableVertical()
         }
 
-        if (miniApp.setBackgroundColor.isAvailable()) {
-          miniApp.setBackgroundColor('#121312')
+        if (miniApp.setBgColor.isAvailable()) {
+          miniApp.setBgColor('#121312')
         }
       }
     })()
@@ -89,6 +90,16 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
+            if (pathnames[1].pathname === '/home') return
+            if (pathnames[1].pathname === '/onboarding') {
+              if (!currentOnboardingSlide) return
+              if (currentOnboardingSlide.selectedScrollSnap() === 0) {
+                return
+              }
+              currentOnboardingSlide.scrollPrev()
+              return
+            }
+
             if (pathnames[1].pathname === '/unlock-gate') {
               router.navigate({ to: '/gate' })
               return
@@ -108,7 +119,20 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     })()
-  }, [pathnames])
+  }, [pathnames, currentOnboardingSlide])
 
+  // Production
+  // if (isTMA()) {
+  //   return (
+  //     <TwaAnalyticsProvider
+  //       projectId="Id"
+  //       apiKey="Key"
+  //     >
+  //       children
+  //     </TwaAnalyticsProvider>
+  //   )
+  // }
+
+  // Development
   return children
 }

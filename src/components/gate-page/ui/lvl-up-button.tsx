@@ -15,8 +15,6 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { CloseIcon } from '@/assets/icons/close'
-import { WatchesIcon } from '@/assets/icons/watches'
-import { TicketIcon } from '@/assets/icons/ticket'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { convertTimestampToDaysUnit } from '@/utils'
@@ -48,9 +46,16 @@ export function LvlUpButton({ className }: { className?: string }) {
     if (accountData.ticket === 0) return false
     return (
       accountData.ticket >=
-      gateDataStatistics[String(accountData.lvl)].ticketsRequired
+      gateDataStatistics[String(accountData.lvl + 1)].ticketsRequired
     )
   }, [accountData.ticket, accountData.lvl])
+
+  const requirements = useMemo(() => {
+    if(!accountData.lvl) return gateDataStatistics['11'];
+
+    return gateDataStatistics[String(accountData.lvl - 1)]
+  }, [accountData]);
+
 
   const isTimeEnough = useMemo(() => {
     if (!accountData.time) return false
@@ -59,7 +64,7 @@ export function LvlUpButton({ className }: { className?: string }) {
       convertTimestampToDaysUnit(accountData.time - Date.now() / 1000) >=
       gateDataStatistics[String(accountData.lvl)].timeRequired
     )
-  }, [accountData.time, accountData.lvl])
+  }, [accountData.time, accountData.lvl]);
 
   if (accountData.lvl === 1 || isLoading) {
     return (
@@ -68,15 +73,16 @@ export function LvlUpButton({ className }: { className?: string }) {
       </div>
     )
   }
-
   if (isTicketsEnough && isTimeEnough) {
     return (
       <LvlUpButtonWithNextGateNavigation
         onClick={() => lvlUpMutation.mutate()}
-        ticketAmount={accountData.ticket}
-        timeAmount={convertTimestampToDaysUnit(
-          accountData.time - Date.now() / 1000,
-        )}
+        // ticketAmount={accountData.ticket}
+        // timeAmount={convertTimestampToDaysUnit(
+        //   accountData.time - Date.now() / 1000,
+        // )}
+        ticketAmount={requirements.ticketsRequired}
+        timeAmount={requirements.timeRequired}
         lvl={accountData.lvl}
         className={className}
       />
@@ -84,10 +90,12 @@ export function LvlUpButton({ className }: { className?: string }) {
   } else {
     return (
       <LvlUpButtonWithShop
-        ticketAmount={accountData.ticket}
-        timeAmount={convertTimestampToDaysUnit(
-          accountData.time - Date.now() / 1000,
-        )}
+        // ticketAmount={accountData.ticket}
+        // timeAmount={convertTimestampToDaysUnit(
+        //   accountData.time - Date.now() / 1000,
+        // )}
+        ticketAmount={requirements.ticketsRequired}
+        timeAmount={requirements.timeRequired}
         lvl={accountData.lvl}
         className={className}
       />
@@ -158,19 +166,18 @@ function LvlUpButtonWithShop({
             the next gate.
           </DrawerDescription>
         </DrawerHeader>
-
-        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-10">
+        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-0 sm:px-10">
           <div className="flex flex-col gap-1 justify-center items-center">
-            <WatchesIcon className="size-12" />
+            <img src="/clock-img.webp" className="size-10" />
             <span className="text-2xl">
-              {timeAmount > 99 ? '99+' : timeAmount}
+              {timeAmount}
               <span className="text-white/40 font-inter"> / </span>
               {allowedTime}
             </span>
             <span className="text-white/40 text-xs">DAYS</span>
           </div>
           <div className="flex flex-col gap-1 justify-center items-center">
-            <TicketIcon className="size-12" />
+            <img src="/ticket-img.webp" className="size-10" />
             <span className="text-2xl">
               {ticketAmount > 99 ? '99+' : ticketAmount}
               <span className="text-white/40 font-inter"> / </span>
@@ -238,7 +245,6 @@ function LvlUpButtonWithNextGateNavigation({
           flickerChance={0.3}
           autoResize={false}
         />
-
         <DrawerClose className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer">
           <CloseIcon />
         </DrawerClose>
@@ -247,11 +253,12 @@ function LvlUpButtonWithNextGateNavigation({
             OPEN GATE
           </DrawerTitle>
         </DrawerHeader>
-
-        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-10">
-          <div className="flex flex-col gap-1 justify-center items-center">
-            <WatchesIcon className="size-12" />
-            <span className="text-2xl">{timeAmount > 99 ? '99+' : timeAmount}</span>
+        <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-0 sm:px-10">
+          <div className="flex flex-col gap-1 justify-center items-center w-[80px]">
+            <img src="/clock-img.webp" className="size-10" />
+            <span className="text-2xl">
+              {timeAmount}
+            </span>
             <span className="text-base">DAYS</span>
           </div>
 
@@ -270,13 +277,14 @@ function LvlUpButtonWithNextGateNavigation({
             />
           </div>
 
-          <div className="flex flex-col gap-1 justify-center items-center">
-            <TicketIcon className="size-12" />
-            <span className="text-2xl">{ticketAmount > 99 ? '99+' : ticketAmount}</span>
+          <div className="flex flex-col gap-1 justify-center items-center w-[80px]">
+            <img src="/ticket-img.webp" className="size-10" />
+            <span className="text-2xl">
+              {ticketAmount > 99 ? '99+' : ticketAmount}
+            </span>
             <span className="text-base">TICKETS</span>
           </div>
         </div>
-
         <div className="mt-8">
           <h3 className="text-white/60 text-center text-sm">
             After opening gate, you'll get:
@@ -329,7 +337,6 @@ function LvlUpButtonWithNextGateNavigation({
             </div>
           </div>
         </div>
-
         <DrawerFooter className="relative mt-6 mb-4">
           <Link
             to={'/unlock-gate'}
