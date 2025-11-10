@@ -4,6 +4,7 @@ import {
   lazy,
   memo,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -36,6 +37,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AppContext } from '@/context/app-context'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { useShop } from '@/hooks/api/use-shop'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
@@ -69,6 +71,7 @@ const HomeComponent = memo(function HomeComponent() {
   }, [accountQuery.data])
 
   const router = useRouter()
+  const { isGetCheckInReward, isOnboardingCompleted } = useContext(AppContext)
 
   useEffect(() => {
     const now = new Date(
@@ -85,16 +88,22 @@ const HomeComponent = memo(function HomeComponent() {
 
     const todayInSeconds = Math.floor(now.getTime() / 1000)
 
-    if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
+    if (
+      accountQuery.data &&
+      !accountQuery.data.isFinishOnboarding &&
+      !isOnboardingCompleted
+    )
       router.navigate({ to: '/onboarding' })
 
     if (
       dailyRewardsQuery.data?.nextAvailableAt &&
-      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds
+      dailyRewardsQuery.data.nextAvailableAt === todayInSeconds &&
+      accountTime >= Date.now() &&
+      !isGetCheckInReward
     ) {
       router.navigate({ to: '/check-in' })
     }
-  }, [dailyRewardsQuery, router])
+  }, [dailyRewardsQuery, router, accountTime, isGetCheckInReward])
 
   const [revealed, setRevealed] = useState<boolean>(false)
   const [isPurchaseSuccess, setPurchaseSuccess] = useState<boolean>(false)
@@ -127,8 +136,8 @@ const HomeComponent = memo(function HomeComponent() {
                 radius={[1, 1.5]}
               />
               <ScratchHint
-                variant="circle"
-                top="65%"
+                variant="swipe"
+                top="70%"
                 left="55%"
                 color="#95D9EF"
               />
@@ -339,15 +348,15 @@ function UnfreezeAccountDrawer({
           className="w-full h-auto select-none pointer-events-none absolute"
         />
         <img
-          src="/unfreeze-drawer-timer.png"
+          src="/unfreeze-drawer-timer.webp"
           alt="Battle Card Top"
-          className="absolute top-0 left-1/2 mt-10 -translate-x-1/2 w-full h-auto select-none pointer-events-none"
+          className="absolute top-0 left-1/2 mt-10 -translate-x-1/2 w-full max-w-[70%] h-auto select-none pointer-events-none"
         />
 
-        <div className="p-4 mt-38">
+        <div className="p-4 mt-50">
           <h3 className="font-pixel text-3xl text-white text-center uppercase">
-            get <span className="text-[#B6FF00]">3 days,</span>
-            <br />
+            {/* get <span className="text-[#B6FF00]">3 days,</span> */}
+            {/* <br /> */}
             <span className="text-[#B6FF00]">Unfreeze</span> your
             <br />
             account

@@ -1,27 +1,27 @@
+import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
+import { OptionalSVG } from '@/assets/svg/optional'
+import { Card } from '@/components/ui/card'
+import { TELEGRAM_URL, TWITTER_URL } from '@/constants'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+import { useReferrals } from '@/hooks/api/use-referrals'
+import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import { useMint } from '@/hooks/use-mint'
+import { TELEGRAM_APP_URL } from '@/lib/constants'
+import { shareURL } from '@tma.js/sdk'
+import { useTonConnectUI } from '@tonconnect/ui-react'
 import { useMemo } from 'react'
-import { toast } from 'sonner'
 import { FaXTwitter } from 'react-icons/fa6'
 import { RiTelegram2Line } from 'react-icons/ri'
 import { TbReload } from 'react-icons/tb'
-import { TransferTonButton } from './transfer-ton-button'
+import { toast } from 'sonner'
+import { LazyVideo } from './lazy-video'
 import { NumberedItem, NumberedList } from './nymb-list'
 import { TaskCompletedSvgIcon } from './tasks-page/task-icons'
-import { Card } from '@/components/ui/card'
-import { useMint } from '@/hooks/use-mint'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
-import { TELEGRAM_APP_URL } from '@/lib/constants'
-import { useReferrals } from '@/hooks/api/use-referrals'
-import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
-import { OptionalSVG } from '@/assets/svg/optional'
-import { TELEGRAM_URL, TWITTER_URL } from '@/constants'
-import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
-import { shareURL } from '@telegram-apps/sdk'
+import { TransferTonButton } from './transfer-ton-button'
 import { CopyButton } from './ui/copy-button'
-import { useTonConnectUI } from '@tonconnect/ui-react'
-import { LazyVideo } from './lazy-video'
 
 export function MintSection() {
-  const tonConnectUI = useTonConnectUI();
+  const tonConnectUI = useTonConnectUI()
   const { mintProgress, mint } = useMint()
   const { accountQuery } = useAccountMe()
   const { user } = useAccount()
@@ -80,16 +80,14 @@ export function MintSection() {
   }, [accountQuery])
 
   return (
-    <section
-      className="relative text-white px-3 scroll-mt-45"
-    >
+    <section className="relative text-white px-3 scroll-mt-45">
       <div className="animate-slide-up-fade-3 mb-10">
         <h2 className="font-pixel text-2xl text-center">JOIN THE GIVEAWAY</h2>
         <h2 className="font-pixel text-2xl text-center">AND BE A WINNER</h2>
       </div>
 
       <NumberedList showLine className="relative flex flex-col gap-3 w-full">
-        <NumberedItem className="w-full">
+        <NumberedItem className="w-full mb-3">
           <NumberedItem.Title>Subscribe to Nymb</NumberedItem.Title>
           <NumberedItem.Description>
             To participate in the giveaway, you must be
@@ -182,7 +180,7 @@ export function MintSection() {
           </div>
         </NumberedItem>
 
-        <NumberedItem className="w-full">
+        <NumberedItem className="w-full mb-3">
           <NumberedItem.Title>Invite your frens</NumberedItem.Title>
           <NumberedItem.Description>
             Increase your chances and receive game
@@ -195,11 +193,13 @@ export function MintSection() {
               <div className="inline-flex gap-4 items-center">
                 <FriendsIcon fillOpacity="1" className="size-5" />
                 <div className="flex flex-col">
-                  <div className='inline-flex items-center gap-2'>
+                  <div className="inline-flex items-center gap-2">
                     <span className="text-base font-inter font-semibold text-white tracking-normal">
                       {code.code}
                     </span>
-                    <CopyButton content={`${TELEGRAM_APP_URL}?startapp=${user?.id}_${code.code}`} />
+                    <CopyButton
+                      content={`${TELEGRAM_APP_URL}?startapp=${user?.id}_${code.code}`}
+                    />
                   </div>
                   <span className="text-xs font-pixel text-white/40 tracking-normal">
                     {code.referralsCount} FRENS
@@ -214,9 +214,13 @@ export function MintSection() {
                 <button
                   onClick={() => {
                     const telegramLink =
-                      import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://t.me/nymb_twa_bot/nymb'
+                      import.meta.env.VITE_TELEGRAM_APP_LINK ||
+                      'https://t.me/nymb_twa_bot/nymb'
                     if (shareURL.isAvailable()) {
-                      shareURL(`${telegramLink}?startapp=${user?.id}_${code.code}`, 'Check out this cool app!')
+                      shareURL(
+                        `${telegramLink}?startapp=${user?.id}_${code.code}`,
+                        'Check out this cool app!',
+                      )
                     }
                   }}
                   content={`${TELEGRAM_APP_URL}?startapp=${user?.id}_${code.code}`}

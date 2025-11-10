@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
+import CountUp from 'react-countup'
 
 import EnergyIcon from '@/assets/icons/energy'
 import { WatchesIcon } from '@/assets/icons/watches'
@@ -263,6 +264,8 @@ function GameFinished({
 }) {
   const { user } = useAccount()
 
+  const [rewardAdsTime, setRewardAdsTime] = useState(minutesWinned)
+
   return (
     <div
       className={cn(
@@ -303,9 +306,14 @@ function GameFinished({
         <div className="inline-flex items-center justify-center">
           <WatchesIcon className="size-10" />
           <div className="inline-flex items-baseline gap-1">
-            <h1 className="font-pixel text-4xl text-[#B6FF00] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]">
-              {minutesWinned}
-            </h1>
+            <CountUp start={minutesWinned} end={rewardAdsTime} duration={2}>
+              {({ countUpRef }) => (
+                <h1 className="font-pixel text-4xl text-[#B6FF00] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]">
+                  <span ref={countUpRef} />
+                </h1>
+              )}
+            </CountUp>
+
             <span className="text-sm text-white/50">MIN</span>
           </div>
         </div>
@@ -324,6 +332,9 @@ function GameFinished({
           isPercent
           time={minutesWinned * 0.2}
           className="text-white bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white/40 disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
+          onReward={() => {
+            setRewardAdsTime(minutesWinned + minutesWinned * 0.2)
+          }}
         />
 
         <div className="inline-flex gap-2 w-full">

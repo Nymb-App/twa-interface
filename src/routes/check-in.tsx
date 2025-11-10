@@ -1,21 +1,22 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { zeroPad } from 'react-countdown'
-import type { ReactNode } from 'react'
-import type { CheckInRewards } from '@/hooks/use-get-daily-rewards'
-import { PageLayout } from '@/components/ui/page-layout'
-import {
-  calculateDaysBetween,
-  cn,
-  convertTimestampToLargestUnit,
-} from '@/utils'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { CheckInButton } from '@/components/ui/check-in-button'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { PageLayout } from '@/components/ui/page-layout'
+import type { CheckInRewards } from '@/hooks/use-get-daily-rewards'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import {
+  calculateDaysBetween,
+  cn,
+  convertTimestampToLargestUnit,
+} from '@/utils'
+import { createFileRoute } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
+import { zeroPad } from 'react-countdown'
 
 export const Route = createFileRoute('/check-in')({
   component: RouteComponent,
@@ -28,7 +29,7 @@ function RouteComponent() {
 
   if (isLoading) {
     return (
-      <PageLayout useFooter={false} useCheckInButton={true}>
+      <PageLayout useFooter={false}>
         <div className="flex items-center justify-center h-64">
           <FallbackLoader />
         </div>
@@ -38,7 +39,7 @@ function RouteComponent() {
 
   if (isError || !data) {
     return (
-      <PageLayout useFooter={false} useCheckInButton={true}>
+      <PageLayout useFooter={false}>
         <div className="flex items-center justify-center h-64">
           <p className="text-xl text-red-500">
             Error: {error?.message || 'Something went wrong'}
@@ -54,7 +55,7 @@ function RouteComponent() {
   )
 
   return (
-    <PageLayout className="relative" useFooter={false} useCheckInButton={true}>
+    <PageLayout className="relative" useFooter={false}>
       <FlickeringGrid
         className="absolute inset-0 z-0 mask-[radial-gradient(ellipse_250px_400px_at_center,black,transparent)]"
         squareSize={2}
@@ -65,11 +66,12 @@ function RouteComponent() {
         autoResize={false}
         width={450}
       />
-      <CheckInHeader currentDay={currentDay === 0 ? 1 : currentDay} />
+      <CheckInHeader currentDay={currentDay === 0 ? 1 : currentDay + 1} />
       <div className="px-4">
         <CheckInInfoBlock rewards={data.rewards} />
-        <CheckInDaysBlock currentDay={currentDay === 0 ? 1 : currentDay} />
+        <CheckInDaysBlock currentDay={currentDay === 0 ? 1 : currentDay + 1} />
       </div>
+      <CheckInButton className="fixed bottom-6 w-[calc(100%-2rem)] left-1/2 -translate-x-1/2 max-w-[450px] z-50" />
     </PageLayout>
   )
 }

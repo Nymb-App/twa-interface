@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
-import { FiMinus, FiPlus } from 'react-icons/fi'
-import { hapticFeedback } from '@telegram-apps/sdk'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/utils'
+import { hapticFeedback } from '@tma.js/sdk'
+import { useEffect, useRef, useState } from 'react'
+import { FiMinus, FiPlus } from 'react-icons/fi'
 
 type TUnit = 'days' | 'weeks' | 'years'
 export const GiftSelector = ({

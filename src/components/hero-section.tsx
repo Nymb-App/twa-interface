@@ -1,7 +1,16 @@
-import { isAndroid, isIOS } from 'react-device-detect'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { isAndroid, isIOS } from 'react-device-detect'
 import { Element, Link as ScrollLink } from 'react-scroll'
 // import { Link } from '@tanstack/react-router'
+import { SocialIcon } from '@/assets/icons/social'
+import { StatisticsIcon } from '@/assets/icons/statistics'
+import { TasksIcon } from '@/assets/icons/tasks'
+import { SwipeCard } from '@/components/swipe-card'
+import { Card } from '@/components/ui/card'
+import { useAccountMe } from '@/hooks/api/use-account'
+import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import { cn } from '@/lib/utils'
+import { Link } from '@tanstack/react-router'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
 import {
@@ -13,15 +22,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from './ui/drawer'
-import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
-import { Card } from '@/components/ui/card'
-import { TasksIcon } from '@/assets/icons/tasks'
-import { StatisticsIcon } from '@/assets/icons/statistics'
-import { SocialIcon } from '@/assets/icons/social'
-import { SwipeCard } from '@/components/swipe-card'
-import { cn } from '@/lib/utils'
-import { useAccountMe } from '@/hooks/api/use-account'
-import { Link } from '@tanstack/react-router'
 
 export function HeroSection() {
   return (
@@ -42,7 +42,10 @@ export function HeroSection() {
         <BattleCardDrawer />
       </div>
       {/* <div className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2"> */}
-      <Element name="mintSection" className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2">
+      <Element
+        name="mintSection"
+        className="inline-flex w-full gap-2 mt-2 animate-slide-up-fade-2"
+      >
         <TasksCardDrawer />
         <ReferralsCardDrawer />
         <StarBoardCardDrawer />
@@ -157,6 +160,8 @@ function SwipeCardDrawer() {
     requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
   }
 
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
+
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
       <DrawerTrigger
@@ -206,16 +211,24 @@ function SwipeCardDrawer() {
           </svg>
         </DrawerClose>
 
-        <img
-          src="/index-page/dotted-pattern.png"
-          alt="Dotted Pattern"
-          className="w-full h-auto select-none pointer-events-none"
-        />
-        <img
-          src="/index-page/swipes-intro.png"
-          alt="Swipe Card Top"
-          className="absolute top-0 left-1/2 mt-10 -translate-x-1/2 w-full max-w-[280px] h-auto select-none pointer-events-none"
-        />
+        <div className="min-h-[270px]">
+          <img
+            src="/index-page/dotted-pattern.png"
+            alt="Dotted Pattern"
+            className="w-full h-auto select-none pointer-events-none"
+          />
+          <img
+            onLoad={() => {
+              setIsImageLoaded(true)
+            }}
+            src="/index-page/swipes-intro.png"
+            alt="Swipe Card Top"
+            className={cn(
+              'absolute top-0 left-1/2 mt-10 -translate-x-1/2 w-full max-w-[280px] h-auto select-none pointer-events-none',
+              isImageLoaded ? 'fade-in' : 'opacity-0',
+            )}
+          />
+        </div>
 
         <div className="p-4">
           <h3 className="font-pixel text-3xl text-white text-center">SWIPES</h3>
@@ -321,6 +334,8 @@ function BattleCardDrawer() {
     requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
   }
 
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
+
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
       <DrawerTrigger
@@ -357,16 +372,24 @@ function BattleCardDrawer() {
           </svg>
         </DrawerClose>
 
-        <img
-          src="/index-page/dotted-pattern.png"
-          alt="Dotted Pattern"
-          className="w-full h-auto select-none pointer-events-none"
-        />
-        <img
-          src="/index-page/battle-intro.png"
-          alt="Battle Card Top"
-          className="absolute top-0 left-1/2 mt-10 mix-blend-lighten -translate-x-1/2 w-full max-w-[330px] h-auto select-none pointer-events-none"
-        />
+        <div className="min-h-[270px]">
+          <img
+            src="/index-page/dotted-pattern.png"
+            alt="Dotted Pattern"
+            className="w-full h-auto select-none pointer-events-none"
+          />
+          <img
+            onLoad={() => {
+              setIsImageLoaded(true)
+            }}
+            src="/index-page/battle-intro.png"
+            alt="Battle Card Top"
+            className={cn(
+              'absolute top-0 left-1/2 mt-10 mix-blend-lighten -translate-x-1/2 w-full max-w-[330px] h-auto select-none pointer-events-none',
+              isImageLoaded ? 'fade-in' : 'opacity-0',
+            )}
+          />
+        </div>
 
         <div className="p-4">
           <h3 className="font-pixel text-3xl text-white text-center">BATTLE</h3>
@@ -472,6 +495,8 @@ function TasksCardDrawer() {
     requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
   }
 
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
+
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
       <DrawerTrigger
@@ -507,16 +532,24 @@ function TasksCardDrawer() {
           </svg>
         </DrawerClose>
 
-        <img
-          src="/index-page/dotted-pattern.png"
-          alt="Dotted Pattern"
-          className="w-full h-auto select-none pointer-events-none"
-        />
-        <img
-          src="/index-page/tasks-intro.png"
-          alt="Battle Card Top"
-          className="absolute top-0 left-1/2 -translate-x-1/2 mt-5 w-full max-w-[300px] h-auto select-none pointer-events-none"
-        />
+        <div className="min-h-[270px]">
+          <img
+            src="/index-page/dotted-pattern.png"
+            alt="Dotted Pattern"
+            className="w-full h-auto select-none pointer-events-none"
+          />
+          <img
+            onLoad={() => {
+              setIsImageLoaded(true)
+            }}
+            src="/index-page/tasks-intro.png"
+            alt="Battle Card Top"
+            className={cn(
+              'absolute top-0 left-1/2 -translate-x-1/2 mt-5 w-full max-w-[300px] h-auto select-none pointer-events-none',
+              isImageLoaded ? 'fade-in' : 'opacity-0',
+            )}
+          />
+        </div>
 
         <div className="p-4">
           <h3 className="font-pixel text-3xl text-white text-center">TASKS</h3>
@@ -622,6 +655,8 @@ function ReferralsCardDrawer() {
     requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
   }
 
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
+
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
       <DrawerTrigger
@@ -657,16 +692,24 @@ function ReferralsCardDrawer() {
           </svg>
         </DrawerClose>
 
-        <img
-          src="/index-page/dotted-pattern.png"
-          alt="Dotted Pattern"
-          className="w-full h-auto select-none pointer-events-none"
-        />
-        <img
-          src="/index-page/referrals-intro.png"
-          alt="Battle Card Top"
-          className="absolute top-0 left-1/2 -translate-x-1/2 mt-1 w-full max-w-[280px] h-auto select-none pointer-events-none"
-        />
+        <div className="min-h-[270px]">
+          <img
+            src="/index-page/dotted-pattern.png"
+            alt="Dotted Pattern"
+            className="w-full h-auto select-none pointer-events-none"
+          />
+          <img
+            onLoad={() => {
+              setIsImageLoaded(true)
+            }}
+            src="/index-page/referrals-intro.png"
+            alt="Battle Card Top"
+            className={cn(
+              'absolute top-0 left-1/2 -translate-x-1/2 mt-1 w-full max-w-[280px] h-auto select-none pointer-events-none',
+              isImageLoaded ? 'fade-in' : 'opacity-0',
+            )}
+          />
+        </div>
 
         <div className="p-4">
           <h3 className="font-pixel text-3xl text-white text-center">
@@ -774,6 +817,8 @@ function StarBoardCardDrawer() {
     requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
   }
 
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
+
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} modal={false}>
       <DrawerTrigger
@@ -809,16 +854,24 @@ function StarBoardCardDrawer() {
           </svg>
         </DrawerClose>
 
-        <img
-          src="/index-page/dotted-pattern.png"
-          alt="Dotted Pattern"
-          className="w-full h-auto select-none pointer-events-none"
-        />
-        <img
-          src="/index-page/stars-board.png"
-          alt="Battle Card Top"
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-full mt-10 max-w-[600px] h-auto select-none pointer-events-none"
-        />
+        <div className="min-h-[270px]">
+          <img
+            src="/index-page/dotted-pattern.png"
+            alt="Dotted Pattern"
+            className="w-full h-auto select-none pointer-events-none"
+          />
+          <img
+            onLoad={() => {
+              setIsImageLoaded(true)
+            }}
+            src="/index-page/stars-board.png"
+            alt="Battle Card Top"
+            className={cn(
+              'absolute top-0 left-1/2 -translate-x-1/2 w-full mt-10 max-w-[600px] h-auto select-none pointer-events-none',
+              isImageLoaded ? 'fade-in' : 'opacity-0',
+            )}
+          />
+        </div>
 
         <div className="p-4">
           <h3 className="font-pixel text-3xl text-white text-center">

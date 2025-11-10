@@ -34,8 +34,9 @@
     "@tanstack/react-router": "^1.114.3",
     "@tanstack/react-router-devtools": "^1.114.3",
     "@tanstack/router-plugin": "^1.114.3",
-    "@telegram-apps/sdk": "^3.9.2",
-    "@telegram-apps/sdk-react": "^3.3.1",
+    "@telegram-apps/sdk": "3.9.2",
+    "@telegram-apps/sdk-react": "3.3.1",
+    "@tma.js/sdk": "^3.0.8",
     "@tonconnect/ui-react": "^2.1.0",
     "@tonsolutions/telemetree-react": "^1.2.15",
     "@types/react-scroll": "^1.8.10",
@@ -71,7 +72,7 @@
     "use-effect-event": "^2.0.3",
     "use-sound": "^5.0.0",
     "vaul": "^1.1.2",
-    "vite-plugin-node-polyfills": "^0.23.0"
+    "vite-plugin-node-polyfills": "^0.24.0"
   },
   "devDependencies": {
     "@tanstack/eslint-config": "^0.1.0",

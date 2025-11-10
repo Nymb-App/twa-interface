@@ -197,8 +197,11 @@ function RouteComponent() {
         <div className="fixed w-full bottom-0 flex flex-col gap-2 px-4 mb-6 max-w-[450px]">
           {/* <ShareButton time={7200} /> */}
           <AdsButton
+            disabled={false}
             time={7200}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
+            labelColor="black"
+            labelOpacity={1}
+            className="text-black from-[#ADFA4B] to-[#B6FF00] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
           />
 
           <Link to="/frens">

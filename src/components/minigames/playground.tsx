@@ -9,14 +9,14 @@
  *  • двойной флаг gameEnded (ref + state)
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { hapticFeedback } from '@telegram-apps/sdk'
-import { DotPatternInteractive } from './dot-pattern-interactive'
-import type { DotPatternHandle } from './dot-pattern-interactive'
-import { cn } from '@/lib/utils'
 import { BombIcon } from '@/assets/icons/bomb'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { X2Icon } from '@/assets/icons/x2'
+import { cn } from '@/lib/utils'
+import { hapticFeedback } from '@tma.js/sdk'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { DotPatternHandle } from './dot-pattern-interactive'
+import { DotPatternInteractive } from './dot-pattern-interactive'
 
 /* ────────────────────────────
    типы
@@ -513,7 +513,10 @@ export default function BombField({
 
         // Пауза между жестами
         const gap = 250 + Math.floor(Math.random() * 450) // 250-700 ms
-        autoTrailTimerRef.current = setTimeout(loop, duration + gap) as unknown as number
+        autoTrailTimerRef.current = setTimeout(
+          loop,
+          duration + gap,
+        ) as unknown as number
       }
 
       // Небольшая задержка, чтобы эффект начался, когда айтемы скрылись

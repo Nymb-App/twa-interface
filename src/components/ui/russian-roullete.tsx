@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { hapticFeedback } from '@telegram-apps/sdk'
+import { hapticFeedback } from '@tma.js/sdk'
 import type { ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // import type { Rive } from '@rive-app/react-canvas'
 import { cn } from '@/utils'
 /* ───────────────── component ──────────────────── */

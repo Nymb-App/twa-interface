@@ -1,5 +1,3 @@
-'use client'
-
 import { AppContext } from '@/context/app-context'
 import { useBattle } from '@/hooks/api/use-battle'
 import { ENV } from '@/lib/constants'
@@ -7,12 +5,12 @@ import { useMatches, useRouter } from '@tanstack/react-router'
 import {
   backButton,
   closingBehavior,
-  init,
+  initFp,
   isTMA,
   miniApp,
   swipeBehavior,
   viewport,
-} from '@telegram-apps/sdk'
+} from '@tma.js/sdk'
 import type { ReactNode } from 'react'
 import { useContext, useEffect } from 'react'
 
@@ -26,6 +24,10 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   /** ***************************************************************/
 
   useEffect(() => {
+    initFp()
+  }, [])
+
+  useEffect(() => {
     if (ENV === 'production' && !isTMA()) {
       router.navigate({ to: '/auth-error' })
       return
@@ -33,14 +35,11 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
     ;(async () => {
       if (isTMA()) {
-        init()
-        miniApp.mountSync()
-
+        initFp()
+        // miniApp.mountSync()
         // fullscreen mode - ON
         if (viewport.mount.isAvailable()) {
           await viewport.mount()
-        }
-        if (viewport.requestFullscreen.isAvailable()) {
           await viewport.requestFullscreen()
         }
 
@@ -60,8 +59,8 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
           await swipeBehavior.disableVertical()
         }
 
-        if (miniApp.setBackgroundColor.isAvailable()) {
-          miniApp.setBackgroundColor('#121312')
+        if (miniApp.setBgColor.isAvailable()) {
+          miniApp.setBgColor('#121312')
         }
       }
     })()

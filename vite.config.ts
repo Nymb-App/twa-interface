@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'congratulations-booking-fifth-muslim.trycloudflare.com',
+      'classical-crowd-architects-struct.trycloudflare.com',
     ],
   },
 

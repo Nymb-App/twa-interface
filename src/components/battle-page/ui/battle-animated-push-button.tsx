@@ -1,7 +1,7 @@
-import { hapticFeedback } from '@telegram-apps/sdk'
+import { cn } from '@/utils'
+import { hapticFeedback } from '@tma.js/sdk'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { cn } from '@/utils'
 
 export const BattleAnimatedPushButton = ({
   onClick,
