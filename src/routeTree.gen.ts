@@ -8,216 +8,92 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnlockGateRouteImport } from './routes/unlock-gate'
+import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as StarBoardRouteImport } from './routes/star-board'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SendGiftRouteImport } from './routes/send-gift'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as GateRouteImport } from './routes/gate'
+import { Route as FrensRouteImport } from './routes/frens'
+import { Route as CheckInRouteImport } from './routes/check-in'
+import { Route as AuthErrorRouteImport } from './routes/auth-error'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as MinigamesSlideRouteImport } from './routes/minigames/slide'
+import { Route as MinigamesBattleResultRouteImport } from './routes/minigames/battle-result'
+import { Route as MinigamesBattleRouteImport } from './routes/minigames/battle'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as UnlockGateImport } from './routes/unlock-gate'
-import { Route as TasksImport } from './routes/tasks'
-import { Route as StarBoardImport } from './routes/star-board'
-import { Route as ShopImport } from './routes/shop'
-import { Route as SendGiftImport } from './routes/send-gift'
-import { Route as HomeImport } from './routes/home'
-import { Route as GateImport } from './routes/gate'
-import { Route as FrensImport } from './routes/frens'
-import { Route as CheckInImport } from './routes/check-in'
-import { Route as AuthErrorImport } from './routes/auth-error'
-import { Route as IndexImport } from './routes/index'
-import { Route as MinigamesSlideImport } from './routes/minigames/slide'
-import { Route as MinigamesBattleResultImport } from './routes/minigames/battle-result'
-import { Route as MinigamesBattleImport } from './routes/minigames/battle'
-
-// Create/Update Routes
-
-const UnlockGateRoute = UnlockGateImport.update({
+const UnlockGateRoute = UnlockGateRouteImport.update({
   id: '/unlock-gate',
   path: '/unlock-gate',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TasksRoute = TasksImport.update({
+const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const StarBoardRoute = StarBoardImport.update({
+const StarBoardRoute = StarBoardRouteImport.update({
   id: '/star-board',
   path: '/star-board',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const ShopRoute = ShopImport.update({
+const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const SendGiftRoute = SendGiftImport.update({
+const SendGiftRoute = SendGiftRouteImport.update({
   id: '/send-gift',
   path: '/send-gift',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const HomeRoute = HomeImport.update({
+const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const GateRoute = GateImport.update({
+const GateRoute = GateRouteImport.update({
   id: '/gate',
   path: '/gate',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const FrensRoute = FrensImport.update({
+const FrensRoute = FrensRouteImport.update({
   id: '/frens',
   path: '/frens',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const CheckInRoute = CheckInImport.update({
+const CheckInRoute = CheckInRouteImport.update({
   id: '/check-in',
   path: '/check-in',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthErrorRoute = AuthErrorImport.update({
+const AuthErrorRoute = AuthErrorRouteImport.update({
   id: '/auth-error',
   path: '/auth-error',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const MinigamesSlideRoute = MinigamesSlideImport.update({
+const MinigamesSlideRoute = MinigamesSlideRouteImport.update({
   id: '/minigames/slide',
   path: '/minigames/slide',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const MinigamesBattleResultRoute = MinigamesBattleResultImport.update({
+const MinigamesBattleResultRoute = MinigamesBattleResultRouteImport.update({
   id: '/minigames/battle-result',
   path: '/minigames/battle-result',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const MinigamesBattleRoute = MinigamesBattleImport.update({
+const MinigamesBattleRoute = MinigamesBattleRouteImport.update({
   id: '/minigames/battle',
   path: '/minigames/battle',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth-error': {
-      id: '/auth-error'
-      path: '/auth-error'
-      fullPath: '/auth-error'
-      preLoaderRoute: typeof AuthErrorImport
-      parentRoute: typeof rootRoute
-    }
-    '/check-in': {
-      id: '/check-in'
-      path: '/check-in'
-      fullPath: '/check-in'
-      preLoaderRoute: typeof CheckInImport
-      parentRoute: typeof rootRoute
-    }
-    '/frens': {
-      id: '/frens'
-      path: '/frens'
-      fullPath: '/frens'
-      preLoaderRoute: typeof FrensImport
-      parentRoute: typeof rootRoute
-    }
-    '/gate': {
-      id: '/gate'
-      path: '/gate'
-      fullPath: '/gate'
-      preLoaderRoute: typeof GateImport
-      parentRoute: typeof rootRoute
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeImport
-      parentRoute: typeof rootRoute
-    }
-    '/send-gift': {
-      id: '/send-gift'
-      path: '/send-gift'
-      fullPath: '/send-gift'
-      preLoaderRoute: typeof SendGiftImport
-      parentRoute: typeof rootRoute
-    }
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopImport
-      parentRoute: typeof rootRoute
-    }
-    '/star-board': {
-      id: '/star-board'
-      path: '/star-board'
-      fullPath: '/star-board'
-      preLoaderRoute: typeof StarBoardImport
-      parentRoute: typeof rootRoute
-    }
-    '/tasks': {
-      id: '/tasks'
-      path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof TasksImport
-      parentRoute: typeof rootRoute
-    }
-    '/unlock-gate': {
-      id: '/unlock-gate'
-      path: '/unlock-gate'
-      fullPath: '/unlock-gate'
-      preLoaderRoute: typeof UnlockGateImport
-      parentRoute: typeof rootRoute
-    }
-    '/minigames/battle': {
-      id: '/minigames/battle'
-      path: '/minigames/battle'
-      fullPath: '/minigames/battle'
-      preLoaderRoute: typeof MinigamesBattleImport
-      parentRoute: typeof rootRoute
-    }
-    '/minigames/battle-result': {
-      id: '/minigames/battle-result'
-      path: '/minigames/battle-result'
-      fullPath: '/minigames/battle-result'
-      preLoaderRoute: typeof MinigamesBattleResultImport
-      parentRoute: typeof rootRoute
-    }
-    '/minigames/slide': {
-      id: '/minigames/slide'
-      path: '/minigames/slide'
-      fullPath: '/minigames/slide'
-      preLoaderRoute: typeof MinigamesSlideImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -235,7 +111,6 @@ export interface FileRoutesByFullPath {
   '/minigames/battle-result': typeof MinigamesBattleResultRoute
   '/minigames/slide': typeof MinigamesSlideRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth-error': typeof AuthErrorRoute
@@ -252,9 +127,8 @@ export interface FileRoutesByTo {
   '/minigames/battle-result': typeof MinigamesBattleResultRoute
   '/minigames/slide': typeof MinigamesSlideRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth-error': typeof AuthErrorRoute
   '/check-in': typeof CheckInRoute
@@ -270,7 +144,6 @@ export interface FileRoutesById {
   '/minigames/battle-result': typeof MinigamesBattleResultRoute
   '/minigames/slide': typeof MinigamesSlideRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
@@ -322,7 +195,6 @@ export interface FileRouteTypes {
     | '/minigames/slide'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthErrorRoute: typeof AuthErrorRoute
@@ -338,6 +210,109 @@ export interface RootRouteChildren {
   MinigamesBattleRoute: typeof MinigamesBattleRoute
   MinigamesBattleResultRoute: typeof MinigamesBattleResultRoute
   MinigamesSlideRoute: typeof MinigamesSlideRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/unlock-gate': {
+      id: '/unlock-gate'
+      path: '/unlock-gate'
+      fullPath: '/unlock-gate'
+      preLoaderRoute: typeof UnlockGateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/star-board': {
+      id: '/star-board'
+      path: '/star-board'
+      fullPath: '/star-board'
+      preLoaderRoute: typeof StarBoardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/send-gift': {
+      id: '/send-gift'
+      path: '/send-gift'
+      fullPath: '/send-gift'
+      preLoaderRoute: typeof SendGiftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gate': {
+      id: '/gate'
+      path: '/gate'
+      fullPath: '/gate'
+      preLoaderRoute: typeof GateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/frens': {
+      id: '/frens'
+      path: '/frens'
+      fullPath: '/frens'
+      preLoaderRoute: typeof FrensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/check-in': {
+      id: '/check-in'
+      path: '/check-in'
+      fullPath: '/check-in'
+      preLoaderRoute: typeof CheckInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth-error': {
+      id: '/auth-error'
+      path: '/auth-error'
+      fullPath: '/auth-error'
+      preLoaderRoute: typeof AuthErrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/minigames/slide': {
+      id: '/minigames/slide'
+      path: '/minigames/slide'
+      fullPath: '/minigames/slide'
+      preLoaderRoute: typeof MinigamesSlideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/minigames/battle-result': {
+      id: '/minigames/battle-result'
+      path: '/minigames/battle-result'
+      fullPath: '/minigames/battle-result'
+      preLoaderRoute: typeof MinigamesBattleResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/minigames/battle': {
+      id: '/minigames/battle'
+      path: '/minigames/battle'
+      fullPath: '/minigames/battle'
+      preLoaderRoute: typeof MinigamesBattleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -356,75 +331,6 @@ const rootRouteChildren: RootRouteChildren = {
   MinigamesBattleResultRoute: MinigamesBattleResultRoute,
   MinigamesSlideRoute: MinigamesSlideRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/auth-error",
-        "/check-in",
-        "/frens",
-        "/gate",
-        "/home",
-        "/send-gift",
-        "/shop",
-        "/star-board",
-        "/tasks",
-        "/unlock-gate",
-        "/minigames/battle",
-        "/minigames/battle-result",
-        "/minigames/slide"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/auth-error": {
-      "filePath": "auth-error.tsx"
-    },
-    "/check-in": {
-      "filePath": "check-in.tsx"
-    },
-    "/frens": {
-      "filePath": "frens.tsx"
-    },
-    "/gate": {
-      "filePath": "gate.tsx"
-    },
-    "/home": {
-      "filePath": "home.tsx"
-    },
-    "/send-gift": {
-      "filePath": "send-gift.tsx"
-    },
-    "/shop": {
-      "filePath": "shop.tsx"
-    },
-    "/star-board": {
-      "filePath": "star-board.tsx"
-    },
-    "/tasks": {
-      "filePath": "tasks.tsx"
-    },
-    "/unlock-gate": {
-      "filePath": "unlock-gate.tsx"
-    },
-    "/minigames/battle": {
-      "filePath": "minigames/battle.tsx"
-    },
-    "/minigames/battle-result": {
-      "filePath": "minigames/battle-result.tsx"
-    },
-    "/minigames/slide": {
-      "filePath": "minigames/slide.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
