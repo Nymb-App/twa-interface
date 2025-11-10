@@ -25,7 +25,6 @@ import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
-import { TicketIcon } from '@/assets/icons/ticket'
 
 export function ItemTicket({
   className,
@@ -39,7 +38,7 @@ export function ItemTicket({
   const amount = useMemo(() => {
     if (radioValue === '1 ticket') return 1
     if (radioValue === '5 tickets') return 4
-    if (radioValue === '10 tickets') return 8
+    if (radioValue === '10 tickets') return 7
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 ticket') return 'ticket'
