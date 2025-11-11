@@ -1,22 +1,35 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { AnimatePresence, motion } from 'framer-motion'
-import { useMemo } from 'react'
-import { TaskCompletedSvgIcon } from '../tasks-daily-block/tasks-daily-block'
-import { InviteFrenSvgIcon, TwitterSvgIcon } from '../task-icons'
-import type { ReactNode } from 'react'
-import type { ITask } from '@/hooks/api/use-tasks'
 import { ActionButton } from '@/components/ui/action-button'
-import { cn, formatTimeReward } from '@/utils'
-import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { TWITTER_URL } from '@/constants'
 import { useAccountMe } from '@/hooks/api/use-account'
+import type { ITask } from '@/hooks/api/use-tasks'
+import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import { cn, formatTimeReward } from '@/utils'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+import { AnimatePresence, motion } from 'framer-motion'
+import type { ReactNode } from 'react'
+import { useMemo } from 'react'
+import { InviteFrenSvgIcon, TwitterSvgIcon } from '../task-icons'
+import { TaskCompletedSvgIcon } from '../tasks-daily-block/tasks-daily-block'
 
 export function TasksTabs() {
   const { tasksQuery, completeTask } = useTasks()
   const { data: tasks, isLoading, isError } = tasksQuery
 
-  const unfinishedTasks = tasks?.filter((task) => !task.isCompleted) ?? []
-  const completedTasks = tasks?.filter((task) => task.isCompleted) ?? []
+  const parsedTasks = tasks?.map((task) => {
+    if (task.name === TaskNames.DailyComboLeaveCommentInTwitter) {
+      const isTaskCommentCompleted = localStorage.getItem('task_comment')
+      return isTaskCommentCompleted
+        ? {
+            ...task,
+            isCompleted: Date.now() > Number(isTaskCommentCompleted),
+          }
+        : task
+    }
+    return task
+  })
+
+  const unfinishedTasks = parsedTasks?.filter((task) => !task.isCompleted) ?? []
+  const completedTasks = parsedTasks?.filter((task) => task.isCompleted) ?? []
 
   const handleTaskAction = (task: ITask) => {
     if (task.name === TaskNames.SubscribeTwitter) {

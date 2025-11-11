@@ -1,10 +1,10 @@
-import Countdown from 'react-countdown'
-import { TaskDailyBlock } from '../tasks-daily-block/tasks-daily-block'
-import { TaskIcon } from '../task-icons'
-import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TWITTER_URL } from '@/constants'
 import { useAccount } from '@/hooks/api/use-account'
+import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import Countdown from 'react-countdown'
+import { TaskIcon } from '../task-icons'
+import { TaskDailyBlock } from '../tasks-daily-block/tasks-daily-block'
 
 const getButtonLabel = (taskName: string) => {
   switch (taskName) {
@@ -22,8 +22,27 @@ export function TasksDaily() {
   const { dailyComboQuery, completeTask } = useTasks()
   const { data: dailyCombo, isLoading, isError } = dailyComboQuery
 
+  // const isTwitterTaskSubscribeCompilitionKey = 'task_subscribe'
+  const isTwitterTaskLeaveCommentInTwitterKey = 'task_comment'
+
+  const parsedDailyComboTasks = dailyCombo?.tasks.map((task) => {
+    if (task.name === TaskNames.DailyComboLeaveCommentInTwitter) {
+      console.log(task.name, 'parsed daily combo tasks??')
+      const isTaskCommentCompleted = localStorage.getItem('task_comment')
+      return isTaskCommentCompleted
+        ? {
+            ...task,
+            isCompleted: Date.now() > Number(isTaskCommentCompleted),
+          }
+        : task
+    }
+    return task
+  })
+
+  console.log(parsedDailyComboTasks, 'parsedDailyComboTasks')
+
   const isAllTasksCompleted =
-    dailyCombo?.tasks.every((task) => task.isCompleted) ?? false
+    parsedDailyComboTasks?.every((task) => task.isCompleted) ?? false
 
   const handleTaskCompletion = (taskName: TaskNames) => {
     // Если это задача для Твиттера, формируем и открываем ссылку
@@ -31,10 +50,12 @@ export function TasksDaily() {
       const tweetText = `Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀\nMy app id: ${user?.id}\n\n`
       const hashtags = 'nymb,nymb_app'
       const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&hashtags=${hashtags}&url=${encodeURIComponent(TWITTER_URL)}`
-
+      localStorage.setItem(
+        isTwitterTaskLeaveCommentInTwitterKey,
+        `${Date.now() + 1800 * 1000}`,
+      )
       window.open(twitterUrl, '_blank', 'noopener,noreferrer')
     }
-
     // Вызываем мутацию для завершения задачи на бэкенде
     completeTask({ taskName })
   }
@@ -87,7 +108,7 @@ export function TasksDaily() {
       </div>
       <div className="starboard-result-block-bg relative mb-6 rounded-[14px] px-4 py-3">
         <div className="flex justify-evenly gap-2">
-          {dailyCombo.tasks.map((task) => (
+          {parsedDailyComboTasks?.map((task) => (
             <TaskDailyBlock
               key={task.name}
               title={task.description} // Или task.name, в зависимости от того, что хотите отображать

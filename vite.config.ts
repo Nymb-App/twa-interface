@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'classical-crowd-architects-struct.trycloudflare.com',
+      'approval-guys-bibliographic-art.trycloudflare.com',
     ],
   },
 
