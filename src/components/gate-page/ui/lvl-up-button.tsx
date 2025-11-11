@@ -42,13 +42,13 @@ export function LvlUpButton({ className }: { className?: string }) {
   }, [accountQuery.data])
 
   const isTicketsEnough = useMemo(() => {
+    if (!accountData) return false;
     if (!accountData.ticket) return false
+    if (!accountData.lvl) return false
     if (accountData.ticket === 0) return false
-    return (
-      accountData.ticket >=
-      gateDataStatistics[String(accountData.lvl + 1)].ticketsRequired
-    )
-  }, [accountData.ticket, accountData.lvl])
+
+    return accountData.ticket >= gateDataStatistics[String(accountData.lvl)].ticketsRequired
+  }, [accountData, accountData.ticket, accountData.lvl])
 
   const requirements = useMemo(() => {
     if(!accountData.lvl) return gateDataStatistics['11'];
@@ -77,10 +77,6 @@ export function LvlUpButton({ className }: { className?: string }) {
     return (
       <LvlUpButtonWithNextGateNavigation
         onClick={() => lvlUpMutation.mutate()}
-        // ticketAmount={accountData.ticket}
-        // timeAmount={convertTimestampToDaysUnit(
-        //   accountData.time - Date.now() / 1000,
-        // )}
         ticketAmount={requirements.ticketsRequired}
         timeAmount={requirements.timeRequired}
         lvl={accountData.lvl}
@@ -90,12 +86,8 @@ export function LvlUpButton({ className }: { className?: string }) {
   } else {
     return (
       <LvlUpButtonWithShop
-        // ticketAmount={accountData.ticket}
-        // timeAmount={convertTimestampToDaysUnit(
-        //   accountData.time - Date.now() / 1000,
-        // )}
-        ticketAmount={requirements.ticketsRequired}
-        timeAmount={requirements.timeRequired}
+        ticketAmount={accountData.ticket}
+        timeAmount={convertTimestampToDaysUnit(accountData.time - Date.now() / 1000)}
         lvl={accountData.lvl}
         className={className}
       />

@@ -25,8 +25,6 @@ import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
-import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
-import { TicketIcon } from '@/assets/icons/ticket'
 
 export function ItemTicket({
   className,
@@ -44,7 +42,7 @@ export function ItemTicket({
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 ticket') return 'ticket'
-    if (radioValue === '5 tickets') return 'five_tickets'
+    if (radioValue === '5 ticket') return 'five_tickets'
     if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
   const { buyItem } = useShop()
@@ -54,12 +52,35 @@ export function ItemTicket({
       <DrawerTrigger
         onClick={onClick}
         className={cn(
-          'w-fit rounded-2xl cursor-pointer outline-none inline-flex justify-center items-center gap-3 py-4 px-6 text-[#B6FF00] bg-[#232A13]',
+          'w-full h-[128px] bg-gradient-to-b from-[#FFB200] to-[#2A1306] rounded-2xl p-[1px] cursor-pointer outline-none',
           className,
         )}
       >
-        <ShoppingBagIcon />
-        Buy 1 ticket and open the gate
+        <div className="relative flex items-end gap-2 bg-gradient-to-b from-[#282210] to-[#141310] rounded-2xl px-4 py-2 h-full">
+          <img
+            src="/shop/ticket-bg.webp"
+            alt="bg"
+            className='absolute left-0 top-0 rounded-2xl mix-blend-lighten'
+          />
+          <div className="absolute left-1/2 -translate-x-1/2 top-[-32px] w-full">
+            <img
+              src="/shop/ticket.webp"
+              alt="ticket"
+              className="absolute left-1/2 -translate-x-1/2 w-[96px] h-auto top-0"
+            />
+          </div>
+
+          <div className="relative inline-flex justify-between w-full font-pixel">
+            <span className="text-white text-base">GATE TICKET</span>
+            <span className="text-[#FBB107] text-lg inline-flex items-center gap-1">
+              <span>1</span>
+              <span className="text-[#FBB107]/40 text-xs">/</span>
+              <span>5</span>
+              <span className="text-[#FBB107]/40 text-xs">/</span>
+              <span>10</span>
+            </span>
+          </div>
+        </div>
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">

@@ -31,12 +31,14 @@ export function ItemTime({ className }: { className?: string }) {
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
     if (radioValue === '1 day') return 0.87
-    if (radioValue === '1 week') return 4.7
-    if (radioValue === '1 year') return 27
+    if (radioValue === '1 week') return 0.5
+    if (radioValue === '1 month') return 2
+    if (radioValue === '1 year') return 8
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 day') return 'time'
     if (radioValue === '1 week') return 'time_one_week'
+    if (radioValue === '1 month') return 'time_one_month'
     if (radioValue === '1 year') return 'time_one_year'
   }, [radioValue])
   const { buyItem } = useShop()
@@ -74,9 +76,9 @@ export function ItemTime({ className }: { className?: string }) {
           <div className="inline-flex justify-between w-full font-pixel">
             <span className="text-white text-base">TIME RESERVE</span>
             <span className="text-[#B6FF00] text-lg inline-flex items-center gap-1">
-              <span>1D</span>
-              <span className="text-[#B6FF00]/40 text-xs">/</span>
               <span>1W</span>
+              <span className="text-[#B6FF00]/40 text-xs">/</span>
+              <span>1M</span>
               <span className="text-[#B6FF00]/40 text-xs">/</span>
               <span>1Y</span>
             </span>
@@ -119,14 +121,14 @@ export function ItemTime({ className }: { className?: string }) {
         </div>
 
         <RadioGroup
-          defaultValue="1 week"
+          defaultValue="1 month"
           value={radioValue}
           onValueChange={(value) => {
             setRadioValue(value)
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"
         >
-          {['1 day', '1 week', '1 year'].map((option) => (
+          {['1 week', '1 month', '1 year'].map((option) => (
             <div key={option}>
               <RadioGroupItem
                 value={option}
@@ -154,10 +156,10 @@ export function ItemTime({ className }: { className?: string }) {
               +1
             </span>
             <span className="text-white/40 text-xs text-center">
-              {radioValue === '1 day'
-                ? 'DAY'
-                : radioValue === '1 week'
-                  ? 'WEEK'
+              {radioValue === '1 week'
+                ? 'WEEK'
+                : radioValue === '1 month'
+                  ? 'MONTH'
                   : 'YEAR'}
             </span>
           </div>
@@ -192,7 +194,7 @@ export function ItemTime({ className }: { className?: string }) {
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
             recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
-            amount={amount ?? 0.87}
+            amount={amount ?? 0.5}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
             onTransferSuccess={async (hash) => {
               toast.success('Time purchased')
