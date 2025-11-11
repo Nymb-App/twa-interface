@@ -40,12 +40,12 @@ export function ItemTicket({
   const amount = useMemo(() => {
     if (radioValue === '1 ticket') return 1
     if (radioValue === '5 tickets') return 4
-    if (radioValue === '10 tickets') return 8
+    if (radioValue === '10 tickets') return 7
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 ticket') return 'ticket'
-    if (radioValue === '5 ticket') return 'five_tickets'
-    if (radioValue === '10 year') return 'ten_tickets'
+    if (radioValue === '5 tickets') return 'five_tickets'
+    if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
   const { buyItem } = useShop()
 
@@ -83,13 +83,18 @@ export function ItemTicket({
             className="absolute left-2 w-full h-[200px] mask-[radial-gradient(ellipse_180px_150px_at_center,black,transparent)]"
             squareSize={2}
             gridGap={12}
-            color="#B6FF00"
+            color="#FBB107"
             maxOpacity={1}
             flickerChance={0.3}
             autoResize={false}
           />
-          <div className="absolute left-1/2 -translate-x-1/2 bg-[#0e2c08] blur-[60px] size-[126px] rounded-full" />
-          <TicketIcon className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0" />
+          <div className="absolute left-1/2 -translate-x-1/2 bg-[#2c2a08] blur-[60px] size-[126px] rounded-full" />
+          {/* <TicketIcon className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0" /> */}
+          <img
+              src="/shop/ticket.webp"
+              alt="ticket"
+              className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0"
+            />
         </div>
 
         <RadioGroup
@@ -112,7 +117,7 @@ export function ItemTicket({
                 className={cn(
                   'font-pixel py-1.5 px-3 rounded-[8px] cursor-pointer text-xs uppercase',
                   radioValue === option
-                    ? 'outline outline-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)]'
+                    ? 'outline outline-[#FBB107] text-[#FBB107] bg-[linear-gradient(360deg,_rgba(251,177,7,0.24)_0%,_rgba(251,177,7,0)_100%)]'
                     : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
@@ -124,7 +129,7 @@ export function ItemTicket({
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-[#B6FF00] text-3xl text-center relative bottom-2">
+            <span className="text-[#FBB107] text-3xl text-center relative bottom-2">
               +
               {radioValue === '1 ticket'
                 ? 1

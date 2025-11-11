@@ -86,8 +86,8 @@ export function LvlUpButton({ className }: { className?: string }) {
   } else {
     return (
       <LvlUpButtonWithShop
-        ticketAmount={requirements.ticketsRequired}
-        timeAmount={requirements.timeRequired}
+        ticketAmount={accountData.ticket}
+        timeAmount={convertTimestampToDaysUnit(accountData.time - Date.now() / 1000)}
         lvl={accountData.lvl}
         className={className}
       />
