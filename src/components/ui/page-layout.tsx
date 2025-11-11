@@ -83,7 +83,7 @@ export const PageLayout = ({
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
       )}
-      {useJumpToTheNextGateButton && <LvlUpButton />}
+      
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster
         className="!mt-20"

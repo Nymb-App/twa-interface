@@ -1,3 +1,4 @@
+import { LvlUpButton } from '@/components/gate-page/ui/lvl-up-button'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
 import { PageLayout } from '@/components/ui/page-layout'
 import { createFileRoute } from '@tanstack/react-router'
@@ -27,6 +28,7 @@ function RouteComponent() {
           </p>
         </header>
         <GateMainSection />
+        <LvlUpButton />
       </PageLayout>
     </Suspense>
   )
