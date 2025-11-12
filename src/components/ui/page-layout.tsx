@@ -5,7 +5,6 @@ import { useEffect } from 'react'
 import { isMobile } from 'react-device-detect'
 import type { JSX } from 'react/jsx-runtime'
 import { Toaster } from 'sonner'
-import { LvlUpButton } from '../gate-page/ui/lvl-up-button'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
 import { UnlockGateCloseButton } from './unlock-gate-close-button'
 
@@ -14,6 +13,7 @@ import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
+import useSound from 'use-sound'
 
 export const PageLayout = ({
   children,
@@ -83,7 +83,7 @@ export const PageLayout = ({
           setIsShowSendGiftActionButtons={setIsShowSendGiftActionButtons}
         />
       )}
-      
+
       {useUnlockGateCloseButton && <UnlockGateCloseButton />}
       <Toaster
         className="!mt-20"
@@ -112,6 +112,7 @@ const NavigationMenu = ({
   }>
 }) => {
   const isActiveLink = useMatches()
+  const [playLink] = useSound('sounds/Button.aac')
 
   return (
     <nav
@@ -130,6 +131,10 @@ const NavigationMenu = ({
           >
             <Link
               to={to}
+              onClick={() => {
+                if (isLocked) return
+                playLink()
+              }}
               disabled={isLocked}
               aria-disabled={isLocked}
               activeOptions={{ exact: true }}

@@ -15,6 +15,7 @@ import { WatchesIcon } from '@/assets/icons/watches'
 import HeaderBg from '@/assets/svg/header-bg'
 import { AdsButton } from '@/components/ads/ads-button'
 import BombField from '@/components/minigames/playground'
+import useSound from 'use-sound'
 
 export const Route = createFileRoute('/minigames/slide')({
   component: RouteComponent,
@@ -51,6 +52,8 @@ export function RouteComponent() {
   const [gameKey, setGameKey] = useState<number>(0)
 
   const gameStartDate = useMemo(() => Date.now() + 30_000, [isGameStarted])
+
+  const [play, { stop }] = useSound('sounds/Coundown-321GO.aac')
 
   const resetGame = useCallback(() => {
     setMinutesWinAmount(defaultMinutesWinAmount)
@@ -109,6 +112,14 @@ export function RouteComponent() {
       handleGameFinished()
     }
   }, [energy])
+
+  useEffect(() => {
+    if (!isGameStarted) {
+      play()
+      return
+    }
+    return () => stop()
+  }, [isGameStarted])
 
   return (
     <PageLayout
