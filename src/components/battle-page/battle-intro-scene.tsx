@@ -1,6 +1,6 @@
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { cn, convertTimestampToDaysUnit } from '@/utils'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
 import { BattleCard } from './battle-card'
 import { BattleGameRewardSection, BattleTitle } from './battle-preview-screen'
@@ -9,6 +9,7 @@ import { BattleBustButtons } from './ui/battle-bust-buttons'
 import ChooseOpponent from '@/assets/svg/choose-opponent'
 import { FaRandom } from 'react-icons/fa'
 import { PiShareFatBold } from 'react-icons/pi'
+import useSound from 'use-sound'
 import { ShareBattleInviteButton } from '../ui/share-button'
 
 export const BattleIntroScene = ({
@@ -34,6 +35,9 @@ export const BattleIntroScene = ({
   const { user: meUserData } = useAccount()
   const { accountQuery } = useAccountMe()
 
+  const [playStartGame, { stop: stopPlayStartGame }] =
+    useSound('/sounds/Button.aac')
+
   const [bet, setBet] = useState(60 * 60 * 24 * 7)
 
   const isDisabledFindingButton = useMemo(() => {
@@ -47,6 +51,12 @@ export const BattleIntroScene = ({
 
     return false
   }, [accountQuery.data])
+
+  useEffect(() => {
+    return () => {
+      stopPlayStartGame()
+    }
+  }, [])
 
   return (
     <div
@@ -98,6 +108,7 @@ export const BattleIntroScene = ({
         >
           <ShareBattleInviteButton
             onClick={() => {
+              playStartGame()
               onJoinGame?.(bet, true)
               setIsIntroSceneAnimationsStart(true)
             }}
@@ -121,6 +132,7 @@ export const BattleIntroScene = ({
             )}
             disabled={isDisabledFindingButton}
             onClick={() => {
+              playStartGame()
               onJoinGame?.(bet)
               setIsIntroSceneAnimationsStart(true)
             }}

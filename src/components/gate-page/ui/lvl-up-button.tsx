@@ -1,9 +1,6 @@
-import { Link } from '@tanstack/react-router'
-import { useMemo } from 'react'
-import { gateDataStatistics } from '../gate-data-statistics'
-import { ItemTicket } from './item-ticket'
-import { ItemTime } from './item-time'
-import { cn } from '@/lib/utils'
+import { CloseIcon } from '@/assets/icons/close'
+import { LockIcon } from '@/assets/icons/lock'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import {
   Drawer,
   DrawerClose,
@@ -14,11 +11,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { CloseIcon } from '@/assets/icons/close'
 import { useAccountMe } from '@/hooks/api/use-account'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { cn } from '@/lib/utils'
 import { convertTimestampToDaysUnit } from '@/utils'
-import { LockIcon } from '@/assets/icons/lock'
+import { Link } from '@tanstack/react-router'
+import { useMemo } from 'react'
+import { gateDataStatistics } from '../gate-data-statistics'
+import { ItemTicket } from './item-ticket'
+import { ItemTime } from './item-time'
 
 export function LvlUpButton({ className }: { className?: string }) {
   const { accountQuery, isLoading, lvlUpMutation } = useAccountMe()
@@ -42,20 +42,22 @@ export function LvlUpButton({ className }: { className?: string }) {
   }, [accountQuery.data])
 
   const isTicketsEnough = useMemo(() => {
-    if (!accountData) return false;
+    // if (!accountData) return false;
     if (!accountData.ticket) return false
     if (!accountData.lvl) return false
     if (accountData.ticket === 0) return false
 
-    return accountData.ticket >= gateDataStatistics[String(accountData.lvl)].ticketsRequired
+    return (
+      accountData.ticket >=
+      gateDataStatistics[String(accountData.lvl)].ticketsRequired
+    )
   }, [accountData, accountData.ticket, accountData.lvl])
 
   const requirements = useMemo(() => {
-    if(!accountData.lvl) return gateDataStatistics['11'];
+    if (!accountData.lvl) return gateDataStatistics['11']
 
     return gateDataStatistics[String(accountData.lvl - 1)]
-  }, [accountData]);
-
+  }, [accountData])
 
   const isTimeEnough = useMemo(() => {
     if (!accountData.time) return false
@@ -64,7 +66,7 @@ export function LvlUpButton({ className }: { className?: string }) {
       convertTimestampToDaysUnit(accountData.time - Date.now() / 1000) >=
       gateDataStatistics[String(accountData.lvl)].timeRequired
     )
-  }, [accountData.time, accountData.lvl]);
+  }, [accountData.time, accountData.lvl])
 
   if (accountData.lvl === 1 || isLoading) {
     return (
@@ -87,7 +89,9 @@ export function LvlUpButton({ className }: { className?: string }) {
     return (
       <LvlUpButtonWithShop
         ticketAmount={accountData.ticket}
-        timeAmount={convertTimestampToDaysUnit(accountData.time - Date.now() / 1000)}
+        timeAmount={convertTimestampToDaysUnit(
+          accountData.time - Date.now() / 1000,
+        )}
         lvl={accountData.lvl}
         className={className}
       />
@@ -248,9 +252,7 @@ function LvlUpButtonWithNextGateNavigation({
         <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-0 sm:px-10">
           <div className="flex flex-col gap-1 justify-center items-center w-[80px]">
             <img src="/clock-img.webp" className="size-10" />
-            <span className="text-2xl">
-              {timeAmount}
-            </span>
+            <span className="text-2xl">{timeAmount}</span>
             <span className="text-base">DAYS</span>
           </div>
 

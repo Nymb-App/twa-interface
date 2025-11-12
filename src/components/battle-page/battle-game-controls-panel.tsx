@@ -1,7 +1,8 @@
+import { useBuyExtraBoost } from '@/hooks/api/use-shop'
 import { useEffect, useState } from 'react'
+import useSound from 'use-sound'
 import { BattleAnimatedBoostButton } from './ui/battle-animated-boost-button'
 import { BattleAnimatedPushButton } from './ui/battle-animated-push-button'
-import { useBuyExtraBoost } from '@/hooks/api/use-shop'
 
 export const BattleGameControlsPanel = ({
   disabled = true,
@@ -24,6 +25,10 @@ export const BattleGameControlsPanel = ({
 
   const { extraBoostCount } = useBuyExtraBoost()
 
+  const [playBoostGame, { stop: stopPlayBoostGame }] = useSound(
+    '/sounds/Battle-Boost.aac',
+  )
+
   // Обратный отсчёт
   useEffect(() => {
     if (isReversing0) {
@@ -38,6 +43,9 @@ export const BattleGameControlsPanel = ({
         reverseFillPercent0--
         setFillPercent0(reverseFillPercent0)
       }, BOOST_DURATION_PER_SECTION)
+    }
+    return () => {
+      stopPlayBoostGame()
     }
   }, [isReversing0])
 
@@ -55,6 +63,9 @@ export const BattleGameControlsPanel = ({
         setFillPercent1(reverseFillPercent1)
       }, BOOST_DURATION_PER_SECTION)
     }
+    return () => {
+      stopPlayBoostGame()
+    }
   }, [isReversing1])
 
   return (
@@ -63,6 +74,7 @@ export const BattleGameControlsPanel = ({
         isDisabled={disabled}
         fillPercentage={fillPercent0}
         onClick={() => {
+          playBoostGame()
           setIsReversing0(true)
           onBoostActivate?.()
         }}
@@ -83,6 +95,7 @@ export const BattleGameControlsPanel = ({
         fillPercentage={fillPercent1}
         isDisabled={extraBoostCount <= 0 || disabled}
         onClick={() => {
+          playBoostGame()
           setIsReversing1(true)
           onBoostActivate?.()
         }}

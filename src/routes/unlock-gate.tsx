@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { createFileRoute } from '@tanstack/react-router'
-import { HiLockClosed, HiLockOpen } from 'react-icons/hi2'
-import { useMemo, useRef, useState } from 'react'
-import type { AnimationEventHandler } from 'react'
-import { PageLayout } from '@/components/ui/page-layout'
-import { cn } from '@/utils'
-import { GateElectricLines } from '@/components/ui/gate-electric-lines'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { GateInfoBlockNextLvl } from '@/components/gate-page/ui/info-block'
-import { useAccountMe } from '@/hooks/api/use-account'
 import { gateDataStatistics } from '@/components/gate-page/gate-data-statistics'
+import { GateInfoBlockNextLvl } from '@/components/gate-page/ui/info-block'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { GateElectricLines } from '@/components/ui/gate-electric-lines'
+import { PageLayout } from '@/components/ui/page-layout'
+import { useAccountMe } from '@/hooks/api/use-account'
+import { cn } from '@/utils'
+import { createFileRoute } from '@tanstack/react-router'
+import type { AnimationEventHandler } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { HiLockClosed, HiLockOpen } from 'react-icons/hi2'
+import useSound from 'use-sound'
 
 export const Route = createFileRoute('/unlock-gate')({
   component: RouteComponent,
@@ -31,6 +32,17 @@ function RouteComponent() {
   const { isLoading } = useAccountMe()
 
   const { nextLvl } = Route.useSearch()
+
+  const [playUnlocked, { stop: stopUnlocked }] = useSound(
+    '/sounds/Gate-Open.aac',
+  )
+
+  useEffect(() => {
+    playUnlocked()
+    return () => {
+      stopUnlocked()
+    }
+  }, [playUnlocked, stopUnlocked])
 
   const statistics = useMemo(() => {
     if (!gateDataStatistics[nextLvl]) {

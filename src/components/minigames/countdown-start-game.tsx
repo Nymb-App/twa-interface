@@ -1,6 +1,8 @@
 import { cn } from '@/utils'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Countdown from 'react-countdown'
+import useSound from 'use-sound'
+import CountdownSfx from '/sounds/Countdown-321GO.aac'
 
 export const CountdownStartGame = ({
   onComplete,
@@ -12,6 +14,13 @@ export const CountdownStartGame = ({
   const countdownDate = useMemo(() => {
     return Date.now() + 4000
   }, [])
+
+  const [play, { stop }] = useSound(CountdownSfx)
+
+  useEffect(() => {
+    play()
+    return () => stop()
+  }, [play])
 
   return (
     <div

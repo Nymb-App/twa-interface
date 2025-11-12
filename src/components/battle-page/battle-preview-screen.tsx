@@ -1,10 +1,11 @@
+import { useAccountMe } from '@/hooks/api/use-account'
+import { cn, convertTimestampToDaysUnit } from '@/utils'
+import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
+import useSound from 'use-sound'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from '../ui/electric-lines'
-import type { ReactNode } from 'react'
-import { cn, convertTimestampToDaysUnit } from '@/utils'
-import { useAccountMe } from '@/hooks/api/use-account'
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 
 export const BattleTitle = ({
   text,
@@ -43,6 +44,9 @@ export function BattleGameRewardSection({
     '1 month': 2592000_000,
     '1 years': 31536000_000,
   }
+
+  const [playChangeBet, { stop: stopChangeBet }] =
+    useSound('/sounds/Button.aac')
 
   const { defaultValue, disabledOptions } = useMemo(() => {
     if (!accountQuery.data) {
@@ -113,6 +117,9 @@ export function BattleGameRewardSection({
     if (defaultValue) {
       setBattleGameRewardRadioValue(defaultValue)
     }
+    return () => {
+      stopChangeBet()
+    }
   }, [defaultValue])
 
   useEffect(() => {
@@ -146,7 +153,10 @@ export function BattleGameRewardSection({
         <RadioGroup
           defaultValue={defaultValue}
           value={battleGameRewardRadioValue}
-          onValueChange={setBattleGameRewardRadioValue}
+          onValueChange={(value) => {
+            setBattleGameRewardRadioValue(value)
+            playChangeBet()
+          }}
           className="grid grid-cols-4 gap-2"
         >
           {Object.keys(betOptions).map((label) => (

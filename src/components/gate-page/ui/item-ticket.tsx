@@ -26,7 +26,6 @@ import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
 import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
-import { TicketIcon } from '@/assets/icons/ticket'
 
 export function ItemTicket({
   className,

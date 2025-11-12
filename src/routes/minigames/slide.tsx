@@ -53,7 +53,17 @@ export function RouteComponent() {
 
   const gameStartDate = useMemo(() => Date.now() + 30_000, [isGameStarted])
 
-  const [play, { stop }] = useSound('sounds/Coundown-321GO.aac')
+  const [playClaimTime, { stop: stopClaimTime }] = useSound(
+    '/sounds/Swipe-Time-Claim.aac',
+  )
+
+  const [playClaimX2, { stop: stopClaimX2 }] = useSound(
+    '/sounds/Swipe-X2-Claim.aac',
+  )
+
+  const [playClaimBomb, { stop: stopClaimBomb }] = useSound(
+    '/sounds/Swipe-Bomb-Claim.aac',
+  )
 
   const resetGame = useCallback(() => {
     setMinutesWinAmount(defaultMinutesWinAmount)
@@ -78,6 +88,14 @@ export function RouteComponent() {
       setIsGameFinishedForce(true)
     }
   }, [isGameStarted, isGameFinished])
+
+  useEffect(() => {
+    return () => {
+      stopClaimTime()
+      stopClaimX2()
+      stopClaimBomb()
+    }
+  }, [])
 
   useEffect(() => {
     if (accountQuery.data) {
@@ -112,14 +130,6 @@ export function RouteComponent() {
       handleGameFinished()
     }
   }, [energy])
-
-  useEffect(() => {
-    if (!isGameStarted) {
-      play()
-      return
-    }
-    return () => stop()
-  }, [isGameStarted])
 
   return (
     <PageLayout
@@ -229,12 +239,15 @@ export function RouteComponent() {
           trailingLifetime={300}
           onInteractionEnter={({ item }) => {
             if (item === 'time') {
+              playClaimTime()
               setMinutesWinned(minutesWinned + minutesWinAmount)
               setEnergy(energy - 1)
             } else if (item === 'bomb') {
+              playClaimBomb()
               const newEnergy = Math.floor(energy - energy * 0.1)
               setEnergy(newEnergy)
             } else if (item === 'x2') {
+              playClaimX2()
               if (minutesWinAmount !== defaultX2DoubleAmount) {
                 setMinutesWinAmount(defaultX2DoubleAmount)
               }
@@ -276,6 +289,17 @@ function GameFinished({
   const { user } = useAccount()
 
   const [rewardAdsTime, setRewardAdsTime] = useState(minutesWinned)
+
+  const [playGameFinished, { stop: stopGameFinished }] = useSound(
+    '/sounds/Swipe-End.aac',
+  )
+
+  useEffect(() => {
+    playGameFinished()
+    return () => {
+      stopGameFinished()
+    }
+  }, [playGameFinished])
 
   return (
     <div
