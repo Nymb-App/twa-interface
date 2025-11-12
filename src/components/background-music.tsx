@@ -1,6 +1,6 @@
+import { useRouterState } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import useSound from 'use-sound'
-import { useRouterState } from '@tanstack/react-router'
 
 export function BackgroundMusic() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })

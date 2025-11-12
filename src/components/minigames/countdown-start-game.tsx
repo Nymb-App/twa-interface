@@ -1,6 +1,6 @@
-import Countdown from 'react-countdown'
-import { useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/utils'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import Countdown from 'react-countdown'
 
 export const CountdownStartGame = ({
   onComplete,

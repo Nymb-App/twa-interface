@@ -8,6 +8,7 @@ import confetti from 'canvas-confetti'
 import { LoaderIcon } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
+import useSound from 'use-sound'
 import {
   ANIMATION_DURATION_COUNTUP,
   FARMING_DURATION,
@@ -35,6 +36,9 @@ export function FarmingButton({
   const { farmingStatusQuery, startFarming, claimReward } = useFarmingApi()
 
   const { show } = useAdsgram({ blockId: ADSGRAM_APP_ID, debug: false })
+
+  const [playStart] = useSound('sounds/Farm-Start.aac')
+  const [playEnd] = useSound('sounds/Farm-End.aac')
 
   const duration = useMemo(() => {
     if (!farmingStatusQuery.data) return FARMING_DURATION
@@ -67,6 +71,7 @@ export function FarmingButton({
     setIsFarming(true)
     startFarming(undefined, {
       onSuccess: () => {
+        playStart()
         farmingStatusQuery.refetch()
       },
       onError: () => {
@@ -87,6 +92,7 @@ export function FarmingButton({
       localStorage.setItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY, '0')
     }
     setIsClaiming(false)
+    playEnd()
     claimReward(undefined, {
       onSuccess: () => {
         onClick?.()
@@ -106,6 +112,12 @@ export function FarmingButton({
     })
   }, [onClick, setFinishAt, claimReward, show])
 
+  if (farmingStatusQuery.isLoading || (isFarming && startedAt === 0)) {
+    return (
+      <FarmingDefaultLoadingButton className={className} disabled={disabled} />
+    )
+  }
+
   if (!isFarming && !isClaiming) {
     return (
       <FarmingDefaultButton
@@ -113,12 +125,6 @@ export function FarmingButton({
         onClick={handleStart}
         disabled={disabled}
       />
-    )
-  }
-
-  if (isFarming && startedAt === 0) {
-    return (
-      <FarmingDefaultLoadingButton className={className} disabled={disabled} />
     )
   }
 
