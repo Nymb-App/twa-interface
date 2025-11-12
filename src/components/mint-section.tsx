@@ -219,7 +219,7 @@ export function MintSection() {
                     if (shareURL.isAvailable()) {
                       shareURL(
                         `${telegramLink}?startapp=${user?.id}_${code.code}`,
-                        'Check out this cool app!',
+                        '🚀 Enter NYMB  -  where TIME turns into tokens!',
                       )
                     }
                   }}

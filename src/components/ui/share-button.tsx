@@ -105,7 +105,7 @@ export const ShareBattleInviteButton = ({
             !inviteParam
               ? telegramLink
               : `${telegramLink}?startapp=${inviteParam}`,
-            comment || 'Check out this cool app!',
+            comment || '🚀 Enter NYMB  -  where TIME turns into tokens!',
           )
         }
       }}
