@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { cn } from '@/lib/utils'
@@ -25,6 +25,7 @@ import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
+import useSound from 'use-sound'
 
 export function ItemTime({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -42,12 +43,17 @@ export function ItemTime({ className }: { className?: string }) {
     if (radioValue === '1 year') return 'time_one_year'
   }, [radioValue])
   const { buyItem } = useShop()
+  const [play, { stop }] = useSound('sounds/Button.aac')
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-time">
       <DrawerTrigger
         className={cn(
-          'w-full h-[128px] bg-gradient-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016] rounded-2xl p-[1px] cursor-pointer outline-none',
+          'w-full h-[128px] bg-linear-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016] rounded-2xl p-[1px] cursor-pointer outline-none',
           className,
         )}
       >
@@ -86,9 +92,12 @@ export function ItemTime({ className }: { className?: string }) {
         </div>
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            play()
+            setIsOpen(false)
+          }}
           className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
         >
           <CloseIcon />
@@ -124,6 +133,7 @@ export function ItemTime({ className }: { className?: string }) {
           defaultValue="1 month"
           value={radioValue}
           onValueChange={(value) => {
+            play()
             setRadioValue(value)
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"

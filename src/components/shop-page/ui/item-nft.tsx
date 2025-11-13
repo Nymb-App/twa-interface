@@ -12,36 +12,37 @@ import {
 } from '@/components/ui/drawer'
 import { useMint } from '@/hooks/use-mint'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import useSound from 'use-sound'
 
 export function ItemNFT({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { mintProgress, mint } = useMint()
+  const [play, { stop }] = useSound('sounds/Button.aac')
   const amount = 1
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-nft">
       <DrawerTrigger
         className={cn(
-          'w-full h-[166px] bg-gradient-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016]/10 rounded-3xl p-[1px] cursor-pointer outline-none',
+          'w-full h-[166px] bg-linear-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016]/10 rounded-3xl p-[1px] cursor-pointer outline-none',
           className,
         )}
       >
         <div className="relative flex items-end gap-2 bg-[#0E140E] rounded-3xl px-6 py-2 h-full">
           <div className="absolute left-1/2 -translate-x-1/2 w-full h-full top-0 overflow-hidden rounded-3xl">
             <div className="absolute left-[-120px] bottom-[15px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
-
             <div className="absolute right-[-50px] top-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
-
             <div className="absolute left-[-105px] top-14 bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
-
             <div className="absolute left-[-120px] top-0 bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
-
             <div className="absolute right-[10px] top-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
-
             <div className="absolute right-[-50px] bottom-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
-
             <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00]/50 blur-[30px] w-full h-[50px] rounded-full" />
           </div>
 
@@ -69,16 +70,19 @@ export function ItemNFT({ className }: { className?: string }) {
               alt="time"
               className="absolute bottom-0 right-2.5 max-w-[160px] h-auto"
             />
-            <div className="absolute left-[0px] rounded-3xl bottom-[0px] overflow-hidden size-full">
+            <div className="absolute left-0 rounded-3xl bottom-0 overflow-hidden size-full">
               <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00]/50 blur-[30px] w-full h-[50px] rounded-full" />
             </div>
           </div>
         </div>
       </DrawerTrigger>
 
-      <DrawerContent className="overflow-hidden h-[750px] bg-[#0b0b0b] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="overflow-hidden h-[750px] bg-[#0b0b0b] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            play()
+            setIsOpen(false)
+          }}
           className="absolute z-50 flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
         >
           <CloseIcon />

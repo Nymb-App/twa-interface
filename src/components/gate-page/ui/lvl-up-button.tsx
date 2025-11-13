@@ -41,6 +41,7 @@ export function LvlUpButton({ className }: { className?: string }) {
     }
   }, [accountQuery.data])
 
+
   const isTicketsEnough = useMemo(() => {
     // if (!accountData) return false;
     if (!accountData.ticket) return false
@@ -137,6 +138,7 @@ function LvlUpButtonWithShop({
     return gateDataStatistics[String(nextLvl)].timeRequired
   }, [nextLvl])
 
+
   return (
     <Drawer>
       <DrawerTrigger
@@ -148,7 +150,7 @@ function LvlUpButtonWithShop({
         JUMP TO THE NEXT GATE
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <DrawerClose className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer">
           <CloseIcon />
         </DrawerClose>

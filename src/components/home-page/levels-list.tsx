@@ -1,13 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import Marquee from 'react-fast-marquee'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { cn } from '@/utils'
 import { useAccountMe } from '@/hooks/api/use-account'
+import useSound from 'use-sound'
 
 export const LevelsList = () => {
   const levelsArray = Array.from({ length: 12 }, (_, idx) => idx + 1).reverse()
+  const [play, { stop }] = useSound('sounds/Button.aac')
 
   const { getLvlStats } = useAccountMe()
 
@@ -35,13 +37,14 @@ export const LevelsList = () => {
     return 'locked'
   }
 
+
   return (
     <div className="relative -mt-[10px] w-full">
-      <div className="pointer-events-none absolute inset-y-0 top-[10px] -right-10 z-20 h-[70px] w-full bg-gradient-to-l from-[#121312] via-transparent via-40% to-transparent to-95%" />
-      <div className="pointer-events-none absolute inset-y-0 top-[10px] -left-10 z-20 h-[70px] w-full bg-gradient-to-r from-[#121312] via-transparent via-40% to-transparent to-95%" />
+      <div className="pointer-events-none absolute inset-y-0 top-[10px] -right-10 z-20 h-[70px] w-full bg-linear-to-l from-[#121312] via-transparent via-40% to-transparent to-95%" />
+      <div className="pointer-events-none absolute inset-y-0 top-[10px] -left-10 z-20 h-[70px] w-full bg-linear-to-r from-[#121312] via-transparent via-40% to-transparent to-95%" />
       <div className="absolute top-[10px] left-1/2 z-0 -translate-x-1/2">
         <FlickeringGrid
-          className="[mask-image:radial-gradient(140px_circle_at_center,white,transparent)]"
+          className="mask-[radial-gradient(140px_circle_at_center,white,transparent)]"
           squareSize={2}
           gridGap={12}
           color="#b7ff01"
@@ -52,7 +55,7 @@ export const LevelsList = () => {
           height={120}
         />
       </div>
-      <Link to="/gate">
+      <Link onClick={() => play()} to="/gate">
         <Carousel
           className="relative z-10 h-[90px]"
           opts={{

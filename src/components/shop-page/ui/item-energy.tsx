@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
@@ -23,16 +23,22 @@ import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { CloseIcon } from '@/assets/icons/close'
+import useSound from 'use-sound'
 
 export function ItemEnergy({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { buyItem } = useShop()
+  const [play, { stop }] = useSound('sounds/Button.aac')
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger
         className={cn(
-          'w-full h-[128px] bg-gradient-to-b from-[#AC15D0] to-[#322C37] rounded-2xl p-[1px] cursor-pointer outline-none',
+          'w-full h-[128px] bg-linear-to-b from-[#AC15D0] to-[#322C37] rounded-2xl p-[1px] cursor-pointer outline-none',
           className,
         )}
       >
@@ -66,9 +72,12 @@ export function ItemEnergy({ className }: { className?: string }) {
         </div>
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() =>{
+            play()
+            setIsOpen(false)
+          }}
           className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
         >
           <CloseIcon />

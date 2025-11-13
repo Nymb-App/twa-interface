@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { cn } from '@/lib/utils'
@@ -27,6 +27,7 @@ import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
 import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
+import useSound from 'use-sound'
 
 export function ItemTime({
   className,
@@ -50,11 +51,20 @@ export function ItemTime({
     if (radioValue === '1 year') return 'time_one_year'
   }, [radioValue])
   const { buyItem } = useShop()
+  const [play, { stop }] = useSound('sounds/Button.aac')
+  
+  
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-time">
       <DrawerTrigger
-        onClick={onClick}
+        onClick={() => {
+          play()
+          onClick?.()
+        }}
         className={cn(
           'w-fit rounded-2xl cursor-pointer outline-none inline-flex justify-center items-center gap-3 py-4 px-6 text-[#B6FF00] bg-[#232A13]',
           className,
@@ -64,7 +74,7 @@ export function ItemTime({
         Buy 1 year and open the gate
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <DrawerClose className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer">
           <CloseIcon />
         </DrawerClose>
@@ -99,6 +109,7 @@ export function ItemTime({
           defaultValue="1 month"
           value={radioValue}
           onValueChange={(value) => {
+            play()
             setRadioValue(value)
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"
@@ -116,7 +127,7 @@ export function ItemTime({
                   'font-pixel py-1.5 px-6 rounded-[8px] cursor-pointer text-xs uppercase',
                   radioValue === option
                     ? 'outline outline-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)]'
-                    : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
+                    : 'bg-linear-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
                 {option}
@@ -149,7 +160,7 @@ export function ItemTime({
               </SelectTrigger>
               <SelectContent className="bg-[#121312] border-none !text-white/40 font-pixel">
                 <SelectItem
-                  className="!bg-[#121312] hover:!bg-[#121312] border-none !text-white/40 hover:!text-white"
+                  className="bg-[#121312]! hover:!bg-[#121312] border-none !text-white/40 hover:!text-white"
                   value="ton"
                 >
                   <div className="flex items-center gap-2">

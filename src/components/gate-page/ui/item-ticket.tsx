@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { cn } from '@/lib/utils'
@@ -26,6 +26,7 @@ import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
 import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
+import useSound from 'use-sound'
 
 export function ItemTicket({
   className,
@@ -47,11 +48,19 @@ export function ItemTicket({
     if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
   const { buyItem } = useShop()
+  const [play, { stop }] = useSound('sounds/Button.aac')
+  
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-ticket">
       <DrawerTrigger
-        onClick={onClick}
+        onClick={() => {
+          play()
+          onClick?.()
+        }}
         className={cn(
           'w-fit rounded-2xl cursor-pointer outline-none inline-flex justify-center items-center gap-3 py-4 px-6 text-[#B6FF00] bg-[#232A13]',
           className,
@@ -63,7 +72,10 @@ export function ItemTicket({
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            play()
+            setIsOpen(false)
+          }}
           className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
         >
           <CloseIcon />
@@ -100,6 +112,7 @@ export function ItemTicket({
           defaultValue="5 tickets"
           value={radioValue}
           onValueChange={(value) => {
+            play()
             setRadioValue(value)
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"

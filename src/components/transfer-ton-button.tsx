@@ -4,6 +4,7 @@ import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
 import { useTransferTon } from '@/hooks/use-transfer-ton'
 import { cn } from '@/utils'
 import { useBalance } from '@/hooks/use-balance'
+import useSound from 'use-sound'
 
 export type TransferTonButtonProps =
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -26,9 +27,12 @@ export function TransferTonButton({
   className,
   ...props
 }: TransferTonButtonProps) {
+  const [isTransferTonSuccess, setIsTransferTonSuccess] =
+    useState<boolean>(false)
   const address = useTonAddress()
   const { open } = useTonConnectModal()
   const { getBalance } = useBalance()
+  const [play] = useSound('sounds/Button.aac')
   const {
     transfer,
     isTransactionLoading,
@@ -36,8 +40,6 @@ export function TransferTonButton({
     hash,
     isTransactionSuccess,
   } = useTransferTon()
-  const [isTransferTonSuccess, setIsTransferTonSuccess] =
-    useState<boolean>(false)
 
   useEffect(() => {
     if (isTransferTonSuccess) return
@@ -88,6 +90,7 @@ export function TransferTonButton({
   }, [isTransactionLoading])
 
   const handleTransfer = useCallback(async () => {
+    play()
     onClick?.()
     if (!address) {
       onConnect?.()
@@ -119,7 +122,7 @@ export function TransferTonButton({
     <>
       <button
         className={cn(
-          'font-pixel text-lg bg-gradient-to-b cursor-pointer from-[#ADFA4B] to-[#B6FF00] text-[#121312] rounded-xl py-4 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+          'font-pixel text-lg bg-linear-to-b cursor-pointer from-[#ADFA4B] to-[#B6FF00] text-[#121312] rounded-xl py-4 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
           isTransactionLoading && 'bg-[#222A10]',
           className,
         )}
@@ -145,7 +148,7 @@ export function TransferTonButton({
       {isTransactionLoading &&
         createPortal(
           <div
-            className="bg-black/50 h-screen w-full fixed top-0 left-0 z-[100000]"
+            className="bg-black/50 h-screen w-full fixed top-0 left-0 z-100000"
             aria-hidden="true"
           />,
           document.body,

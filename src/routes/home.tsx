@@ -43,6 +43,7 @@ import { useShop } from '@/hooks/api/use-shop'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
+import useSound from 'use-sound'
 
 const SwipeCard = lazy(() =>
   import('@/components/swipe-card').then((m) => ({ default: m.SwipeCard })),
@@ -56,22 +57,31 @@ const GameCard = lazy(() =>
 )
 const HomeComponent = memo(function HomeComponent() {
   const [isClaimStart, setIsClaimStart] = useState(false)
-
-  const handleClaimClick = useCallback(() => {
-    setIsClaimStart(true)
-  }, [])
+  const [revealed, setRevealed] = useState<boolean>(false)
+  const [isPurchaseSuccess, setPurchaseSuccess] = useState<boolean>(false)
 
   const { dailyRewardsQuery } = useCheckIn()
   const { accountQuery } = useAccountMe()
   const { buyItem } = useShop()
+
+  const [play, { stop }] = useSound('sounds/Button.aac')
+
+
+  const router = useRouter()
+  const { isGetCheckInReward, isOnboardingCompleted } = useContext(AppContext)
+
+
 
   const accountTime = useMemo(() => {
     if (!accountQuery.data || !accountQuery.data.time) return 0
     return accountQuery.data.time * 1000
   }, [accountQuery.data])
 
-  const router = useRouter()
-  const { isGetCheckInReward, isOnboardingCompleted } = useContext(AppContext)
+
+  const handleClaimClick = useCallback(() => {
+    setIsClaimStart(true)
+  }, [])
+
 
   useEffect(() => {
     const now = new Date(
@@ -105,8 +115,9 @@ const HomeComponent = memo(function HomeComponent() {
     }
   }, [dailyRewardsQuery, router, accountTime, isGetCheckInReward])
 
-  const [revealed, setRevealed] = useState<boolean>(false)
-  const [isPurchaseSuccess, setPurchaseSuccess] = useState<boolean>(false)
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   return (
     <PageLayout className="top-0">
@@ -118,7 +129,7 @@ const HomeComponent = memo(function HomeComponent() {
                 backgroundImage="/frozen-account-bg.jpg" // картинка рисуется ВНУТРИ canvas и стирается
                 backgroundFit="cover"
                 backgroundPosition="center"
-                className="fixed w-full max-w-[450px] min-h-screen z-[1000]"
+                className="fixed w-full max-w-[450px] min-h-screen z-1000"
                 revealThreshold={0.2}
                 brushRadius={34}
                 brushHardness={0.5}
@@ -165,7 +176,7 @@ const HomeComponent = memo(function HomeComponent() {
       <ProgressSection isClaimStart={isClaimStart} />
       <div className="mt-5 px-4">
         <div className="grid grid-cols-2 gap-2">
-          <Link to="/minigames/slide" disabled={accountTime < Date.now()}>
+          <Link onClick={() => play()} to="/minigames/slide" disabled={accountTime < Date.now()}>
             {isAndroid ? (
               <>
                 <Suspense
@@ -174,7 +185,7 @@ const HomeComponent = memo(function HomeComponent() {
                   }
                 >
                   <SwipeCard
-                    className="font-pixel w-full font-[400]"
+                    className="font-pixel w-full font-normal"
                     classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
                     title="Swipes"
                     description={"let's see how you react"}
@@ -199,6 +210,7 @@ const HomeComponent = memo(function HomeComponent() {
           </Link>
 
           <Link
+            onClick={() => play()}
             to="/minigames/battle"
             search={{
               bet: undefined as unknown as number,
@@ -219,7 +231,7 @@ const HomeComponent = memo(function HomeComponent() {
           </Link>
         </div>
         <div className="mt-2 mb-[26px] grid grid-cols-2 gap-2">
-          <Link to="/shop">
+          <Link onClick={() => play()} to="/shop">
             <CardContent />
           </Link>
           <CardContent isLocked />

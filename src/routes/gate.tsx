@@ -18,7 +18,7 @@ function RouteComponent() {
   return (
     <Suspense fallback={<FallbackLoader />}>
       <PageLayout useFooter={false} useJumpToTheNextGateButton={true}>
-        <header className="relative text-center font-[400]">
+        <header className="relative text-center font-normal">
           <h1 className="font-pixel mb-2 text-[24px] leading-[32px] text-[#FFFFFF] uppercase">
             gates
           </h1>

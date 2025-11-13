@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { cn } from '@/lib/utils'
@@ -25,6 +25,7 @@ import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { CloseIcon } from '@/assets/icons/close'
+import useSound from 'use-sound'
 
 export function ItemTicket({
   className,
@@ -46,17 +47,22 @@ export function ItemTicket({
     if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
   const { buyItem } = useShop()
+  const [play, { stop }] = useSound('sounds/Button.aac')
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-ticket">
       <DrawerTrigger
         onClick={onClick}
         className={cn(
-          'w-full h-[128px] bg-gradient-to-b from-[#FFB200] to-[#2A1306] rounded-2xl p-[1px] cursor-pointer outline-none',
+          'w-full h-[128px] bg-linear-to-b from-[#FFB200] to-[#2A1306] rounded-2xl p-[1px] cursor-pointer outline-none',
           className,
         )}
       >
-        <div className="relative flex items-end gap-2 bg-gradient-to-b from-[#282210] to-[#141310] rounded-2xl px-4 py-2 h-full">
+        <div className="relative flex items-end gap-2 bg-linear-to-b from-[#282210] to-[#141310] rounded-2xl px-4 py-2 h-full">
           <img
             src="/shop/ticket-bg.webp"
             alt="bg"
@@ -83,9 +89,12 @@ export function ItemTicket({
         </div>
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            play()
+            setIsOpen(false)
+          }}
           className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
         >
           <CloseIcon />
@@ -122,6 +131,7 @@ export function ItemTicket({
           defaultValue="5 tickets"
           value={radioValue}
           onValueChange={(value) => {
+            play()
             setRadioValue(value)
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"
@@ -138,8 +148,8 @@ export function ItemTicket({
                 className={cn(
                   'font-pixel py-1.5 px-3 rounded-[8px] cursor-pointer text-xs uppercase',
                   radioValue === option
-                    ? 'outline outline-[#FBB107] text-[#FBB107] bg-[linear-gradient(360deg,_rgba(251,177,7,0.24)_0%,_rgba(251,177,7,0)_100%)]'
-                    : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
+                    ? 'outline outline-[#FBB107] text-[#FBB107] bg-[linear-gradient(360deg,rgba(251,177,7,0.24)_0%,rgba(251,177,7,0)_100%)]'
+                    : 'bg-linear-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
                 {option}

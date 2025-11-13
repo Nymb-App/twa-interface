@@ -287,9 +287,6 @@ export function MintSection() {
               recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
               amount={1}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
-              onClick={() => {
-                play()
-              }}
               onTransferSuccess={async (hash) => {
                 toast.success('NFT purchased!')
                 await mint(hash)
