@@ -115,9 +115,9 @@ const HomeComponent = memo(function HomeComponent() {
     }
   }, [dailyRewardsQuery, router, accountTime, isGetCheckInReward])
 
-  useEffect(() => {
-    return () => stop()
-  }, [play])
+  // useEffect(() => {
+  //   return () => stop()
+  // }, [play])
 
   return (
     <PageLayout className="top-0">
