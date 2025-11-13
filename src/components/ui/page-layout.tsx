@@ -20,7 +20,6 @@ export const PageLayout = ({
   useFooter = true,
   useSendButton = false,
   useSendGiftActionButtons = false,
-  useJumpToTheNextGateButton = false,
   useUnlockGateCloseButton = false,
   className,
   classNameContent,
@@ -30,7 +29,6 @@ export const PageLayout = ({
   useFooter?: boolean
   useSendButton?: boolean
   useSendGiftActionButtons?: boolean
-  useJumpToTheNextGateButton?: boolean
   useUnlockGateCloseButton?: boolean
   className?: string
   classNameContent?: string
