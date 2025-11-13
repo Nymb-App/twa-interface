@@ -67,6 +67,8 @@ export const BattleMainScenePrivate = ({
 
   const [isToBattleReady, setIsToBattleReady] = useState(false)
 
+  const [play] = useSound('sounds/Button.aac');
+
   const [playBattleClinStart, { stop: stopBattleClinStart }] = useSound(
     '/sounds/Battle-Clin-Start.aac',
   )
@@ -378,6 +380,7 @@ export const BattleMainScenePrivate = ({
                   !isStartFindingOpponent
                 }
                 onClick={() => {
+                  play()
                   forceDisconnect(roomData?.createdBy)
                   onForcedExitBattle?.()
                   if (forcedExitTimeoutRef.current) {
@@ -404,6 +407,7 @@ export const BattleMainScenePrivate = ({
                     !isStartFindingOpponent
                   }
                   onClick={() => {
+                    play()
                     onJoinGame?.(Number(roomData.bet), true)
                     setIsToBattleReady(true)
                   }}

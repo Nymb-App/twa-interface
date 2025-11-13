@@ -84,6 +84,8 @@ export const BattleMainScene = ({
 
   const { setIsBattleGameBackgroundMusicActive } = useContext(AppContext)
 
+  const [play] = useSound('sounds/Button.aac');
+
   useEffect(() => {
     if (forcedExitTimeoutRef.current) {
       clearTimeout(forcedExitTimeoutRef.current)
@@ -347,6 +349,7 @@ export const BattleMainScene = ({
                   !isStartFindingOpponent
                 }
                 onClick={() => {
+                  play()
                   if (opponentInfo) return
                   forceDisconnect()
                   onForcedExitBattle?.()
@@ -356,7 +359,7 @@ export const BattleMainScene = ({
                   }
                 }}
                 className={cn(
-                  'h-full bg-gradient-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
+                  'h-full bg-linear-to-b from-[#FFFFFF] to-[#999999] opacity-0 animate-fade-in',
                 )}
                 onAnimationEnd={() =>
                   setIsForcedExitBattleAnimationFinished(true)

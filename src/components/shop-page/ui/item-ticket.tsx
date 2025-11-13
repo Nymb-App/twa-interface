@@ -56,7 +56,10 @@ export function ItemTicket({
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-ticket">
       <DrawerTrigger
-        onClick={onClick}
+        onClick={() => {
+          play()
+          onClick?.()
+        }}
         className={cn(
           'w-full h-[128px] bg-linear-to-b from-[#FFB200] to-[#2A1306] rounded-2xl p-[1px] cursor-pointer outline-none',
           className,
