@@ -1,10 +1,11 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Button } from '../ui/button'
 import { useCountdown } from './hooks/use-countdown'
 import { cn } from '@/utils'
 import { WatchesIcon } from '@/assets/icons/watches'
 import { ANIMATION_DURATION_COUNTUP } from '@/context/farming-context'
 import { useAccountMe } from '@/hooks/api/use-account'
+import useSound from 'use-sound'
 
 export const TotalEarningsBlock = ({
   value,
@@ -15,6 +16,7 @@ export const TotalEarningsBlock = ({
   isClaimStart: boolean
   setIsClaimStart: (claimValue: boolean) => void
 }) => {
+  const [play, { stop }] = useSound('sounds/Button.aac')
   const animatedTotalEarnings = useCountdown(
     value,
     ANIMATION_DURATION_COUNTUP,
@@ -34,6 +36,12 @@ export const TotalEarningsBlock = ({
     return accountQuery.data.time * 1000 < Date.now()
   }, [accountQuery.data])
 
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
+  
   return (
     <div className="font-pixel starboard-result-block-bg mt-2 flex items-center justify-between rounded-[14px] p-4 font-[400] backdrop-blur-[8px]">
       <div className="flex basis-1/2 flex-col items-center gap-2">
@@ -61,6 +69,7 @@ export const TotalEarningsBlock = ({
         <Button
           disabled={!value || isClaimStart || isDisabledActionButton}
           onClick={() => {
+            play()
             setIsClaimStart(true)
             accountClaimReferralRewardMutation.mutate()
           }}

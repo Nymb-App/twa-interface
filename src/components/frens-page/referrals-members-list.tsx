@@ -2,16 +2,18 @@ import { useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { cn } from '@/utils'
 import { Link } from '@tanstack/react-router'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Skeleton } from '../ui/skeleton'
+import useSound from 'use-sound'
 
 const MIN_ALLOWED_TIME = 86400
 const MIN_FRENS_FOR_A_GIFT = 10
 
 export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
   const { myReferrals, isLoadingMyReferrals } = useReferrals()
+  const [play, { stop }] = useSound('sounds/Button.aac')
   const referralsCount = myReferrals?.referrals.length || 0
 
   const isSendGiftEnabled = useMemo(() => {
@@ -27,10 +29,14 @@ export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
     return accountQuery.data.time * 1000 < Date.now()
   }, [accountQuery.data])
 
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
   return (
     <>
       <div className="font-pixel mb-3 px-3 pt-[40px] pb-4">
-        <div className="flex items-center justify-between gap-2 font-[400]">
+        <div className="flex items-center justify-between gap-2 font-normal">
           <h2 className="font-pixel text-[18px] leading-6 uppercase">
             {isLoadingMyReferrals ? (
               <Skeleton className="w-[90px] h-[24px]" />
@@ -43,8 +49,11 @@ export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
             disabled={!isSendGiftEnabled || isDisabledActionButton}
           >
             <Button
-              className="h-8 bg-gradient-to-b from-[#8C35FB] to-[#6602E7]"
+              className="h-8 bg-linear-to-b from-[#8C35FB] to-[#6602E7]"
               disabled={!isSendGiftEnabled || isDisabledActionButton}
+              onClick={() => {
+                play()
+              }}
             >
               <svg
                 width="16"
@@ -79,9 +88,9 @@ export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
             return (
               <div
                 key={i}
-                className="rounded-[14px] starboard-result-block-bg backdrop-blur-[16px] py-1 px-4"
+                className="rounded-[14px] starboard-result-block-bg backdrop-blur-lg py-1 px-4"
               >
-                <div className="flex justify-between items-center font-[400]">
+                <div className="flex justify-between items-center font-normal">
                   <div className="font-inter flex gap-4">
                     <Avatar className="rounded-[12px]">
                       <AvatarImage
@@ -90,7 +99,7 @@ export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
                       <AvatarFallback>{'ju'.toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="mr-2 font-[600] text-[16px] leading-5">
+                      <p className="mr-2 font-semibold text-[16px] leading-5">
                         {item.nickname || 'unknown'}
                       </p>
                       <span className="text-[14px] leading-[120%] text-[#FFFFFF66]">

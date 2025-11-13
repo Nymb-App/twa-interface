@@ -4,8 +4,9 @@ import { ADSGRAM_APP_ID } from '@/lib/constants'
 import { cn, convertTimestampToLargestUnit } from '@/utils'
 import { useAdsgram } from '@adsgram/react'
 import { useMutation } from '@tanstack/react-query'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
+import useSound from 'use-sound'
 
 export const AdsButton = ({
   className,
@@ -35,19 +36,20 @@ export const AdsButton = ({
   onError?: () => void
 }) => {
   const { post } = useApi()
-
   const { accountQuery } = useAccountMe()
-
   const [isAnimationStart, setIsAnimationStart] = useState(true)
-
   const [isDisabled, setIsDisabled] = useState(disabled)
+  const [play, { stop }] = useSound('sounds/Button.aac')
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   const isDisabledButton = useMemo(() => {
     if (disabled !== undefined) return disabled
     return isDisabled || isAnimationStart
   }, [disabled, isAnimationStart, isDisabled])
 
-  console.log(isAnimationStart, 'start?')
 
   const share = useMutation({
     mutationFn: (timeShare: number) =>
@@ -93,10 +95,13 @@ export const AdsButton = ({
       disabled={isDisabledButton}
       onAnimationEnd={() => setIsAnimationStart(false)}
       className={cn(
-        'text-[#FFFFFF] bg-gradient-to-b from-[#8C35FB] to-[#6602E7] relative',
+        'text-[#FFFFFF] bg-linear-to-b from-[#8C35FB] to-[#6602E7] relative',
         className,
       )}
-      onClick={() => show()}
+      onClick={() => {
+        play()
+        show()
+      }}
     >
       {children ? (
         children

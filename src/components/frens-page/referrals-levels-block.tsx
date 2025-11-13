@@ -30,8 +30,8 @@ export const ReferralsLevelsBlock = () => {
 
   return (
     <div className="mt-2 grid grid-cols-2 gap-2">
-      <ReferralsBlock count={countVoucherReferrals0} label="Refferals 1 lvl" />
-      <ReferralsBlock count={countVoucherReferrals1} label="Refferals 2 lvl" />
+      <ReferralsBlock count={countVoucherReferrals0} label="Referrals 1 lvl" />
+      <ReferralsBlock count={countVoucherReferrals1} label="Referrals 2 lvl" />
     </div>
   )
 }

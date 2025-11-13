@@ -5,6 +5,8 @@ import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import Countdown from 'react-countdown'
 import { TaskIcon } from '../task-icons'
 import { TaskDailyBlock } from '../tasks-daily-block/tasks-daily-block'
+import useSound from 'use-sound'
+import { useEffect } from 'react'
 
 const getButtonLabel = (taskName: string) => {
   switch (taskName) {
@@ -21,6 +23,7 @@ export function TasksDaily() {
   const { user } = useAccount()
   const { dailyComboQuery, completeTask } = useTasks()
   const { data: dailyCombo, isLoading, isError } = dailyComboQuery
+  const [play, { stop }] = useSound('sounds/Button.aac')
 
   // const isTwitterTaskSubscribeCompilitionKey = 'task_subscribe'
   const isTwitterTaskLeaveCommentInTwitterKey = 'task_comment'
@@ -39,12 +42,11 @@ export function TasksDaily() {
     return task
   })
 
-  console.log(parsedDailyComboTasks, 'parsedDailyComboTasks')
-
   const isAllTasksCompleted =
     parsedDailyComboTasks?.every((task) => task.isCompleted) ?? false
 
   const handleTaskCompletion = (taskName: TaskNames) => {
+    play()
     // Если это задача для Твиттера, формируем и открываем ссылку
     if (taskName === TaskNames.DailyComboLeaveCommentInTwitter) {
       const tweetText = `Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀\nMy app id: ${user?.id}\n\n`
@@ -59,6 +61,10 @@ export function TasksDaily() {
     // Вызываем мутацию для завершения задачи на бэкенде
     completeTask({ taskName })
   }
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   if (isLoading) {
     return (
@@ -123,11 +129,11 @@ export function TasksDaily() {
         </div>
         {!isAllTasksCompleted ? (
           <div>
-            <div className="my-3 h-[1px] bg-[#FFFFFF1F]" />
+            <div className="my-3 h-1 bg-[#FFFFFF1F]" />
             <p className="font-inter text-center text-[14px] leading-[140%] font-[400] text-[#FFFFFF]">
               Complete all tasks and get an extra:
               <span className="font-pixel relative ml-2 leading-[120%] text-[#B6FF00] uppercase">
-                <span className="absolute top-[1px] -left-1">+</span>
+                <span className="absolute top-1 -left-1">+</span>
                 <span>12</span>
                 <span className="ml-1.5">H</span>
               </span>

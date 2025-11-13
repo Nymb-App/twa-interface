@@ -7,10 +7,17 @@ import { useAccount } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { cn } from '@/utils'
 import { TELEGRAM_APP_URL } from '@/lib/constants'
+import useSound from 'use-sound'
+import { useEffect } from 'react'
 
 export const ReferralsCodeList = () => {
   const { user } = useAccount()
   const { myCodes, generateNewCode, isLoadingMyCodes } = useReferrals()
+  const [play, { stop }] = useSound('sounds/Button.aac')
+  
+  useEffect(() => {
+    return () => stop()
+  }, [play])
 
   if (isLoadingMyCodes) {
     return (
@@ -31,18 +38,19 @@ export const ReferralsCodeList = () => {
   return (
     <>
       <div className="font-pixel mb-3 px-3 pt-[40px] pb-4">
-        <div className="flex items-center justify-between gap-2 font-[400]">
+        <div className="flex items-center justify-between gap-2 font-normal">
           <h2 className="font-pixel text-[18px] leading-6 uppercase">
             Referrals code
           </h2>
           <Button
             className={cn(
-              'h-8 bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] text-[12px] leading-4 text-[#121312] uppercase',
+              'h-8 bg-linear-to-b from-[#ADFA4B] from-20% to-[#B6FF00] text-[12px] leading-4 text-[#121312] uppercase',
               myCodes &&
                 myCodes.length >= 5 &&
                 'cursor-not-allowed from-[#414241] to-[#363736] text-white',
             )}
             onClick={() => {
+              play()
               if (myCodes && myCodes.length >= 5) {
                 toast.error('You can add up to 5 referral codes only')
                 return

@@ -12,6 +12,7 @@ import { cn, convertGiftValueToSeconds } from '@/utils'
 import { useRive } from '@rive-app/react-canvas'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import useSound from 'use-sound'
 
 export const Route = createFileRoute('/send-gift')({
   component: RouteComponent,
@@ -29,12 +30,11 @@ function RouteComponent() {
 
   const [referralsNickName, setReferralsNickName] = useState<Array<string>>([])
   const [referralsPhotoUrl, setReferralsPhotoUrl] = useState<Array<string>>([])
-
   const winnerIndex = Math.floor(Math.random() * referralsNickName.length)
-
   const [isRiveAnimationEnd, setIsRiveAnimationEnd] = useState(false)
-
   const { accountQuery } = useAccountMe()
+
+  const [play, { stop }] = useSound('sounds/Button.aac')
 
   useEffect(() => {
     if (!accountQuery.data) return
@@ -71,6 +71,10 @@ function RouteComponent() {
     }
   }, [myReferrals])
 
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
   const { rive, RiveComponent } = useRive({
     src: '/riveAnimations/gift-freinds2.riv',
     autoplay: false,
@@ -90,7 +94,7 @@ function RouteComponent() {
           width={450}
           height={350}
         />
-        <h1 className="font-pixel font-[400] text-center text-[24px] leading-[32px] uppercase mb-[115px]">
+        <h1 className="font-pixel font-normal text-center text-[24px] leading-[32px] uppercase mb-[115px]">
           {!isStartRoulette ? (
             <>
               enter the
@@ -190,7 +194,10 @@ function RouteComponent() {
         <SendGiftButton
           value={giftValue}
           unit={giftUnits}
-          onClick={() => setIsStartRoulette(true)}
+          onClick={() => {
+            play()
+            setIsStartRoulette(true)
+          }}
         />
       )}
       {isFinishRoulette && (
@@ -204,9 +211,9 @@ function RouteComponent() {
             className="text-black from-[#ADFA4B] to-[#B6FF00] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
           />
 
-          <Link to="/frens">
-            <ActionButton className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]">
-              <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
+          <Link onClick={() => play()} to="/frens">
+            <ActionButton className="bg-linear-to-b from-[#FFFFFF] to-[#999999]">
+              <span className="font-pixel text-[#121312] font-normal uppercase text-[18px] leading-[24px]">
                 close
               </span>
             </ActionButton>

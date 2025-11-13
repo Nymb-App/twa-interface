@@ -3,6 +3,7 @@ import { cn } from '@/utils'
 import { hapticFeedback } from '@tma.js/sdk'
 import { useEffect, useRef, useState } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'
+import useSound from 'use-sound'
 
 type TUnit = 'days' | 'weeks' | 'years'
 export const GiftSelector = ({
@@ -28,6 +29,7 @@ export const GiftSelector = ({
 }) => {
   const [count, setCount] = useState<number>(value)
   const [currentUnit, setCurrentUnit] = useState<TUnit | string>(unit)
+  const [play, { stop }] = useSound('sounds/Button.aac')
 
   const computedMaxValue = (() => {
     if (maxDays === undefined) return maxValue
@@ -61,10 +63,14 @@ export const GiftSelector = ({
     setCount(value)
   }, [value])
 
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
   return (
     <div
       className={cn(
-        'font-pixel rounded-[24px] border border-white/10 p-4 backdrop-blur-[16px]',
+        'font-pixel rounded-[24px] border border-white/10 p-4 backdrop-blur-lg',
         className,
       )}
     >
@@ -72,6 +78,7 @@ export const GiftSelector = ({
         <HandlerButton
           disabled={count <= 1}
           onClick={() => {
+            play()
             setCount((currentCount) => {
               if (currentCount > 1) {
                 const newCount = currentCount - 1
@@ -99,6 +106,7 @@ export const GiftSelector = ({
         <HandlerButton
           disabled={count >= computedMaxValue}
           onClick={() => {
+            play()
             setCount((currentCount) => {
               if (currentCount < computedMaxValue) {
                 const newCount = currentCount + 1
@@ -123,6 +131,7 @@ export const GiftSelector = ({
         defaultValue="weeks"
         value={currentUnit}
         onValueChange={(selectorValue: string) => {
+          play()
           const newUnit = selectorValue as TUnit
           setCurrentUnit(newUnit)
           onUnitChange?.(newUnit)
