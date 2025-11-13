@@ -20,7 +20,9 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
   const { currentOnboardingSlide } = useContext(AppContext)
-  const [playButtonSound] = useSound('/sounds/Button.aac')
+  const [playButtonSound] = useSound('/sounds/Button.aac', {
+    interrupt: true,
+  })
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/

@@ -110,7 +110,7 @@ const NavigationMenu = ({
   }>
 }) => {
   const isActiveLink = useMatches()
-  const [playLink] = useSound('sounds/Button.aac')
+  const [playLink] = useSound('/sounds/Button.aac')
 
   return (
     <nav

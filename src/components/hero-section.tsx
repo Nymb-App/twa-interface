@@ -897,7 +897,7 @@ function StarBoardCardDrawer() {
 function StarsCard({ className }: { className?: string }) {
   const { tasksQuery } = useTasks()
   const { accountQuery } = useAccountMe()
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   const isCompletedTaskTwitter = useMemo(() => {
     return tasksQuery.data?.some(

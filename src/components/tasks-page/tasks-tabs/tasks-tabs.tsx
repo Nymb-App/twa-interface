@@ -8,14 +8,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 import { useEffect, useMemo } from 'react'
+import useSound from 'use-sound'
 import { InviteFrenSvgIcon, TwitterSvgIcon } from '../task-icons'
 import { TaskCompletedSvgIcon } from '../tasks-daily-block/tasks-daily-block'
-import useSound from 'use-sound'
 
 export function TasksTabs() {
   const { tasksQuery, completeTask } = useTasks()
   const { data: tasks, isLoading, isError } = tasksQuery
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   const parsedTasks = tasks?.map((task) => {
     if (task.name === TaskNames.DailyComboLeaveCommentInTwitter) {
@@ -48,7 +48,11 @@ export function TasksTabs() {
 
   return (
     <section className="flex flex-col flex-1">
-      <Tabs defaultValue="new tasks" onValueChange={() => play()} className="flex flex-col flex-1">
+      <Tabs
+        defaultValue="new tasks"
+        onValueChange={() => play()}
+        className="flex flex-col flex-1"
+      >
         <TabsList className="flex justify-center gap-2 uppercase font-pixel mb-7">
           <TabsTrigger
             value="new tasks"

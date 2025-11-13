@@ -37,8 +37,8 @@ export function FarmingButton({
 
   const { show } = useAdsgram({ blockId: ADSGRAM_APP_ID, debug: false })
 
-  const [playStart] = useSound('sounds/Farm-Start.aac')
-  const [playEnd] = useSound('sounds/Farm-End.aac')
+  const [playStart] = useSound('/sounds/Farm-Start.aac')
+  const [playEnd] = useSound('/sounds/Farm-End.aac')
 
   const duration = useMemo(() => {
     if (!farmingStatusQuery.data) return FARMING_DURATION

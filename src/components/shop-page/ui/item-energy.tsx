@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
+import { CloseIcon } from '@/assets/icons/close'
+import { TelegramStarIcon } from '@/assets/icons/telegram-star'
+import { TonIcon } from '@/assets/icons/ton'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { TransferTonButton } from '@/components/transfer-ton-button'
 import {
   Drawer,
   DrawerContent,
@@ -18,17 +19,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TonIcon } from '@/assets/icons/ton'
-import { TelegramStarIcon } from '@/assets/icons/telegram-star'
-import { TransferTonButton } from '@/components/transfer-ton-button'
 import { useShop } from '@/hooks/api/use-shop'
-import { CloseIcon } from '@/assets/icons/close'
+import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import useSound from 'use-sound'
 
 export function ItemEnergy({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { buyItem } = useShop()
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   useEffect(() => {
     return () => stop()
@@ -74,7 +74,7 @@ export function ItemEnergy({ className }: { className?: string }) {
 
       <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
-          onClick={() =>{
+          onClick={() => {
             play()
             setIsOpen(false)
           }}

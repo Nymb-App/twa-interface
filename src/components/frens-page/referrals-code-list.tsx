@@ -1,20 +1,20 @@
+import { useAccount } from '@/hooks/api/use-account'
+import { useReferrals } from '@/hooks/api/use-referrals'
+import { TELEGRAM_APP_URL } from '@/lib/constants'
+import { cn } from '@/utils'
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
+import useSound from 'use-sound'
 import { Button } from '../ui/button'
 import { CopyButton } from '../ui/copy-button'
 import { Skeleton } from '../ui/skeleton'
-import { useAccount } from '@/hooks/api/use-account'
-import { useReferrals } from '@/hooks/api/use-referrals'
-import { cn } from '@/utils'
-import { TELEGRAM_APP_URL } from '@/lib/constants'
-import useSound from 'use-sound'
-import { useEffect } from 'react'
 
 export const ReferralsCodeList = () => {
   const { user } = useAccount()
   const { myCodes, generateNewCode, isLoadingMyCodes } = useReferrals()
-  const [play, { stop }] = useSound('sounds/Button.aac')
-  
+  const [play, { stop }] = useSound('/sounds/Button.aac')
+
   useEffect(() => {
     return () => stop()
   }, [play])

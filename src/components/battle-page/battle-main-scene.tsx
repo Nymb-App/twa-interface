@@ -84,7 +84,7 @@ export const BattleMainScene = ({
 
   const { setIsBattleGameBackgroundMusicActive } = useContext(AppContext)
 
-  const [play] = useSound('sounds/Button.aac');
+  const [play] = useSound('/sounds/Button.aac')
 
   useEffect(() => {
     if (forcedExitTimeoutRef.current) {

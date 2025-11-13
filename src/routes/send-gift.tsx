@@ -34,7 +34,7 @@ function RouteComponent() {
   const [isRiveAnimationEnd, setIsRiveAnimationEnd] = useState(false)
   const { accountQuery } = useAccountMe()
 
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   useEffect(() => {
     if (!accountQuery.data) return

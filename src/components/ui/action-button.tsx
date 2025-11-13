@@ -15,7 +15,7 @@ export const ActionButton = ({
   onClick?: () => void
   onAnimationEnd?: React.AnimationEventHandler<HTMLButtonElement>
 }) => {
-  const [play] = useSound('sounds/Button.aac')
+  const [play] = useSound('/sounds/Button.aac')
 
   return (
     <button

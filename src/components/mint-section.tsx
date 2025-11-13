@@ -14,12 +14,12 @@ import { FaXTwitter } from 'react-icons/fa6'
 import { RiTelegram2Line } from 'react-icons/ri'
 import { TbReload } from 'react-icons/tb'
 import { toast } from 'sonner'
+import useSound from 'use-sound'
 import { LazyVideo } from './lazy-video'
 import { NumberedItem, NumberedList } from './nymb-list'
 import { TaskCompletedSvgIcon } from './tasks-page/task-icons'
 import { TransferTonButton } from './transfer-ton-button'
 import { CopyButton } from './ui/copy-button'
-import useSound from 'use-sound'
 
 export function MintSection() {
   const tonConnectUI = useTonConnectUI()
@@ -28,7 +28,7 @@ export function MintSection() {
   const { user } = useAccount()
   const { myCodes } = useReferrals()
   const { completeTask, tasksQuery } = useTasks()
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   const code = useMemo(() => {
     return myCodes && myCodes.length > 0
@@ -54,7 +54,6 @@ export function MintSection() {
   const isSubscribedTelegram = useMemo(() => {
     return accountQuery.data?.isSubscribed
   }, [accountQuery])
-
 
   const isMintDisabled = useMemo(() => {
     if (!tonConnectUI[0].connected) {
@@ -85,7 +84,6 @@ export function MintSection() {
   useEffect(() => {
     return () => stop()
   }, [play])
-
 
   return (
     <section className="relative text-white px-3 scroll-mt-45">

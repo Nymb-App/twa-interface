@@ -1,15 +1,15 @@
-import { Link } from '@tanstack/react-router'
-import Marquee from 'react-fast-marquee'
-import { useEffect, useMemo } from 'react'
-import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
-import { FlickeringGrid } from '../magicui/flickering-grid'
-import { cn } from '@/utils'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { cn } from '@/utils'
+import { Link } from '@tanstack/react-router'
+import { useMemo } from 'react'
+import Marquee from 'react-fast-marquee'
 import useSound from 'use-sound'
+import { FlickeringGrid } from '../magicui/flickering-grid'
+import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 
 export const LevelsList = () => {
   const levelsArray = Array.from({ length: 12 }, (_, idx) => idx + 1).reverse()
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play] = useSound('/sounds/Button.aac')
 
   const { getLvlStats } = useAccountMe()
 
@@ -36,7 +36,6 @@ export const LevelsList = () => {
     }
     return 'locked'
   }
-
 
   return (
     <div className="relative -mt-[10px] w-full">

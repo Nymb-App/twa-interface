@@ -1,32 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { useEffect, useState } from 'react'
-import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
-import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
+import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useStatistics } from '@/hooks/api/use-statistics'
 import { useLvl } from '@/hooks/use-lvl'
 import { cn } from '@/utils'
-import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+import { useEffect, useState } from 'react'
 import useSound from 'use-sound'
+import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
+import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
 
 export const StarboardTabsSection = () => {
   const { lvls, maxLvl } = useLvl()
   const { globalStatistics } = useStatistics()
   const [activeLvl, setActiveLvl] = useState<number>(maxLvl)
 
-  const [play, { stop }] = useSound('sounds/Button.aac')
-
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   useEffect(() => {
     return () => stop()
   }, [play])
-
 
   return (
     <Tabs

@@ -5,8 +5,8 @@ import { cn, convertTimestampToLargestUnit } from '@/utils'
 import { useAdsgram } from '@adsgram/react'
 import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
-import { ActionButton } from '../ui/action-button'
 import useSound from 'use-sound'
+import { ActionButton } from '../ui/action-button'
 
 export const AdsButton = ({
   className,
@@ -39,7 +39,7 @@ export const AdsButton = ({
   const { accountQuery } = useAccountMe()
   const [isAnimationStart, setIsAnimationStart] = useState(true)
   const [isDisabled, setIsDisabled] = useState(disabled)
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   useEffect(() => {
     return () => stop()
@@ -49,7 +49,6 @@ export const AdsButton = ({
     if (disabled !== undefined) return disabled
     return isDisabled || isAnimationStart
   }, [disabled, isAnimationStart, isDisabled])
-
 
   const share = useMutation({
     mutationFn: (timeShare: number) =>

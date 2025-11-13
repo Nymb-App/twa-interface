@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
-import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
+import { useBalance } from '@/hooks/use-balance'
 import { useTransferTon } from '@/hooks/use-transfer-ton'
 import { cn } from '@/utils'
-import { useBalance } from '@/hooks/use-balance'
+import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import useSound from 'use-sound'
 
 export type TransferTonButtonProps =
@@ -32,7 +32,7 @@ export function TransferTonButton({
   const address = useTonAddress()
   const { open } = useTonConnectModal()
   const { getBalance } = useBalance()
-  const [play] = useSound('sounds/Button.aac')
+  const [play] = useSound('/sounds/Button.aac')
   const {
     transfer,
     isTransactionLoading,

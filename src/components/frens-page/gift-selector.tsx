@@ -29,7 +29,7 @@ export const GiftSelector = ({
 }) => {
   const [count, setCount] = useState<number>(value)
   const [currentUnit, setCurrentUnit] = useState<TUnit | string>(unit)
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   const computedMaxValue = (() => {
     if (maxDays === undefined) return maxValue

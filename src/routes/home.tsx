@@ -64,24 +64,19 @@ const HomeComponent = memo(function HomeComponent() {
   const { accountQuery } = useAccountMe()
   const { buyItem } = useShop()
 
-  const [play, { stop }] = useSound('sounds/Button.aac')
-
+  const [play] = useSound('/sounds/Button.aac')
 
   const router = useRouter()
   const { isGetCheckInReward, isOnboardingCompleted } = useContext(AppContext)
-
-
 
   const accountTime = useMemo(() => {
     if (!accountQuery.data || !accountQuery.data.time) return 0
     return accountQuery.data.time * 1000
   }, [accountQuery.data])
 
-
   const handleClaimClick = useCallback(() => {
     setIsClaimStart(true)
   }, [])
-
 
   useEffect(() => {
     const now = new Date(
@@ -176,7 +171,11 @@ const HomeComponent = memo(function HomeComponent() {
       <ProgressSection isClaimStart={isClaimStart} />
       <div className="mt-5 px-4">
         <div className="grid grid-cols-2 gap-2">
-          <Link onClick={() => play()} to="/minigames/slide" disabled={accountTime < Date.now()}>
+          <Link
+            onClick={() => play()}
+            to="/minigames/slide"
+            disabled={accountTime < Date.now()}
+          >
             {isAndroid ? (
               <>
                 <Suspense

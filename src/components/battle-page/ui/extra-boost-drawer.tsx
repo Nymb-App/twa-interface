@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import { BustIcon } from '@/assets/icons/bust'
+import { CloseIcon } from '@/assets/icons/close'
+import { TelegramStarIcon } from '@/assets/icons/telegram-star'
+import { TonIcon } from '@/assets/icons/ton'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { TransferTonButton } from '@/components/transfer-ton-button'
 import {
   Drawer,
   DrawerContent,
@@ -10,12 +13,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { TransferTonButton } from '@/components/transfer-ton-button'
-import { useBuyExtraBoost } from '@/hooks/api/use-shop'
-import { BustIcon } from '@/assets/icons/bust'
-import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
-import { cn } from '@/utils'
-import { CloseIcon } from '@/assets/icons/close'
 import {
   Select,
   SelectContent,
@@ -23,15 +20,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TonIcon } from '@/assets/icons/ton'
-import { TelegramStarIcon } from '@/assets/icons/telegram-star'
+import { useBuyExtraBoost } from '@/hooks/api/use-shop'
+import { cn } from '@/utils'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import useSound from 'use-sound'
+import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
 
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { buyExtraBoost } = useBuyExtraBoost()
-  const [play] = useSound('sounds/Button.aac');
-
+  const [play] = useSound('/sounds/Button.aac')
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
@@ -50,7 +49,7 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
       <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
           onClick={() => {
-            play();
+            play()
             setIsOpen(false)
           }}
           className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"

@@ -19,13 +19,12 @@ import useSound from 'use-sound'
 export function ItemNFT({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { mintProgress, mint } = useMint()
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
   const amount = 1
 
   useEffect(() => {
     return () => stop()
   }, [play])
-
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-nft">

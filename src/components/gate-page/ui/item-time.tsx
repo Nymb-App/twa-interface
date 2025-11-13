@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
-import { toast } from 'sonner'
-import type { TShopItem } from '@/hooks/api/use-shop'
-import { cn } from '@/lib/utils'
+import { CloseIcon } from '@/assets/icons/close'
+import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
+import { TelegramStarIcon } from '@/assets/icons/telegram-star'
+import { TonIcon } from '@/assets/icons/ton'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { TransferTonButton } from '@/components/transfer-ton-button'
 import {
   Drawer,
   DrawerClose,
@@ -13,6 +14,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -20,13 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TonIcon } from '@/assets/icons/ton'
-import { TelegramStarIcon } from '@/assets/icons/telegram-star'
-import { TransferTonButton } from '@/components/transfer-ton-button'
+import type { TShopItem } from '@/hooks/api/use-shop'
 import { useShop } from '@/hooks/api/use-shop'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { CloseIcon } from '@/assets/icons/close'
-import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
+import { cn } from '@/lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import useSound from 'use-sound'
 
 export function ItemTime({
@@ -51,9 +51,8 @@ export function ItemTime({
     if (radioValue === '1 year') return 'time_one_year'
   }, [radioValue])
   const { buyItem } = useShop()
-  const [play, { stop }] = useSound('sounds/Button.aac')
-  
-  
+  const [play, { stop }] = useSound('/sounds/Button.aac')
+
   useEffect(() => {
     return () => stop()
   }, [play])
@@ -114,7 +113,7 @@ export function ItemTime({
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"
         >
-          {['1 week', '1 month',  '1 year'].map((option) => (
+          {['1 week', '1 month', '1 year'].map((option) => (
             <div key={option}>
               <RadioGroupItem
                 value={option}

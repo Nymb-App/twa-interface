@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
-import { toast } from 'sonner'
-import type { TShopItem } from '@/hooks/api/use-shop'
-import { cn } from '@/lib/utils'
+import { CloseIcon } from '@/assets/icons/close'
+import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
+import { TelegramStarIcon } from '@/assets/icons/telegram-star'
+import { TonIcon } from '@/assets/icons/ton'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { TransferTonButton } from '@/components/transfer-ton-button'
 import {
   Drawer,
   DrawerContent,
@@ -12,6 +13,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -19,13 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TonIcon } from '@/assets/icons/ton'
-import { TelegramStarIcon } from '@/assets/icons/telegram-star'
-import { TransferTonButton } from '@/components/transfer-ton-button'
+import type { TShopItem } from '@/hooks/api/use-shop'
 import { useShop } from '@/hooks/api/use-shop'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { CloseIcon } from '@/assets/icons/close'
-import { ShoppingBagIcon } from '@/assets/icons/shopping-bag-icon'
+import { cn } from '@/lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import useSound from 'use-sound'
 
 export function ItemTicket({
@@ -48,8 +48,8 @@ export function ItemTicket({
     if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
   const { buyItem } = useShop()
-  const [play, { stop }] = useSound('sounds/Button.aac')
-  
+  const [play, { stop }] = useSound('/sounds/Button.aac')
+
   useEffect(() => {
     return () => stop()
   }, [play])
@@ -102,10 +102,10 @@ export function ItemTicket({
           <div className="absolute left-1/2 -translate-x-1/2 bg-[#2c2a08] blur-[60px] size-[126px] rounded-full" />
           {/* <TicketIcon className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0" /> */}
           <img
-              src="/shop/ticket.webp"
-              alt="ticket"
-              className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0"
-            />
+            src="/shop/ticket.webp"
+            alt="ticket"
+            className="absolute left-1/2 -translate-x-1/2 w-[126px] h-auto top-0"
+          />
         </div>
 
         <RadioGroup

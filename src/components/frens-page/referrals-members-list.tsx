@@ -3,17 +3,17 @@ import { useReferrals } from '@/hooks/api/use-referrals'
 import { cn } from '@/utils'
 import { Link } from '@tanstack/react-router'
 import { useEffect, useMemo } from 'react'
+import useSound from 'use-sound'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Skeleton } from '../ui/skeleton'
-import useSound from 'use-sound'
 
 const MIN_ALLOWED_TIME = 86400
 const MIN_FRENS_FOR_A_GIFT = 10
 
 export const ReferralsMembersList = ({ meTime }: { meTime: number }) => {
   const { myReferrals, isLoadingMyReferrals } = useReferrals()
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
   const referralsCount = myReferrals?.referrals.length || 0
 
   const isSendGiftEnabled = useMemo(() => {

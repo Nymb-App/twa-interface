@@ -13,11 +13,17 @@ function Drawer({
 function DrawerTrigger({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
   React.useEffect(() => {
     return () => stop()
   }, [play])
-  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" onClick={() => play()} {...props} />
+  return (
+    <DrawerPrimitive.Trigger
+      data-slot="drawer-trigger"
+      onClick={() => play()}
+      {...props}
+    />
+  )
 }
 
 function DrawerPortal({
@@ -29,11 +35,17 @@ function DrawerPortal({
 function DrawerClose({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Close>) {
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
   React.useEffect(() => {
     return () => stop()
   }, [play])
-  return <DrawerPrimitive.Close data-slot="drawer-close" onClick={() => play()} {...props} />
+  return (
+    <DrawerPrimitive.Close
+      data-slot="drawer-close"
+      onClick={() => play()}
+      {...props}
+    />
+  )
 }
 
 function DrawerOverlay({
@@ -133,13 +145,13 @@ function DrawerDescription({
 
 export {
   Drawer,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerTrigger,
   DrawerClose,
   DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
   DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerPortal,
+  DrawerTitle,
+  DrawerTrigger,
 }

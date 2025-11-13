@@ -67,7 +67,7 @@ export const BattleMainScenePrivate = ({
 
   const [isToBattleReady, setIsToBattleReady] = useState(false)
 
-  const [play] = useSound('sounds/Button.aac');
+  const [play] = useSound('/sounds/Button.aac')
 
   const [playBattleClinStart, { stop: stopBattleClinStart }] = useSound(
     '/sounds/Battle-Clin-Start.aac',

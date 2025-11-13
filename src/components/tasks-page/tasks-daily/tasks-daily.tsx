@@ -2,11 +2,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { TWITTER_URL } from '@/constants'
 import { useAccount } from '@/hooks/api/use-account'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import { useEffect } from 'react'
 import Countdown from 'react-countdown'
+import useSound from 'use-sound'
 import { TaskIcon } from '../task-icons'
 import { TaskDailyBlock } from '../tasks-daily-block/tasks-daily-block'
-import useSound from 'use-sound'
-import { useEffect } from 'react'
 
 const getButtonLabel = (taskName: string) => {
   switch (taskName) {
@@ -23,7 +23,7 @@ export function TasksDaily() {
   const { user } = useAccount()
   const { dailyComboQuery, completeTask } = useTasks()
   const { data: dailyCombo, isLoading, isError } = dailyComboQuery
-  const [play, { stop }] = useSound('sounds/Button.aac')
+  const [play, { stop }] = useSound('/sounds/Button.aac')
 
   // const isTwitterTaskSubscribeCompilitionKey = 'task_subscribe'
   const isTwitterTaskLeaveCommentInTwitterKey = 'task_comment'
