@@ -63,7 +63,7 @@ export const BattleIntroScene = ({
       className={cn(
         'flex flex-col justify-between',
         isIntroSceneAnimationsStart &&
-          '!animate-battle-intro-section-slide-fade-out',
+          'animate-battle-intro-section-slide-fade-out!',
         className,
       )}
       onAnimationEnd={(e) => {
@@ -73,7 +73,7 @@ export const BattleIntroScene = ({
         }
       }}
     >
-      <header className="font-pixel font-[400] text-center">
+      <header className="font-pixel font-normal text-center">
         <BattleTitle
           className="opacity-0 animate-battle-preview-title-fade mb-4"
           text={
@@ -118,7 +118,7 @@ export const BattleIntroScene = ({
               '🛡️ Let’s see who’s the real champion! 🏆',
             ].join('\n')}
             className={cn(
-              'font-pixel text-white rounded-[16px] uppercase bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:cursor-not-allowed disabled:from-[#8C35FB]/50 disabled:to-[#6602E7]/50',
+              'font-pixel text-white rounded-[16px] uppercase bg-linear-to-b from-[#8C35FB] to-[#6602E7] disabled:cursor-not-allowed disabled:from-[#8C35FB]/50 disabled:to-[#6602E7]/50',
               !isAnimationsFindButtonEnd && 'pointer-events-none',
             )}
             inviteParam={`invitedBy=${meUserData?.id}_type=game-battle_bet=${bet}`}

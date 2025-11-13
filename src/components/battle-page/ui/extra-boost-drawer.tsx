@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import {
@@ -25,10 +25,13 @@ import {
 } from '@/components/ui/select'
 import { TonIcon } from '@/assets/icons/ton'
 import { TelegramStarIcon } from '@/assets/icons/telegram-star'
+import useSound from 'use-sound'
 
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { buyExtraBoost } = useBuyExtraBoost()
+  const [play] = useSound('sounds/Button.aac');
+
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
@@ -44,9 +47,12 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
         <span className="text-[#B6FF00]">Get Extra</span>
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            play();
+            setIsOpen(false)
+          }}
           className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
         >
           <CloseIcon />
