@@ -1,8 +1,10 @@
+import { AppContext } from '@/context/app-context'
 import type { IRoom, IUser } from '@/hooks/api/use-battle'
 import { useBattle } from '@/hooks/api/use-battle'
 import { cn } from '@/utils'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import Countdown from 'react-countdown'
+import useSound from 'use-sound'
 import { CountdownStartGame } from '../minigames/countdown-start-game'
 import { ActionButton } from '../ui/action-button'
 import { BattleCard } from './battle-card'
@@ -71,7 +73,16 @@ export const BattleMainScene = ({
     timeouts.current.push(id)
   }
 
+  const [playBattleClinStart, { stop: stopBattleClinStart }] = useSound(
+    '/sounds/Battle-Clin-Start.aac',
+  )
+
+  const [playBattleClinEnd, { stop: stopBattleClinEnd }] = useSound(
+    '/sounds/Battle-Clin-End.aac',
+  )
   const { forceDisconnect } = useBattle()
+
+  const { setIsBattleGameBackgroundMusicActive } = useContext(AppContext)
 
   useEffect(() => {
     if (forcedExitTimeoutRef.current) {
@@ -94,18 +105,34 @@ export const BattleMainScene = ({
     const animationTimeouts = [
       { fn: () => setIsVersusAnimationStart(true), delay: 500 },
       { fn: () => setIsStartFindingOpponent(false), delay: 2500 },
-      { fn: () => setIsClosingAnimation(true), delay: 2750 },
-      { fn: () => setIsOpeningAnimation(true), delay: 4500 },
+      {
+        fn: () => {
+          playBattleClinStart()
+          setIsClosingAnimation(true)
+        },
+        delay: 2750,
+      },
+      {
+        fn: () => {
+          playBattleClinEnd()
+          setIsOpeningAnimation(true)
+        },
+        delay: 4500,
+      },
       { fn: () => setIsMorphAnimation(true), delay: 5250 },
       { fn: () => setIsCardBgAnimationStart(true), delay: 5250 },
       { fn: () => setIsStartCountdown(true), delay: 7500 },
     ]
 
-    animationTimeouts.forEach(({ fn, delay }) => {
-      addTimeout(fn, delay)
-    })
+    if (!opponentInfo.clicks || opponentInfo.clicks < 1) {
+      animationTimeouts.forEach(({ fn, delay }) => {
+        addTimeout(fn, delay)
+      })
+    }
 
     return () => {
+      stopBattleClinStart()
+      stopBattleClinEnd()
       timeouts.current.forEach(clearTimeout)
       timeouts.current = []
     }
@@ -234,6 +261,7 @@ export const BattleMainScene = ({
           {isStartCountdown && !isCountdownCompleted && (
             <CountdownStartGame
               onComplete={() => {
+                setIsBattleGameBackgroundMusicActive(true)
                 setCountdownTarget(Date.now() + 60000)
                 setIsCountdownCompleted(true)
               }}

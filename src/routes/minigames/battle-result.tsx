@@ -2,10 +2,12 @@ import { WatchesIcon } from '@/assets/icons/watches'
 import { AdsButton } from '@/components/ads/ads-button'
 import { BattleResultGameBg } from '@/components/battle-page/ui/battle-result-game-bg'
 import { ActionButton } from '@/components/ui/action-button'
+import { AppContext } from '@/context/app-context'
 import { AvatarCard } from '@/routes/send-gift'
 import { cn } from '@/utils'
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import useSound from 'use-sound'
 import LoosingStartImg from '/minigames/loosing-stars-battle.webp'
 import WinningStarsImg from '/minigames/winning-stars-battle.webp'
 
@@ -89,10 +91,33 @@ const ResultScene = ({
 
   const [isNewBattleDisabled, setIsNewBattleDisabled] = useState(true)
 
+  const [playBattleLoser, { stop: stopBattleLoser }] = useSound(
+    '/sounds/Battle-Loser.aac',
+  )
+
+  const [playBattleWinner, { stop: stopBattleWinner }] = useSound(
+    '/sounds/Swipe-End.aac',
+  )
+
+  const { setIsBattleGameBackgroundMusicActive } = useContext(AppContext)
+
   const isMeWinner = useMemo(() => {
     if (isDraw) return false
     return winner.id === myId
   }, [isDraw, winner, myId])
+
+  useEffect(() => {
+    setIsBattleGameBackgroundMusicActive(false)
+    if (isMeWinner) {
+      playBattleWinner()
+    } else {
+      playBattleLoser()
+    }
+    return () => {
+      stopBattleWinner()
+      stopBattleLoser()
+    }
+  }, [playBattleWinner, playBattleLoser])
 
   return (
     <div

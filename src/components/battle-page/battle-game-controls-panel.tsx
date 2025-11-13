@@ -29,6 +29,8 @@ export const BattleGameControlsPanel = ({
     '/sounds/Battle-Boost.aac',
   )
 
+  const [playPushGame] = useSound('/sounds/Button.aac', { volume: 0.4 })
+
   // Обратный отсчёт
   useEffect(() => {
     if (isReversing0) {
@@ -82,6 +84,7 @@ export const BattleGameControlsPanel = ({
       <BattleAnimatedPushButton
         isDisabled={disabled}
         onClick={() => {
+          playPushGame()
           onClick?.()
           if (fillPercent0 <= 100 && !isReversing0) {
             setFillPercent0((prev: number) => prev + 1)

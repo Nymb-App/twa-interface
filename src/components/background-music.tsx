@@ -1,13 +1,19 @@
 // import { useRouterState } from '@tanstack/react-router'
 // import { useEffect, useRef, useState } from 'react'
-import { useEffect } from 'react'
+import { AppContext } from '@/context/app-context'
+import { useRouterState } from '@tanstack/react-router'
+import { useContext, useEffect } from 'react'
 import useSound from 'use-sound'
 
 export function BackgroundMusic() {
-  // const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
   // const [audioUnlocked, setAudioUnlocked] = useState(false)
   // const currentTrackRef = useRef<'main' | 'battle' | 'swipe' | null>(null)
 
+  const {
+    isBattleGameBackgroundMusicActive,
+    setIsBattleGameBackgroundMusicActive,
+  } = useContext(AppContext)
   const soundOptions = { loop: true, volume: 0.6, interrupt: true }
 
   const [playMain, { stop: stopMain }] = useSound(
@@ -15,10 +21,43 @@ export function BackgroundMusic() {
     soundOptions,
   )
 
+  const [playBattleGameMusic, { stop: stopBattleGameMusic }] = useSound(
+    '/sounds/Battle-In-Game.aac',
+    soundOptions,
+  )
+
+  // useEffect(() => {
+  //   playMain()
+  //   return () => stopMain()
+  // }, [playMain, stopMain])
+
   useEffect(() => {
-    playMain()
-    return () => stopMain()
-  }, [playMain, stopMain])
+    if (!pathname.startsWith('/minigames/battle')) {
+      setIsBattleGameBackgroundMusicActive(false)
+    }
+  }, [pathname])
+
+  useEffect(() => {
+    // if (!pathname.startsWith('/minigames/battle')) {
+    //   setIsBattleGameBackgroundMusicActive(false)
+    // }
+
+    if (isBattleGameBackgroundMusicActive) {
+      stopMain()
+      playBattleGameMusic()
+    } else {
+      stopBattleGameMusic()
+      playMain()
+    }
+  }, [
+    isBattleGameBackgroundMusicActive,
+    playBattleGameMusic,
+    stopBattleGameMusic,
+    playMain,
+    stopMain,
+    // pathname,
+  ])
+
   // const [playBattle, { stop: stopBattle }] = useSound(
   //   '/sounds/Battles-Game-Background-Track.aac',
   //   soundOptions,

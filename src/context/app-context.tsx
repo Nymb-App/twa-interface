@@ -16,6 +16,8 @@ interface IAppContext {
   setIsGetCheckInReward: (value: boolean) => void
   isOnboardingCompleted: boolean
   setIsOnboardingCompleted: (value: boolean) => void
+  isBattleGameBackgroundMusicActive: boolean
+  setIsBattleGameBackgroundMusicActive: (value: boolean) => void
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -31,6 +33,8 @@ export const AppContext = createContext<IAppContext>({
   setIsGetCheckInReward: () => {},
   isOnboardingCompleted: false,
   setIsOnboardingCompleted: () => {},
+  isBattleGameBackgroundMusicActive: false,
+  setIsBattleGameBackgroundMusicActive: () => {},
 })
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -44,10 +48,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isGetCheckInReward, setIsGetCheckInReward] = useState<boolean>(false)
   const [isOnboardingCompleted, setIsOnboardingCompleted] =
     useState<boolean>(false)
+  const [
+    isBattleGameBackgroundMusicActive,
+    setIsBattleGameBackgroundMusicActive,
+  ] = useState<boolean>(false)
 
   return (
     <AppContext.Provider
       value={{
+        isBattleGameBackgroundMusicActive,
+        setIsBattleGameBackgroundMusicActive,
         isGetCheckInReward,
         setIsGetCheckInReward,
         isOnboardingCompleted,

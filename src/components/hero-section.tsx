@@ -11,6 +11,7 @@ import { useAccountMe } from '@/hooks/api/use-account'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { cn } from '@/lib/utils'
 import { Link } from '@tanstack/react-router'
+import useSound from 'use-sound'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
 import {
@@ -22,7 +23,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from './ui/drawer'
-import useSound from 'use-sound'
 
 export function HeroSection() {
   return (
@@ -916,7 +916,7 @@ function StarsCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'w-full p-1 bg-linear-to-b from-white/20 to-transparent rounded-2xl',
+        'w-full p-px bg-linear-to-b from-white/20 to-transparent rounded-2xl',
         className,
       )}
     >

@@ -13,12 +13,14 @@ import {
 } from '@tma.js/sdk'
 import type { ReactNode } from 'react'
 import { useContext, useEffect } from 'react'
+import useSound from 'use-sound'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
   const { currentOnboardingSlide } = useContext(AppContext)
+  const [playButtonSound] = useSound('/sounds/Button.aac')
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
@@ -90,6 +92,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
+            playButtonSound()
             if (pathnames[1].pathname === '/home') return
             if (pathnames[1].pathname === '/onboarding') {
               if (!currentOnboardingSlide) return
