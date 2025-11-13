@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Drawer as DrawerPrimitive } from 'vaul'
 
 import { cn } from '@/lib/utils'
+import useSound from 'use-sound'
 
 function Drawer({
   ...props
@@ -12,7 +13,11 @@ function Drawer({
 function DrawerTrigger({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
-  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />
+  const [play, { stop }] = useSound('sounds/Button.aac')
+  React.useEffect(() => {
+    return () => stop()
+  }, [play])
+  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" onClick={() => play()} {...props} />
 }
 
 function DrawerPortal({
@@ -24,7 +29,11 @@ function DrawerPortal({
 function DrawerClose({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Close>) {
-  return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />
+  const [play, { stop }] = useSound('sounds/Button.aac')
+  React.useEffect(() => {
+    return () => stop()
+  }, [play])
+  return <DrawerPrimitive.Close data-slot="drawer-close" onClick={() => play()} {...props} />
 }
 
 function DrawerOverlay({

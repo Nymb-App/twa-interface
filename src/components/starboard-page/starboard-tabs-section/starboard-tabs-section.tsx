@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
 import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
 import {
@@ -13,11 +13,20 @@ import { useLvl } from '@/hooks/use-lvl'
 import { cn } from '@/utils'
 import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 import { Skeleton } from '@/components/ui/skeleton'
+import useSound from 'use-sound'
 
 export const StarboardTabsSection = () => {
   const { lvls, maxLvl } = useLvl()
   const { globalStatistics } = useStatistics()
   const [activeLvl, setActiveLvl] = useState<number>(maxLvl)
+
+  const [play, { stop }] = useSound('sounds/Button.aac')
+
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
 
   return (
     <Tabs
@@ -36,6 +45,7 @@ export const StarboardTabsSection = () => {
             {lvls.map((item, idx) => (
               <CarouselItem key={idx} className="basis-[80px] flex">
                 <TabsTrigger
+                  onClick={() => play()}
                   value={String(item)}
                   className="data-[state=active]:bg-[#B6FF00] data-[state=active]:text-[#121312] h-[30px] w-[80px] py-2 px-2.5 shrink-0 bg-[#FFFFFF14] rounded-[64px] text-[#FFFFFF] font-pixel font-[400] text-[12px] leading-[120%] uppercase"
                 >

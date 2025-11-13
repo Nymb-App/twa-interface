@@ -90,9 +90,9 @@ function App() {
               width={450}
             />
 
-            <div className="absolute size-full bg-gradient-to-b from-transparent from-50% to-[#121312]" />
-            <div className="absolute size-full bg-gradient-to-b from-[#121312] to-transparent to-[50%]" />
-            <div className="absolute size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)]" />
+            <div className="absolute size-full bg-linear-to-b from-transparent from-50% to-[#121312]" />
+            <div className="absolute size-full bg-linear-to-b from-[#121312] to-transparent to-50%" />
+            <div className="absolute size-full bg-[radial-gradient(ellipse_at_center,transparent_50%,#121312_95%)]" />
             <iframe
               className={cn(
                 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] border-none outline-none duration-700',

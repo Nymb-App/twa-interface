@@ -3,6 +3,8 @@ import { Check, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { Button } from "@/components/ui/button"
+import useSound from "use-sound"
+import { useEffect } from "react"
 
 type CopyButtonProps = {
   content: string
@@ -17,13 +19,22 @@ export function CopyButton({ content, copyMessage, className, children }: CopyBu
     copyMessage,
   })
 
+  const [play, { stop }] = useSound('sounds/Button.aac')
+
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
   return (
     <Button
       variant="ghost"
       size="icon"
       className={cn("relative h-6 w-6", className)}
       aria-label="Copy to clipboard"
-      onClick={handleCopy}
+      onClick={() => {
+        play()
+        handleCopy()
+      }}
     >
       <div className="absolute inset-0 flex items-center justify-center">
         <Check

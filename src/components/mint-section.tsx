@@ -9,7 +9,7 @@ import { useMint } from '@/hooks/use-mint'
 import { TELEGRAM_APP_URL } from '@/lib/constants'
 import { shareURL } from '@tma.js/sdk'
 import { useTonConnectUI } from '@tonconnect/ui-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { FaXTwitter } from 'react-icons/fa6'
 import { RiTelegram2Line } from 'react-icons/ri'
 import { TbReload } from 'react-icons/tb'
@@ -19,6 +19,7 @@ import { NumberedItem, NumberedList } from './nymb-list'
 import { TaskCompletedSvgIcon } from './tasks-page/task-icons'
 import { TransferTonButton } from './transfer-ton-button'
 import { CopyButton } from './ui/copy-button'
+import useSound from 'use-sound'
 
 export function MintSection() {
   const tonConnectUI = useTonConnectUI()
@@ -27,6 +28,7 @@ export function MintSection() {
   const { user } = useAccount()
   const { myCodes } = useReferrals()
   const { completeTask, tasksQuery } = useTasks()
+  const [play, { stop }] = useSound('sounds/Button.aac')
 
   const code = useMemo(() => {
     return myCodes && myCodes.length > 0
@@ -48,6 +50,11 @@ export function MintSection() {
   const isNftProgressFinished = useMemo(() => {
     return mintProgress?.progress === 100
   }, [mintProgress?.progress])
+
+  const isSubscribedTelegram = useMemo(() => {
+    return accountQuery.data?.isSubscribed
+  }, [accountQuery])
+
 
   const isMintDisabled = useMemo(() => {
     if (!tonConnectUI[0].connected) {
@@ -75,9 +82,10 @@ export function MintSection() {
     )
   }
 
-  const isSubscribedTelegram = useMemo(() => {
-    return accountQuery.data?.isSubscribed
-  }, [accountQuery])
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
 
   return (
     <section className="relative text-white px-3 scroll-mt-45">
@@ -96,7 +104,7 @@ export function MintSection() {
           </NumberedItem.Description>
 
           <div className="w-full mt-3 mb-4 flex flex-col gap-2">
-            <div className="rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
+            <div className="rounded-xl bg-linear-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
               <div className="inline-flex gap-4 items-center">
                 <FaXTwitter className="text-white size-5" />
                 <div className="flex flex-col">
@@ -114,6 +122,7 @@ export function MintSection() {
                   <>
                     <button
                       onClick={async () => {
+                        play()
                         await tasksQuery.refetch()
                       }}
                       className="bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1"
@@ -121,10 +130,11 @@ export function MintSection() {
                       <TbReload className="scale-x-[-1]" />
                     </button>
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        play()
                         handleTwitterTaskAction(TaskNames.SubscribeTwitter)
-                      }
-                      className="text-sm font-pixel text-black h-6 pt-[1px] bg-gradient-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
+                      }}
+                      className="text-sm font-pixel text-black h-6 pt-1 bg-linear-to-b from-[#A0D600] to-[#B6FF00] rounded-lg px-3"
                     >
                       open
                     </button>
@@ -137,7 +147,7 @@ export function MintSection() {
               </div>
             </div>
 
-            <div className="rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
+            <div className="rounded-xl bg-linear-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
               <div className="inline-flex gap-4 items-center">
                 <RiTelegram2Line className="text-white size-5" />
                 <div className="flex flex-col">
@@ -155,6 +165,7 @@ export function MintSection() {
                   <>
                     <button
                       onClick={async () => {
+                        play()
                         await accountQuery.refetch()
                       }}
                       className="bg-[#2c3816] text-[#B6FF00] size-6 flex justify-center items-center rounded-lg p-1"
@@ -162,6 +173,9 @@ export function MintSection() {
                       <TbReload className="scale-x-[-1]" />
                     </button>
                     <a
+                      onClick={() => {
+                        play()
+                      }}
                       href={TELEGRAM_URL}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -189,7 +203,7 @@ export function MintSection() {
           </NumberedItem.Description>
 
           <div className="w-full mt-3 mb-4 flex flex-col gap-2">
-            <div className="rounded-xl bg-gradient-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
+            <div className="rounded-xl bg-linear-to-b from-transparent to-white/5 inline-flex items-center justify-between px-4 py-2 w-full">
               <div className="inline-flex gap-4 items-center">
                 <FriendsIcon fillOpacity="1" className="size-5" />
                 <div className="flex flex-col">
@@ -213,6 +227,7 @@ export function MintSection() {
                 </button> */}
                 <button
                   onClick={() => {
+                    play()
                     const telegramLink =
                       import.meta.env.VITE_TELEGRAM_APP_LINK ||
                       'https://t.me/nymb_twa_bot/nymb'
@@ -254,7 +269,7 @@ export function MintSection() {
               src="/webm/nft.mp4"
               poster="/webm/mint-video-placeholder.png"
             />
-            <div className="absolute w-full h-[90px] bg-gradient-to-b from-[#0b0b0b]/50 from-20% to-[#161715] pointer-events-none -bottom-1" />
+            <div className="absolute w-full h-[90px] bg-linear-to-b from-[#0b0b0b]/50 from-20% to-[#161715] pointer-events-none -bottom-1" />
           </div>
           <div className="absolute w-full h-full bg-[url('/index-page/nft-bg.png')] bg-cover bg-top pointer-events-none" />
           <div className="inline-flex gap-2 items-center font-pixel mx-auto text-[#B6FF00] z-10 -mt-11">
@@ -272,6 +287,9 @@ export function MintSection() {
               recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
               amount={1}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
+              onClick={() => {
+                play()
+              }}
               onTransferSuccess={async (hash) => {
                 toast.success('NFT purchased!')
                 await mint(hash)

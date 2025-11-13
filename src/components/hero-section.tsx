@@ -22,6 +22,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from './ui/drawer'
+import useSound from 'use-sound'
 
 export function HeroSection() {
   return (
@@ -896,6 +897,7 @@ function StarBoardCardDrawer() {
 function StarsCard({ className }: { className?: string }) {
   const { tasksQuery } = useTasks()
   const { accountQuery } = useAccountMe()
+  const [play, { stop }] = useSound('sounds/Button.aac')
 
   const isCompletedTaskTwitter = useMemo(() => {
     return tasksQuery.data?.some(
@@ -907,10 +909,14 @@ function StarsCard({ className }: { className?: string }) {
     return accountQuery.data?.isSubscribed
   }, [accountQuery])
 
+  useEffect(() => {
+    return () => stop()
+  }, [play])
+
   return (
     <div
       className={cn(
-        'w-full p-[1px] bg-gradient-to-b from-white/20 to-transparent rounded-2xl',
+        'w-full p-1 bg-linear-to-b from-white/20 to-transparent rounded-2xl',
         className,
       )}
     >
@@ -962,11 +968,12 @@ function StarsCard({ className }: { className?: string }) {
           </p>
         ) : (
           <ScrollLink
+            onClick={() => play()}
             to="mintSection"
             smooth={true}
             duration={500}
             offset={-50} // Optional offset
-            className="relative text-black bg-gradient-to-b from-[#FFD930] to-[#FFDE4D] px-7 py-2.5 rounded-xl font-pixel text-sm mt-4 transition-transform duration-200 cursor-pointer"
+            className="relative text-black bg-linear-to-b from-[#FFD930] to-[#FFDE4D] px-7 py-2.5 rounded-xl font-pixel text-sm mt-4 transition-transform duration-200 cursor-pointer"
           >
             JOIN US
           </ScrollLink>
