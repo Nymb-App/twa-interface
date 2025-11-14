@@ -6,12 +6,14 @@ export const ActionButton = ({
   children,
   className,
   disabled,
+  enableSound = true,
   onClick,
   onAnimationEnd,
 }: {
   children: ReactNode
   className?: string
   disabled?: boolean
+  enableSound?: boolean
   onClick?: () => void
   onAnimationEnd?: React.AnimationEventHandler<HTMLButtonElement>
 }) => {
@@ -22,7 +24,9 @@ export const ActionButton = ({
       disabled={disabled}
       onAnimationEnd={onAnimationEnd}
       onClick={() => {
-        play()
+        if (enableSound) {
+          play()
+        }
         onClick?.()
       }}
       className={cn(

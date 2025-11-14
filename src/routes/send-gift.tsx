@@ -33,8 +33,13 @@ function RouteComponent() {
   const winnerIndex = Math.floor(Math.random() * referralsNickName.length)
   const [isRiveAnimationEnd, setIsRiveAnimationEnd] = useState(false)
   const { accountQuery } = useAccountMe()
-
+  
   const [play, { stop }] = useSound('/sounds/Button.aac')
+  const [playGift, { stop: stopPlayGift }] = useSound('/sounds/Swipe-End.aac')
+  const [playGiftOpening, { stop: stopPlayGiftOpening }] = useSound('/sounds/Farm-End.aac')
+  const [playRouletteStart, { stop: stopPlayRouletteStart }] = useSound('/sounds/Snap.aac', {
+    volume: 0.5,
+  })
 
   useEffect(() => {
     if (!accountQuery.data) return
@@ -53,10 +58,21 @@ function RouteComponent() {
 
   useEffect(() => {
     if (isFinishRoulette) {
+      playGift()
+      const giftOpeningSoundTimer = setTimeout(() => {
+        playGiftOpening()
+      }, 3000)
       const riveAnimationTimer = setTimeout(() => {
         setIsRiveAnimationEnd(true)
       }, 5000)
-      return () => clearTimeout(riveAnimationTimer)
+      return () => {
+        clearTimeout(giftOpeningSoundTimer)
+        clearTimeout(riveAnimationTimer)
+
+        stopPlayGiftOpening()
+        stopPlayGift()
+        stopPlayRouletteStart()
+      }
     }
   }, [isFinishRoulette])
 
@@ -176,6 +192,9 @@ function RouteComponent() {
             duration={30000}
             gap={50}
             loops={12}
+            onChange={() => {
+              playRouletteStart()
+            }}
             onFinish={() => {
               setIsFinishRoulette(true)
               sendGiftToFriend.mutate({

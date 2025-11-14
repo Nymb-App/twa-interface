@@ -166,6 +166,7 @@ function FarmingDefaultButton({
 }) {
   return (
     <ActionButton
+      enableSound={false}
       onClick={onClick}
       className={cn(className)}
       disabled={disabled}

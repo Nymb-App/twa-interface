@@ -14,6 +14,7 @@ export function RussianRoulette({
   gap = 300,
   className,
   onFinish,
+  onChange,
   // riveAnimation,
 }: {
   items: Array<ReactNode>
@@ -25,6 +26,7 @@ export function RussianRoulette({
   gap?: number // px между карточками (default 0)
   className?: string
   onFinish?: () => void
+  onChange?: () => void
   // riveAnimation?: Rive
 }) {
   if (items.length < 4) {
@@ -227,6 +229,7 @@ export function RussianRoulette({
     }
 
     if (isStartRouletteRef.current) {
+      onChange?.()
       if (hapticFeedback.impactOccurred.isAvailable()) {
         hapticFeedback.impactOccurred('heavy')
       }
