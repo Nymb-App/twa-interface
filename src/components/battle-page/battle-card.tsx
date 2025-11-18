@@ -208,9 +208,9 @@ const SvgBgIos = ({
       viewBox="0 0 390 52"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn('relative z-1 w-full', isMe && 'rotate-180', className)}
+      className={cn('relative z-50 w-full max-w-[390px]', isMe && 'rotate-180', className)}
     >
-      <foreignObject x="-8" y="-8" width="406" height="68">
+      <foreignObject x="-8" y="-8" width="406" height="60">
         <div
           className={cn(
             'bg-linear-to-b from-[#040619]/20 via-[#040619]/20',

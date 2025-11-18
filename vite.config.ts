@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'hills-coating-suspended-parent.trycloudflare.com',
+      'titanium-coat-truck-adam.trycloudflare.com',
     ],
   },
 

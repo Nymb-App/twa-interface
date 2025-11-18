@@ -94,7 +94,7 @@ export function TasksDaily() {
   if (isError || !dailyCombo) {
     return (
       <section className="-mt-4">
-        <div className="font-pixel mb-3 flex justify-center leading-[24px] font-[18px] uppercase">
+        <div className="font-pixel mb-3 flex justify-center leading-6 font-[18px] uppercase">
           <h1 className="ml-4 text-lg">daily combo</h1>
         </div>
         <div className="starboard-result-block-bg relative mb-6 rounded-[14px] px-4 py-3">
@@ -106,7 +106,7 @@ export function TasksDaily() {
 
   return (
     <section className="-mt-4">
-      <div className="font-pixel relative mb-3 flex justify-center leading-[24px] font-[18px] uppercase">
+      <div className="font-pixel relative mb-3 flex justify-center leading-6 font-[18px] uppercase">
         <h1 className="ml-4 text-lg">daily combo</h1>
         {isAllTasksCompleted && (
           <p className="absolute right-4 text-[#FFFFFF]/40">Done</p>
@@ -129,22 +129,22 @@ export function TasksDaily() {
         </div>
         {!isAllTasksCompleted ? (
           <div>
-            <div className="my-3 h-1 bg-[#FFFFFF1F]" />
-            <p className="font-inter text-center text-[14px] leading-[140%] font-[400] text-[#FFFFFF]">
+            <div className="my-3 h-px bg-[#FFFFFF1F]" />
+            <p className="font-inter text-center text-[14px] leading-[140%] font-normal text-[#FFFFFF]">
               Complete all tasks and get an extra:
               <span className="font-pixel relative ml-2 leading-[120%] text-[#B6FF00] uppercase">
-                <span className="absolute top-1 -left-1">+</span>
+                <span className="absolute top-px -left-1">+</span>
                 <span>12</span>
                 <span className="ml-1.5">H</span>
               </span>
             </p>
           </div>
         ) : (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center font-[400] text-[#FFFFFF]">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center font-normal text-[#FFFFFF]">
             <p className="font-inter mb-1.5 text-[14px] leading-[140%]">
               Available via:
             </p>
-            <div className="font-pixel text-[20px] leading-[24px]">
+            <div className="font-pixel text-[20px] leading-6">
               <Countdown date={dailyCombo.resetAt * 1000} renderer={renderer} />
             </div>
           </div>
