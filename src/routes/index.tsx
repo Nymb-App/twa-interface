@@ -80,7 +80,6 @@ const HomeComponent = memo(function HomeComponent() {
   ] = useState<boolean>(false)
   const { login, isAuthenticated } = useAuth()
   
-  console.log('isAuthenticated', isAuthenticated)
   useEffect(() => {
     if (isAuthenticated) return
     ;(async () => {
