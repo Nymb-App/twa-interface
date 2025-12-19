@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Suspense, lazy } from 'react'
+// import { Suspense, lazy } from 'react'
 import { PageLayout } from '@/components/ui/page-layout'
-import { FallbackLoader } from '@/components/ui/fallback-loader'
+// import { FallbackLoader } from '@/components/ui/fallback-loader'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import TasksImage from '/tasks-img.webp'
-import { useTasks } from '@/hooks/api/use-tasks'
+// import { useTasks } from '@/hooks/api/use-tasks'
 import { TasksDaily } from '@/components/tasks-page/tasks-daily/tasks-daily'
 import { TasksTabs } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 

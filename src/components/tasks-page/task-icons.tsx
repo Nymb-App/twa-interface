@@ -1,5 +1,5 @@
 import { TasksDailyComboNames } from '@/hooks/api/use-tasks'
-import { PiTelegramLogo } from 'react-icons/pi'
+// import { PiTelegramLogo } from 'react-icons/pi'
 import { FaAd } from "react-icons/fa";
 
 import { TbBrandTelegram, TbBrandX } from "react-icons/tb";
