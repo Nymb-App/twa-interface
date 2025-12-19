@@ -1,9 +1,10 @@
-import { FallbackLoader } from '@/components/ui/fallback-loader'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
-import { useNavigate } from '@tanstack/react-router'
-import type { ReactNode } from 'react'
-import { useEffect } from 'react'
-import { toast } from 'sonner'
+import { type ReactNode, useEffect } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+
+import { toast } from 'sonner';
+
+import { FallbackLoader } from '@/components/ui/fallback-loader';
+import { useAccount, useAccountMe } from '@/hooks/api/use-account';
 
 interface Params {
   invitedBy: string

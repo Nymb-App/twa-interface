@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { ActionButton } from '@/components/ui/action-button'
-import { TWITTER_URL } from '@/constants'
+import { TWITTER_URL, WEBSITE_URL } from '@/lib/constants'
 import { useAccountMe } from '@/hooks/api/use-account'
 import type { ITask } from '@/hooks/api/use-tasks'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
@@ -34,6 +34,9 @@ export function TasksTabs() {
   const completedTasks = tasks?.filter((task) => task.isCompleted) ?? []
 
   const handleTaskAction = (task: ITask) => {
+    if (task.name === TaskNames.VisitWebsite) {
+      window.open(WEBSITE_URL, '_blank', 'noopener,noreferrer')
+    }
     if (task.name === TaskNames.SubscribeTwitter) {
       window.open(TWITTER_URL, '_blank', 'noopener,noreferrer')
     }

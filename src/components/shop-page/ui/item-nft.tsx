@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/drawer'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { useMint } from '@/hooks/use-mint'
+import { RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -118,8 +119,7 @@ export function ItemNFT({ className }: { className?: string }) {
           </div>
           <div className="mt-6 px-4 relative">
             <TransferTonButton
-              // disabled={isMintDisabled}
-              recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
+              recipient={RECEIVER_ADDRESS}
               amount={amount}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onTransferSuccess={async (hash) => {

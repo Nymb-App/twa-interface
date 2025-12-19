@@ -1,7 +1,9 @@
 export const TWITTER_URL = 'https://x.com/NYMB_app'
 export const TELEGRAM_URL = 'https://t.me/nymb_app'
 
-export const TONCONNECT_MANIFEST_URL = 'https://numb.app/tonconnect-manifest.json';
+export const WEBSITE_URL = import.meta.env.VITE_PUBLIC_WEBSITE_URL || 'https://nymb.app';
+export const RECEIVER_ADDRESS = import.meta.env.VITE_PUBLIC_RECEIVER_ADDRESS ?? "UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs";
+export const TONCONNECT_MANIFEST_URL = 'https://nymb.app/tonconnect-manifest.json';
 
 // Environment Variables
 export const BASE_API_URL = import.meta.env.VITE_PUBLIC_API_URL || 'https://api.nymb-test.icu';

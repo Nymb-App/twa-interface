@@ -1,7 +1,7 @@
 import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { OptionalSVG } from '@/assets/svg/optional'
 import { Card } from '@/components/ui/card'
-import { TELEGRAM_URL, TWITTER_URL } from '@/constants'
+import { RECEIVER_ADDRESS, TELEGRAM_URL, TWITTER_URL } from '@/lib/constants'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
@@ -313,7 +313,7 @@ export function MintSection() {
           <div className="mt-6 px-4 relative">
             <TransferTonButton
               disabled={isMintDisabled}
-              recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
+              recipient={RECEIVER_ADDRESS}
               amount={5}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onTransferSuccess={async (hash) => {
@@ -322,7 +322,9 @@ export function MintSection() {
               }}
               onError={(e) => {
                 if (e.message === 'Insufficient balance') {
-                  toast.error('Insufficient balance')
+                  toast.error(e.message);
+                } else if (e.message === 'You can\'t send to yourself') {
+                  toast.error(e.message);
                 } else {
                   toast.error('An error occurred during payment')
                 }

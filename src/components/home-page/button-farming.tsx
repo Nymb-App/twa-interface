@@ -16,7 +16,7 @@ import {
   NYMB_FARMING_FINISHAT_LS_KEY,
   useFarming,
 } from '../../context/farming-context'
-import { ActionButton } from './action-button'
+import { Button } from '../ui/button'
 
 const NYMB_FARMING_CLAIM_ADS_COUNT_KEY = 'NYMB_FARMING_CLAIM_ADS_COUNT'
 
@@ -165,15 +165,16 @@ function FarmingDefaultButton({
   disabled?: boolean
 }) {
   return (
-    <ActionButton
+    <Button
+      variant={'nymb-green'}
       enableSound={false}
       onClick={onClick}
-      className={cn(className)}
+      className={cn("h-14", className)}
       disabled={disabled}
     >
-      <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
+      <WatchesIcon className="mix-blend-difference size-9" fill="#B6FF00" />
       <span className="mix-blend-difference">START FARMING</span>
-    </ActionButton>
+    </Button>
   )
 }
 
@@ -301,10 +302,11 @@ function FarmingDefaultLoadingButton({
   disabled?: boolean
 }) {
   return (
-    <ActionButton
+    <Button
+      variant={'nymb-green'}
       onClick={onClick}
       className={cn(
-        'bg-[#232B12] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+        'h-14 bg-[#232B12] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
         className,
       )}
       disabled={disabled}
@@ -314,6 +316,6 @@ function FarmingDefaultLoadingButton({
         fill="#B6FF00"
       />
       <span className="mix-blend-difference uppercase ml-2">loading</span>
-    </ActionButton>
+    </Button>
   )
 }

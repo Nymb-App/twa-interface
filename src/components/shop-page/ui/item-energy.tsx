@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useShop } from '@/hooks/api/use-shop'
+import { RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -159,7 +160,7 @@ export function ItemEnergy({ className }: { className?: string }) {
 
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
-            recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
+            recipient={RECEIVER_ADDRESS}
             amount={1}
             className="py-3 w-full inline-flex justify-center items-center gap-1"
             onTransferSuccess={async (hash) => {

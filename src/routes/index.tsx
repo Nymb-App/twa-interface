@@ -18,7 +18,7 @@ import FrostScratchPanel from '@/components/frost-scratch-panel'
 import ProgressSection from '@/components/home-page/progress-section'
 import { ScratchHint } from '@/components/scratch-hint'
 import { TransferTonButton } from '@/components/transfer-ton-button'
-import { FarmingButton } from '@/components/ui/button-farming'
+import { FarmingButton } from '@/components/home-page/button-farming'
 import { CardContent } from '@/components/ui/card-content'
 import {
   Drawer,
@@ -49,6 +49,7 @@ import { AnimationStartOverlay } from '@/components/animation-start-overlay'
 import { cn } from '@/lib/utils'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { useAuth } from '@/hooks/api/use-api'
+import { RECEIVER_ADDRESS } from '@/lib/constants'
 
 const SwipeCard = lazy(() =>
   import('@/components/swipe-card').then((m) => ({ default: m.SwipeCard })),
@@ -375,48 +376,6 @@ function UnfreezeAccountDrawer({
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
 
-  // const handleOpenChange = (open: boolean) => {
-  //   if (!isIOS) {
-  //     setIsOpen(open)
-  //     return
-  //   }
-  //   const body = document.body
-  //   if (open) {
-  //     if (closeUnlockTimerRef.current != null) {
-  //       clearTimeout(closeUnlockTimerRef.current)
-  //       closeUnlockTimerRef.current = null
-  //     }
-  //     scrollYRef.current =
-  //       window.scrollY ||
-  //       window.pageYOffset ||
-  //       document.documentElement.scrollTop ||
-  //       0
-  //     body.style.position = 'fixed'
-  //     body.style.top = `-${scrollYRef.current}px`
-  //     body.style.left = '0'
-  //     body.style.right = '0'
-  //     body.style.width = '100%'
-  //     body.style.touchAction = 'none'
-  //   } else {
-  //     if (closeUnlockTimerRef.current != null) {
-  //       clearTimeout(closeUnlockTimerRef.current)
-  //     }
-  //     closeUnlockTimerRef.current = setTimeout(() => {
-  //       const y =
-  //         Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
-  //       body.style.position = ''
-  //       body.style.top = ''
-  //       body.style.left = ''
-  //       body.style.right = ''
-  //       body.style.width = ''
-  //       body.style.touchAction = ''
-  //       window.scrollTo(0, y)
-  //       closeUnlockTimerRef.current = null
-  //     }, 350) as unknown as number
-  //   }
-  //   setIsOpen(open)
-  // }
-
   useEffect(() => {
     return () => {
       if (!isIOS) return
@@ -512,8 +471,7 @@ function UnfreezeAccountDrawer({
         </div>
         <DrawerFooter className="w-full px-5 mb-3">
           <TransferTonButton
-            // disabled={isMintDisabled}
-            recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
+            recipient={RECEIVER_ADDRESS}
             amount={value}
             className="py-4 w-full inline-flex justify-center items-center gap-1"
             onTransferSuccess={onSuccess}

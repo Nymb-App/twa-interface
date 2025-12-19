@@ -4,12 +4,14 @@ import { cva } from 'class-variance-authority'
 import type { VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
+import useSound from 'use-sound'
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
+        "nymb-green": "font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00]",// hover:from-[#79AE35] hover:to-[#7DAE02]
         default:
           'bg-primary text-primary-foreground shadow-xs hover:bg-primary/90',
         destructive:
@@ -36,20 +38,34 @@ const buttonVariants = cva(
   },
 )
 
+interface ISoundable {
+  enableSound?: boolean;
+}
+
 function Button({
   className,
   variant,
   size,
+  enableSound = true,
   asChild = false,
   ...props
 }: React.ComponentProps<'button'> &
+  ISoundable &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
   }) {
+  const [play] = useSound('/sounds/Button.aac');
   const Comp = asChild ? Slot : 'button'
 
   return (
     <Comp
+      onClick={(e) => {
+        if (enableSound){
+          play();
+        }
+        
+        props.onClick?.(e);
+      }}
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}

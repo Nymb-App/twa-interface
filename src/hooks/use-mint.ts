@@ -57,7 +57,7 @@ export const useMint = () => {
     if (mintProgress?.isEarlyAccessMinted) {
       return
     }
-    const response = await post(`/nft/mint_in_collection/${transactionHash}`)
+    const response = await post(`/nft/mint_in_collection/${transactionHash}/nft`)
     return response
   }
 

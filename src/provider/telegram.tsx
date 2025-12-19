@@ -1,7 +1,5 @@
-import { AppContext } from '@/context/app-context'
-import { useBattle } from '@/hooks/api/use-battle'
-import { ENV } from '@/lib/constants'
-import { useMatches, useRouter } from '@tanstack/react-router'
+import { type ReactNode, useContext, useEffect } from 'react';
+import { useMatches, useRouter } from '@tanstack/react-router';
 import {
   backButton,
   closingBehavior,
@@ -10,10 +8,12 @@ import {
   miniApp,
   swipeBehavior,
   viewport,
-} from '@tma.js/sdk'
-import type { ReactNode } from 'react'
-import { useContext, useEffect } from 'react'
-import useSound from 'use-sound'
+} from '@tma.js/sdk';
+import useSound from 'use-sound';
+
+import { AppContext } from '@/context/app-context';
+import { useBattle } from '@/hooks/api/use-battle';
+import { ENV } from '@/lib/constants';
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
@@ -125,18 +125,5 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
     })()
   }, [pathnames, currentOnboardingSlide])
 
-  // Production
-  // if (isTMA()) {
-  //   return (
-  //     <TwaAnalyticsProvider
-  //       projectId="Id"
-  //       apiKey="Key"
-  //     >
-  //       children
-  //     </TwaAnalyticsProvider>
-  //   )
-  // }
-
-  // Development
   return children
 }

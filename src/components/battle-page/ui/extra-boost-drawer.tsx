@@ -26,6 +26,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
+import { RECEIVER_ADDRESS } from '@/lib/constants'
 
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -122,7 +123,7 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
 
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
-            recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
+            recipient={RECEIVER_ADDRESS}
             amount={0.1}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
             onTransferSuccess={async (hash) => {

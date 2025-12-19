@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import { TWITTER_URL } from '@/constants'
+import { TWITTER_URL } from '@/lib/constants'
 import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
 import { useEffect, useMemo } from 'react'
 import Countdown from 'react-countdown'

@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo } from 'react'
-import { WebSocketService } from '../services/web-socket-service'
+import { createContext, useContext, useMemo } from 'react';
+import { WebSocketService } from '../services/web-socket-service';
 
 class WebSocketManager {
   private apiBaseUrl: string
