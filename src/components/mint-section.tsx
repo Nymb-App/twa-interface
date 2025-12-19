@@ -20,6 +20,8 @@ import { NumberedItem, NumberedList } from './nymb-list'
 import { TaskCompletedSvgIcon } from './tasks-page/task-icons'
 import { TransferTonButton } from './transfer-ton-button'
 import { CopyButton } from './ui/copy-button'
+import { StarsCard } from './stars-card'
+import { cn } from '@/utils'
 
 export function MintSection() {
   const tonConnectUI = useTonConnectUI()
@@ -34,10 +36,10 @@ export function MintSection() {
     return myCodes && myCodes.length > 0
       ? myCodes[0]
       : {
-          code: 'NYMB123',
-          royalty: 10,
-          referralsCount: 0,
-        }
+        code: 'NYMB123',
+        royalty: 10,
+        referralsCount: 0,
+      }
   }, [myCodes])
 
   const isMinted = useMemo(() => {
@@ -86,13 +88,42 @@ export function MintSection() {
   }, [play])
 
   return (
-    <section className="relative text-white px-3 scroll-mt-45">
-      <div className="animate-slide-up-fade-3 mb-10">
-        <h2 className="font-pixel text-2xl text-center">JOIN THE GIVEAWAY</h2>
-        <h2 className="font-pixel text-2xl text-center">AND BE A WINNER</h2>
+    <section className="relative text-white scroll-mt-45">
+      <StarsCard
+        className="mt-10 animate-slide-up-fade-0 h-[180px] mask-no-clip mask-[linear-gradient(to_bottom,black_10%,transparent_60%)]"
+        classNameDescription0='hidden'
+        classNameDescription1='hidden'
+        classNameTitle='hidden'
+        classNameStar3='hidden'
+        classNameAction='hidden'
+        classNameStar0='hidden'
+        classNameStar1='hidden'
+        classNameStar2='hidden'
+      />
+      <div className="animate-slide-up-fade-0  absolute left-1/2 -translate-x-1/2 top-0 inline-flex h-[88px] w-full justify-center">
+        <img
+          src="/index-page/star-left.png"
+          alt="Stars"
+          className={cn("w-20 h-full object-cover mt-3")}
+        />
+        <img
+          src="/index-page/star-center.png"
+          alt="Stars"
+          className={cn("w-[92px] h-full object-cover")}
+        />
+        <img
+          src="/index-page/star-right.png"
+          alt="Stars"
+          className={cn("w-[78px] h-full object-cover mt-4")}
+        />
       </div>
 
-      <NumberedList showLine className="relative flex flex-col gap-3 w-full">
+      <div className="animate-slide-up-fade-0 mb-10 absolute w-full top-28 left-0">
+        <h2 className="font-pixel text-2xl text-center">JOIN THE 1,000,000</h2>
+        <h2 className="font-pixel text-2xl text-center">STARS GIVEAWAY</h2>
+      </div>
+
+      <NumberedList showLine className="relative flex flex-col gap-3 w-full animate-slide-up-fade-1">
         <NumberedItem className="w-full mb-3">
           <NumberedItem.Title>Subscribe to Nymb</NumberedItem.Title>
           <NumberedItem.Description>
@@ -283,7 +314,7 @@ export function MintSection() {
             <TransferTonButton
               disabled={isMintDisabled}
               recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
-              amount={1}
+              amount={5}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onTransferSuccess={async (hash) => {
                 toast.success('NFT purchased!')
@@ -301,7 +332,7 @@ export function MintSection() {
                 ? 'ALREADY MINTED'
                 : isNftProgressFinished
                   ? 'NO NFT LEFT'
-                  : 'MINT FOR 1 TON'}
+                  : 'MINT FOR 5 TON'}
             </TransferTonButton>
           </div>
           <span className="mt-3 text-[#B6FF00]/60 mx-auto">

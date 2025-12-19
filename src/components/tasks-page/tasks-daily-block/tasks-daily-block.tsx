@@ -27,8 +27,8 @@ export const TaskDailyBlock = ({
       ? formatDurationFromSeconds(reward.value).split(' ')
       : [String(reward.value), 'e']
 
+      console.log(reward, 'reward')
   const [value, unit] = formattedReward
-
   const { accountQuery } = useAccountMe()
 
   const isDisabledActionButton = useMemo(() => {
@@ -44,10 +44,10 @@ export const TaskDailyBlock = ({
       )}
     >
       {children}
-      <p className="flex items-center font-inter min-h-[40px] text-[16px] leading-[20px] font-[600] text-[#FFFFFF]">
+      <p className="flex items-center font-inter min-h-10 text-[16px] leading-[20px] font-[600] text-[#FFFFFF]">
         {title}
       </p>
-      <span className="relative font-pixel uppercase leading-[120%] text-[14px] font-[400] text-[#FFFFFF]/40 flex items-center gap-1">
+      <span className={cn("relative font-pixel uppercase leading-[120%] text-[14px] font-[400] text-[#FFFFFF]/40 flex items-center gap-1", value === '0' && 'hidden')}>
         <span className="absolute -left-1">+</span>
         <span>{value}</span>
         <span>{unit}</span>
@@ -69,7 +69,7 @@ export const TaskDailyBlock = ({
 
 export const TaskCompletedSvgIcon = () => {
   return (
-    <div className="h-[32px] w-[32px] flex justify-center items-center bg-[#B6FF00]/8 rounded-[12px]">
+    <div className="size-8 flex justify-center items-center bg-[#B6FF00]/8 rounded-[12px]">
       <svg
         width="12"
         height="9"

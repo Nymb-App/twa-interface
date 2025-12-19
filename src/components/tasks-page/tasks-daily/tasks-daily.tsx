@@ -1,62 +1,76 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { TWITTER_URL } from '@/constants'
-import { useAccount } from '@/hooks/api/use-account'
-import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
-import { useEffect } from 'react'
+import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
+import { useEffect, useMemo } from 'react'
 import Countdown from 'react-countdown'
 import useSound from 'use-sound'
 import { TaskIcon } from '../task-icons'
 import { TaskDailyBlock } from '../tasks-daily-block/tasks-daily-block'
+import { ADSGRAM_APP_ID } from '@/lib/constants'
+import { useAdsgram } from '@adsgram/react'
+import { shareStory } from '@tma.js/sdk'
 
-const getButtonLabel = (taskName: string) => {
+
+const getButtonLabel = (taskName: string): string => {
   switch (taskName) {
-    case TaskNames.DailyComboLeaveCommentInTwitter:
+    case TasksDailyComboNames.WatchAd:
       return 'open'
-    case TaskNames.DailyComboBuyTicket:
-      return 'buy'
+    case TasksDailyComboNames.ViewTwitterNews:
+      return 'open'
+    case TasksDailyComboNames.PostTelegramStory:
+      return 'post'
     default:
       return 'go'
   }
 }
 
 export function TasksDaily() {
-  const { user } = useAccount()
-  const { dailyComboQuery, completeTask } = useTasks()
-  const { data: dailyCombo, isLoading, isError } = dailyComboQuery
-  const [play, { stop }] = useSound('/sounds/Button.aac')
-
-  // const isTwitterTaskSubscribeCompilitionKey = 'task_subscribe'
-  const isTwitterTaskLeaveCommentInTwitterKey = 'task_comment'
-
-  const parsedDailyComboTasks = dailyCombo?.tasks.map((task) => {
-    if (task.name === TaskNames.DailyComboLeaveCommentInTwitter) {
-      console.log(task.name, 'parsed daily combo tasks??')
-      const isTaskCommentCompleted = localStorage.getItem('task_comment')
-      return isTaskCommentCompleted
-        ? {
-            ...task,
-            isCompleted: Date.now() > Number(isTaskCommentCompleted),
-          }
-        : task
+  const { dailyComboQuery, completeTask } = useTasks();
+  const { show } = useAdsgram({
+    blockId: ADSGRAM_APP_ID,
+    debug: false,
+    onReward: () => {
+      completeTask({ taskName: TasksDailyComboNames.WatchAd })
     }
-    return task
   })
 
-  const isAllTasksCompleted =
-    parsedDailyComboTasks?.every((task) => task.isCompleted) ?? false
+  const { data: dailyCombo, isLoading, isError } = dailyComboQuery
 
-  const handleTaskCompletion = (taskName: TaskNames) => {
+  const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const isAllTasksCompleted = useMemo(() => {
+    if (!dailyCombo) return false
+    return dailyCombo.tasks.every((task) => task.isCompleted)
+  }, [dailyCombo])
+
+  const handleTaskCompletion = (taskName: TasksDailyComboNames) => {
     play()
     // Если это задача для Твиттера, формируем и открываем ссылку
-    if (taskName === TaskNames.DailyComboLeaveCommentInTwitter) {
-      const tweetText = `Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀\nMy app id: ${user?.id}\n\n`
-      const hashtags = 'nymb,nymb_app'
-      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&hashtags=${hashtags}&url=${encodeURIComponent(TWITTER_URL)}`
-      localStorage.setItem(
-        isTwitterTaskLeaveCommentInTwitterKey,
-        `${Date.now() + 1800 * 1000}`,
-      )
-      window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+    // if (taskName === TasksDailyComboNames.PostTelegramStory) {
+    //   const tweetText = `Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀\nMy app id: ${user?.id}\n\n`
+    //   const hashtags = 'nymb,nymb_app'
+    //   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&hashtags=${hashtags}&url=${encodeURIComponent(TWITTER_URL)}`
+    //   window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+    // }
+    if(
+      taskName === TasksDailyComboNames.PostTelegramStory &&
+      shareStory.isAvailable()
+    ) {
+      shareStory('https://render.fineartamerica.com/images/rendered/medium/print/6/8/break/images-medium-5/awesome-solitude-bess-hamiti.jpg', {
+        text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
+        widgetLink: {
+          url: 'https://t.me/nymb_app',
+          name: 'NYMB - time is money', 
+        }
+      });
+    }
+
+    if(taskName === TasksDailyComboNames.ViewTwitterNews) {
+      window.open(TWITTER_URL, '_blank', 'noopener,noreferrer')
+    }
+    if(taskName === TasksDailyComboNames.WatchAd) {
+      show();
+      return;
     }
     // Вызываем мутацию для завершения задачи на бэкенде
     completeTask({ taskName })
@@ -69,7 +83,7 @@ export function TasksDaily() {
   if (isLoading) {
     return (
       <section className="-mt-4">
-        <div className="font-pixel mb-3 flex justify-center leading-[24px] font-[18px] uppercase">
+        <div className="font-pixel mb-3 flex justify-center leading-6 font-[18px] uppercase">
           <h1 className="ml-4 text-lg">daily combo</h1>
         </div>
         <div className="starboard-result-block-bg relative mb-6 rounded-[14px] px-4 py-3">
@@ -114,16 +128,16 @@ export function TasksDaily() {
       </div>
       <div className="starboard-result-block-bg relative mb-6 rounded-[14px] px-4 py-3">
         <div className="flex justify-evenly gap-2">
-          {parsedDailyComboTasks?.map((task) => (
+          {dailyCombo?.tasks.map((task) => (
             <TaskDailyBlock
               key={task.name}
               title={task.description} // Или task.name, в зависимости от того, что хотите отображать
               reward={task.reward}
               buttonActionLabel={getButtonLabel(task.name)}
               isTaskCompleted={task.isCompleted}
-              onComplete={() => handleTaskCompletion(task.name as TaskNames)}
+              onComplete={() => handleTaskCompletion(task.name as TasksDailyComboNames)}
             >
-              <TaskIcon taskName={task.name} />
+              <TaskIcon className='size-[27px]' taskName={task.name} />
             </TaskDailyBlock>
           ))}
         </div>
@@ -132,10 +146,10 @@ export function TasksDaily() {
             <div className="my-3 h-px bg-[#FFFFFF1F]" />
             <p className="font-inter text-center text-[14px] leading-[140%] font-normal text-[#FFFFFF]">
               Complete all tasks and get an extra:
-              <span className="font-pixel relative ml-2 leading-[120%] text-[#B6FF00] uppercase">
-                <span className="absolute top-px -left-1">+</span>
-                <span>12</span>
-                <span className="ml-1.5">H</span>
+              <span className="font-pixel relative ml-4 leading-[120%] text-[#B6FF00] uppercase">
+                <span className="absolute top-px -left-3">+</span>
+                <span>4</span>
+                <span className="ml-1.5">D</span>
               </span>
             </p>
           </div>

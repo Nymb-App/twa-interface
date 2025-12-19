@@ -2,14 +2,15 @@ import { FallbackLoader } from '@/components/ui/fallback-loader'
 import { AppProvider } from '@/context/app-context'
 import { FarmingProvider } from '@/context/farming-context'
 import { GateProvider } from '@/context/gate-context'
-import { Suspense, lazy, useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { BattleMinigamesRouting } from './battle-minigames-routing'
 import { TelegramProvider } from './telegram'
 import { WebSocketProvider } from './web-socket-provider'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { TonConnectUIProvider } from '@tonconnect/ui-react'
+import { BASE_API_URL, TONCONNECT_MANIFEST_URL } from '@/lib/constants'
 
-const HeavyProvider = lazy(() =>
-  import('./heavy-provider').then((m) => ({ default: m.HeavyProvider })),
-)
+const queryClient = new QueryClient();
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
@@ -18,24 +19,23 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [])
 
-  const baseUrl = (import.meta.env.VITE_PUBLIC_API_URL ||
-    'http://localhost:100') as string
-
   return (
     <Suspense fallback={<FallbackLoader />}>
-      <HeavyProvider>
-        <WebSocketProvider apiBaseUrl={baseUrl}>
-          <AppProvider>
-            <TelegramProvider>
-              <BattleMinigamesRouting>
-                <GateProvider>
-                  <FarmingProvider>{children}</FarmingProvider>
-                </GateProvider>
-              </BattleMinigamesRouting>
-            </TelegramProvider>
-          </AppProvider>
-        </WebSocketProvider>
-      </HeavyProvider>
+      <QueryClientProvider client={queryClient}>
+        <TonConnectUIProvider manifestUrl={TONCONNECT_MANIFEST_URL}>
+          <WebSocketProvider apiBaseUrl={BASE_API_URL}>
+            <AppProvider>
+              <TelegramProvider>
+                <BattleMinigamesRouting>
+                  <GateProvider>
+                    <FarmingProvider>{children}</FarmingProvider>
+                  </GateProvider>
+                </BattleMinigamesRouting>
+              </TelegramProvider>
+            </AppProvider>
+          </WebSocketProvider>
+        </TonConnectUIProvider>
+      </QueryClientProvider>
     </Suspense>
   )
 }

@@ -1,12 +1,41 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "./use-api";
 
-export enum TaskNames {
-    DailyComboLeaveCommentInTwitter = 'daily-combo-twitter-comment',
-    DailyComboBuyTicket = 'daily-combo-buy-ticket',
-    SubscribeTwitter = 'task-subscribe-twitter',
-    Invite2Friends = 'task-invite-2-friends',
+export enum TasksDailyComboNames {
+    WatchAd = 'daily-combo-watch-ad',
+    PostTelegramStory = 'daily-combo-post-telegram-story',
+    ViewTwitterNews = 'daily-combo-view-twitter-news',
 }
+export enum TaskNames {
+    // Social Media Subscriptions
+    SubscribeTwitter = 'task-subscribe-twitter',
+    SubscribeTelegram = 'task-subscribe-telegram',
+    SubscribeInstagram = 'task-subscribe-instagram',
+    SubscribeYoutube = 'task-subscribe-youtube',
+
+    // Visiting Websites
+    VisitWebsite = 'task-visit-website',
+    WatchAd = 'task-watch-ad',
+
+    // Shopping Actions
+    MintNFT = 'task-mint-nft',
+
+    // Invitations
+    Invite1Friends = 'task-invite-1-friends',
+    Invite3Friends = 'task-invite-3-friends',
+    Invite5Friends = 'task-invite-5-friends',
+    Invite10Friends = 'task-invite-10-friends',
+
+    // Lvl progress tasks
+    ReachLevel11 = 'task-reach-lvl-11',
+    ReachLevel10 = 'task-reach-lvl-10',
+    ReachLevel9 = 'task-reach-lvl-9',
+    ReachLevel7 = 'task-reach-lvl-7',
+
+    // Post telegram story
+    PostTelegramStory = 'task-post-telegram-story',
+}
+
 
 // --- Интерфейсы для данных (могут потребовать уточнения) ---
 
@@ -37,6 +66,15 @@ export function useTasks() {
     /**
      * Запрос для получения списка всех задач.
      */
+    const allTasksQuery = useQuery<Array<ITask>, Error>({
+        queryKey: ['allTasks'],
+        queryFn: async () => await get('/tasks/get_all_tasks'),
+        staleTime: 5 * 60 * 1000, // Кэш на 5 минут
+    });
+
+    /**
+     * Запрос для получения списка всех задач.
+     */
     const tasksQuery = useQuery<Array<ITask>, Error>({
         queryKey: ['tasks'],
         queryFn: async () => await get('/tasks/get_tasks'),
@@ -55,13 +93,14 @@ export function useTasks() {
     /**
      * Мутация для завершения задачи.
      */
-    const completeTaskMutation = useMutation<any, Error, { taskName: TaskNames }>({
+    const completeTaskMutation = useMutation<any, Error, { taskName: TaskNames | TasksDailyComboNames }>({
         mutationFn: (variables) => post('/tasks/complete_task', variables),
         onSuccess: () => {
             // При успешном завершении задачи, мы делаем невалидными (и заново запрашиваем)
             // данные по задачам и дневному комбо, чтобы UI обновился.
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             queryClient.invalidateQueries({ queryKey: ['dailyCombo'] });
+            queryClient.invalidateQueries({ queryKey: ['allTasks'] });
         },
     });
 
@@ -71,6 +110,8 @@ export function useTasks() {
 
         // Данные и состояние для ежедневного комбо
         dailyComboQuery,
+
+        allTasksQuery,
 
         // Функция и состояние для завершения задачи
         completeTask: completeTaskMutation.mutate,

@@ -1,12 +1,17 @@
+import { cn } from '@/lib/utils'
 import { FlickeringGrid } from './magicui/flickering-grid'
 
 interface AnimationStartOverlayProps {
-  onStart: () => void
+  className?: string,
+  onStart?: () => void
 }
 
-export function AnimationStartOverlay({ onStart }: AnimationStartOverlayProps) {
+export function AnimationStartOverlay({
+  className,
+  onStart,
+}: AnimationStartOverlayProps) {
   return (
-    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#121312]">
+    <div className={cn("absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#121312]", className)}>
       <FlickeringGrid
         className="absolute inset-0 -z-1 size-full left-3"
         squareSize={2}
@@ -14,7 +19,7 @@ export function AnimationStartOverlay({ onStart }: AnimationStartOverlayProps) {
         color="#b7ff01"
         maxOpacity={0.5}
         flickerChance={0.3}
-        width={450}
+        // width={450}
       />
       <button className="relative" type="button" onClick={onStart}>
         <span className="absolute -right-13 top-26 font-gochi">

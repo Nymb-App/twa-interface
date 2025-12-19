@@ -29,12 +29,12 @@ export const SendGiftActionButtons = ({
           Share and get +2 hour
         </span>
       </ActionButton> */}
-      <Link to="/home">
+      <Link to="/">
         <ActionButton
           onClick={() => setIsShowSendGiftActionButtons?.(false)}
-          className="bg-gradient-to-b from-[#FFFFFF] to-[#999999]"
+          className="bg-linear-to-b from-[#FFFFFF] to-[#999999]"
         >
-          <span className="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]">
+          <span className="font-pixel text-[#121312] font-normal uppercase text-[18px] leading-[24px]">
             close
           </span>
         </ActionButton>

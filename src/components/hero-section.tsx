@@ -10,7 +10,6 @@ import { Card } from '@/components/ui/card'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { cn } from '@/lib/utils'
-import { Link } from '@tanstack/react-router'
 import useSound from 'use-sound'
 import { BattleCard } from './battle-card'
 import { GameCard } from './game-card'
@@ -26,15 +25,10 @@ import {
 
 export function HeroSection() {
   return (
-    <section className="relative mt-48 text-2xl text-white px-3">
-      <h2 className="font-pixel text-center animate-slide-up-fade-0">
+    <section className="relative text-2xl text-white px-3">
+      {/* <h2 className="font-pixel text-center animate-slide-up-fade-0">
         WHAT AWAITS YOU
-      </h2>
-
-      <div className="flex flex-col gap-4">
-        {/* <Link to="/onboarding">onboarding</Link> */}
-        <Link to="/home">home</Link>
-      </div>
+      </h2> */}
 
       <StarsCard className="mt-10 animate-slide-up-fade-0" />
 

@@ -37,7 +37,7 @@ export const PageLayout = ({
   const linkItems = [
     { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
     { to: '/tasks', label: 'Tasks', icon: TasksIcon },
-    { to: '/home', label: 'Home', icon: HomeIcon },
+    { to: '/', label: 'Home', icon: HomeIcon },
     { to: '/frens', label: 'Frens', icon: FriendsIcon },
     { to: '/locked', label: 'Blured', icon: FriendsIcon, isLocked: true },
   ]

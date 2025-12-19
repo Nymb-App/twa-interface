@@ -245,7 +245,7 @@ const ResultScene = ({
             className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white"
           />
           <div className="inline-flex gap-2 w-full">
-            <Link className="w-full" to="/home">
+            <Link className="w-full" to="/">
               <ActionButton
                 onClick={onNewBattle}
                 disabled={isNewBattleDisabled}

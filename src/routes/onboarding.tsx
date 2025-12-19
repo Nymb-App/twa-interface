@@ -35,13 +35,13 @@ const slides = [
   },
   {
     id: 3,
-    title: 'Hold',
-    subtitle: 'raffles',
-    description: 'Get the best deals and benefits along the way',
+    title: 'Complete',
+    subtitle: 'Daily tasks',
+    description: 'Earn time and unlock unique rewards!',
     buttonText: 'NEXT',
     image: '/onboarding/third-slide-img.webp',
     bgImage: '/onboarding/third-slide-bg.png',
-    highlightWords: ['raffles'],
+    highlightWords: ['daily'],
   },
   {
     id: 4,
@@ -101,7 +101,7 @@ function OnboardingScreen() {
     setCurrentOnboardingSlide(api)
     if (currentIndex === slides.length - 1) {
       setIsOnboardingCompleted(true)
-      navigate({ to: '/home' })
+      navigate({ to: '/' })
     }
     const onSelect = () => setCurrentIndex(api.selectedScrollSnap())
     onSelect()
@@ -116,7 +116,7 @@ function OnboardingScreen() {
       api?.scrollNext()
     } else {
       setIsOnboardingCompleted(true)
-      navigate({ to: '/home' })
+      navigate({ to: '/' })
     }
   }
 
@@ -230,7 +230,15 @@ function OnboardingScreen() {
                     </h1>
                     <p className="text-[#FFFFFF]/60 text-sm">
                       {/* {slide.description} */}
-                      Get the best deals and benefits <br /> along the way
+                      {slide.id === 3 ? (
+                        <>
+                        Earn time and unlock <br /> unique rewards!
+                        </>
+                      ) : (
+                        <>
+                        Get the best deals and benefits <br /> along the way
+                        </>
+                      )}
                     </p>
                   </div>
                 </>

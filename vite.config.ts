@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'titanium-coat-truck-adam.trycloudflare.com',
+      'jennifer-prisoner-grip-encouraged.trycloudflare.com',
     ],
   },
 
@@ -69,7 +69,6 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           'vendor-howler': ['howler'],
-
           'vendor-tanstack': ['@tanstack/react-query'],
           'vendor-react': ['react', 'react-dom', 'react-icons'],
         },

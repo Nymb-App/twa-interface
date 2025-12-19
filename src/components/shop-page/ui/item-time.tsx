@@ -53,7 +53,7 @@ export function ItemTime({ className }: { className?: string }) {
     <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-time">
       <DrawerTrigger
         className={cn(
-          'w-full h-[128px] bg-linear-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016] rounded-2xl p-[1px] cursor-pointer outline-none',
+          'w-full h-[128px] bg-linear-to-b from-[#A2F21D] via-[#1B9E98]/50 to-[#162016] rounded-2xl p-px cursor-pointer outline-none',
           className,
         )}
       >

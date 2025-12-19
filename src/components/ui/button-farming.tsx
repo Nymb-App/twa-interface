@@ -270,12 +270,12 @@ function FarmingProgressButton({
           <button
             disabled={disabled}
             className={cn(
-              'relative h-[56px] overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-[16px] bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+              'relative h-14 overflow-hidden flex flex-col justify-center items-center cursor-pointer font-pixel text-lg text-[#B6FF00] rounded-2xl bg-[#232B12] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
               className,
             )}
           >
             <div
-              className="absolute inset-0 rounded-[16px] bg-gradient-to-b from-[#ADFA4B] from-20% to-[#B6FF00] transition-[width] ease-linear duration-1000"
+              className="absolute inset-0 rounded-2xl bg-linear-to-b from-[#ADFA4B] from-20% to-[#B6FF00] transition-[width] ease-linear duration-1000"
               style={{ width: `${progressPercent}%` }}
             />
             <div className="relative z-10 inline-flex items-center gap-1 active:text-[#B6FF00] mix-blend-difference">
@@ -304,7 +304,7 @@ function FarmingDefaultLoadingButton({
     <ActionButton
       onClick={onClick}
       className={cn(
-        'bg-[#B6FF00]/8 active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
+        'bg-[#232B12] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed',
         className,
       )}
       disabled={disabled}

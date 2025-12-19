@@ -1,3 +1,4 @@
+import { useEffect, useMemo } from 'react'
 import { ActionButton } from '@/components/ui/action-button'
 import { TWITTER_URL } from '@/constants'
 import { useAccountMe } from '@/hooks/api/use-account'
@@ -7,35 +8,38 @@ import { cn, formatTimeReward } from '@/utils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { ReactNode } from 'react'
-import { useEffect, useMemo } from 'react'
 import useSound from 'use-sound'
-import { InviteFrenSvgIcon, TwitterSvgIcon } from '../task-icons'
+import { InviteFrenSvgIcon } from '../task-icons'
 import { TaskCompletedSvgIcon } from '../tasks-daily-block/tasks-daily-block'
+
+// Icons
+import { FaAd, FaArrowUp  } from 'react-icons/fa';
+import { TbBrandTelegram, TbBrandInstagram, TbBrandYoutube, TbBrandX } from "react-icons/tb";
+import { CgWebsite } from "react-icons/cg";
+import { MdOutlineShoppingBag } from "react-icons/md";
+import { useReferrals } from '@/hooks/api/use-referrals'
+import { shareURL } from '@tma.js/sdk'
+import { ADSGRAM_APP_ID } from '@/lib/constants'
+import { useAdsgram } from '@adsgram/react'
+import { useRouter } from '@tanstack/react-router'
+
+
 
 export function TasksTabs() {
   const { tasksQuery, completeTask } = useTasks()
   const { data: tasks, isLoading, isError } = tasksQuery
   const [play, { stop }] = useSound('/sounds/Button.aac')
 
-  const parsedTasks = tasks?.map((task) => {
-    if (task.name === TaskNames.DailyComboLeaveCommentInTwitter) {
-      const isTaskCommentCompleted = localStorage.getItem('task_comment')
-      return isTaskCommentCompleted
-        ? {
-            ...task,
-            isCompleted: Date.now() > Number(isTaskCommentCompleted),
-          }
-        : task
-    }
-    return task
-  })
-
-  const unfinishedTasks = parsedTasks?.filter((task) => !task.isCompleted) ?? []
-  const completedTasks = parsedTasks?.filter((task) => task.isCompleted) ?? []
+  const unfinishedTasks = tasks?.filter((task) => !task.isCompleted) ?? []
+  const completedTasks = tasks?.filter((task) => task.isCompleted) ?? []
 
   const handleTaskAction = (task: ITask) => {
     if (task.name === TaskNames.SubscribeTwitter) {
       window.open(TWITTER_URL, '_blank', 'noopener,noreferrer')
+    }
+    if (task.name === TaskNames.SubscribeTelegram) {
+      const TELEGRAM_URL = import.meta.env.VITE_TELEGRAM_CHANNEL_URL || 'https://telegram-apps.com/nymb'
+      window.open(TELEGRAM_URL, '_blank', 'noopener,noreferrer')
     }
     completeTask({ taskName: task.name as TaskNames })
   }
@@ -94,24 +98,15 @@ export function TasksTabs() {
                     transition={{ duration: 0.2 }}
                   >
                     <TaskItem
+                      taskName={task.name as TaskNames}
                       title={task.description}
                       subtitle={
                         task.reward.type === 'time'
                           ? formatTimeReward(task.reward.value)
                           : `${task.reward.value} ENERGY`
                       }
-                      buttonActionLabel={
-                        task.name === TaskNames.SubscribeTwitter
-                          ? 'join'
-                          : 'invite'
-                      }
-                      icon={
-                        task.name === TaskNames.SubscribeTwitter ? (
-                          <TwitterSvgIcon />
-                        ) : (
-                          <InviteFrenSvgIcon />
-                        )
-                      }
+                      buttonActionLabel={getButtonLabel(task.name)}
+                      icon={<TaskIcon taskName={task.name} className='size-6' />}
                       setIsTaskCompleted={() => handleTaskAction(task)}
                     />
                   </motion.li>
@@ -144,16 +139,8 @@ export function TasksTabs() {
                       ? formatTimeReward(task.reward.value)
                       : `${task.reward.value} ENERGY`
                   }
-                  buttonActionLabel={
-                    task.name === TaskNames.SubscribeTwitter ? 'join' : 'invite'
-                  }
-                  icon={
-                    task.name === TaskNames.SubscribeTwitter ? (
-                      <TwitterSvgIcon />
-                    ) : (
-                      <InviteFrenSvgIcon />
-                    )
-                  }
+                  buttonActionLabel={getButtonLabel(task.name)}
+                  icon={<TaskIcon taskName={task.name} className='size-6' />}
                 />
               ))}
             </ul>
@@ -166,7 +153,86 @@ export function TasksTabs() {
   )
 }
 
+const getButtonLabel = (taskName: string) => {
+  switch (taskName) {
+    case TaskNames.SubscribeTwitter:
+    case TaskNames.SubscribeTelegram:
+    case TaskNames.SubscribeInstagram:
+    case TaskNames.SubscribeYoutube:
+      return 'join'
+    case TaskNames.WatchAd:
+      return 'watch'
+    case TaskNames.ReachLevel10:
+    case TaskNames.ReachLevel11:
+    case TaskNames.ReachLevel9:
+    case TaskNames.ReachLevel7:
+      return 'check'
+    case TaskNames.VisitWebsite:
+      return 'visit'
+    case TaskNames.MintNFT:
+      return 'mint'
+    case TaskNames.PostTelegramStory:
+      return 'post'
+    case TaskNames.Invite1Friends:
+    case TaskNames.Invite3Friends:
+    case TaskNames.Invite5Friends:
+    case TaskNames.Invite10Friends:
+      return 'invite'
+    default:
+      return 'go'
+  }
+}
+
+const TaskIcon = ({ taskName, className }: { taskName: string; className?: string }) => {
+  if (taskName === TaskNames.SubscribeTwitter) {  
+    return <TbBrandX className={className} />
+  }
+  if (taskName === TaskNames.SubscribeTelegram) {
+    return <TbBrandTelegram className={className} />
+  }
+  if (taskName === TaskNames.SubscribeInstagram) {
+    return <TbBrandInstagram className={className} />
+  }
+  if (taskName === TaskNames.SubscribeYoutube) {
+    return <TbBrandYoutube className={className} />
+  }
+
+  if (taskName === TaskNames.VisitWebsite) {
+    return <CgWebsite className={className} />
+  }
+
+  if (taskName === TaskNames.MintNFT) {
+    return <MdOutlineShoppingBag className={className} />
+  }
+
+
+  if (taskName === TaskNames.Invite1Friends ||
+      taskName === TaskNames.Invite3Friends ||
+      taskName === TaskNames.Invite5Friends ||
+      taskName === TaskNames.Invite10Friends) {
+    return <InviteFrenSvgIcon className={className} />
+  }
+  if (taskName === TaskNames.WatchAd) {
+    return <FaAd className={className} />
+  }
+
+  if (
+      taskName === TaskNames.ReachLevel10 ||
+      taskName === TaskNames.ReachLevel11 ||
+      taskName === TaskNames.ReachLevel9 ||
+      taskName === TaskNames.ReachLevel7
+    ) {
+    return <FaArrowUp className={className} />
+  }
+
+  if (taskName === TaskNames.PostTelegramStory) {
+    return <TbBrandTelegram className={className} />
+  }
+  return null
+}
+
 export const TaskItem = ({
+  taskName,
   isTaskCompleted = false,
   setIsTaskCompleted,
   title,
@@ -174,6 +240,7 @@ export const TaskItem = ({
   buttonActionLabel,
   icon,
 }: {
+  taskName?: TaskNames
   setIsTaskCompleted?: () => void
   isTaskCompleted?: boolean
   title: string
@@ -181,12 +248,38 @@ export const TaskItem = ({
   buttonActionLabel: string
   icon: ReactNode
 }) => {
-  const { accountQuery } = useAccountMe()
+  const router = useRouter()
+  const { accountQuery } = useAccountMe();
+  const { myReferrals } = useReferrals();
+  const { show } = useAdsgram({
+    blockId: ADSGRAM_APP_ID,
+    debug: false,
+    onReward: setIsTaskCompleted,
+  });
+  const referralsCount = myReferrals?.countVoucherReferrals0 || 0;
+
+  const isWatchAd = taskName === TaskNames.WatchAd;
+  const isInviteFriendsTask = taskName?.startsWith('task-invite-');
+  const buttonActionLabelFinal = !isInviteFriendsTask ? buttonActionLabel : referralsCount >= parseInt(taskName!.replace('task-invite-', '').replace('-friends', '')) ? 'check' : buttonActionLabel;
 
   const isDisabledActionButton = useMemo(() => {
     if (!accountQuery.data) return true
+    if(taskName !== undefined) {
+      if(taskName === TaskNames.ReachLevel11) {
+        return accountQuery.data.lvl > 11
+      }
+      if(taskName === TaskNames.ReachLevel10) {
+        return accountQuery.data.lvl > 10
+      }
+      if(taskName === TaskNames.ReachLevel9) {
+        return accountQuery.data.lvl > 9
+      }
+      if(taskName === TaskNames.ReachLevel7) {
+        return accountQuery.data.lvl > 7
+      }
+    }
     return accountQuery.data.time * 1000 < Date.now()
-  }, [accountQuery.data])
+  }, [accountQuery.data, taskName])
 
   return (
     <div
@@ -219,10 +312,28 @@ export const TaskItem = ({
           ) : (
             <ActionButton
               disabled={isDisabledActionButton}
-              onClick={setIsTaskCompleted}
+              onClick={() => {
+                if(taskName === TaskNames.MintNFT) {
+                  router.navigate({ to: '/shop' });
+                  return;
+                }
+
+                if(isWatchAd) {
+                  show();
+                  return;
+                }
+                if(isInviteFriendsTask && referralsCount < parseInt(taskName!.replace('task-invite-', '').replace('-friends', ''))) {
+                  const telegramLink = import.meta.env.VITE_TELEGRAM_APP_LINK || 'https://telegram-apps.com'
+                  if (shareURL.isAvailable()) {
+                    shareURL(telegramLink, 'Check out this cool app!')
+                  }
+                  return;
+                }
+                setIsTaskCompleted?.();
+              }}
               className="disabled:opacity-50 disabled:cursor-not-allowed rounded-[8px] font-[400] w-auto h-[24px] text-[#121312] uppercase leading-[16%] text-[12px]"
             >
-              <span>{buttonActionLabel}</span>
+              <span>{buttonActionLabelFinal}</span>
             </ActionButton>
           )}
         </div>

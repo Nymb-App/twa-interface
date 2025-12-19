@@ -1,8 +1,13 @@
-import { TaskNames } from '@/hooks/api/use-tasks'
+import { TasksDailyComboNames } from '@/hooks/api/use-tasks'
+import { PiTelegramLogo } from 'react-icons/pi'
+import { FaAd } from "react-icons/fa";
 
-export const TwitterSvgIcon = ({ fill = 'white' }: { fill?: string }) => {
+import { TbBrandTelegram, TbBrandX } from "react-icons/tb";
+
+export const TwitterSvgIcon = ({ fill = 'white', className }: { fill?: string, className?: string }) => {
   return (
     <svg
+      className={className}
       width="20"
       height="20"
       viewBox="0 0 20 20"
@@ -17,9 +22,10 @@ export const TwitterSvgIcon = ({ fill = 'white' }: { fill?: string }) => {
   )
 }
 
-export const InviteFrenSvgIcon = ({ fill = 'white' }: { fill?: string }) => {
+export const InviteFrenSvgIcon = ({ fill = 'white', className }: { fill?: string, className?: string }) => {
   return (
     <svg
+      className={className}
       width="20"
       height="20"
       viewBox="0 0 20 20"
@@ -34,22 +40,15 @@ export const InviteFrenSvgIcon = ({ fill = 'white' }: { fill?: string }) => {
   )
 }
 
-export const TaskIcon = ({ taskName }: { taskName: string }) => {
-  if (taskName === TaskNames.DailyComboLeaveCommentInTwitter) {
-    return <TwitterSvgIcon />
-  }
-  if (taskName === TaskNames.DailyComboBuyTicket) {
-    return <InviteFrenSvgIcon />
-  }
-  return null
-}
 
 export const TaskCompletedSvgIcon = ({
   fill,
   stroke,
+  className,
 }: {
   fill?: string
   stroke?: string
+  className?: string
 }) => (
   <svg
     width="24"
@@ -57,6 +56,7 @@ export const TaskCompletedSvgIcon = ({
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    className={className}
   >
     <circle cx="12" cy="12" r="12" fill={fill || '#B6FF00'} />
     <path
@@ -68,3 +68,16 @@ export const TaskCompletedSvgIcon = ({
     />
   </svg>
 )
+
+export const TaskIcon = ({ taskName, className }: { taskName: string, className?: string }) => {
+  if (taskName === TasksDailyComboNames.PostTelegramStory) {
+    return <TbBrandTelegram className={className} />
+  }
+  if (taskName === TasksDailyComboNames.ViewTwitterNews) {
+    return <TbBrandX className={className} />
+  }
+  if (taskName === TasksDailyComboNames.WatchAd) {
+    return <FaAd className={className} />
+  }
+  return null
+}

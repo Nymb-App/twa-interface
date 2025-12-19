@@ -10,6 +10,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
+import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { useMint } from '@/hooks/use-mint'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
@@ -20,7 +21,8 @@ export function ItemNFT({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { mintProgress, mint } = useMint()
   const [play, { stop }] = useSound('/sounds/Button.aac')
-  const amount = 1
+  const { completeTask } = useTasks();
+  const amount = 5
 
   useEffect(() => {
     return () => stop()
@@ -67,7 +69,7 @@ export function ItemNFT({ className }: { className?: string }) {
             <img
               src="/shop/nft4x.webp"
               alt="time"
-              className="absolute bottom-0 right-2.5 max-w-[160px] h-auto"
+              className="absolute bottom-0 right-2.5 max-w-40 h-auto"
             />
             <div className="absolute left-0 rounded-3xl bottom-0 overflow-hidden size-full">
               <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00]/50 blur-[30px] w-full h-[50px] rounded-full" />
@@ -122,6 +124,7 @@ export function ItemNFT({ className }: { className?: string }) {
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onTransferSuccess={async (hash) => {
                 toast.success('NFT purchased!')
+                completeTask({taskName: TaskNames.MintNFT});
                 await mint(hash)
               }}
               onError={(e) => {
@@ -139,59 +142,6 @@ export function ItemNFT({ className }: { className?: string }) {
             One for the wallet
           </span>
         </Card>
-
-        {/* <div className="relative inline-flex justify-around items-center w-full">
-          <div className="font-pixel flex flex-col gap-1 w-[98px]">
-            <span className="text-white text-3xl text-center">{amount}</span>
-            <Select defaultValue="ton">
-              <SelectTrigger className="text-[12px] font-pixel uppercase rounded-[8px] text-white/40 border-none starboard-result-block-bg">
-                <div className="flex items-center gap-2">
-                  <SelectValue placeholder="Select value" />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="bg-[#121312] border-none !text-white/40 font-pixel">
-                <SelectItem
-                  className="!bg-[#121312] hover:!bg-[#121312] border-none !text-white/40 hover:!text-white"
-                  value="ton"
-                >
-                  <div className="flex items-center gap-2">
-                    <TonIcon /> <span>Ton</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="stars" className="" disabled>
-                  <div className="flex items-center gap-2">
-                    <TelegramStarIcon /> <span>Stars</span>
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div> */}
-
-        {/* <DrawerFooter className="relative mt-6 mb-4">
-          <TransferTonButton
-            recipient="UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs"
-            amount={amount}
-            className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
-            onTransferSuccess={async (hash) => {
-              toast.success('NFT purchased!')
-              await mint(hash)
-            }}
-            onConnect={() => {
-              setIsOpen(false)
-            }}
-            onError={(e) => {
-              if (e.message === 'Insufficient balance') {
-                toast.error('Insufficient balance')
-              } else {
-                toast.error('An error occurred during payment')
-              }
-            }}
-          >
-            PAY <TonIcon fill="black" />
-            {amount} GET NFT
-          </TransferTonButton>
-        </DrawerFooter> */}
       </DrawerContent>
     </Drawer>
   )

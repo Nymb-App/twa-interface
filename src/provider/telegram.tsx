@@ -81,8 +81,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         }
 
         if (
-          (pathnames[1].pathname === '/' ||
-            pathnames[1].pathname === '/home') &&
+          pathnames[1].pathname === '/' &&
           backButton.hide.isAvailable()
         ) {
           await backButton.hide()
@@ -95,7 +94,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
             playButtonSound()
-            if (pathnames[1].pathname === '/home') return
+            if (pathnames[1].pathname === '/') return
             if (pathnames[1].pathname === '/onboarding') {
               if (!currentOnboardingSlide) return
               if (currentOnboardingSlide.selectedScrollSnap() === 0) {
@@ -119,7 +118,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
             ) {
               forceDisconnect()
             }
-            router.navigate({ to: '/home' })
+            router.navigate({ to: '/' })
           })
         }
       }

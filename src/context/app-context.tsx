@@ -1,39 +1,44 @@
 /* eslint-disable import/consistent-type-specifier-style */
 import type { CarouselApi } from '@/components/ui/carousel'
+import { useMatches } from '@tanstack/react-router'
 // eslint-disable-next-line sort-imports
-import { createContext, useState, type ReactNode } from 'react'
+import { createContext, useEffect, useState, type ReactNode } from 'react'
 
 interface IAppContext {
+  isGameStarted?: boolean
   giftPeriodRadioValue: string
   giftCountValue: number
+  battleGameRewardRadioValue: string
+  currentOnboardingSlide: CarouselApi | undefined
+  isGetCheckInReward: boolean
+  isOnboardingCompleted: boolean
+  isBattleGameBackgroundMusicActive: boolean
+  setIsGameStarted: (value: boolean) => void
   setGiftPeriodRadioValue: (value: string) => void
   setGiftCountValue: (value: number) => void
-  battleGameRewardRadioValue: string
   setBattleGameRewardRadioValue: (value: string) => void
-  currentOnboardingSlide: CarouselApi | undefined
   setCurrentOnboardingSlide: (value: CarouselApi | undefined) => void
-  isGetCheckInReward: boolean
   setIsGetCheckInReward: (value: boolean) => void
-  isOnboardingCompleted: boolean
   setIsOnboardingCompleted: (value: boolean) => void
-  isBattleGameBackgroundMusicActive: boolean
   setIsBattleGameBackgroundMusicActive: (value: boolean) => void
 }
 
 export const AppContext = createContext<IAppContext>({
+  isGameStarted: false,
   giftPeriodRadioValue: 'weeks',
   giftCountValue: 24,
+  battleGameRewardRadioValue: '1 weeks',
+  currentOnboardingSlide: undefined,
+  isGetCheckInReward: false,
+  isOnboardingCompleted: false,
+  isBattleGameBackgroundMusicActive: false,
+  setIsGameStarted: () => {},
   setGiftPeriodRadioValue: () => {},
   setGiftCountValue: () => {},
-  battleGameRewardRadioValue: '1 weeks',
   setBattleGameRewardRadioValue: () => {},
-  currentOnboardingSlide: undefined,
   setCurrentOnboardingSlide: () => {},
-  isGetCheckInReward: false,
   setIsGetCheckInReward: () => {},
-  isOnboardingCompleted: false,
   setIsOnboardingCompleted: () => {},
-  isBattleGameBackgroundMusicActive: false,
   setIsBattleGameBackgroundMusicActive: () => {},
 })
 
@@ -52,23 +57,35 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     isBattleGameBackgroundMusicActive,
     setIsBattleGameBackgroundMusicActive,
   ] = useState<boolean>(false)
+  const [isGameStarted, setIsGameStarted] = useState<boolean>(false)
+
+
+  const pathnames = useMatches()
+  
+  useEffect(() => {
+    if (pathnames[1].pathname !== '/minigames/battle') {
+      setIsGameStarted(true);
+    }
+  }, [pathnames]);
 
   return (
     <AppContext.Provider
       value={{
+        isGameStarted,
         isBattleGameBackgroundMusicActive,
-        setIsBattleGameBackgroundMusicActive,
         isGetCheckInReward,
-        setIsGetCheckInReward,
         isOnboardingCompleted,
-        setIsOnboardingCompleted,
         giftPeriodRadioValue,
         giftCountValue,
+        battleGameRewardRadioValue,
+        currentOnboardingSlide,
+        setIsGameStarted,
+        setIsBattleGameBackgroundMusicActive,
+        setIsGetCheckInReward,
+        setIsOnboardingCompleted,
         setGiftPeriodRadioValue,
         setGiftCountValue,
-        battleGameRewardRadioValue,
         setBattleGameRewardRadioValue,
-        currentOnboardingSlide,
         setCurrentOnboardingSlide,
       }}
     >

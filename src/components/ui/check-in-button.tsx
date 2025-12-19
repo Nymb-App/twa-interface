@@ -11,16 +11,16 @@ export const CheckInButton = ({ className }: { className?: string }) => {
 
   return (
     <Link
-      to="/home"
+      to="/"
       onClick={() => {
         checkIn()
         setIsGetCheckInReward(true)
       }}
     >
       <ActionButton
-        className={cn('', isCheckingIn && 'bg-[#222A10]', className)}
+        className={cn(isCheckingIn && 'bg-[#222A10]', className)}
       >
-        <span className="font-pixel text-[#B6FF00] font-[400] uppercase text-[18px] leading-[24px] mix-blend-difference">
+        <span className="font-pixel text-[#B6FF00] font-normal uppercase text-[18px] leading-6 mix-blend-difference">
           Continue
         </span>
       </ActionButton>

@@ -78,8 +78,8 @@ function RouteComponent() {
 
 function CheckInHeader({ currentDay }: { currentDay: number }) {
   return (
-    <header className="font-pixel mb-20 text-center text-[24px] font-[400] text-[#FFFFFF] uppercase">
-      <h1 className="mt-6 mb-10 leading-[32px]">
+    <header className="font-pixel mb-20 text-center text-[24px] font-normal text-[#FFFFFF] uppercase">
+      <h1 className="mt-6 mb-10 leading-8">
         your daily <br /> rewards
       </h1>
       <div className="font-pixel mb-2 text-[80px] leading-[120%] text-[#B6FF00] [text-shadow:0px_12.0067px_24.0134px_rgba(182,255,0,0.3),_0px_0px_72.0403px_#B6FF00]">
@@ -104,7 +104,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
           <div className="absolute top-[-15px] left-1/2 -translate-1/2">
             <img src="/power-img.webp" alt="power" />
           </div>
-          <p className="font-pixel mt-4 mb-2 text-[24px] leading-[32px] tracking-[0.3px]">
+          <p className="font-pixel mt-4 mb-2 text-[24px] leading-8 tracking-[0.3px]">
             <span className="mr-2.5 text-[#A45FFF]">+{rewards.energy}</span>
           </p>
         </CheckInInfoBlockItem>
@@ -113,7 +113,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
             <img src="/clock-img.webp" alt="clock" />
           </div>
           <p className="font-pixel mt-4 mb-2">
-            <span className="mr-2.5 text-[24px] leading-[32px] tracking-[0.3px] text-[#B6FF00]">
+            <span className="mr-2.5 text-[24px] leading-8 tracking-[0.3px] text-[#B6FF00]">
               +{displayTime.time}
             </span>
             <span className="-ml-1 leading-[120%] text-[#FFFFFF]/40">
@@ -126,7 +126,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
             <div className="absolute top-[-15px] left-1/2 -translate-1/2">
               <img src="/ticket-img.webp" alt="ticket" />
             </div>
-            <p className="font-pixel mt-4 mb-2 text-[24px] leading-[32px] tracking-[0.3px]">
+            <p className="font-pixel mt-4 mb-2 text-[24px] leading-8 tracking-[0.3px]">
               <span className="mr-2.5 text-[#FBB107]">+{rewards.ticket}</span>
             </p>
           </CheckInInfoBlockItem>
@@ -144,7 +144,7 @@ const CheckInInfoBlockItem = ({
   label: string
 }) => {
   return (
-    <div className="font-inter starboard-result-block-bg relative basis-1/2 rounded-[16px] px-2 py-3 text-[14px] leading-[140%] font-[400] text-[#FFFFFF] backdrop-blur-[16px]">
+    <div className="font-inter starboard-result-block-bg relative basis-1/2 rounded-2xl px-2 py-3 text-[14px] leading-[140%] font-[400] text-[#FFFFFF] backdrop-blur-[16px]">
       {children}
       <span>{label}</span>
     </div>
@@ -175,7 +175,7 @@ const CheckInDaysBlock = ({ currentDay }: { currentDay: number }) => {
               >
                 <span
                   className={cn(
-                    'font-pixel text-[14px] leading-[120%] font-[400] text-[#FFFFFF]',
+                    'font-pixel text-[14px] leading-[120%] font-normal text-white',
                     index === currentDay - 1 && 'text-[#B6FF00]',
                     index + 1 > 9 && 'mr-1.5',
                     index + 1 >= 20 && 'mr-0',
@@ -189,7 +189,7 @@ const CheckInDaysBlock = ({ currentDay }: { currentDay: number }) => {
                   )}
                 </span>
                 {index !== 0 && index % 5 === 0 && (
-                  <div className="absolute -top-[2px] left-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <TicketSmallSvgIcon />
                   </div>
                 )}
