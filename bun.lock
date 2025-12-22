@@ -6,7 +6,6 @@
       "dependencies": {
         "@adsgram/react": "^1.0.2",
         "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-        "@lottiefiles/dotlottie-react": "^0.17.10",
         "@lottiefiles/react-lottie-player": "^3.6.0",
         "@radix-ui/react-avatar": "^1.1.9",
         "@radix-ui/react-label": "^2.1.7",
@@ -484,10 +483,6 @@
     "@ledgerhq/hw-transport-webusb": ["@ledgerhq/hw-transport-webusb@5.48.0", "", { "dependencies": { "@ledgerhq/devices": "^5.48.0", "@ledgerhq/errors": "^5.48.0", "@ledgerhq/hw-transport": "^5.48.0", "@ledgerhq/logs": "^5.48.0" } }, "sha512-tO+p11aRQx9q9ifmi/NCbCBKQ738lp+PROy1BWSzjCJcUEz1sKTLeRTLE2Xze25KebhuM2YR1NgkX5LN1z4upA=="],
 
     "@ledgerhq/logs": ["@ledgerhq/logs@5.50.0", "", {}, "sha512-swKHYCOZUGyVt4ge0u8a7AwNcA//h4nx5wIi0sruGye1IJ5Cva0GyK9L2/WdX+kWVTKp92ZiEo1df31lrWGPgA=="],
-
-    "@lottiefiles/dotlottie-react": ["@lottiefiles/dotlottie-react@0.17.10", "", { "dependencies": { "@lottiefiles/dotlottie-web": "0.58.1" }, "peerDependencies": { "react": "^17 || ^18 || ^19" } }, "sha512-ikrN05/q0/KjqIU+n48uNwmE7DeZIC9y3Nd19httcKqe273zoOeNYycEaQzLSdcpEGnWLmHaZpgtoo07aQZAXg=="],
-
-    "@lottiefiles/dotlottie-web": ["@lottiefiles/dotlottie-web@0.58.1", "", {}, "sha512-YC4pmScrV0R3rd11gU5xHrjeNczlCic69zlnMH/buDIzYxIbpR88oPUhGtKgu5ln7EJchoLpeRJbA3uLCzSeTA=="],
 
     "@lottiefiles/react-lottie-player": ["@lottiefiles/react-lottie-player@3.6.0", "", { "dependencies": { "lottie-web": "^5.12.2" }, "peerDependencies": { "react": "16 - 19" } }, "sha512-WK5TriLJT93VF3w4IjSVyveiedraZCnDhKzCPhpbeLgQeMi6zufxa3dXNc4HmAFRXq+LULPAy+Idv1rAfkReMA=="],
 
