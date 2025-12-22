@@ -54,11 +54,11 @@ export function TasksDaily() {
           return
         }
         shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
-          text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
-          widgetLink: {
-            url: 'https://t.me/nymb_app',
-            name: 'NYMB - time is money',
-          },
+          text: 'Exp',
+          // widgetLink: {
+          //   url: 'https://t.me/nymb_app',
+          //   name: 'NYMB - time is money',
+          // },
         })
       }
 
