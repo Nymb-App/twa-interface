@@ -312,7 +312,7 @@ const HomeComponent = memo(function HomeComponent() {
                   classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
                   title="Swipes"
                   description={"let's see how you react"}
-                  animationData={'/lottie/main.lotties'}
+                  animationData={'/lottie/main.json'}
                 />
               </Suspense>
             )}
