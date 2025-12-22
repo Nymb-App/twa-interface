@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
 import { LockIcon } from '@/assets/icons/lock'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
+import { useMemo } from 'react'
 
 interface IGateNextDisplayBlock {
   className?: string

@@ -1,6 +1,6 @@
-import { ExtraBoostDrawer } from './extra-boost-drawer'
-import { cn } from '@/utils'
 import { BustIcon } from '@/assets/icons/bust'
+import { cn } from '@/lib/utils'
+import { ExtraBoostDrawer } from './extra-boost-drawer'
 
 export const BattleBustButtons = ({
   className,

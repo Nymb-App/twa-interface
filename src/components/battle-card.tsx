@@ -1,5 +1,5 @@
+import { cn } from '@/lib/utils'
 import { useRive } from '@rive-app/react-canvas'
-import { cn } from '@/utils'
 
 export const BattleCard = ({
   title,

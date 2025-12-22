@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import { cn } from '@/lib/utils'
 import {
   forwardRef,
   useCallback,
@@ -7,7 +8,6 @@ import {
   useRef,
   useState,
 } from 'react'
-import { cn } from '@/utils'
 
 /* --------------------------------------------------
  * 1. DotPatternInteractive — configurable canvas background
@@ -455,7 +455,10 @@ export const DotPatternInteractive = forwardRef<
           const cvs = canvasRef.current
           if (!cvs) return
 
-          const duration = Math.max(300, Math.min(1500, options?.durationMs ?? 800))
+          const duration = Math.max(
+            300,
+            Math.min(1500, options?.durationMs ?? 800),
+          )
           const speed = Math.max(2, Math.min(40, options?.speed ?? 8)) * dpr
 
           // Random start inside canvas with margins
@@ -532,7 +535,8 @@ export const DotPatternInteractive = forwardRef<
             synthAnimRef.current = requestAnimationFrame((t) => step(t, ts))
           }
 
-          if (synthAnimRef.current != null) cancelAnimationFrame(synthAnimRef.current)
+          if (synthAnimRef.current != null)
+            cancelAnimationFrame(synthAnimRef.current)
           synthAnimRef.current = requestAnimationFrame((t) => step(t, t))
         },
       }),

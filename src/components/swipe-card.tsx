@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react'
-import { cn } from '@/utils'
-import { WatchesIcon } from '@/assets/icons/watches'
 import { BombIcon } from '@/assets/icons/bomb'
+import { WatchesIcon } from '@/assets/icons/watches'
+import { cn } from '@/lib/utils'
+import { useEffect, useRef } from 'react'
 
 export const SwipeCard = ({
   title,

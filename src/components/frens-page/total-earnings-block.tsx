@@ -1,7 +1,7 @@
 import { WatchesIcon } from '@/assets/icons/watches'
 import { ANIMATION_DURATION_COUNTUP } from '@/context/farming-context'
 import { useAccountMe } from '@/hooks/api/use-account'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { useEffect, useMemo } from 'react'
 import useSound from 'use-sound'
 import { Button } from '../ui/button'

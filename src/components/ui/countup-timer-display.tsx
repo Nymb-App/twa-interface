@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { animate, motion } from 'framer-motion'
-import { zeroPad } from 'react-countdown'
-import { cn } from '@/utils'
 import { ANIMATION_DURATION_COUNTUP } from '@/context/farming-context'
+import { cn } from '@/lib/utils'
+import { animate, motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { zeroPad } from 'react-countdown'
 
 const CountupDisplayBlock = ({
   label,

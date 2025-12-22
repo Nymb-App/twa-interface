@@ -8,7 +8,7 @@ import {
 import { PageLayout } from '@/components/ui/page-layout'
 import { AppContext } from '@/context/app-context'
 import { useAccountMe } from '@/hooks/api/use-account'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useContext, useEffect, useState } from 'react'
 
@@ -232,11 +232,11 @@ function OnboardingScreen() {
                       {/* {slide.description} */}
                       {slide.id === 3 ? (
                         <>
-                        Earn time and unlock <br /> unique rewards!
+                          Earn time and unlock <br /> unique rewards!
                         </>
                       ) : (
                         <>
-                        Get the best deals and benefits <br /> along the way
+                          Get the best deals and benefits <br /> along the way
                         </>
                       )}
                     </p>

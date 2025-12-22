@@ -6,7 +6,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // import { useEffect } from 'react'
 // import { AnimationStartOverlay } from '@/components/animation-start-overlay'
 // import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-// import { cn } from '@/utils'
+// import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/giveaway')({
   component: App,
@@ -60,7 +60,7 @@ function App() {
 
   return (
     <PageLayout
-      className='top-20 min-h-screen'
+      className="top-20 min-h-screen"
       classNameContent="!overflow-y-hidden overflow-x-hidden px-4"
       useFooter={false}
     >
@@ -106,10 +106,10 @@ function App() {
         </>
       )}
       {isAppStarted && isAnimationCountdownCooldownFinished && ( */}
-        <div className="flex flex-col gap-12">
-          {/* <HeroSection /> */}
-          <MintSection />
-        </div>
+      <div className="flex flex-col gap-12">
+        {/* <HeroSection /> */}
+        <MintSection />
+      </div>
       {/* )} */}
     </PageLayout>
   )

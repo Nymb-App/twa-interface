@@ -1,6 +1,6 @@
 import { useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { Link } from '@tanstack/react-router'
 import { useEffect, useMemo } from 'react'
 import useSound from 'use-sound'

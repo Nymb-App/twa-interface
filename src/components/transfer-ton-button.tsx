@@ -1,6 +1,6 @@
 import { useBalance } from '@/hooks/use-balance'
 import { useTransferTon } from '@/hooks/use-transfer-ton'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'

@@ -1,4 +1,4 @@
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Countdown from 'react-countdown'
 import useSound from 'use-sound'

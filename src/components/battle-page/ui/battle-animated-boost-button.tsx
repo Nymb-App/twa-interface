@@ -1,5 +1,5 @@
+import { cn } from '@/lib/utils'
 import { useEffect, useId, useState } from 'react'
-import { cn } from '@/utils'
 
 export const BattleAnimatedBoostButton = ({
   fillPercentage = 0,

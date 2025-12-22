@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { animate } from 'framer-motion'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
 
 // Components
-import { TbReload } from 'react-icons/tb'
 import { Link } from '@tanstack/react-router'
+import { TbReload } from 'react-icons/tb'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CountdownTimerDisplay } from '../ui/countdown-timer-display'
 import { Skeleton } from '../ui/skeleton'
@@ -14,9 +14,9 @@ import { LevelsList } from './levels-list'
 import EnergyIcon from '@/assets/icons/energy'
 
 // Hooks
-import { useAccountMe } from '@/hooks/api/use-account'
 import EnergyEmptyIcon from '@/assets/icons/energy-empty'
-import { cn } from '@/utils'
+import { useAccountMe } from '@/hooks/api/use-account'
+import { cn } from '@/lib/utils'
 
 // Types
 interface AnimatedCountdownProps {

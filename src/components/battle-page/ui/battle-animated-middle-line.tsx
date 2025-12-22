@@ -1,4 +1,4 @@
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { BattleRainSplitLine } from './battle-rain-split-line'
 
 export const BattleAnimatedMiddleLine = ({

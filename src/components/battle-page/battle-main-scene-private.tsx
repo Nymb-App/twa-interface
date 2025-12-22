@@ -1,7 +1,7 @@
 import { AppContext } from '@/context/app-context'
 import type { IRoom, IUser } from '@/hooks/api/use-battle'
 import { useBattle } from '@/hooks/api/use-battle'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import Countdown from 'react-countdown'
 import useSound from 'use-sound'

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import { useAccountMe } from '@/hooks/api/use-account'
+import { cn } from '@/lib/utils'
 import { useMemo } from 'react'
 import { Skeleton } from '../ui/skeleton'
-import { GateStatisticsInfoBlock } from './ui'
 import { gateDataStatistics } from './gate-data-statistics'
-import { useAccountMe } from '@/hooks/api/use-account'
-import { cn } from '@/utils'
+import { GateStatisticsInfoBlock } from './ui'
 
 export function GateStatistics() {
   const { getLvlStats, isLoading } = useAccountMe()

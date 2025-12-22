@@ -1,4 +1,4 @@
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { Link, useMatches } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'

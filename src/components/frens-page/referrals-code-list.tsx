@@ -1,7 +1,7 @@
 import { useAccount } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { TELEGRAM_APP_URL } from '@/lib/constants'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { useEffect } from 'react'
 import { toast } from 'sonner'

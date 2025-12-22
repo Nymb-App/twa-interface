@@ -1,5 +1,5 @@
 import { useAccountMe } from '@/hooks/api/use-account'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import Marquee from 'react-fast-marquee'

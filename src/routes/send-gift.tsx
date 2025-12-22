@@ -8,7 +8,8 @@ import { PageLayout } from '@/components/ui/page-layout'
 import { RussianRoulette } from '@/components/ui/russian-roullete'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
-import { cn, convertGiftValueToSeconds } from '@/utils'
+import { cn } from '@/lib/utils'
+import { convertGiftValueToSeconds } from '@/utils'
 import { useRive } from '@rive-app/react-canvas'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
@@ -33,13 +34,18 @@ function RouteComponent() {
   const winnerIndex = Math.floor(Math.random() * referralsNickName.length)
   const [isRiveAnimationEnd, setIsRiveAnimationEnd] = useState(false)
   const { accountQuery } = useAccountMe()
-  
+
   const [play, { stop }] = useSound('/sounds/Button.aac')
   const [playGift, { stop: stopPlayGift }] = useSound('/sounds/Swipe-End.aac')
-  const [playGiftOpening, { stop: stopPlayGiftOpening }] = useSound('/sounds/Farm-End.aac')
-  const [playRouletteStart, { stop: stopPlayRouletteStart }] = useSound('/sounds/Snap.aac', {
-    volume: 0.5,
-  })
+  const [playGiftOpening, { stop: stopPlayGiftOpening }] = useSound(
+    '/sounds/Farm-End.aac',
+  )
+  const [playRouletteStart, { stop: stopPlayRouletteStart }] = useSound(
+    '/sounds/Snap.aac',
+    {
+      volume: 0.5,
+    },
+  )
 
   useEffect(() => {
     if (!accountQuery.data) return

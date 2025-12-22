@@ -1,5 +1,5 @@
+import { cn } from '@/lib/utils'
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
-import { cn } from '@/utils'
 
 export function ConnectButton({ className }: { className?: string }) {
   const address = useTonAddress()

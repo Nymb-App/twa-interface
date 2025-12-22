@@ -1,6 +1,6 @@
 import { GiftIcon } from '@/assets/icons/gift'
 import { ActionButton } from '@/components/ui/action-button'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 
 export const SendGiftButton = ({
   value = 10,

@@ -3,16 +3,16 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel'
+import { EmptyStateCard } from '@/components/ui/empty-state-card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useStatistics } from '@/hooks/api/use-statistics'
 import { useLvl } from '@/hooks/use-lvl'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { useEffect, useState } from 'react'
 import useSound from 'use-sound'
 import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
 import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
-import { EmptyStateCard } from '@/components/ui/empty-state-card'
 
 export const StarboardTabsSection = () => {
   const { lvls, maxLvl } = useLvl()

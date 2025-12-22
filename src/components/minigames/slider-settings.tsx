@@ -1,5 +1,5 @@
+import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import { cn } from '@/utils'
 
 // interface SettingsPanelProps {
 //   // Field & dot–pattern
@@ -78,48 +78,48 @@ import { cn } from '@/utils'
 // }
 
 export function SettingsPanel() {
-// {
-// Field & dot–pattern
-// gridGap, setGridGap,
-// thresholdPercent, setThresholdPercent,
-// baseRadius, setBaseRadius,
-// maxRadius, setMaxRadius,
-// reach, setReach,
-// blur, setBlur,
-// staticColor, setStaticColor,
-// activeColor, setActiveColor,
-// // Trail
-// trailing, setTrailing,
-// trailLength, setTrailLength,
-// minTrailLength, setMinTrailLength,
-// trailingLifetime, setTrailingLifetime,
-// trailingRadius, setTrailingRadius,
-// trailingColor, setTrailingColor,
-// trailingGradientFrom, setTrailingGradientFrom,
-// trailingGradientTo, setTrailingGradientTo,
-// // Items
-// bombCount, setBombCount,
-// bombRadiusPx, setBombRadiusPx,
-// timerCount, setTimerCount,
-// // Explosion / Collider
-// colliderPx, setColliderPx,
-// // Lifetime chunks
-// lifeMin, setLifeMin,
-// lifeMax, setLifeMax,
-// groupCount, setGroupCount,
-// // Timings
-// autoExitMs, setAutoExitMs,
-// manualExitMs, setManualExitMs,
-// manualDelay, setManualDelay,
-// // Waves
-// waveOnPointerUp, setWaveOnPointerUp,
-// waveOnPointerMove, setWaveOnPointerMove,
-// waveReach, setWaveReach,
-// waveStrength, setWaveStrength,
-// waveThickness, setWaveThickness,
-// waveDuration, setWaveDuration,
-// waveColor, setWaveColor,
-// }: SettingsPanelProps
+  // {
+  // Field & dot–pattern
+  // gridGap, setGridGap,
+  // thresholdPercent, setThresholdPercent,
+  // baseRadius, setBaseRadius,
+  // maxRadius, setMaxRadius,
+  // reach, setReach,
+  // blur, setBlur,
+  // staticColor, setStaticColor,
+  // activeColor, setActiveColor,
+  // // Trail
+  // trailing, setTrailing,
+  // trailLength, setTrailLength,
+  // minTrailLength, setMinTrailLength,
+  // trailingLifetime, setTrailingLifetime,
+  // trailingRadius, setTrailingRadius,
+  // trailingColor, setTrailingColor,
+  // trailingGradientFrom, setTrailingGradientFrom,
+  // trailingGradientTo, setTrailingGradientTo,
+  // // Items
+  // bombCount, setBombCount,
+  // bombRadiusPx, setBombRadiusPx,
+  // timerCount, setTimerCount,
+  // // Explosion / Collider
+  // colliderPx, setColliderPx,
+  // // Lifetime chunks
+  // lifeMin, setLifeMin,
+  // lifeMax, setLifeMax,
+  // groupCount, setGroupCount,
+  // // Timings
+  // autoExitMs, setAutoExitMs,
+  // manualExitMs, setManualExitMs,
+  // manualDelay, setManualDelay,
+  // // Waves
+  // waveOnPointerUp, setWaveOnPointerUp,
+  // waveOnPointerMove, setWaveOnPointerMove,
+  // waveReach, setWaveReach,
+  // waveStrength, setWaveStrength,
+  // waveThickness, setWaveThickness,
+  // waveDuration, setWaveDuration,
+  // waveColor, setWaveColor,
+  // }: SettingsPanelProps
   const [dotsGap, setDotsGap] = useState(12)
   const [trailingLength, setTrailingLength] = useState(20)
 

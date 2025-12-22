@@ -1,4 +1,4 @@
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import type { ReactNode } from 'react'
 import useSound from 'use-sound'
 

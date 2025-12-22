@@ -1,4 +1,5 @@
-import { type ReactNode, useEffect } from 'react';
+import {  useEffect } from 'react';
+import type {ReactNode} from 'react';
 import { useNavigate } from '@tanstack/react-router';
 
 import { toast } from 'sonner';

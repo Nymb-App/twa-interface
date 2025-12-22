@@ -2,7 +2,7 @@ import { hapticFeedback } from '@tma.js/sdk'
 import type { ReactNode } from 'react'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // import type { Rive } from '@rive-app/react-canvas'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 /* ───────────────── component ──────────────────── */
 export function RussianRoulette({
   items,

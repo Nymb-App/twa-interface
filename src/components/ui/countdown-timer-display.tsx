@@ -1,5 +1,5 @@
+import { cn } from '@/lib/utils'
 import { zeroPad } from 'react-countdown'
-import { cn } from '@/utils'
 
 interface CountdownTimerProps {
   days: number

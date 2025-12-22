@@ -1,6 +1,6 @@
-import { zeroPad } from 'react-countdown'
+import { cn } from '@/lib/utils'
 import type { ReactNode } from 'react'
-import { cn } from '@/utils'
+import { zeroPad } from 'react-countdown'
 
 export const GateProgressDisplay = ({
   icon,

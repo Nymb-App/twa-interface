@@ -2,7 +2,7 @@ import { WatchesIcon } from '@/assets/icons/watches'
 import { NYMB_FARMING_CLAIM_TIME_KEY } from '@/context/farming-context'
 import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
 import { ADSGRAM_APP_ID } from '@/lib/constants'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { useAdsgram } from '@adsgram/react'
 import confetti from 'canvas-confetti'
 import { LoaderIcon } from 'lucide-react'
@@ -169,7 +169,7 @@ function FarmingDefaultButton({
       variant={'nymb-green'}
       enableSound={false}
       onClick={onClick}
-      className={cn("h-14", className)}
+      className={cn('h-14', className)}
       disabled={disabled}
     >
       <WatchesIcon className="mix-blend-difference size-9" fill="#B6FF00" />

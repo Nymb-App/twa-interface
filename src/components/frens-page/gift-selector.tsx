@@ -1,5 +1,5 @@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { hapticFeedback } from '@tma.js/sdk'
 import { useEffect, useRef, useState } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'

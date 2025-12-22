@@ -1,6 +1,6 @@
 import { useAdsgram } from '@adsgram/react'
 import { isTMA, openLink, shareStory } from '@tma.js/sdk'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
@@ -54,11 +54,11 @@ export function TasksDaily() {
           return
         }
         shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
-          text: 'Exp',
-          // widgetLink: {
-          //   url: 'https://t.me/nymb_app',
-          //   name: 'NYMB - time is money',
-          // },
+          text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
+          widgetLink: {
+            url: 'https://t.me/nymb_app',
+            name: 'NYMB - time is money',
+          },
         })
       }
 
@@ -69,14 +69,21 @@ export function TasksDaily() {
         })
       }
       if (taskName === TasksDailyComboNames.WatchAd) {
-        show()
-        return
+        // show()
+        // return
       }
 
       completeTask({ taskName })
     },
-    [, isAllTasksCompleted, completeTask, show],
+    [isAllTasksCompleted, completeTask, show],
   )
+
+  useEffect(() => {
+    if (!isAllTasksCompleted) return
+    completeTask({
+      taskName: TasksDailyComboNames.DailyComboCompleteAllTasks,
+    })
+  }, [isAllTasksCompleted])
 
   if (isLoading) {
     return (
@@ -119,19 +126,22 @@ export function TasksDaily() {
   return (
     <div className="w-full rounded-[14px] px-4 py-3 h-auto bg-linear-to-b from-white/0 to-white/5 relative">
       <div className="inline-flex justify-evenly w-full py-3">
-        {dailyCombo.tasks.map((task) => (
-          <TaskDailyCard
-            key={task.name}
-            name={task.name}
-            description={task.description}
-            reward={task.reward}
-            status={task.status}
-            onClick={(taskName) =>
-              handleTaskCompletion(taskName as TasksDailyComboNames)
-            }
-            className="basis-1/3 max-w-[103.33px]"
-          />
-        ))}
+        {dailyCombo.tasks.map((task) => {
+          return task.name !==
+            TasksDailyComboNames.DailyComboCompleteAllTasks ? (
+            <TaskDailyCard
+              key={task.name}
+              name={task.name}
+              description={task.description}
+              reward={task.reward}
+              status={task.status}
+              onClick={(taskName) =>
+                handleTaskCompletion(taskName as TasksDailyComboNames)
+              }
+              className="basis-1/3 max-w-[103.33px]"
+            />
+          ) : null
+        })}
       </div>
 
       <div

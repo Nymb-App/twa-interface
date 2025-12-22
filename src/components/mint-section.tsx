@@ -1,12 +1,17 @@
 import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { OptionalSVG } from '@/assets/svg/optional'
 import { Card } from '@/components/ui/card'
-import { RECEIVER_ADDRESS, TELEGRAM_URL, TWITTER_URL } from '@/lib/constants'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { useMint } from '@/hooks/use-mint'
-import { TELEGRAM_APP_URL } from '@/lib/constants'
+import {
+  RECEIVER_ADDRESS,
+  TELEGRAM_APP_URL,
+  TELEGRAM_URL,
+  TWITTER_URL,
+} from '@/lib/constants'
+import { cn } from '@/lib/utils'
 import { shareURL } from '@tma.js/sdk'
 import { useTonConnectUI } from '@tonconnect/ui-react'
 import { useEffect, useMemo } from 'react'
@@ -17,11 +22,10 @@ import { toast } from 'sonner'
 import useSound from 'use-sound'
 import { LazyVideo } from './lazy-video'
 import { NumberedItem, NumberedList } from './nymb-list'
+import { StarsCard } from './stars-card'
 import { TaskCompletedSvgIcon } from './tasks-page/task-icons'
 import { TransferTonButton } from './transfer-ton-button'
 import { CopyButton } from './ui/copy-button'
-import { StarsCard } from './stars-card'
-import { cn } from '@/utils'
 
 export function MintSection() {
   const tonConnectUI = useTonConnectUI()
@@ -36,10 +40,10 @@ export function MintSection() {
     return myCodes && myCodes.length > 0
       ? myCodes[0]
       : {
-        code: 'NYMB123',
-        royalty: 10,
-        referralsCount: 0,
-      }
+          code: 'NYMB123',
+          royalty: 10,
+          referralsCount: 0,
+        }
   }, [myCodes])
 
   const isMinted = useMemo(() => {
@@ -91,30 +95,30 @@ export function MintSection() {
     <section className="relative text-white scroll-mt-45">
       <StarsCard
         className="mt-10 animate-slide-up-fade-0 h-[180px] mask-no-clip mask-[linear-gradient(to_bottom,black_10%,transparent_60%)]"
-        classNameDescription0='hidden'
-        classNameDescription1='hidden'
-        classNameTitle='hidden'
-        classNameStar3='hidden'
-        classNameAction='hidden'
-        classNameStar0='hidden'
-        classNameStar1='hidden'
-        classNameStar2='hidden'
+        classNameDescription0="hidden"
+        classNameDescription1="hidden"
+        classNameTitle="hidden"
+        classNameStar3="hidden"
+        classNameAction="hidden"
+        classNameStar0="hidden"
+        classNameStar1="hidden"
+        classNameStar2="hidden"
       />
       <div className="animate-slide-up-fade-0  absolute left-1/2 -translate-x-1/2 top-0 inline-flex h-[88px] w-full justify-center">
         <img
           src="/index-page/star-left.png"
           alt="Stars"
-          className={cn("w-20 h-full object-cover mt-3")}
+          className={cn('w-20 h-full object-cover mt-3')}
         />
         <img
           src="/index-page/star-center.png"
           alt="Stars"
-          className={cn("w-[92px] h-full object-cover")}
+          className={cn('w-[92px] h-full object-cover')}
         />
         <img
           src="/index-page/star-right.png"
           alt="Stars"
-          className={cn("w-[78px] h-full object-cover mt-4")}
+          className={cn('w-[78px] h-full object-cover mt-4')}
         />
       </div>
 
@@ -123,7 +127,10 @@ export function MintSection() {
         <h2 className="font-pixel text-2xl text-center">STARS GIVEAWAY</h2>
       </div>
 
-      <NumberedList showLine className="relative flex flex-col gap-3 w-full animate-slide-up-fade-1">
+      <NumberedList
+        showLine
+        className="relative flex flex-col gap-3 w-full animate-slide-up-fade-1"
+      >
         <NumberedItem className="w-full mb-3">
           <NumberedItem.Title>Subscribe to Nymb</NumberedItem.Title>
           <NumberedItem.Description>
@@ -322,9 +329,9 @@ export function MintSection() {
               }}
               onError={(e) => {
                 if (e.message === 'Insufficient balance') {
-                  toast.error(e.message);
-                } else if (e.message === 'You can\'t send to yourself') {
-                  toast.error(e.message);
+                  toast.error(e.message)
+                } else if (e.message === "You can't send to yourself") {
+                  toast.error(e.message)
                 } else {
                   toast.error('An error occurred during payment')
                 }

@@ -1,7 +1,7 @@
-import { ElectricLines } from '../ui/electric-lines'
-import { FlickeringGrid } from '../magicui/flickering-grid'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils'
 import { AvatarCard } from '@/routes/send-gift'
+import { FlickeringGrid } from '../magicui/flickering-grid'
+import { ElectricLines } from '../ui/electric-lines'
 
 export const CurrentUserBattleCard = ({
   isTranslateCardsAnimationStart,

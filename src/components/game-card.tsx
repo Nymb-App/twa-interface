@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { cn } from '@/lib/utils'
 import type { AnimationItem } from 'lottie-web'
-import { cn } from '@/utils'
 
 export const GameCard = ({
   title,

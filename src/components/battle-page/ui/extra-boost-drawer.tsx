@@ -21,12 +21,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useBuyExtraBoost } from '@/hooks/api/use-shop'
-import { cn } from '@/utils'
+import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
 
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
