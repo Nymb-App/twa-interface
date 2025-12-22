@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'discrimination-roger-dialogue-oxide.trycloudflare.com',
+      'imposed-supplements-estimated-brad.trycloudflare.com',
     ],
   },
 

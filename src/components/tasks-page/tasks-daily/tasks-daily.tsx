@@ -1,91 +1,82 @@
-import { useCallback, useMemo } from 'react';
-import { useAdsgram } from '@adsgram/react';
-import { isTMA, openLink, shareStory } from '@tma.js/sdk';
-import { toast } from 'sonner';
-import Countdown from 'react-countdown';
+import { useAdsgram } from '@adsgram/react'
+import { isTMA, openLink, shareStory } from '@tma.js/sdk'
+import { useCallback, useMemo } from 'react'
+import Countdown from 'react-countdown'
+import { toast } from 'sonner'
 
-import { TWITTER_URL, ADSGRAM_APP_ID } from '@/lib/constants';
-import { cn } from '@/lib/utils';
-import { formatDurationFromSeconds } from '@/utils';
-import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks';
+import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
+import { ADSGRAM_APP_ID, SELF_HOST_URL, TWITTER_URL } from '@/lib/constants'
+import { cn } from '@/lib/utils'
+import { formatDurationFromSeconds } from '@/utils'
 
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 
-import {
-  TbBrandX,
-  TbBrandTelegram,
-} from "react-icons/tb";
-import { LuTicket } from "react-icons/lu";
-import { FaCheck } from "react-icons/fa";
-
+import { FaCheck } from 'react-icons/fa'
+import { LuTicket } from 'react-icons/lu'
+import { TbBrandTelegram, TbBrandX } from 'react-icons/tb'
 
 // TODO: Check for auto update daily combo after midnight
 // TODO: Check that pending tasks update to completed after 5 mins
 
 export function TasksDaily() {
   const {
-    dailyComboQuery: {
-      data: dailyCombo,
-      isLoading,
-      isError
-    },
-    completeTask
-  } = useTasks();
+    dailyComboQuery: { data: dailyCombo, isLoading, isError },
+    completeTask,
+  } = useTasks()
   const { show } = useAdsgram({
     blockId: ADSGRAM_APP_ID,
     debug: false,
     onReward: () => {
       completeTask({ taskName: TasksDailyComboNames.WatchAd })
-    }
+    },
   })
 
   const isAllTasksCompleted = useMemo(() => {
-    if (!dailyCombo) return false;
+    if (!dailyCombo) return false
     return dailyCombo.tasks.every((task) => task.status === 'completed')
   }, [dailyCombo])
 
-  const handleTaskCompletion = useCallback((taskName: TasksDailyComboNames) => {
-    if(!isTMA()) {
-      return toast.error('This action is only available in the Telegram Mobile App.');
-    }
-    if(isAllTasksCompleted) {
-      return toast.info('All daily combo tasks are already completed.');
-    }
-
-    if(
-      taskName === TasksDailyComboNames.PostTelegramStory
-    ) {
-      if(!shareStory.isAvailable()) {
-        toast.error('Sharing stories is not supported in your browser.')
-        return;
+  const handleTaskCompletion = useCallback(
+    (taskName: TasksDailyComboNames) => {
+      if (!isTMA()) {
+        return toast.error(
+          'This action is only available in the Telegram Mobile App.',
+        )
       }
-      shareStory('https://render.fineartamerica.com/images/rendered/medium/print/6/8/break/images-medium-5/awesome-solitude-bess-hamiti.jpg', {
-        text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
-        widgetLink: {
-          url: 'https://t.me/nymb_app',
-          name: 'NYMB - time is money', 
+      if (isAllTasksCompleted) {
+        return toast.info('All daily combo tasks are already completed.')
+      }
+
+      if (taskName === TasksDailyComboNames.PostTelegramStory) {
+        if (!shareStory.isAvailable()) {
+          toast.error('Sharing stories is not supported in your browser.')
+          return
         }
-      });
-    }
+        shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
+          text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
+          widgetLink: {
+            url: 'https://t.me/nymb_app',
+            name: 'NYMB - time is money',
+          },
+        })
+      }
 
-    if(taskName === TasksDailyComboNames.ViewTwitterNews) {
-      openLink(TWITTER_URL, {
-        tryBrowser: 'chrome',
-        tryInstantView: true,
-      });
-    }
-    if(taskName === TasksDailyComboNames.WatchAd) {
-      show();
-      return;
-    }
+      if (taskName === TasksDailyComboNames.ViewTwitterNews) {
+        openLink(TWITTER_URL, {
+          tryBrowser: 'chrome',
+          tryInstantView: true,
+        })
+      }
+      if (taskName === TasksDailyComboNames.WatchAd) {
+        show()
+        return
+      }
 
-    completeTask({ taskName })
-  }, [,
-    isAllTasksCompleted,
-    completeTask,
-    show
-  ]);
+      completeTask({ taskName })
+    },
+    [, isAllTasksCompleted, completeTask, show],
+  )
 
   if (isLoading) {
     return (
@@ -126,31 +117,41 @@ export function TasksDaily() {
   }
 
   return (
-    <div className='w-full rounded-[14px] px-4 py-3 h-auto bg-linear-to-b from-white/0 to-white/5 relative'>
-      <div className='inline-flex justify-evenly w-full py-3'>
-        {dailyCombo?.tasks.map((task) => (
+    <div className="w-full rounded-[14px] px-4 py-3 h-auto bg-linear-to-b from-white/0 to-white/5 relative">
+      <div className="inline-flex justify-evenly w-full py-3">
+        {dailyCombo.tasks.map((task) => (
           <TaskDailyCard
             key={task.name}
             name={task.name}
             description={task.description}
             reward={task.reward}
             status={task.status}
-            onClick={(taskName) => handleTaskCompletion(taskName as TasksDailyComboNames)}
-            className='basis-1/3 max-w-[103.33px]'
+            onClick={(taskName) =>
+              handleTaskCompletion(taskName as TasksDailyComboNames)
+            }
+            className="basis-1/3 max-w-[103.33px]"
           />
         ))}
       </div>
 
-      <div className={cn('absolute inset-0 flex items-center justify-center', !isAllTasksCompleted && 'hidden')}>
+      <div
+        className={cn(
+          'absolute inset-0 flex items-center justify-center',
+          !isAllTasksCompleted && 'hidden',
+        )}
+      >
         <Countdown
           date={dailyCombo.resetAt * 1000}
-          renderer={({days, hours, minutes, seconds}) => {
+          renderer={({ days, hours, minutes, seconds }) => {
             const totalHours = days * 24 + hours
             const format = (value: number) => String(value).padStart(2, '0')
             return (
               <div className="text-center text-white">
-                <span className='font-inter text-sm'>Available via:</span><br />
-                <span className='font-pixel text-xl'>{format(totalHours)}:{format(minutes)}:{format(seconds)}</span>
+                <span className="font-inter text-sm">Available via:</span>
+                <br />
+                <span className="font-pixel text-xl">
+                  {format(totalHours)}:{format(minutes)}:{format(seconds)}
+                </span>
               </div>
             )
           }}
@@ -159,7 +160,7 @@ export function TasksDaily() {
 
       <p
         className={cn(
-          "pt-3 w-full font-inter text-sm text-white inline-flex items-center justify-center border-t border-white/10",
+          'pt-3 w-full font-inter text-sm text-white inline-flex items-center justify-center border-t border-white/10',
           isAllTasksCompleted && 'hidden',
         )}
       >
@@ -174,7 +175,6 @@ export function TasksDaily() {
   )
 }
 
-
 const TaskDailyCard = ({
   name,
   description,
@@ -183,16 +183,16 @@ const TaskDailyCard = ({
   className,
   onClick,
 }: {
-  name: string;
-  description: string;
-  reward: { type: string; value: number };
-  status: 'pending' | 'completed' | 'in-progress';
-  className?: string;
-  onClick?: (name: string) => void;
+  name: string
+  description: string
+  reward: { type: string; value: number }
+  status: 'pending' | 'completed' | 'in-progress'
+  className?: string
+  onClick?: (name: string) => void
 }) => {
   const formattedReward = useMemo(() => {
-    if(reward.type === 'time') {
-      const data =  formatDurationFromSeconds(reward.value).split(' ');
+    if (reward.type === 'time') {
+      const data = formatDurationFromSeconds(reward.value).split(' ')
       return {
         value: data[0],
         unit: data[1],
@@ -203,12 +203,11 @@ const TaskDailyCard = ({
       value: String(reward.value),
       unit: 'e',
     }
-  }, [reward]);
-
+  }, [reward])
 
   const formatedButtonLabel = useMemo(() => {
-    if(status === 'pending') {
-      return status;
+    if (status === 'pending') {
+      return status
     }
 
     switch (name) {
@@ -220,30 +219,33 @@ const TaskDailyCard = ({
       default:
         return 'go'
     }
-  }, [name, status]);
+  }, [name, status])
 
   return (
-    <div className={cn(
-      'flex flex-col items-center justify-between text-center',
-      status === 'completed' && 'opacity-20',
-      className
-    )}>
-      {name === TasksDailyComboNames.PostTelegramStory ?
-        <TbBrandTelegram className='size-[30px] text-[#b8b8b8]' />
-        : name === TasksDailyComboNames.ViewTwitterNews ?
-          <TbBrandX className='size-[30px] text-[#b8b8b8]' />
-        : name === TasksDailyComboNames.WatchAd ?
-          <LuTicket className='size-[30px] text-[#b8b8b8]' />
-        : null
-      }
-      <span className='font-semibold text-base max-w-[90px]'>{description}</span>
-      <span className='font-pixel text-sm text-white/40 uppercase inline-flex items-center gap-1 mt-1'>
+    <div
+      className={cn(
+        'flex flex-col items-center justify-between text-center',
+        status === 'completed' && 'opacity-20',
+        className,
+      )}
+    >
+      {name === TasksDailyComboNames.PostTelegramStory ? (
+        <TbBrandTelegram className="size-[30px] text-[#b8b8b8]" />
+      ) : name === TasksDailyComboNames.ViewTwitterNews ? (
+        <TbBrandX className="size-[30px] text-[#b8b8b8]" />
+      ) : name === TasksDailyComboNames.WatchAd ? (
+        <LuTicket className="size-[30px] text-[#b8b8b8]" />
+      ) : null}
+      <span className="font-semibold text-base max-w-[90px]">
+        {description}
+      </span>
+      <span className="font-pixel text-sm text-white/40 uppercase inline-flex items-center gap-1 mt-1">
         +{formattedReward.value}
         <span>{formattedReward.unit}</span>
       </span>
 
       {status === 'completed' ? (
-        <div className='mt-2 inline-flex items-center justify-center text-sm rounded-xl bg-[#2b371a] text-[#B6FF00] size-8'>
+        <div className="mt-2 inline-flex items-center justify-center text-sm rounded-xl bg-[#2b371a] text-[#B6FF00] size-8">
           <FaCheck />
         </div>
       ) : (
@@ -251,11 +253,11 @@ const TaskDailyCard = ({
           onClick={() => onClick?.(name)}
           disabled={status === 'pending'}
           variant={'nymb-green'}
-          className='text-black text-xs px-2 py-1 rounded-[8px] w-auto h-6 mt-2 uppercase'
+          className="text-black text-xs px-2 py-1 rounded-[8px] w-auto h-6 mt-2 uppercase"
         >
           {formatedButtonLabel}
         </Button>
       )}
     </div>
-  );
+  )
 }
