@@ -16,8 +16,6 @@ import { FaCheck } from 'react-icons/fa'
 import { LuTicket } from 'react-icons/lu'
 import { TbBrandTelegram, TbBrandX } from 'react-icons/tb'
 
-// TODO: Check for auto update daily combo after midnight
-// TODO: Check that pending tasks update to completed after 5 mins
 
 export function TasksDaily() {
   const {
@@ -71,8 +69,8 @@ export function TasksDaily() {
         })
       }
       if (taskName === TasksDailyComboNames.WatchAd) {
-        // show()
-        // return
+        show()
+        return
       }
 
       completeTask({ taskName })

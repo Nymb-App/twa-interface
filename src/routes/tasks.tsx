@@ -3,8 +3,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { PageLayout } from '@/components/ui/page-layout';
 import { FlickeringGrid } from '@/components/magicui/flickering-grid';
 
-import { TasksDaily } from '@/components/tasks-page/tasks-daily/tasks-daily';
-import { TasksTabs } from '@/components/tasks-page/tasks-tabs/tasks-tabs';
+import { TasksDaily } from '@/components/tasks-page/tasks-daily';
+import { TasksTabs } from '@/components/tasks-page/tasks-tabs';
 
 import TasksImage from '/tasks-img.webp';
 
