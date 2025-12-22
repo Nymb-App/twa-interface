@@ -1,20 +1,20 @@
-import { lazy, useMemo } from 'react';
+import { useMemo } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
+import Countdown, { zeroPad } from 'react-countdown';
+import useSound from 'use-sound';
+
 import { PageLayout } from '@/components/ui/page-layout';
 import { FlickeringGrid } from '@/components/magicui/flickering-grid';
 
-import StarBoardImage from '/starboard-img.webp';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import Countdown, { zeroPad } from 'react-countdown';
 import { cn } from '@/lib/utils';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
-import useSound from 'use-sound';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { useStatistics, type GlobalStatisticsData } from '@/hooks/api/use-statistics';
 
-const StarboardTabsSection = lazy(() =>
-  import(
-    '@/components/starboard-page/starboard-tabs-section/starboard-tabs-section'
-  ).then((m) => ({ default: m.StarboardTabsSection })),
-)
+import StarBoardImage from '/starboard-img.webp';
+import { useAccount, useAccountMe } from '@/hooks/api/use-account';
+import { EmptyStateCard } from '@/components/ui/empty-state-card';
 
 export const Route = createFileRoute('/star-board')({
   component: RouteComponent,
@@ -60,6 +60,30 @@ const formatDuration = (totalMs: number) => {
 function RouteComponent() {
   const lvlList = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1).reverse(), []);
   const [play] = useSound('/sounds/Button.aac');
+  const { globalStatistics, myStatistics } = useStatistics();
+  const { user } = useAccount();
+
+  const myData = useMemo(() => {
+    if(!myStatistics.data) {
+      return {
+        telegramId: user?.id ?? user?.id.toString(),
+        avatarUrl: user?.photo_url,
+        name: user?.username,
+        time: Date.now() + 3 * 24 * 60 * 60 * 1000,
+        lvl: 12,
+        position: 1000,
+      }
+    }
+
+    return {
+      telegramId: user?.id,
+      avatarUrl: user?.photo_url,
+      name: user?.username ?? user?.id.toString(),
+      time: myStatistics.data.time * 1000,
+      lvl: myStatistics.data.lvl,
+      position: myStatistics.data.place,
+    }
+  }, [myStatistics.data, user]);
 
   return (
     <PageLayout
@@ -92,63 +116,66 @@ function RouteComponent() {
 
 
       <Tabs
-        defaultValue={'12'}
-        className='flex flex-col flex-1'
-        onValueChange={() => play()}
+        defaultValue={String(lvlList[0])}
+        className='flex flex-col w-full mx-auto'
+        onValueChange={(value) => {
+          play();
+          globalStatistics.loadLevel(Number(value));
+        }}
       >
-        <TabsList className="inline-flex gap-2 items-center justify-center">
-          {lvlList.map(lvl => 
-          <TabsTrigger
-            key={lvl}
-            className="font-pixel rounded-full text-xs leading-[120%] px-4 py-2 bg-white/10 text-white data-[state=active]:bg-[#B6FF00] data-[state=active]:text-black"
-            value="completed-tasks"
+        <TabsList>
+          <Carousel
+            opts={{
+              slidesToScroll: 4,
+              align: 'center'
+            }}
           >
-            {lvl} GATE
-          </TabsTrigger>
-          )}
+            <CarouselContent className="flex mx-auto">
+              {lvlList.map(item => (
+                <CarouselItem key={item} className="basis-1/4 pl-2">
+                  <TabsTrigger
+                    onClick={() => play()}
+                    value={String(item)}
+                    className="data-[state=active]:bg-[#B6FF00] data-[state=active]:text-black w-full py-2 shrink-0 bg-white/10 rounded-full text-white font-pixel text-xs uppercase text-nowrap"
+                  >
+                    {item} gate
+                  </TabsTrigger>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </TabsList>
+        
+        {lvlList.map(lvl => 
+          <TabsContent value={String(lvl)} className="mt-7 px-4">
+            <StatisticsCard 
+              name={myData.name!}
+              time={myData.time}
+              position={myData.position}
+              avatarUrl={myData.avatarUrl}
+              lvl={myData.lvl}
+            />
+            <h2 className="text-lg font-pixel text-white mt-5">TOP 100 USERS</h2>
+            <div className="mt-3">
+              {globalStatistics.data &&
+                <StatisticsTop100List stats={globalStatistics.data[lvl]}/>
+              }
 
-        <TabsContent value="new-tasks" className="mt-7">
-          <h2 className="text-base font-pixel text-white">TASKS</h2>
-          <div className="mt-3">
-            {/* {isLoading && (
-              <>
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <TaskCardSkeleton key={index} />
-                ))}
-              </>
-            )}
-
-            {!isLoading && progressTasks.length === 0 && (
-              <EmptyStateCard title="All tasks" description="completed" />
-            )} */}
-
-            {/* {progressTasks.map((task) => (
-              <TaskCard
-                key={task.name}
-                name={task.name}
-                description={task.description}
-                reward={task.reward}
-                status={task.status}
-                onClick={(name) => handleTaskAction(name)}
+              <EmptyStateCard
+                title='NO USERS'
+                description='ON THIS GATE'
+                className={cn('mt-10', globalStatistics.data && globalStatistics?.data[lvl]?.users.length > 0 && 'hidden')}
               />
-            ))} */}
-          </div>
-        </TabsContent>
+            </div>
+          </TabsContent>
+        )}
       </Tabs>
-      {/* <StarBoardCard
-        name="nice_arti"
-        time={0}
-        position={0}
-        lvl={12}
-      /> */}
-      {/* <StarboardTabsSection /> */}
     </PageLayout>
   )
 }
 
 
-function StarBoardCard({
+function StatisticsCard({
   name,
   time,
   avatarUrl,
@@ -167,13 +194,15 @@ function StarBoardCard({
       <div className='inline-flex items-center gap-4'>
         <Avatar className="relative size-8 rounded-[12px]">
           <AvatarImage src={avatarUrl ?? '/roulette-icons/default.webp'} />
-          <span className='font-pixel text-xs absolute left-1/2 top-1/2 -translate-1/2'>NA</span>
+          {avatarUrl === undefined && 
+            <span className='font-pixel text-xs absolute left-1/2 top-1/2 -translate-1/2'>NA</span>
+          }
         </Avatar>
 
         <div className='flex flex-col'>
           <span className='text-white font-semibold text-base'>{name}</span>
           {
-            time * 1000 <= Date.now() ?
+            time <= Date.now() ?
               <div className="font-pixel text-xs inline-flex font-normal text-white/60">
                 <span>000</span>:
                 <span>00</span>:
@@ -196,14 +225,20 @@ function StarBoardCard({
                     seconds,
                   } = formatDuration(total);
 
+                  const isWeeksGreen = years > 0 || weeks > 0;
+                  const isDaysGreen = isWeeksGreen || days > 0;
+                  const isHoursGreen = isDaysGreen || hours > 0;
+                  const isMinutesGreen = isHoursGreen || minutes > 0;
+                  const isSecondsGreen = isMinutesGreen || seconds > 0;
+
                   return (
                     <div className="font-pixel text-xs inline-flex font-normal text-white/60">
                       <span className={cn(years > 0 && 'text-[#B6FF00]')}>{zeroPad(years, 3)}</span>:
-                      <span className={cn(weeks > 0 && 'text-[#B6FF00]')}>{zeroPad(weeks, 2)}</span>:
-                      <span className={cn(days > 0 && 'text-[#B6FF00]')}>{zeroPad(days, 2)}</span>:
-                      <span className={cn(hours > 0 && 'text-[#B6FF00]')}>{zeroPad(hours, 2)}</span>:
-                      <span className={cn(minutes > 0 && 'text-[#B6FF00]')}>{zeroPad(minutes, 2)}</span>:
-                      <span className={cn(seconds > 0 && 'text-[#B6FF00]')}>{zeroPad(seconds, 2)}</span>
+                      <span className={cn(isWeeksGreen && 'text-[#B6FF00]')}>{zeroPad(weeks, 2)}</span>:
+                      <span className={cn(isDaysGreen && 'text-[#B6FF00]')}>{zeroPad(days, 2)}</span>:
+                      <span className={cn(isHoursGreen && 'text-[#B6FF00]')}>{zeroPad(hours, 2)}</span>:
+                      <span className={cn(isMinutesGreen && 'text-[#B6FF00]')}>{zeroPad(minutes, 2)}</span>:
+                      <span className={cn(isSecondsGreen && 'text-[#B6FF00]')}>{zeroPad(seconds, 2)}</span>
                     </div>
                   )
                 }}
@@ -223,4 +258,24 @@ function StarBoardCard({
       </div>
     </div>
   );
+}
+
+function StatisticsTop100List({
+  stats,
+}:{
+  stats: GlobalStatisticsData
+}) {
+  return (
+  <>
+    {stats?.users.map((user, index) => (
+      <StatisticsCard
+        key={index}
+        time={user.time * 1000}
+        name={user.nickname ?? user.avatarId.toString()}
+        position={index + 1}
+        avatarUrl={user.photoUrl}
+      />
+    ))}
+  </>
+);
 }

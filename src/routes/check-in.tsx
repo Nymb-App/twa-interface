@@ -9,9 +9,9 @@ import { FallbackLoader } from '@/components/ui/fallback-loader'
 import { PageLayout } from '@/components/ui/page-layout'
 import type { CheckInRewards } from '@/hooks/use-get-daily-rewards'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { cn } from '@/lib/utils'
 import {
   calculateDaysBetween,
-  cn,
   convertTimestampToLargestUnit,
 } from '@/utils'
 import { createFileRoute } from '@tanstack/react-router'
