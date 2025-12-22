@@ -1,5 +1,5 @@
 import { animate } from 'framer-motion'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Countdown from 'react-countdown'
 
 // Components
@@ -137,7 +137,7 @@ const useCountdownTimer = (isClaimStart: boolean, accountTime?: number) => {
 /**
  * Main ProgressSection component
  */
-const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
+export const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
   const { accountQuery, user } = useAccountMe()
   const { data: account, isLoading: isAccountLoading } = accountQuery
   const { timeBeforeClaim, setTimeBeforeClaim } = useCountdownTimer(
@@ -244,6 +244,3 @@ const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
     </header>
   )
 }
-
-// Memoize the component to prevent unnecessary re-renders
-export default React.memo(ProgressSection)

@@ -1,5 +1,5 @@
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
-import { cn, convertTimestampToDaysUnit } from '@/utils'
+import { convertTimestampToDaysUnit } from '@/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { ActionButton } from '../ui/action-button'
 import { BattleCard } from './battle-card'
@@ -11,6 +11,7 @@ import { FaRandom } from 'react-icons/fa'
 import { PiShareFatBold } from 'react-icons/pi'
 import useSound from 'use-sound'
 import { ShareBattleInviteButton } from '../ui/share-button'
+import { cn } from '@/lib/utils'
 
 export const BattleIntroScene = ({
   className,

@@ -1,7 +1,5 @@
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import {
-  Suspense,
-  lazy,
   memo,
   useCallback,
   useContext,
@@ -17,7 +15,7 @@ import { TonIcon } from '@/assets/icons/ton'
 import { AnimationStartOverlay } from '@/components/animation-start-overlay'
 import FrostScratchPanel from '@/components/frost-scratch-panel'
 import { FarmingButton } from '@/components/home-page/button-farming'
-import ProgressSection from '@/components/home-page/progress-section'
+import { ProgressSection } from '@/components/home-page/progress-section'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { ScratchHint } from '@/components/scratch-hint'
 import { StarsCard } from '@/components/stars-card'
@@ -39,7 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
 import { AppContext } from '@/context/app-context'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { useAuth } from '@/hooks/api/use-api'
@@ -50,17 +47,11 @@ import { cn } from '@/lib/utils'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
+import { SwipeCard } from '@/components/swipe-card'
+import { GameCard } from '@/components/game-card'
+import { BattleCard } from '@/components/battle-card'
 
-const SwipeCard = lazy(() =>
-  import('@/components/swipe-card').then((m) => ({ default: m.SwipeCard })),
-)
 
-const BattleCard = lazy(() =>
-  import('@/components/battle-card').then((m) => ({ default: m.BattleCard })),
-)
-const GameCard = lazy(() =>
-  import('@/components/game-card').then((m) => ({ default: m.GameCard })),
-)
 const HomeComponent = memo(function HomeComponent() {
   const [isClaimStart, setIsClaimStart] = useState(false)
   const [revealed, setRevealed] = useState<boolean>(false)
@@ -288,23 +279,14 @@ const HomeComponent = memo(function HomeComponent() {
           >
             {isAndroid ? (
               <>
-                <Suspense
-                  fallback={
-                    <Skeleton className="w-full h-[224px] rounded-2xl" />
-                  }
-                >
                   <SwipeCard
                     className="font-pixel w-full font-normal"
                     classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
                     title="Swipes"
                     description={"let's see how you react"}
                   />
-                </Suspense>
               </>
             ) : (
-              <Suspense
-                fallback={<Skeleton className="w-full h-[224px] rounded-2xl" />}
-              >
                 <GameCard
                   delay={1000}
                   placeholderSrc="/lottie-placeholder/minigames/slide.webp"
@@ -314,7 +296,6 @@ const HomeComponent = memo(function HomeComponent() {
                   description={"let's see how you react"}
                   animationData={'/lottie/main.json'}
                 />
-              </Suspense>
             )}
           </Link>
 
@@ -327,16 +308,12 @@ const HomeComponent = memo(function HomeComponent() {
             }}
             disabled={accountTime < Date.now()}
           >
-            <Suspense
-              fallback={<Skeleton className="w-full h-[224px] rounded-2xl" />}
-            >
               <BattleCard
                 className="font-pixel w-full"
                 classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
                 title="Battle"
                 description="are you strong enough?"
               />
-            </Suspense>
           </Link>
         </div>
         <div className="mt-2 mb-[26px] grid grid-cols-2 gap-2">

@@ -13,7 +13,7 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 import { useStatistics, type GlobalStatisticsData } from '@/hooks/api/use-statistics';
 
 import StarBoardImage from '/starboard-img.webp';
-import { useAccount, useAccountMe } from '@/hooks/api/use-account';
+import { useAccount } from '@/hooks/api/use-account';
 import { EmptyStateCard } from '@/components/ui/empty-state-card';
 
 export const Route = createFileRoute('/star-board')({

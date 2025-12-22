@@ -1,11 +1,12 @@
 import { useAccountMe } from '@/hooks/api/use-account'
-import { cn, convertTimestampToDaysUnit } from '@/utils'
+import { convertTimestampToDaysUnit } from '@/utils'
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import useSound from 'use-sound'
 import { FlickeringGrid } from '../magicui/flickering-grid'
 import { ElectricLines } from '../ui/electric-lines'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
+import { cn } from '@/lib/utils'
 
 export const BattleTitle = ({
   text,
