@@ -1,5 +1,9 @@
-export const TWITTER_URL = 'https://x.com/NYMB_app'
-export const TELEGRAM_URL = 'https://t.me/nymb_app'
+export const TWITTER_URL = 'https://x.com/NYMB_app';
+export const TELEGRAM_URL = 'https://t.me/nymb_app';
+export const INSTAGRAM_URL = 'https://www.instagram.com/nymb_app';
+export const YOU_TUBE_URL = 'https://www.youtube.com/@NYMB_app';
+
+
 
 export const WEBSITE_URL = import.meta.env.VITE_PUBLIC_WEBSITE_URL || 'https://nymb.app';
 export const RECEIVER_ADDRESS = import.meta.env.VITE_PUBLIC_RECEIVER_ADDRESS ?? "UQBLtmzfUtD0QDe6zLYJSOd_O9f3nwaD1kuNmuD1rrktyjNs";

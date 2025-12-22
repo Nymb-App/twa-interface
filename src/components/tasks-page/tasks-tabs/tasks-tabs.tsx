@@ -16,7 +16,9 @@ import {
   TELEGRAM_CHANNEL_URL,
   TWITTER_URL,
   WEBSITE_URL,
-  ADSGRAM_APP_ID
+  ADSGRAM_APP_ID,
+  INSTAGRAM_URL,
+  YOU_TUBE_URL
 } from '@/lib/constants';
 
 import { useAccount, useAccountMe } from '@/hooks/api/use-account';
@@ -99,6 +101,18 @@ export function TasksTabs({
     }
     if (name === TaskNames.SubscribeTelegram) {
       openLink(TELEGRAM_CHANNEL_URL, {
+        tryBrowser: 'chrome',
+        tryInstantView: true,
+      });
+    }
+    if (name === TaskNames.SubscribeInstagram) {
+      openLink(INSTAGRAM_URL, {
+        tryBrowser: 'chrome',
+        tryInstantView: true,
+      });
+    }
+    if (name === TaskNames.SubscribeYoutube) {
+      openLink(YOU_TUBE_URL, {
         tryBrowser: 'chrome',
         tryInstantView: true,
       });
