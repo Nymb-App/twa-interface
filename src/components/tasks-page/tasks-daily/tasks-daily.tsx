@@ -33,8 +33,10 @@ export function TasksDaily() {
   })
 
   const isAllTasksCompleted = useMemo(() => {
-    if (!dailyCombo) return false
-    return dailyCombo.tasks.every((task) => task.status === 'completed')
+    if (!dailyCombo) return false;
+    return dailyCombo.tasks.filter(task =>
+      task.name !== TasksDailyComboNames.DailyComboCompleteAllTasks
+    ).every((task) => task.status === 'completed');
   }, [dailyCombo])
 
   const handleTaskCompletion = useCallback(
