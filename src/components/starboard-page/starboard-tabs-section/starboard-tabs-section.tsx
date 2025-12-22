@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { NoTasksBlock } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
 import {
   Carousel,
   CarouselContent,
@@ -14,6 +12,7 @@ import { useEffect, useState } from 'react'
 import useSound from 'use-sound'
 import { StarboardPersonalRateBlock } from './starboard-personal-rate-block/starboard-personal-rate-block'
 import { StarboardTopRateBlock } from './starboard-top-rate-block/starboard-top-rate-block'
+import { EmptyStateCard } from '@/components/ui/empty-state-card'
 
 export const StarboardTabsSection = () => {
   const { lvls, maxLvl } = useLvl()
@@ -96,10 +95,10 @@ export const StarboardTabsSection = () => {
                   ))}
                 </>
               ) : (
-                <NoTasksBlock
+                <EmptyStateCard
                   className="h-full flex-1"
                   title="NO USER"
-                  subtitle="ON THIS GATE"
+                  description="ON THIS GATE"
                 />
               )}
             </TabsContent>

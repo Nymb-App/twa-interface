@@ -79,7 +79,7 @@ export function MintSection() {
 
   const isCompletedTaskTwitter = (taskName: TaskNames) => {
     return tasksQuery.data?.some(
-      (task) => task.name === taskName && task.isCompleted,
+      (task) => task.name === taskName && task.status === 'completed',
     )
   }
 

@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'jennifer-prisoner-grip-encouraged.trycloudflare.com',
+      'discrimination-roger-dialogue-oxide.trycloudflare.com',
     ],
   },
 

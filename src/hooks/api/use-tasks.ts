@@ -6,6 +6,7 @@ export enum TasksDailyComboNames {
     PostTelegramStory = 'daily-combo-post-telegram-story',
     ViewTwitterNews = 'daily-combo-view-twitter-news',
 }
+
 export enum TaskNames {
     // Social Media Subscriptions
     SubscribeTwitter = 'task-subscribe-twitter',
@@ -42,14 +43,12 @@ export enum TaskNames {
 export interface ITask {
     telegramId: number,
     name: string,
-    isCompleted: boolean,
+    description: string,
     reward: {
         type: "time" | "energy",
         value: number,
     },
-    description: string,
-    createdAt: number,
-    updatedAt: number,
+    status: "pending" | "completed" | "in-progress",
 }
 
 export interface IDailyCombo {

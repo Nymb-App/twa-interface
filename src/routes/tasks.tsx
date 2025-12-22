@@ -1,24 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
-// import { Suspense, lazy } from 'react'
-import { PageLayout } from '@/components/ui/page-layout'
-// import { FallbackLoader } from '@/components/ui/fallback-loader'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import TasksImage from '/tasks-img.webp'
-// import { useTasks } from '@/hooks/api/use-tasks'
-import { TasksDaily } from '@/components/tasks-page/tasks-daily/tasks-daily'
-import { TasksTabs } from '@/components/tasks-page/tasks-tabs/tasks-tabs'
+import { createFileRoute } from '@tanstack/react-router';
 
+import { PageLayout } from '@/components/ui/page-layout';
+import { FlickeringGrid } from '@/components/magicui/flickering-grid';
 
-// const TasksDaily = lazy(() =>
-//   import('@/components/tasks-page/tasks-daily/tasks-daily').then((m) => ({
-//     default: m.TasksDaily,
-//   })),
-// )
-// const TasksTabs = lazy(() =>
-//   import('@/components/tasks-page/tasks-tabs/tasks-tabs').then((m) => ({
-//     default: m.TasksTabs,
-//   })),
-// )
+import { TasksDaily } from '@/components/tasks-page/tasks-daily/tasks-daily';
+import { TasksTabs } from '@/components/tasks-page/tasks-tabs/tasks-tabs';
+
+import TasksImage from '/tasks-img.webp';
+
 
 export const Route = createFileRoute('/tasks')({
   component: RouteComponent,
@@ -50,10 +39,8 @@ function RouteComponent() {
           height={250}
         />
       </header>
-      {/* <Suspense fallback={<FallbackLoader />}> */}
-        <TasksDaily />
-        <TasksTabs />
-      {/* </Suspense> */}
+      <TasksDaily />
+      <TasksTabs className='mt-6' />
     </PageLayout>
   )
 }
