@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/lib/utils'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import type { AnimationItem } from 'lottie-web'
 
 export const GameCard = ({
@@ -50,29 +51,29 @@ export const GameCard = ({
   }, [isVisible, delay, loadLottie])
 
   // Инициализация и управление анимацией
-  useEffect(() => {
-    if (loadLottie && containerRef.current && !animationRef.current) {
-      import('lottie-web').then((lottie) => {
-        const anim = lottie.default.loadAnimation({
-          container: containerRef.current!,
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: animationData,
-        })
-        anim.setSpeed(0.5)
-        anim.addEventListener('DOMLoaded', () => setLottieReady(true))
-        animationRef.current = anim
-      })
-    }
-    if (animationRef.current) {
-      isVisible ? animationRef.current.play() : animationRef.current.pause()
-    }
-    return () => {
-      animationRef.current?.destroy()
-      animationRef.current = null
-    }
-  }, [loadLottie, isVisible, animationData])
+  // useEffect(() => {
+  //   if (loadLottie && containerRef.current && !animationRef.current) {
+  //     import('lottie-web').then((lottie) => {
+  //       const anim = lottie.default.loadAnimation({
+  //         container: containerRef.current!,
+  //         renderer: 'svg',
+  //         loop: true,
+  //         autoplay: true,
+  //         path: animationData,
+  //       })
+  //       anim.setSpeed(0.5)
+  //       anim.addEventListener('DOMLoaded', () => setLottieReady(true))
+  //       animationRef.current = anim
+  //     })
+  //   }
+  //   if (animationRef.current) {
+  //     isVisible ? animationRef.current.play() : animationRef.current.pause()
+  //   }
+  //   return () => {
+  //     animationRef.current?.destroy()
+  //     animationRef.current = null
+  //   }
+  // }, [loadLottie, isVisible, animationData])
 
   return (
     <div
@@ -96,17 +97,23 @@ export const GameCard = ({
             />
           )}
           {/* Плейсхолдер-картинка до готовности Lottie */}
-          {!lottieReady && (
+          {/* {!lottieReady && (
             <img
               src={placeholderSrc}
               alt="animation placeholder"
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full"
             />
-          )}
-          <div
+          )} */}
+          <DotLottieReact
+            src="/lottie/main.lottie"
+            loop
+            autoplay
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] [mask-image:radial-gradient(110px_circle_at_center,white,transparent)]"
+          />
+          {/* <div
             ref={containerRef}
             className="absolute left-1/2 top-1/2 w-[110%] h-[110%] -translate-x-1/2 -translate-y-1/2"
-          />
+          /> */}
         </div>
         <div>
           <h3 className="mt-2 text-center text-base font-[400]">{title}</h3>

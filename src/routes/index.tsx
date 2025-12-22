@@ -14,11 +14,14 @@ import { isAndroid, isIOS } from 'react-device-detect'
 
 import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 import { TonIcon } from '@/assets/icons/ton'
+import { AnimationStartOverlay } from '@/components/animation-start-overlay'
 import FrostScratchPanel from '@/components/frost-scratch-panel'
-import ProgressSection from '@/components/home-page/progress-section'
-import { ScratchHint } from '@/components/scratch-hint'
-import { TransferTonButton } from '@/components/transfer-ton-button'
 import { FarmingButton } from '@/components/home-page/button-farming'
+import ProgressSection from '@/components/home-page/progress-section'
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { ScratchHint } from '@/components/scratch-hint'
+import { StarsCard } from '@/components/stars-card'
+import { TransferTonButton } from '@/components/transfer-ton-button'
 import { CardContent } from '@/components/ui/card-content'
 import {
   Drawer,
@@ -39,17 +42,14 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { AppContext } from '@/context/app-context'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { useAuth } from '@/hooks/api/use-api'
 import { useShop } from '@/hooks/api/use-shop'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
-import { StarsCard } from '@/components/stars-card'
-import { AnimationStartOverlay } from '@/components/animation-start-overlay'
-import { cn } from '@/lib/utils'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { useAuth } from '@/hooks/api/use-api'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
 
 const SwipeCard = lazy(() =>
   import('@/components/swipe-card').then((m) => ({ default: m.SwipeCard })),
@@ -65,12 +65,9 @@ const HomeComponent = memo(function HomeComponent() {
   const [isClaimStart, setIsClaimStart] = useState(false)
   const [revealed, setRevealed] = useState<boolean>(false)
   const [isPurchaseSuccess, setPurchaseSuccess] = useState<boolean>(false)
-  
+
   // Animation start overlay
-  const {
-    isGameStarted,
-    setIsGameStarted,
-  } = useContext(AppContext)
+  const { isGameStarted, setIsGameStarted } = useContext(AppContext)
   const [isAppStarted, setAppStarted] = useState<boolean>(false)
   const [isAnimationCountdownFinished, setAnimationCountdownFinished] =
     useState<boolean>(false)
@@ -79,14 +76,13 @@ const HomeComponent = memo(function HomeComponent() {
     setAnimationCountdownCooldownFinished,
   ] = useState<boolean>(false)
   const { login, isAuthenticated } = useAuth()
-  
+
   useEffect(() => {
     if (isAuthenticated) return
     ;(async () => {
       await login()
     })()
   }, [login, isAuthenticated])
-
 
   const { dailyRewardsQuery } = useCheckIn()
   const { accountQuery } = useAccountMe()
@@ -167,49 +163,56 @@ const HomeComponent = memo(function HomeComponent() {
         <>
           {!isAppStarted && !isGameStarted && (
             <AnimationStartOverlay
-              className='fixed w-full z-60'
+              className="fixed w-full z-60"
               onStart={() => setAppStarted(true)}
             />
           )}
 
-          {isAppStarted && !isGameStarted && !isAnimationCountdownCooldownFinished && (
-            <div className={cn('fixed size-full z-60 bg-[#121312] left-0 transition-all', isAnimationCountdownFinished && 'duration-800 opacity-0')}>
+          {isAppStarted &&
+            !isGameStarted &&
+            !isAnimationCountdownCooldownFinished && (
               <div
                 className={cn(
-                  'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)] duration-500',
-                  // isAnimationCountdownFinished && 'h-[300px]'
-                )}
-              />
-              <div
-                className={cn(
-                  'absolute size-full duration-700 overflow-clip',
-                  isAnimationCountdownFinished && 'h-[250px]',
+                  'fixed size-full z-60 bg-[#121312] left-0 transition-all',
+                  isAnimationCountdownFinished && 'duration-800 opacity-0',
                 )}
               >
-                <FlickeringGrid
-                  className="absolute inset-0 z-0 size-full left-3"
-                  squareSize={2}
-                  gridGap={12}
-                  color="#b7ff01"
-                  maxOpacity={0.5}
-                  flickerChance={0.3}
-                  autoResize={!isAnimationCountdownFinished}
-                  // width={450}
-                />
-
-                <div className="absolute size-full bg-linear-to-b from-transparent from-50% to-[#121312]" />
-                <div className="absolute size-full bg-linear-to-b from-[#121312] to-transparent to-50%" />
-                <div className="absolute size-full bg-[radial-gradient(ellipse_at_center,transparent_50%,#121312_95%)]" />
-                <iframe
+                <div
                   className={cn(
-                    'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] border-none outline-none duration-700',
-                    isAnimationCountdownFinished && 'scale-75',
+                    'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-full bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#121312_95%)] duration-500',
+                    // isAnimationCountdownFinished && 'h-[300px]'
                   )}
-                  src="https://rive.app/s/kxIqyPB440W_N6jMnHDnCw/embed?runtime=rive-renderer&fit=cover"
                 />
+                <div
+                  className={cn(
+                    'absolute size-full duration-700 overflow-clip',
+                    isAnimationCountdownFinished && 'h-[250px]',
+                  )}
+                >
+                  <FlickeringGrid
+                    className="absolute inset-0 z-0 size-full left-3"
+                    squareSize={2}
+                    gridGap={12}
+                    color="#b7ff01"
+                    maxOpacity={0.5}
+                    flickerChance={0.3}
+                    autoResize={!isAnimationCountdownFinished}
+                    // width={450}
+                  />
+
+                  <div className="absolute size-full bg-linear-to-b from-transparent from-50% to-[#121312]" />
+                  <div className="absolute size-full bg-linear-to-b from-[#121312] to-transparent to-50%" />
+                  <div className="absolute size-full bg-[radial-gradient(ellipse_at_center,transparent_50%,#121312_95%)]" />
+                  <iframe
+                    className={cn(
+                      'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] border-none outline-none duration-700',
+                      isAnimationCountdownFinished && 'scale-75',
+                    )}
+                    src="https://rive.app/s/kxIqyPB440W_N6jMnHDnCw/embed?runtime=rive-renderer&fit=cover"
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </>
       }
       {!accountQuery.isLoading && accountTime < Date.now() && (
@@ -271,11 +274,11 @@ const HomeComponent = memo(function HomeComponent() {
           isPageLink={true}
           actionTitle="JOIN IN"
           className="mt-5 mb-2"
-          classNameStar0='size-[58px] mr-3'
-          classNameStar1='size-[75px]'
-          classNameStar2='size-[58px] ml-3'
-          classNameTitle='mt-8 text-5xl'
-          classNameDescription1='hidden'
+          classNameStar0="size-[58px] mr-3"
+          classNameStar1="size-[75px]"
+          classNameStar2="size-[58px] ml-3"
+          classNameTitle="mt-8 text-5xl"
+          classNameDescription1="hidden"
         />
         <div className="grid grid-cols-2 gap-2">
           <Link
@@ -309,7 +312,7 @@ const HomeComponent = memo(function HomeComponent() {
                   classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
                   title="Swipes"
                   description={"let's see how you react"}
-                  animationData={'/lottie/swipe2.json'}
+                  animationData={'/lottie/main.lotties'}
                 />
               </Suspense>
             )}
