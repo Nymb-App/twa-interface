@@ -30,7 +30,7 @@ export function ItemNFT({ className }: { className?: string }) {
   const tonConnectUI = useTonConnectUI()
 
   const isMintDisabled = useMemo(() => {
-    if(tonConnectUI[0].connected) return false;
+    if(!tonConnectUI[0].connected) return false;
     if(!accountQuery.data) return true;
     if(accountQuery.data?.isEarlyAccessMinted === undefined) return false;
     return accountQuery.data.isEarlyAccessMinted;
