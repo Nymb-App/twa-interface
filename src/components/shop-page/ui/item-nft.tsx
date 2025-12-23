@@ -15,6 +15,7 @@ import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { useMint } from '@/hooks/use-mint'
 import { ITEM_NFT_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { useTonConnectUI } from '@tonconnect/ui-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
@@ -26,12 +27,14 @@ export function ItemNFT({ className }: { className?: string }) {
   const [play, { stop }] = useSound('/sounds/Button.aac')
   const { completeTask } = useTasks();
 
+  const tonConnectUI = useTonConnectUI()
+
   const isMintDisabled = useMemo(() => {
-    console.log('is minded', accountQuery.data)
+    if(tonConnectUI[0].connected) return false;
     if(!accountQuery.data) return true;
     if(accountQuery.data?.isEarlyAccessMinted === undefined) return false;
     return accountQuery.data.isEarlyAccessMinted;
-  }, [accountQuery.data]);
+  }, [accountQuery.data, tonConnectUI]);
 
   useEffect(() => {
     return () => stop()
