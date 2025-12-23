@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { useShop } from '@/hooks/api/use-shop'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { ITEM_TIME_1D_PRICE, ITEM_TIME_1M_PRICE, ITEM_TIME_1W_PRICE, ITEM_TIME_1Y_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -32,10 +32,10 @@ export function ItemTime({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
-    if (radioValue === '1 day') return 0.87
-    if (radioValue === '1 week') return 0.5
-    if (radioValue === '1 month') return 2
-    if (radioValue === '1 year') return 8
+    if (radioValue === '1 day') return ITEM_TIME_1D_PRICE
+    if (radioValue === '1 week') return ITEM_TIME_1W_PRICE
+    if (radioValue === '1 month') return ITEM_TIME_1M_PRICE
+    if (radioValue === '1 year') return ITEM_TIME_1Y_PRICE
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 day') return 'time'

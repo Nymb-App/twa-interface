@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useShop } from '@/hooks/api/use-shop'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { ITEM_ENERGY_1000_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -132,7 +132,7 @@ export function ItemEnergy({ className }: { className?: string }) {
           </div>
           <span className="text-white/40 text-5xl font-pixel">:</span>
           <div className="font-pixel flex flex-col gap-1">
-            <span className="text-white text-3xl text-center">1</span>
+            <span className="text-white text-3xl text-center">{ITEM_ENERGY_1000_PRICE}</span>
             <Select defaultValue="ton">
               <SelectTrigger className="text-[12px] font-pixel uppercase rounded-[8px] text-white/40 border-none starboard-result-block-bg">
                 <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export function ItemEnergy({ className }: { className?: string }) {
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
             recipient={RECEIVER_ADDRESS}
-            amount={1}
+            amount={ITEM_ENERGY_1000_PRICE}
             className="py-3 w-full inline-flex justify-center items-center gap-1"
             onTransferSuccess={async (hash) => {
               toast.success('Energy restored')
@@ -178,7 +178,7 @@ export function ItemEnergy({ className }: { className?: string }) {
               }
             }}
           >
-            PAY <TonIcon fill="black" />1 RESTORE ENERGY
+            PAY <TonIcon fill="black" />{ITEM_ENERGY_1000_PRICE} RESTORE ENERGY
           </TransferTonButton>
         </DrawerFooter>
       </DrawerContent>

@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { useShop } from '@/hooks/api/use-shop'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { ITEM_TICKET_10_PRICE, ITEM_TICKET_5_PRICE, ITEM_TICKET_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -38,13 +38,13 @@ export function ItemTicket({
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('5 tickets')
   const amount = useMemo(() => {
-    if (radioValue === '1 ticket') return 1
-    if (radioValue === '5 tickets') return 4
-    if (radioValue === '10 tickets') return 7
+    if (radioValue === '1 ticket') return ITEM_TICKET_PRICE
+    if (radioValue === '5 tickets') return ITEM_TICKET_5_PRICE
+    if (radioValue === '10 tickets') return ITEM_TICKET_10_PRICE
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 ticket') return 'ticket'
-    if (radioValue === '5 ticket') return 'five_tickets'
+    if (radioValue === '5 tickets') return 'five_tickets'
     if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
   const { buyItem } = useShop()
@@ -211,10 +211,13 @@ export function ItemTicket({
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
             recipient={RECEIVER_ADDRESS}
-            amount={amount ?? 0.87}
+            amount={amount ?? 1}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
             onTransferSuccess={async (hash) => {
-              toast.success('Time purchased')
+              toast.success('Ticket purchased');
+
+              console.log("Ticket", itemName)
+              
               await buyItem(itemName as TShopItem, hash)
             }}
             onConnect={() => {

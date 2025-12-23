@@ -10,20 +10,28 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
+import { useAccountMe } from '@/hooks/api/use-account'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { useMint } from '@/hooks/use-mint'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { ITEM_NFT_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 
 export function ItemNFT({ className }: { className?: string }) {
+  const { accountQuery } = useAccountMe();
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { mintProgress, mint } = useMint()
   const [play, { stop }] = useSound('/sounds/Button.aac')
   const { completeTask } = useTasks();
-  const amount = 5
+
+  const isMintDisabled = useMemo(() => {
+    console.log('is minded', accountQuery.data)
+    if(!accountQuery.data) return true;
+    if(accountQuery.data?.isEarlyAccessMinted === undefined) return false;
+    return accountQuery.data.isEarlyAccessMinted;
+  }, [accountQuery.data]);
 
   useEffect(() => {
     return () => stop()
@@ -119,13 +127,15 @@ export function ItemNFT({ className }: { className?: string }) {
           </div>
           <div className="mt-6 px-4 relative">
             <TransferTonButton
+              disabled={isMintDisabled}
               recipient={RECEIVER_ADDRESS}
-              amount={amount}
+              amount={ITEM_NFT_PRICE}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onTransferSuccess={async (hash) => {
                 toast.success('NFT purchased!')
                 completeTask({taskName: TaskNames.MintNFT});
                 await mint(hash)
+                accountQuery.refetch();
               }}
               onError={(e) => {
                 if (e.message === 'Insufficient balance') {
@@ -135,7 +145,10 @@ export function ItemNFT({ className }: { className?: string }) {
                 }
               }}
             >
-              MINT FOR {amount} TON
+              {accountQuery.data?.isEarlyAccessMinted
+                ? 'ALREADY MINTED' :
+                `MINT FOR ${ITEM_NFT_PRICE} TON`
+              }
             </TransferTonButton>
           </div>
           <span className="mt-3 text-[#B6FF00]/60 mx-auto">

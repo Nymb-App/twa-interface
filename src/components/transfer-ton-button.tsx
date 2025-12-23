@@ -33,13 +33,7 @@ export function TransferTonButton({
   const { open } = useTonConnectModal()
   const { getBalance } = useBalance()
   const [play] = useSound('/sounds/Button.aac')
-  const {
-    transfer,
-    isTransactionLoading,
-    isTransactionError,
-    hash,
-    isTransactionSuccess,
-  } = useTransferTon()
+  const { transfer, isTransactionLoading, isTransactionSuccess, isTransactionError, hash } = useTransferTon()
 
   useEffect(() => {
     if (isTransferTonSuccess) return
@@ -47,7 +41,7 @@ export function TransferTonButton({
       onTransferSuccess?.(hash)
       setIsTransferTonSuccess(true)
     }
-  }, [hash, onTransferSuccess, isTransactionSuccess])
+  }, [onTransferSuccess, isTransactionSuccess])
 
   useEffect(() => {
     if (recipient.toLowerCase() === address.toLowerCase()) {
