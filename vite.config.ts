@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'air-insurance-qualities-noon.trycloudflare.com',
+      'seats-videos-scripting-sellers.trycloudflare.com',
     ],
   },
 

@@ -31,3 +31,16 @@ export const API_URL =
 export const TELEGRAM_APP_URL =
   import.meta.env.VITE_PUBLIC_TELEGRAM_APP_LINK ??
   'https://t.me/nymb_twa_bot/nymb'
+
+
+// Prices
+// export const ITEM_NFT_PRICE = 5;
+// export const ITEM_ENERGY_1000_PRICE = 1;
+// export const ITEM_TIME_1W_PRICE = 0.5;
+// export const ITEM_TIME_1M_PRICE = 2;
+// export const ITEM_TIME_1Y_PRICE = 8;
+export const ITEM_NFT_PRICE = 0.1;
+export const ITEM_ENERGY_1000_PRICE = 0.1;
+export const ITEM_TIME_1W_PRICE = 0.1;
+export const ITEM_TIME_1M_PRICE = 0.1;
+export const ITEM_TIME_1Y_PRICE = 0.1;
