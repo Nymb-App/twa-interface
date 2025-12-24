@@ -40,6 +40,7 @@
     "@tonsolutions/telemetree-react": "^1.2.15",
     "@types/react-scroll": "^1.8.10",
     "add": "^2.0.6",
+    "better-promises": "^1.0.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
