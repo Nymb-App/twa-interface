@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'cart-exploration-camel-profiles.trycloudflare.com',
+      'holds-notebook-saved-prairie.trycloudflare.com',
     ],
   },
 

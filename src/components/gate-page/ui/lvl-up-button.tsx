@@ -41,33 +41,33 @@ export function LvlUpButton({ className }: { className?: string }) {
     }
   }, [accountQuery.data])
 
-
   const isTicketsEnough = useMemo(() => {
     // if (!accountData) return false;
     if (!accountData.ticket) return false
     if (!accountData.lvl) return false
     if (accountData.ticket === 0) return false
-
+    if (accountData.lvl === 1) return false
     return (
       accountData.ticket >=
-      gateDataStatistics[String(accountData.lvl)].ticketsRequired
+      gateDataStatistics[String(accountData.lvl - 1)].ticketsRequired
     )
   }, [accountData, accountData.ticket, accountData.lvl])
+
+  const isTimeEnough = useMemo(() => {
+    if (!accountData.time) return false
+    if (accountData.time * 1000 <= Date.now()) return false
+    if (accountData.lvl === 1) return false
+    return (
+      convertTimestampToDaysUnit(accountData.time - Date.now() / 1000) >=
+      gateDataStatistics[String(accountData.lvl - 1)].timeRequired
+    )
+  }, [accountData.time, accountData.lvl])
 
   const requirements = useMemo(() => {
     if (!accountData.lvl) return gateDataStatistics['11']
 
     return gateDataStatistics[String(accountData.lvl - 1)]
   }, [accountData])
-
-  const isTimeEnough = useMemo(() => {
-    if (!accountData.time) return false
-    if (accountData.time * 1000 <= Date.now()) return false
-    return (
-      convertTimestampToDaysUnit(accountData.time - Date.now() / 1000) >=
-      gateDataStatistics[String(accountData.lvl)].timeRequired
-    )
-  }, [accountData.time, accountData.lvl])
 
   if (accountData.lvl === 1 || isLoading) {
     return (
@@ -137,7 +137,6 @@ function LvlUpButtonWithShop({
   const allowedTime = useMemo(() => {
     return gateDataStatistics[String(nextLvl)].timeRequired
   }, [nextLvl])
-
 
   return (
     <Drawer>
