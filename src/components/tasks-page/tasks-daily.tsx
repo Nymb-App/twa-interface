@@ -1,11 +1,11 @@
 import { useAdsgram } from '@adsgram/react'
-import { isTMA, openLink, shareStory } from '@tma.js/sdk'
+import { isTMA, shareStory } from '@tma.js/sdk'
 import { useCallback, useEffect, useMemo } from 'react'
 import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
 import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
-import { ADSGRAM_APP_ID, SELF_HOST_URL, TELEGRAM_CHANNEL_URL, TELEGRAM_URL, TWITTER_URL } from '@/lib/constants'
+import { ADSGRAM_APP_ID, SELF_HOST_URL, TELEGRAM_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { formatDurationFromSeconds } from '@/utils'
 
