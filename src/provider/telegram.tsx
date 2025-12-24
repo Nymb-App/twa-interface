@@ -78,7 +78,9 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
     ;(async () => {
       if (isTMA()) {
         if (backButton.mount.isAvailable()) {
-          backButton.mount()
+          if (!backButton.isMounted) {
+            backButton.mount()
+          }
         }
 
         if (
