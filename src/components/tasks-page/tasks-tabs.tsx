@@ -65,7 +65,7 @@ export function TasksTabs({ className }: { className?: string }) {
     .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
 
   const handleTaskAction = useCallback(
-    (name: TaskNames) => {
+    (name: TaskNames, isDone?: boolean) => {
       // Checks
       if (!isTMA()) {
         return toast.error(
@@ -78,15 +78,17 @@ export function TasksTabs({ className }: { className?: string }) {
 
       // Tasks that complete via external actions
       if (name === TaskNames.MintNFT) {
-        router.navigate({ to: '/shop' })
-        return
+        if(!isDone) {
+          router.navigate({ to: '/shop' })
+          return
+        }
       }
       if (name === TaskNames.WatchAd) {
         const getRandomInt = (min: number, max: number): number => {
           return Math.floor(Math.random() * (max - min + 1)) + min;
         };
         show()
-        setTimeout(() => completeTask({taskName: name}), getRandomInt(15000, 30000))
+        setTimeout(() => completeTask({taskName: name}), getRandomInt(25000, 30000))
         return
       }
 
@@ -179,7 +181,7 @@ export function TasksTabs({ className }: { className?: string }) {
               description={task.description}
               reward={task.reward}
               status={task.status}
-              onClick={(name) => handleTaskAction(name)}
+              onClick={handleTaskAction}
             />
           ))}
         </div>
@@ -283,7 +285,7 @@ const TaskCard = ({
   reward: { type: string; value: number }
   status: 'pending' | 'completed' | 'in-progress'
   className?: string
-  onClick?: (name: TaskNames) => void
+  onClick?: (name: TaskNames, isDone?: boolean) => void
 }) => {
   const { myReferrals, myCodes } = useReferrals()
   const { user } = useAccount()
@@ -310,6 +312,7 @@ const TaskCard = ({
     }
 
     const referralsCount = myReferrals?.countVoucherReferrals0 || 0
+    const mintLabel = accountQuery.data?.isEarlyAccessMinted ? 'check' : 'mint';
     const inviteFriendsLabel =
       referralsCount >=
       parseInt(name.replace('task-invite-', '').replace('-friends', ''))
@@ -332,7 +335,7 @@ const TaskCard = ({
       case TaskNames.VisitWebsite:
         return 'visit'
       case TaskNames.MintNFT:
-        return 'mint'
+        return mintLabel
       case TaskNames.PostTelegramStory:
         return 'post'
       case TaskNames.Invite1Friends:
@@ -343,7 +346,7 @@ const TaskCard = ({
       default:
         return 'go'
     }
-  }, [name, status, myReferrals?.countVoucherReferrals0])
+  }, [name, status, myReferrals?.countVoucherReferrals0, accountQuery.data?.isEarlyAccessMinted])
 
   const isDisabledActionButton = useMemo(() => {
     if (status === 'pending') return true
@@ -402,6 +405,10 @@ const TaskCard = ({
                 )
               }
               return
+            }
+            if (formatedButtonLabel === 'check') {
+              onClick?.(name as TaskNames, true);
+              return;
             }
             onClick?.(name as TaskNames)
           }}

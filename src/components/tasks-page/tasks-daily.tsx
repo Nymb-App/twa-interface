@@ -71,7 +71,7 @@ export function TasksDaily() {
           return Math.floor(Math.random() * (max - min + 1)) + min;
         };
         show()
-        setTimeout(() => completeTask({taskName}), getRandomInt(15000, 30000))
+        setTimeout(() => completeTask({taskName}), getRandomInt(25000, 30000))
         return
       }
 
