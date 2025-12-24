@@ -124,7 +124,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     })()
-  }, [])
+  })
 
   return children
 }
