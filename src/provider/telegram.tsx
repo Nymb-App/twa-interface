@@ -76,9 +76,9 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   /** ***************************************************************/
   useEffect(() => {
     ;(async () => {
-      if (await isTMA()) {
+      if (isTMA()) {
         if (backButton.mount.isAvailable()) {
-          await backButton.mount()
+          backButton.mount()
         }
 
         if (
@@ -124,7 +124,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     })()
-  }, [pathnames, currentOnboardingSlide])
+  }, [])
 
   return children
 }
