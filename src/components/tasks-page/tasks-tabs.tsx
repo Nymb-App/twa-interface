@@ -1,7 +1,7 @@
 import { useAdsgram } from '@adsgram/react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { useRouter } from '@tanstack/react-router'
-import { isTMA, openLink, shareURL } from '@tma.js/sdk'
+import { isTMA, openLink, shareStory, shareURL } from '@tma.js/sdk'
 import { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
@@ -14,8 +14,10 @@ import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import {
   ADSGRAM_APP_ID,
   INSTAGRAM_URL,
+  SELF_HOST_URL,
   TELEGRAM_APP_LINK,
   TELEGRAM_CHANNEL_URL,
+  TELEGRAM_URL,
   TWITTER_URL,
   WEBSITE_URL,
   YOU_TUBE_URL,
@@ -103,10 +105,7 @@ export function TasksTabs({ className }: { className?: string }) {
         })
       }
       if (name === TaskNames.SubscribeTelegram) {
-        openLink(TELEGRAM_CHANNEL_URL, {
-          tryBrowser: 'chrome',
-          tryInstantView: true,
-        })
+        window.open(TELEGRAM_URL, '_blank');
       }
       if (name === TaskNames.SubscribeInstagram) {
         openLink(INSTAGRAM_URL, {
@@ -119,6 +118,15 @@ export function TasksTabs({ className }: { className?: string }) {
           tryBrowser: 'chrome',
           tryInstantView: true,
         })
+      }
+      if (name === TaskNames.PostTelegramStory) {
+          shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
+            text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
+            widgetLink: {
+              url: TELEGRAM_URL,
+              name: 'NYMB - time is money',
+            },
+          })
       }
 
       completeTask({ taskName: name as TaskNames })

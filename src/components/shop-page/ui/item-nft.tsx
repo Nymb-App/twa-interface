@@ -11,7 +11,6 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { useAccountMe } from '@/hooks/api/use-account'
-import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { useMint } from '@/hooks/use-mint'
 import { ITEM_NFT_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -25,7 +24,6 @@ export function ItemNFT({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { mintProgress, mint } = useMint()
   const [play, { stop }] = useSound('/sounds/Button.aac')
-  const { completeTask } = useTasks();
 
   const tonConnectUI = useTonConnectUI()
 
@@ -116,7 +114,6 @@ export function ItemNFT({ className }: { className?: string }) {
               src="/webm/nft.mp4"
               poster="/webm/mint-video-placeholder.png"
             />
-            {/* <div className="absolute w-full h-[90px] bg-gradient-to-b from-[#0b0b0b]/50 from-20% to-[#161715] pointer-events-none -bottom-1" /> */}
           </div>
           <div className="absolute w-full h-full bg-[url('/index-page/nft-bg.png')] bg-cover bg-top pointer-events-none" />
           <div className="inline-flex gap-2 items-center font-pixel mx-auto text-[#B6FF00] z-10 -mt-17">
@@ -134,9 +131,11 @@ export function ItemNFT({ className }: { className?: string }) {
               recipient={RECEIVER_ADDRESS}
               amount={ITEM_NFT_PRICE}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
+              onConnect={() => {
+                setIsOpen(false)
+              }}
               onTransferSuccess={async (hash) => {
                 toast.success('NFT purchased!')
-                completeTask({taskName: TaskNames.MintNFT});
                 await mint(hash)
                 accountQuery.refetch();
               }}

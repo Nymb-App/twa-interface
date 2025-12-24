@@ -5,7 +5,7 @@ import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
 import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
-import { ADSGRAM_APP_ID, SELF_HOST_URL, TELEGRAM_CHANNEL_URL, TWITTER_URL } from '@/lib/constants'
+import { ADSGRAM_APP_ID, SELF_HOST_URL, TELEGRAM_CHANNEL_URL, TELEGRAM_URL, TWITTER_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { formatDurationFromSeconds } from '@/utils'
 
@@ -53,17 +53,18 @@ export function TasksDaily() {
         shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
           text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
           widgetLink: {
-            url: 'https://t.me/nymb_app',
+            url: TELEGRAM_URL,
             name: 'NYMB - time is money',
           },
         })
       }
 
       if (taskName === TasksDailyComboNames.ViewTelegramNews) {
-        openLink(TELEGRAM_CHANNEL_URL, {
-          tryBrowser: 'chrome',
-          tryInstantView: true,
-        })
+        // openLink(TELEGRAM_URL, {
+        //   tryBrowser: 'chrome',
+        //   tryInstantView: true,
+        // })
+        window.open(TELEGRAM_URL, '_blank');
       }
       if (taskName === TasksDailyComboNames.WatchAd) {
         const getRandomInt = (min: number, max: number): number => {
