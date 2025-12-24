@@ -21,6 +21,7 @@ export const AdsButton = ({
   labelColor,
   labelOpacity,
   disabled,
+  onAnimationEnd,
   onReward,
   onError,
 }: {
@@ -35,6 +36,7 @@ export const AdsButton = ({
   labelOpacity?: number
   labelColor?: string
   disabled?: boolean
+  onAnimationEnd?: () => void
   onReward?: () => void
   onError?: () => void
 }) => {
@@ -95,7 +97,10 @@ export const AdsButton = ({
   return (
     <ActionButton
       disabled={isDisabledButton}
-      onAnimationEnd={() => setIsAnimationStart(false)}
+      onAnimationEnd={() => {
+        setIsAnimationStart(false)
+        onAnimationEnd?.()
+      }}
       className={cn(
         'text-[#FFFFFF] bg-linear-to-b from-[#8C35FB] to-[#6602E7] relative',
         className,
