@@ -4,6 +4,7 @@ import { useApi } from './use-api'
 export enum TasksDailyComboNames {
   WatchAd = 'daily-combo-watch-ad',
   PostTelegramStory = 'daily-combo-post-telegram-story',
+  ViewTelegramNews = 'daily-combo-view-telegram-news',
   ViewTwitterNews = 'daily-combo-view-twitter-news',
   DailyComboCompleteAllTasks = 'daily-combo-complete-all-tasks',
 }
@@ -41,6 +42,7 @@ export enum TaskNames {
 // --- Интерфейсы для данных (могут потребовать уточнения) ---
 
 export interface ITask {
+  index?: number
   telegramId: number
   name: string
   description: string

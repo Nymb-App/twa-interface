@@ -5,7 +5,7 @@ import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
 import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
-import { ADSGRAM_APP_ID, SELF_HOST_URL, TWITTER_URL } from '@/lib/constants'
+import { ADSGRAM_APP_ID, SELF_HOST_URL, TELEGRAM_CHANNEL_URL, TWITTER_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { formatDurationFromSeconds } from '@/utils'
 
@@ -25,9 +25,6 @@ export function TasksDaily() {
   const { show } = useAdsgram({
     blockId: ADSGRAM_APP_ID,
     debug: false,
-    onReward: () => {
-      completeTask({ taskName: TasksDailyComboNames.WatchAd })
-    },
   })
 
   const isAllTasksCompleted = useMemo(() => {
@@ -62,14 +59,18 @@ export function TasksDaily() {
         })
       }
 
-      if (taskName === TasksDailyComboNames.ViewTwitterNews) {
-        openLink(TWITTER_URL, {
+      if (taskName === TasksDailyComboNames.ViewTelegramNews) {
+        openLink(TELEGRAM_CHANNEL_URL, {
           tryBrowser: 'chrome',
           tryInstantView: true,
         })
       }
       if (taskName === TasksDailyComboNames.WatchAd) {
+        const getRandomInt = (min: number, max: number): number => {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
         show()
+        setTimeout(() => completeTask({taskName}), getRandomInt(15000, 30000))
         return
       }
 
@@ -223,6 +224,7 @@ const TaskDailyCard = ({
     switch (name) {
       case TasksDailyComboNames.WatchAd:
       case TasksDailyComboNames.ViewTwitterNews:
+      case TasksDailyComboNames.ViewTelegramNews:
         return 'open'
       case TasksDailyComboNames.PostTelegramStory:
         return 'post'
@@ -239,7 +241,7 @@ const TaskDailyCard = ({
         className,
       )}
     >
-      {name === TasksDailyComboNames.PostTelegramStory ? (
+      {name === TasksDailyComboNames.PostTelegramStory || name == TasksDailyComboNames.ViewTelegramNews ? (
         <TbBrandTelegram className="size-[30px] text-[#b8b8b8]" />
       ) : name === TasksDailyComboNames.ViewTwitterNews ? (
         <TbBrandX className="size-[30px] text-[#b8b8b8]" />

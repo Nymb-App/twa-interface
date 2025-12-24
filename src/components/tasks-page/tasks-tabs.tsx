@@ -46,15 +46,21 @@ export function TasksTabs({ className }: { className?: string }) {
   })
 
   const {
-    tasksQuery: { data: tasks, isLoading, isError },
+    tasksQuery: {
+      data: tasks,
+      isLoading,
+      isError
+    },
     completeTask,
   } = useTasks()
   const [play] = useSound('/sounds/Button.aac')
 
   const progressTasks =
-    tasks?.filter((task) => task.status !== 'completed') ?? []
+    tasks?.filter((task) => task.status !== 'completed')
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
   const completedTasks =
-    tasks?.filter((task) => task.status === 'completed') ?? []
+    tasks?.filter((task) => task.status === 'completed')
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
 
   const handleTaskAction = useCallback(
     (name: TaskNames) => {
@@ -74,7 +80,11 @@ export function TasksTabs({ className }: { className?: string }) {
         return
       }
       if (name === TaskNames.WatchAd) {
+        const getRandomInt = (min: number, max: number): number => {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
         show()
+        setTimeout(() => completeTask({taskName: name}), getRandomInt(15000, 30000))
         return
       }
 
