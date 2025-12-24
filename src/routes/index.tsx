@@ -7,7 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react'
+} from 'react';
 import { isAndroid, isIOS } from 'react-device-detect'
 
 import { TelegramStarIcon } from '@/assets/icons/telegram-star'
