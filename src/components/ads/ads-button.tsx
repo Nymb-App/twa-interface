@@ -12,6 +12,7 @@ import { ActionButton } from '../ui/action-button'
 export const AdsButton = ({
   className,
   onClick,
+  onBtnClick,
   time,
   displayPercent,
   isPercent,
@@ -25,6 +26,7 @@ export const AdsButton = ({
 }: {
   className?: string
   classNameText?: string
+  onBtnClick?: () => void
   onClick?: () => void
   time: number
   displayPercent?: number
@@ -101,6 +103,7 @@ export const AdsButton = ({
       onClick={() => {
         play()
         show()
+        onBtnClick?.()
       }}
     >
       {children ? (

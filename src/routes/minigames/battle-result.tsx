@@ -89,6 +89,8 @@ const ResultScene = ({
 }) => {
   const rewardTimeValue = bet
 
+  const [disableAdsButton, setDisableAdsButton] = useState(false)
+
   const [isNewBattleDisabled, setIsNewBattleDisabled] = useState(true)
 
   const [playBattleLoser, { stop: stopBattleLoser }] = useSound(
@@ -242,7 +244,13 @@ const ResultScene = ({
           /> */}
           <AdsButton
             time={isMeWinner ? 604800 : 7200}
-            className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white"
+            disabled={disableAdsButton}
+            onBtnClick={() => {
+              setTimeout(() => {
+                setDisableAdsButton(true)
+              }, 30000)
+            }}
+            className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white disabled:cursor-not-allowed disabled:from-[#4a1c87] disabled:to-[#3b0188] disabled:text-white/40"
           />
           <div className="inline-flex gap-2 w-full">
             <Link className="w-full" to="/">
