@@ -70,7 +70,7 @@ export function TasksDaily() {
       }
       if (taskName === TasksDailyComboNames.WatchAd) {
         show()
-        return
+        // return
       }
 
       completeTask({ taskName })
