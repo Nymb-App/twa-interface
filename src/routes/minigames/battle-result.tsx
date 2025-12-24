@@ -72,6 +72,13 @@ interface IUserResultData {
   photoUrl: string
 }
 
+const unitsToSeconds: Record<string, number> = {
+  day: 86_400,
+  week: 604_800,
+  month: 2_628_000,
+  year: 30_154_000,
+}
+
 const ResultScene = ({
   bet,
   onNewBattle,
@@ -88,6 +95,17 @@ const ResultScene = ({
   myId?: number
 }) => {
   const rewardTimeValue = bet
+
+  const rewardTimeValueToAdd = useMemo(() => {
+    if(!bet) {
+      return unitsToSeconds['day'];
+    }
+
+    const [time, unit] = bet?.split(' ');
+    const t = Number(time) * unitsToSeconds[unit];
+
+    return t;
+  }, [bet]);
 
   const [disableAdsButton, setDisableAdsButton] = useState(false)
 
@@ -238,20 +256,21 @@ const ResultScene = ({
           )}
         </div>
         <div className="flex flex-col items-center justify-center gap-2 w-full px-4 pb-10">
-          {/* <ShareButton
-            className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white"
-            time={isMeWinner ? 604800 : 7200}
-          /> */}
-          <AdsButton
-            time={isMeWinner ? 604800 : 7200}
-            disabled={disableAdsButton}
-            onBtnClick={() => {
-              setTimeout(() => {
-                setDisableAdsButton(true)
-              }, 30000)
-            }}
-            className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white disabled:cursor-not-allowed disabled:from-[#4a1c87] disabled:to-[#3b0188] disabled:text-white/40"
-          />
+          {!isMeWinner ? 
+            <AdsButton
+              // time={isMeWinner ? 604800 : 7200}
+              time={rewardTimeValueToAdd * 0.8}
+              displayPercent={20}
+              disabled={disableAdsButton}
+              isPercent
+              onBtnClick={() => {
+                setTimeout(() => {
+                  setDisableAdsButton(true)
+                }, 30000)
+              }}
+              className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white disabled:cursor-not-allowed disabled:from-[#4a1c87] disabled:to-[#3b0188] disabled:text-white/40"
+            />
+          : null}
           <div className="inline-flex gap-2 w-full">
             <Link className="w-full" to="/">
               <ActionButton

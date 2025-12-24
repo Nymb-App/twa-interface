@@ -24,6 +24,7 @@ export const BattleGameControlsPanel = ({
   const [isReversing1, setIsReversing1] = useState(false)
 
   const { extraBoostCount } = useBuyExtraBoost()
+  console.log(extraBoostCount)
 
   const [playBoostGame, { stop: stopPlayBoostGame }] = useSound(
     '/sounds/Battle-Boost.aac',

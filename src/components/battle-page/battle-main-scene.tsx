@@ -369,30 +369,6 @@ export const BattleMainScene = ({
                   CLOSE
                 </span>
               </ActionButton>
-              {/* This is only shown for invited user */}
-              {/* {roomData &&
-                roomData.isPrivate &&
-                roomData.createdBy !== Number(myInfo?.id) && (
-                  <ActionButton
-                    disabled={
-                      !isForcedExitBattleAnimationFinished ||
-                      !isStartFindingOpponent
-                    }
-                    onClick={() => {
-                      onJoinGame?.(Number(roomData.bet), true)
-                    }}
-                    className={cn(
-                      'h-full bg-gradient-to-b from-[#8C35FB] to-[#6602E7] opacity-0 animate-fade-in',
-                    )}
-                    onAnimationEnd={() =>
-                      setIsForcedExitBattleAnimationFinished(true)
-                    }
-                  >
-                    <span className="font-pixel text-white font-[400] uppercase text-[18px] leading-[24px]">
-                      TO BATTLE
-                    </span>
-                  </ActionButton>
-                )} */}
             </div>
           </div>
         )}

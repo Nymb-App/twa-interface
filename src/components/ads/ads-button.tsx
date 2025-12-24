@@ -104,6 +104,8 @@ export const AdsButton = ({
         play()
         show()
         onBtnClick?.()
+
+        setTimeout(() => handleReward, 30000)
       }}
     >
       {children ? (
