@@ -21,9 +21,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
   const { currentOnboardingSlide } = useContext(AppContext)
-  const [playButtonSound] = useSound('/sounds/Button.aac', {
-    interrupt: true,
-  })
+  const [play] = useSound('/sounds/Button.aac')
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
@@ -94,7 +92,6 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
 
         if (backButton.onClick.isAvailable()) {
           backButton.onClick(() => {
-            playButtonSound()
             if (pathnames[1].pathname === '/') return
             if (pathnames[1].pathname === '/onboarding') {
               if (!currentOnboardingSlide) return
@@ -119,12 +116,14 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
             ) {
               forceDisconnect()
             }
+
             router.navigate({ to: '/' })
+            play();
           })
         }
       }
     })()
-  }, [pathnames, currentOnboardingSlide])
+  }, [pathnames, currentOnboardingSlide, play])
 
   return children
 }
