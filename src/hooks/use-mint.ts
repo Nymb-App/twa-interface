@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useApi } from './api/use-api'
+import { useApi, useAuth } from './api/use-api'
 
 interface MintProgresstResponse {
   totalSupply: number
@@ -24,6 +24,7 @@ interface CollectionDataResponse {
 
 export const useMint = () => {
   const { get, post } = useApi()
+  const { isAuthenticated } = useAuth()
 
   const { data: collectionData, isLoading: isCollectionDataLoading } = useQuery(
     {
@@ -36,7 +37,8 @@ export const useMint = () => {
           return undefined
         }
       },
-      retry: 0,
+      retry: 3,
+      enabled: isAuthenticated,
     },
   )
 
@@ -50,14 +52,17 @@ export const useMint = () => {
         return undefined
       }
     },
-    retry: 0,
+    retry: 3,
+    enabled: isAuthenticated,
   })
 
   const mint = async (transactionHash: string) => {
     if (mintProgress?.isEarlyAccessMinted) {
       return
     }
-    const response = await post(`/nft/mint_in_collection/${transactionHash}/nft`)
+    const response = await post(
+      `/nft/mint_in_collection/${transactionHash}/nft`,
+    )
     return response
   }
 

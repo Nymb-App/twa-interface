@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useCallback, useMemo } from 'react'
-import { useApi } from './use-api'
 import { useAccountMe } from './use-account'
+import { useApi } from './use-api'
 
 export type TShopItem =
   | 'energy'
@@ -24,15 +24,18 @@ export function useShop() {
   } = useQuery({
     queryKey: ['get-shop-items'],
     queryFn: async () => await get('/shop/shop_items'),
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    // staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    // refetchOnWindowFocus: false,
+    // refetchOnMount: false,
+    // refetchOnReconnect: false,
     retry: 3,
+    // Only run once the account is ready (auth completed)
+    enabled: accountQuery.isSuccess,
   })
 
   // Internal mutation that matches React Query's expected signature (single `variables` argument)
   const buyItemMutation = useMutation({
+    mutationKey: ['shop', 'buyItem'],
     mutationFn: async ({
       itemName,
       hash,
@@ -56,7 +59,7 @@ export function useShop() {
   // Convenience wrapper so the rest of the codebase can keep calling `buyItem(itemName, hash)`
   const buyItem = useCallback(
     (itemName: TShopItem, hash: string) =>
-      buyItemMutation.mutateAsync({ itemName, hash }),
+      buyItemMutation.mutate({ itemName, hash }),
     [buyItemMutation],
   )
 

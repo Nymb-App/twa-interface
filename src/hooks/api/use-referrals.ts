@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useApi } from '../api/use-api'
+import { useApi, useAuth } from '../api/use-api'
 
 export interface MyCode {
   code: string
@@ -10,8 +10,6 @@ export interface MyCode {
 export interface MyCodesResponse {
   codes: Array<MyCode>
 }
-
-
 
 export interface Referral {
   referralsCount: number
@@ -59,6 +57,7 @@ export const useReferrals = (
 ) => {
   const { get, post } = useApi()
   const queryClient = useQueryClient()
+  const { isAuthenticated } = useAuth()
 
   const myCodes = useQuery<MyCodesResponse, Error>({
     queryKey: ['myCodes'],
@@ -69,6 +68,7 @@ export const useReferrals = (
       }
       return response as MyCodesResponse
     },
+    enabled: isAuthenticated,
   })
 
   const myReferrals = useQuery<MyReferralsResponse, Error>({
@@ -82,7 +82,7 @@ export const useReferrals = (
       }
       return response as MyReferralsResponse
     },
-    enabled: !!params.limit && !!params.page, // only run if params are provided
+    enabled: isAuthenticated && !!params.limit && !!params.page, // only run if params are provided
   })
 
   const generateNewCode = useMutation<NewCodeResponse, Error, void>({
@@ -98,8 +98,12 @@ export const useReferrals = (
     },
   })
 
-  const sendGiftToFriend = useMutation<SendGiftResponse, Error, SendGiftPayload>({
-    mutationFn: async payload => {
+  const sendGiftToFriend = useMutation<
+    SendGiftResponse,
+    Error,
+    SendGiftPayload
+  >({
+    mutationFn: async (payload) => {
       const response = await post('/referral/send_gift_to_friend', payload)
       if (!response) {
         throw new Error('No response from server for send_gift_to_friend')

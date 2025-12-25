@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQueries, useQuery } from '@tanstack/react-query';
-import { useApi } from './use-api';
+import { useApi, useAuth } from './use-api';
 
 export interface GlobalStatisticsParams {
   lvl?: number
@@ -38,6 +38,7 @@ const useLvl = () => {
 
 export const useStatistics = () => {
   const { get } = useApi()
+  const { isAuthenticated } = useAuth()
   const { lvls } = useLvl()
   const [enabledLevels, setEnabledLevels] = useState<Array<number>>([12, 11, 10])
 
@@ -51,6 +52,7 @@ export const useStatistics = () => {
       return response as StatisticsData
     },
     staleTime: 60 * 60 * 1000, // 1 hour cache
+    enabled: isAuthenticated,
   })
 
   const loadLevel = (level: number) => {
@@ -76,7 +78,7 @@ export const useStatistics = () => {
         }
       },
       staleTime: 60 * 60 * 1000,
-      enabled: enabledLevels.includes(lvl), // Загружаем только активные уровни
+      enabled: isAuthenticated && enabledLevels.includes(lvl), // Загружаем только активные уровни
     })),
   })
 

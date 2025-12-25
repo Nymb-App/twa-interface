@@ -9,7 +9,24 @@ import { BattleMinigamesRouting } from './battle-minigames-routing'
 import { TelegramProvider } from './telegram'
 import { WebSocketProvider } from './web-socket-provider'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Limit retries to 3 and avoid retrying on auth errors
+      retry: (failureCount, error: any) => {
+        const status = error?.status ?? error?.response?.status
+        if (status === 401 || status === 403) return false
+        return failureCount < 4
+      },
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      refetchOnMount: true,
+    },
+    mutations: {
+      retry: 3,
+    },
+  },
+})
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {

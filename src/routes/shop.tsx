@@ -1,5 +1,10 @@
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
-import { ItemEnergy, ItemNFT, ItemTicket, ItemTime } from '@/components/shop-page/index'
+import {
+  ItemEnergy,
+  ItemNFT,
+  ItemTicket,
+  ItemTime,
+} from '@/components/shop-page/index'
 import { PageLayout } from '@/components/ui/page-layout'
 import { createFileRoute } from '@tanstack/react-router'
 

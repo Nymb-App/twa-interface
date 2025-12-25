@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useCallback, useEffect } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAccount } from './use-account'
 import type { UseQueryOptions } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect } from 'react'
+import { useAccount } from './use-account'
 
 const baseUrl = import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:100'
 
@@ -61,8 +61,11 @@ export function useApi() {
       })
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}))
-        throw new Error(error.message || 'API request failed')
+        const errorBody = await response.json().catch(() => ({}))
+        const message =
+          errorBody?.message || `API request failed (${response.status})`
+        const apiError = new ApiError(message, response.status, errorBody)
+        throw apiError
       }
 
       // Handle no-content responses
@@ -166,6 +169,18 @@ export function useApi() {
       fetchData<T>('DELETE', url, undefined, config),
     useQuery: useApiQuery,
     useMutation: useApiMutation,
+  }
+}
+// Rich error for API requests to preserve HTTP status and body
+export class ApiError extends Error {
+  status: number
+  info?: unknown
+
+  constructor(message: string, status: number, info?: unknown) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.info = info
   }
 }
 

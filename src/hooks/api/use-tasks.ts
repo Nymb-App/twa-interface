@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useApi } from './use-api'
+import { useApi, useAuth } from './use-api'
 
 export enum TasksDailyComboNames {
   WatchAd = 'daily-combo-watch-ad',
@@ -63,6 +63,7 @@ export interface IDailyCombo {
 export function useTasks() {
   const { get, post } = useApi()
   const queryClient = useQueryClient()
+  const { isAuthenticated } = useAuth()
 
   /**
    * Запрос для получения списка всех задач.
@@ -71,6 +72,7 @@ export function useTasks() {
     queryKey: ['allTasks'],
     queryFn: async () => await get('/tasks/get_all_tasks'),
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
+    enabled: isAuthenticated,
   })
 
   /**
@@ -80,6 +82,7 @@ export function useTasks() {
     queryKey: ['tasks'],
     queryFn: async () => await get('/tasks/get_tasks'),
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
+    enabled: isAuthenticated,
   })
 
   /**
@@ -89,6 +92,7 @@ export function useTasks() {
     queryKey: ['dailyCombo'],
     queryFn: async () => await get('/tasks/get_daily_combo'),
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
+    enabled: isAuthenticated,
   })
 
   /**

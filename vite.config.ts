@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'cart-exploration-camel-profiles.trycloudflare.com',
+      'logged-gaming-aqua-kathy.trycloudflare.com',
     ],
   },
 

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useApi } from './use-api'
+import { useApi, useAuth } from './use-api'
 
 export interface IFarmingStatus {
   startedAt: number // timestamp
@@ -10,6 +10,7 @@ export interface IFarmingStatus {
 export function useFarming() {
   const { get, post } = useApi()
   const queryClient = useQueryClient()
+  const { isAuthenticated } = useAuth()
 
   /**
    * Запрос для получения статуса фарминга.
@@ -19,6 +20,7 @@ export function useFarming() {
     queryFn: async () =>
       (await get('/farming/get_farming_status')),
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
+    enabled: isAuthenticated,
   })
 
   /**
