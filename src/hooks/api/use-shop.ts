@@ -29,6 +29,8 @@ export function useShop() {
     refetchOnMount: false,
     refetchOnReconnect: false,
     retry: 3,
+    // Only run once the account is ready (auth completed)
+    enabled: accountQuery.isSuccess,
   })
 
   // Internal mutation that matches React Query's expected signature (single `variables` argument)

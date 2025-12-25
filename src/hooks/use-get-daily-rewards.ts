@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
-import { useApi } from './api/use-api'
 import { useAccountMe } from './api/use-account'
+import { useApi } from './api/use-api'
 
 export interface CheckInRewards {
   energy: number
@@ -52,6 +52,7 @@ export function useCheckIn() {
       return data as CheckInData
     },
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
+    enabled: accountQuery.isSuccess,
   })
 
   return {

@@ -34,7 +34,7 @@ export interface IAccountMe {
 /**
  * Хук для получения и парсинга данных из Telegram InitData.
  */
-export function  useAccount() {
+export function useAccount() {
   let initData: string | undefined
   let parsedInitData
 
@@ -68,7 +68,7 @@ interface IAccountQuery {
   telegramId: number
   energy: number
   lvl: number
-  isNew?: boolean 
+  isNew?: boolean
   claimTime?: number
   claimAtTime?: number
   claimedTime?: number
@@ -112,6 +112,7 @@ interface IGetLvlStats {
     maxEnergy: number
   }
 }
+
 export function useAccountMe() {
   const { get, post } = useApi()
   const { initData, user } = useAccount() // Нужен для enabled флага
@@ -119,6 +120,7 @@ export function useAccountMe() {
   const accountQuery = useQuery({
     queryKey: ['account', 'me'],
     queryFn: async () => await get<IAccountQuery>('/accounts/me'),
+    enabled: Boolean(initData && user),
   })
 
   const accountClaimReferralRewardMutation = useMutation({
@@ -131,6 +133,8 @@ export function useAccountMe() {
   const getLvlStatsQuery = useQuery({
     queryKey: ['account', 'lvlStats'],
     queryFn: async () => await get<IGetLvlStats>('/accounts/get_lvl_stats'),
+    enabled: Boolean(initData) && accountQuery.isSuccess,
+    retry: 3,
   })
 
   const lvlUpMutation = useMutation({
