@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'logged-gaming-aqua-kathy.trycloudflare.com',
+      'ranking-bald-conf-adjusted.trycloudflare.com',
     ],
   },
 

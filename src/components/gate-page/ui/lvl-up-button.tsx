@@ -114,17 +114,18 @@ function LvlUpButtonWithShop({
   const isTicketsEnough = useMemo(() => {
     if (!ticketAmount) return false
     if (ticketAmount === 0) return false
-    return ticketAmount >= 2
+    return ticketAmount >= gateDataStatistics[String(lvl - 1)].ticketsRequired
   }, [ticketAmount, lvl])
 
-  const isTimeEnough = useMemo(() => {
-    if (!timeAmount) return false
-    if (timeAmount * 1000 <= Date.now()) return false
+  // const isTimeEnough = useMemo(() => {
+  //   console.log(timeAmount, 'timeAmount?')
+  //   if (!timeAmount) return false
+  //   if (timeAmount * 1000 <= Date.now()) return false // FIX: баг тут!!!
 
-    // Получаем количество лет
-    const time = parseFloat(((timeAmount / 86400) * 365).toFixed(2))
-    return time >= 1
-  }, [timeAmount, lvl])
+  //   // Получаем количество лет
+  //   const time = parseFloat(((timeAmount / 86400) * 365).toFixed(2))
+  //   return time >= 1
+  // }, [timeAmount, lvl])
 
   const nextLvl = useMemo(() => {
     return lvl - 1 > 0 ? lvl - 1 : 1
@@ -185,8 +186,8 @@ function LvlUpButtonWithShop({
         </div>
 
         <div className="mt-8 w-full inline-flex justify-center">
-          {!isTimeEnough && isTicketsEnough && <ItemTime />}
-          {!isTicketsEnough && <ItemTicket />}
+          {!isTicketsEnough ? <ItemTicket /> : <ItemTime />}
+          {/* {!isTicketsEnough && <ItemTicket />} */}
         </div>
 
         <DrawerFooter className="relative mt-6 mb-4">

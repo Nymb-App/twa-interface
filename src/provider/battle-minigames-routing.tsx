@@ -1,11 +1,11 @@
-import {  useEffect } from 'react';
-import type {ReactNode} from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
+import { useEffect } from 'react'
 
-import { toast } from 'sonner';
+import { toast } from 'sonner'
 
-import { FallbackLoader } from '@/components/ui/fallback-loader';
-import { useAccount, useAccountMe } from '@/hooks/api/use-account';
+import { FallbackLoader } from '@/components/ui/fallback-loader'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 
 interface Params {
   invitedBy: string
@@ -35,10 +35,10 @@ export const BattleMinigamesRouting = ({
       toast.error(`You are newbie`)
       return
     }
-    if (accountQuery.data.time < Math.floor(Date.now() / 1000)) {
-      toast.error(`Your account is frozen`)
-      return
-    }
+    // if (accountQuery.data.time < Math.floor(Date.now() / 1000)) {
+    //   toast.error(`Your account is frozen`)
+    //   return
+    // }
     if (!parsedInitData || !parsedInitData.start_param) return
     if (!parsedInitData.start_param.includes('type=game-battle')) return
     const parsedParams = parseParams(parsedInitData.start_param)

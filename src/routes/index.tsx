@@ -45,7 +45,7 @@ import { useAccountMe } from '@/hooks/api/use-account'
 import { useAuth } from '@/hooks/api/use-api'
 import { useShop } from '@/hooks/api/use-shop'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { ITEM_UNFREEZE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
@@ -240,7 +240,7 @@ const HomeComponent = memo(function HomeComponent() {
           )}
 
           <UnfreezeAccountDrawer
-            value={2.5}
+            value={ITEM_UNFREEZE}
             open={revealed && !isPurchaseSuccess ? true : false}
             onOpenChange={(open) => {
               if (open === false && !isPurchaseSuccess) {

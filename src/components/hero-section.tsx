@@ -895,7 +895,8 @@ function StarsCard({ className }: { className?: string }) {
 
   const isCompletedTaskTwitter = useMemo(() => {
     return tasksQuery.data?.some(
-      (task) => task.name === TaskNames.SubscribeTwitter && task.status === 'completed',
+      (task) =>
+        task.name === TaskNames.SubscribeTwitter && task.status === 'completed',
     )
   }, [tasksQuery.data])
 
