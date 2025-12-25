@@ -142,7 +142,6 @@ function RouteComponent() {
               {lvlList.map((item) => (
                 <CarouselItem key={item} className="basis-1/4 pl-2">
                   <TabsTrigger
-                    onClick={() => play()}
                     value={String(item)}
                     className="data-[state=active]:bg-[#B6FF00] data-[state=active]:text-black w-full py-2 shrink-0 bg-white/10 rounded-full text-white font-pixel text-xs uppercase text-nowrap"
                   >
