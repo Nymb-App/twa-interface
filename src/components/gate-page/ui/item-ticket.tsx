@@ -23,7 +23,12 @@ import {
 } from '@/components/ui/select'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { useShop } from '@/hooks/api/use-shop'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import {
+  ITEM_TICKET_10_PRICE,
+  ITEM_TICKET_5_PRICE,
+  ITEM_TICKET_PRICE,
+  RECEIVER_ADDRESS,
+} from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -39,9 +44,9 @@ export function ItemTicket({
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('5 tickets')
   const amount = useMemo(() => {
-    if (radioValue === '1 ticket') return 1
-    if (radioValue === '5 tickets') return 4
-    if (radioValue === '10 tickets') return 7
+    if (radioValue === '1 ticket') return ITEM_TICKET_PRICE
+    if (radioValue === '5 tickets') return ITEM_TICKET_5_PRICE
+    if (radioValue === '10 tickets') return ITEM_TICKET_10_PRICE
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 ticket') return 'ticket'
@@ -71,7 +76,7 @@ export function ItemTicket({
         Buy 1 ticket and open the gate
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
         <button
           onClick={() => {
             play()
@@ -130,8 +135,8 @@ export function ItemTicket({
                 className={cn(
                   'font-pixel py-1.5 px-3 rounded-[8px] cursor-pointer text-xs uppercase',
                   radioValue === option
-                    ? 'outline outline-[#FBB107] text-[#FBB107] bg-[linear-gradient(360deg,_rgba(251,177,7,0.24)_0%,_rgba(251,177,7,0)_100%)]'
-                    : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
+                    ? 'outline outline-[#FBB107] text-[#FBB107] bg-[linear-gradient(360deg,rgba(251,177,7,0.24)_0%,rgba(251,177,7,0)_100%)]'
+                    : 'bg-linear-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
                 {option}
@@ -189,10 +194,13 @@ export function ItemTicket({
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
             recipient={RECEIVER_ADDRESS}
-            amount={amount ?? 0.87}
+            amount={amount ?? 1}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
             onTransferSuccess={async (hash) => {
-              toast.success('Time purchased')
+              toast.success('Ticket purchased')
+
+              console.log('Ticket', itemName)
+
               await buyItem(itemName as TShopItem, hash)
             }}
             onConnect={() => {

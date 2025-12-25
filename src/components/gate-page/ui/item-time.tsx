@@ -6,7 +6,6 @@ import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { TransferTonButton } from '@/components/transfer-ton-button'
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -24,7 +23,13 @@ import {
 } from '@/components/ui/select'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { useShop } from '@/hooks/api/use-shop'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import {
+  ITEM_TIME_1D_PRICE,
+  ITEM_TIME_1M_PRICE,
+  ITEM_TIME_1W_PRICE,
+  ITEM_TIME_1Y_PRICE,
+  RECEIVER_ADDRESS,
+} from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -40,10 +45,10 @@ export function ItemTime({
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
-    if (radioValue === '1 day') return 0.87
-    if (radioValue === '1 week') return 0.5
-    if (radioValue === '1 month') return 2
-    if (radioValue === '1 year') return 8
+    if (radioValue === '1 day') return ITEM_TIME_1D_PRICE
+    if (radioValue === '1 week') return ITEM_TIME_1W_PRICE
+    if (radioValue === '1 month') return ITEM_TIME_1M_PRICE
+    if (radioValue === '1 year') return ITEM_TIME_1Y_PRICE
   }, [radioValue])
   const itemName = useMemo(() => {
     if (radioValue === '1 day') return 'time'
@@ -75,9 +80,15 @@ export function ItemTime({
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
-        <DrawerClose className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer">
+        <button
+          onClick={() => {
+            play()
+            setIsOpen(false)
+          }}
+          className="absolute flex justify-center items-center top-[16px] right-[16px] w-[32px] h-[32px] bg-[#1D1F1D] rounded-[32px] cursor-pointer"
+        >
           <CloseIcon />
-        </DrawerClose>
+        </button>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel text-white text-2xl">
             TIME RESERVE
@@ -127,7 +138,7 @@ export function ItemTime({
                   'font-pixel py-1.5 px-6 rounded-[8px] cursor-pointer text-xs uppercase',
                   radioValue === option
                     ? 'outline outline-[#B6FF00] text-[#B6FF00] bg-[linear-gradient(360deg,_rgba(182,255,0,0.24)_0%,_rgba(182,255,0,0)_100%)]'
-                    : 'bg-linear-to-b from-[#171816] to-[#1E1F1D] text-white/40',
+                    : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
                 {option}
@@ -160,7 +171,7 @@ export function ItemTime({
               </SelectTrigger>
               <SelectContent className="bg-[#121312] border-none !text-white/40 font-pixel">
                 <SelectItem
-                  className="bg-[#121312]! hover:!bg-[#121312] border-none !text-white/40 hover:!text-white"
+                  className="!bg-[#121312] hover:!bg-[#121312] border-none !text-white/40 hover:!text-white"
                   value="ton"
                 >
                   <div className="flex items-center gap-2">
@@ -180,7 +191,7 @@ export function ItemTime({
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
             recipient={RECEIVER_ADDRESS}
-            amount={amount ?? 0.87}
+            amount={amount ?? 0.5}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
             onTransferSuccess={async (hash) => {
               toast.success('Time purchased')

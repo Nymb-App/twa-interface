@@ -22,7 +22,13 @@ import {
 } from '@/components/ui/select'
 import type { TShopItem } from '@/hooks/api/use-shop'
 import { useShop } from '@/hooks/api/use-shop'
-import { ITEM_TIME_1D_PRICE, ITEM_TIME_1M_PRICE, ITEM_TIME_1W_PRICE, ITEM_TIME_1Y_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
+import {
+  ITEM_TIME_1D_PRICE,
+  ITEM_TIME_1M_PRICE,
+  ITEM_TIME_1W_PRICE,
+  ITEM_TIME_1Y_PRICE,
+  RECEIVER_ADDRESS,
+} from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'

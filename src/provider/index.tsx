@@ -18,9 +18,9 @@ const queryClient = new QueryClient({
         if (status === 401 || status === 403) return false
         return failureCount < 4
       },
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      refetchOnMount: true,
     },
     mutations: {
       retry: 3,
