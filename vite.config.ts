@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'ranking-bald-conf-adjusted.trycloudflare.com',
+      'cart-exploration-camel-profiles.trycloudflare.com',
     ],
   },
 

@@ -13,7 +13,7 @@ import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
-import useSound from 'use-sound'
+// import useSound from 'use-sound'
 
 export const PageLayout = ({
   children,
@@ -110,7 +110,7 @@ const NavigationMenu = ({
   }>
 }) => {
   const isActiveLink = useMatches()
-  const [playLink] = useSound('/sounds/Button.aac')
+  // const [playLink] = useSound('/sounds/Button.aac')
 
   return (
     <nav
@@ -131,7 +131,7 @@ const NavigationMenu = ({
               to={to}
               onClick={() => {
                 if (isLocked) return
-                playLink()
+                // playLink()
               }}
               disabled={isLocked}
               aria-disabled={isLocked}

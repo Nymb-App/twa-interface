@@ -109,8 +109,6 @@ const HomeComponent = memo(function HomeComponent() {
     }
   }, [isAppStarted, isGameStarted])
 
-  console.log(isGameStarted)
-
   useEffect(() => {
     const now = new Date(
       Date.UTC(

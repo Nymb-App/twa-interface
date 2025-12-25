@@ -70,9 +70,8 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
     })()
   }, [])
 
-  useEffect(() => {
-    console.log(backButton.isMounted(), 'back button mounted?')
-  })
+
+  console.log(backButton.isMounted(), 'back button mounted?')
 
   /** ***************************************************************/
   /*                        TWA Back Button                        */
@@ -125,7 +124,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     })()
-  }, [pathnames, currentOnboardingSlide])
+  })
 
   return children
 }
