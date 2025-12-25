@@ -373,7 +373,15 @@ function GameFinished({
         />
 
         <div className="inline-flex gap-2 w-full">
-          <Link to="/" className="w-full">
+          <Link
+            to="/"
+            className="w-full"
+            onClick={() =>
+              setTimeout(() => {
+                window.location.reload()
+              }, 2000)
+            }
+          >
             <ActionButton className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6">
               CLOSE
             </ActionButton>

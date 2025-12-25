@@ -17,7 +17,11 @@ export const TONCONNECT_MANIFEST_URL =
 export const BASE_API_URL =
   import.meta.env.VITE_PUBLIC_API_URL || 'https://api.nymb-test.icu'
 export const ADSGRAM_APP_ID =
-  import.meta.env.VITE_PUBLIC_ADSGRAM_APP_ID || 16790
+  import.meta.env.VITE_PUBLIC_ADSGRAM_APP_ID || '16790'
+
+export const ADSGRAM_BLOCK2_ID =
+  import.meta.env.VITE_PUBLIC_ADSGRAM_BLOCK2_ID || '19987'
+
 export const TELEGRAM_APP_LINK =
   import.meta.env.VITE_PUBLIC_TELEGRAM_APP_LINK ||
   'https://t.me/nymb_twa_bot/nymb'

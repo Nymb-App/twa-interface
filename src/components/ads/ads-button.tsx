@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { convertTimestampToLargestUnit } from '@/utils'
 import { useAdsgram } from '@adsgram/react'
 import { useMutation } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import useSound from 'use-sound'
 import { ActionButton } from '../ui/action-button'
 
@@ -75,24 +75,48 @@ export const AdsButton = ({
     return `${value} ${label}`
   }, [isPercent, time, displayPercent])
 
-  const handleReward = (): void => {
+  // const handleReward = (): void => {
+  //   setIsDisabled(true)
+  //   share.mutate(time)
+  //   onClick?.()
+  //   onReward?.()
+  // }
+
+  // const handleError = (): void => {
+  //   console.error('Task error')
+  //   onError?.()
+  // }
+
+  // const { show } = useAdsgram({
+  //   blockId: ADSGRAM_APP_ID,
+  //   debug: false,
+  //   onReward: handleReward,
+  //   onError: handleError,
+  // })
+
+  const handleError = useCallback((): void => {
+    console.error('Task error')
+    onError?.()
+  }, [onError])
+
+  const handleReward = useCallback(() => {
     setIsDisabled(true)
     share.mutate(time)
     onClick?.()
     onReward?.()
-  }
+  }, [share, time])
 
-  const handleError = (): void => {
-    console.error('Task error')
-    onError?.()
-  }
+  const adsConfig = useMemo(
+    () => ({
+      blockId: ADSGRAM_APP_ID,
+      debug: false,
+      onReward: handleReward,
+      onError: handleError,
+    }),
+    [handleReward, handleError],
+  )
 
-  const { show } = useAdsgram({
-    blockId: ADSGRAM_APP_ID,
-    debug: false,
-    onReward: handleReward,
-    onError: handleError,
-  })
+  const { show } = useAdsgram(adsConfig)
 
   return (
     <ActionButton
@@ -109,8 +133,6 @@ export const AdsButton = ({
         play()
         show()
         onBtnClick?.()
-
-        setTimeout(() => handleReward, 30000)
       }}
     >
       {children ? (

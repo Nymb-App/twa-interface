@@ -1,13 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router'
 
-import { PageLayout } from '@/components/ui/page-layout';
-import { FlickeringGrid } from '@/components/magicui/flickering-grid';
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { PageLayout } from '@/components/ui/page-layout'
 
-import { TasksDaily } from '@/components/tasks-page/tasks-daily';
-import { TasksTabs } from '@/components/tasks-page/tasks-tabs';
-
-import TasksImage from '/tasks-img.webp';
-
+import { TasksDaily } from '@/components/tasks-page/tasks-daily'
+import { TasksTabs } from '@/components/tasks-page/tasks-tabs'
+import TasksImage from '/tasks-img.webp'
 
 export const Route = createFileRoute('/tasks')({
   component: RouteComponent,
@@ -40,7 +38,7 @@ function RouteComponent() {
         />
       </header>
       <TasksDaily />
-      <TasksTabs className='mt-6' />
+      <TasksTabs className="mt-6" />
     </PageLayout>
   )
 }

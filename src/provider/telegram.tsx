@@ -10,19 +10,18 @@ import {
 } from '@tma.js/sdk'
 import type { ReactNode } from 'react'
 import { useContext, useEffect } from 'react'
-// import useSound from 'use-sound';
+import useSound from 'use-sound'
 
 import { AppContext } from '@/context/app-context'
 import { useBattle } from '@/hooks/api/use-battle'
 import { ENV } from '@/lib/constants'
-import useSound from 'use-sound'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
   const { currentOnboardingSlide } = useContext(AppContext)
-  const [play] = useSound('/sounds/Button.aac')
+  const [play] = useSound('/sounds/Button.aac', { interrupt: true })
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
@@ -70,9 +69,6 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
     })()
   }, [])
 
-
-  console.log(backButton.isMounted(), 'back button mounted?')
-
   /** ***************************************************************/
   /*                        TWA Back Button                        */
   /** ***************************************************************/
@@ -83,7 +79,11 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
           backButton.mount()
         }
 
-        if (pathnames[1].pathname === '/' && backButton.hide.isAvailable()) {
+        if (
+          (pathnames[1].pathname === '/' ||
+            pathnames[1].pathname === '/minigames/slide') &&
+          backButton.hide.isAvailable()
+        ) {
           await backButton.hide()
         } else {
           if (backButton.show.isAvailable()) {
@@ -92,7 +92,6 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
         }
 
         if (backButton.onClick.isAvailable()) {
-          play()
           backButton.onClick(() => {
             if (pathnames[1].pathname === '/') return
             if (pathnames[1].pathname === '/onboarding') {
@@ -120,6 +119,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
             }
 
             router.navigate({ to: '/' })
+            play()
           })
         }
       }

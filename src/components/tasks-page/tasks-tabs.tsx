@@ -38,30 +38,32 @@ import {
 
 export function TasksTabs({ className }: { className?: string }) {
   const router = useRouter()
-  const { show } = useAdsgram({
-    blockId: ADSGRAM_APP_ID,
-    debug: false,
-    onReward: () => {
-      completeTask({ taskName: TaskNames.WatchAd })
-    },
-  })
 
   const {
-    tasksQuery: {
-      data: tasks,
-      isLoading,
-      isError
-    },
+    tasksQuery: { data: tasks, isLoading, isError },
     completeTask,
   } = useTasks()
   const [play] = useSound('/sounds/Button.aac')
 
+  const handleReward = useCallback(() => {
+    completeTask({ taskName: TaskNames.WatchAd })
+  }, [completeTask])
+
+  const adsConfig = useMemo(
+    () => ({ blockId: ADSGRAM_APP_ID, debug: false, onReward: handleReward }),
+    [handleReward],
+  )
+
+  const { show } = useAdsgram(adsConfig)
+
   const progressTasks =
-    tasks?.filter((task) => task.status !== 'completed')
-    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
+    tasks
+      ?.filter((task) => task.status !== 'completed')
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
   const completedTasks =
-    tasks?.filter((task) => task.status === 'completed')
-    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
+    tasks
+      ?.filter((task) => task.status === 'completed')
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
 
   const handleTaskAction = useCallback(
     (name: TaskNames, isDone?: boolean) => {
@@ -77,17 +79,20 @@ export function TasksTabs({ className }: { className?: string }) {
 
       // Tasks that complete via external actions
       if (name === TaskNames.MintNFT) {
-        if(!isDone) {
+        if (!isDone) {
           router.navigate({ to: '/shop' })
           return
         }
       }
       if (name === TaskNames.WatchAd) {
-        const getRandomInt = (min: number, max: number): number => {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        };
+        // const getRandomInt = (min: number, max: number): number => {
+        //   return Math.floor(Math.random() * (max - min + 1)) + min
+        // }
         show()
-        setTimeout(() => completeTask({taskName: name}), getRandomInt(25000, 30000))
+        // setTimeout(
+        //   () => completeTask({ taskName: name }),
+        //   getRandomInt(25000, 30000),
+        // )
         return
       }
 
@@ -106,7 +111,7 @@ export function TasksTabs({ className }: { className?: string }) {
         })
       }
       if (name === TaskNames.SubscribeTelegram) {
-        window.open(TELEGRAM_URL, '_blank');
+        window.open(TELEGRAM_URL, '_blank')
       }
       if (name === TaskNames.SubscribeInstagram) {
         openLink(INSTAGRAM_URL, {
@@ -121,13 +126,13 @@ export function TasksTabs({ className }: { className?: string }) {
         })
       }
       if (name === TaskNames.PostTelegramStory) {
-          shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
-            text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
-            widgetLink: {
-              url: TELEGRAM_URL,
-              name: 'NYMB - time is money',
-            },
-          })
+        shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
+          text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
+          widgetLink: {
+            url: TELEGRAM_URL,
+            name: 'NYMB - time is money',
+          },
+        })
       }
 
       completeTask({ taskName: name as TaskNames })
@@ -311,7 +316,7 @@ const TaskCard = ({
     }
 
     const referralsCount = myReferrals?.countVoucherReferrals0 || 0
-    const mintLabel = accountQuery.data?.isEarlyAccessMinted ? 'check' : 'mint';
+    const mintLabel = accountQuery.data?.isEarlyAccessMinted ? 'check' : 'mint'
     const inviteFriendsLabel =
       referralsCount >=
       parseInt(name.replace('task-invite-', '').replace('-friends', ''))
@@ -345,7 +350,12 @@ const TaskCard = ({
       default:
         return 'go'
     }
-  }, [name, status, myReferrals?.countVoucherReferrals0, accountQuery.data?.isEarlyAccessMinted])
+  }, [
+    name,
+    status,
+    myReferrals?.countVoucherReferrals0,
+    accountQuery.data?.isEarlyAccessMinted,
+  ])
 
   const isDisabledActionButton = useMemo(() => {
     if (status === 'pending') return true
@@ -406,8 +416,8 @@ const TaskCard = ({
               return
             }
             if (formatedButtonLabel === 'check') {
-              onClick?.(name as TaskNames, true);
-              return;
+              onClick?.(name as TaskNames, true)
+              return
             }
             onClick?.(name as TaskNames)
           }}

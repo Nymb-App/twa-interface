@@ -68,12 +68,12 @@ export function useTasks() {
   /**
    * Запрос для получения списка всех задач.
    */
-  const allTasksQuery = useQuery<Array<ITask>, Error>({
-    queryKey: ['allTasks'],
-    queryFn: async () => await get('/tasks/get_all_tasks'),
-    staleTime: 5 * 60 * 1000, // Кэш на 5 минут
-    enabled: isAuthenticated,
-  })
+  // const allTasksQuery = useQuery<Array<ITask>, Error>({
+  //   queryKey: ['allTasks'],
+  //   queryFn: async () => await get('/tasks/get_all_tasks'),
+  //   staleTime: 5 * 60 * 1000, // Кэш на 5 минут
+  //   enabled: isAuthenticated,
+  // })
 
   /**
    * Запрос для получения списка всех задач.
@@ -83,6 +83,7 @@ export function useTasks() {
     queryFn: async () => await get('/tasks/get_tasks'),
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
     enabled: isAuthenticated,
+    retry: 1,
   })
 
   /**
@@ -93,6 +94,7 @@ export function useTasks() {
     queryFn: async () => await get('/tasks/get_daily_combo'),
     staleTime: 5 * 60 * 1000, // Кэш на 5 минут
     enabled: isAuthenticated,
+    retry: 1,
   })
 
   /**
@@ -104,7 +106,13 @@ export function useTasks() {
     { taskName: TaskNames | TasksDailyComboNames }
   >({
     mutationFn: (variables) => post('/tasks/complete_task', variables),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (
+        data.name === TasksDailyComboNames.WatchAd ||
+        data.name === TaskNames.WatchAd
+      ) {
+        window.location.reload()
+      }
       // При успешном завершении задачи, мы делаем невалидными (и заново запрашиваем)
       // данные по задачам и дневному комбо, чтобы UI обновился.
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
@@ -120,7 +128,7 @@ export function useTasks() {
     // Данные и состояние для ежедневного комбо
     dailyComboQuery,
 
-    allTasksQuery,
+    // allTasksQuery,
 
     // Функция и состояние для завершения задачи
     completeTask: completeTaskMutation.mutate,

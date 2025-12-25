@@ -5,7 +5,7 @@ import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
 import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
-import { ADSGRAM_APP_ID, SELF_HOST_URL, TELEGRAM_URL } from '@/lib/constants'
+import { ADSGRAM_BLOCK2_ID, SELF_HOST_URL, TELEGRAM_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { formatDurationFromSeconds } from '@/utils'
 
@@ -16,22 +16,34 @@ import { FaCheck } from 'react-icons/fa'
 import { LuTicket } from 'react-icons/lu'
 import { TbBrandTelegram, TbBrandX } from 'react-icons/tb'
 
-
 export function TasksDaily() {
   const {
     dailyComboQuery: { data: dailyCombo, isLoading, isError },
     completeTask,
   } = useTasks()
-  const { show } = useAdsgram({
-    blockId: ADSGRAM_APP_ID,
-    debug: false,
-  })
+
+  const handleReward = useCallback(() => {
+    completeTask({ taskName: TasksDailyComboNames.WatchAd })
+  }, [completeTask])
+
+  const adsConfig = useMemo(
+    () => ({
+      blockId: ADSGRAM_BLOCK2_ID,
+      debug: false,
+      onReward: handleReward,
+    }),
+    [handleReward],
+  )
+
+  const { show } = useAdsgram(adsConfig)
 
   const isAllTasksCompleted = useMemo(() => {
-    if (!dailyCombo) return false;
-    return dailyCombo.tasks.filter(task =>
-      task.name !== TasksDailyComboNames.DailyComboCompleteAllTasks
-    ).every((task) => task.status === 'completed');
+    if (!dailyCombo) return false
+    return dailyCombo.tasks
+      .filter(
+        (task) => task.name !== TasksDailyComboNames.DailyComboCompleteAllTasks,
+      )
+      .every((task) => task.status === 'completed')
   }, [dailyCombo])
 
   const handleTaskCompletion = useCallback(
@@ -64,14 +76,25 @@ export function TasksDaily() {
         //   tryBrowser: 'chrome',
         //   tryInstantView: true,
         // })
-        window.open(TELEGRAM_URL, '_blank');
+        window.open(TELEGRAM_URL, '_blank')
       }
       if (taskName === TasksDailyComboNames.WatchAd) {
-        const getRandomInt = (min: number, max: number): number => {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        };
+        // const getRandomInt = (min: number, max: number): number => {
+        //   return Math.floor(Math.random() * (max - min + 1)) + min
+        // }
         show()
-        setTimeout(() => completeTask({taskName}), getRandomInt(25000, 30000))
+        // setTimeout(
+        //   () => {
+        //     completeTask({ taskName })
+        //     window.location.reload()
+        //     // router.navigate({
+        //     //   to: router.state.location.pathname,
+        //     //   search: router.state.location.search,
+        //     //   replace: true,
+        //     // })
+        //   },
+        //   getRandomInt(40000, 50000),
+        // )
         return
       }
 
@@ -242,7 +265,8 @@ const TaskDailyCard = ({
         className,
       )}
     >
-      {name === TasksDailyComboNames.PostTelegramStory || name == TasksDailyComboNames.ViewTelegramNews ? (
+      {name === TasksDailyComboNames.PostTelegramStory ||
+      name == TasksDailyComboNames.ViewTelegramNews ? (
         <TbBrandTelegram className="size-[30px] text-[#b8b8b8]" />
       ) : name === TasksDailyComboNames.ViewTwitterNews ? (
         <TbBrandX className="size-[30px] text-[#b8b8b8]" />

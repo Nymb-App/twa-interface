@@ -83,6 +83,11 @@ const HomeComponent = memo(function HomeComponent() {
   const router = useRouter()
   const { isGetCheckInReward, isOnboardingCompleted } = useContext(AppContext)
 
+  const isEnergyEnough = useMemo(() => {
+    if (!accountQuery.data) return false
+    return accountQuery.data.energy >= 300
+  }, [accountQuery.data])
+
   const accountTime = useMemo(() => {
     if (!accountQuery.data || !accountQuery.data.time) return 0
     return accountQuery.data.time * 1000
@@ -270,9 +275,14 @@ const HomeComponent = memo(function HomeComponent() {
         />
         <div className="grid grid-cols-2 gap-2">
           <Link
-            onClick={() => play()}
+            onClick={() => {
+              play()
+              if (!isEnergyEnough) {
+                toast.error('Not enough energy to play')
+              }
+            }}
             to="/minigames/slide"
-            disabled={accountTime < Date.now()}
+            disabled={accountTime < Date.now() || !isEnergyEnough}
           >
             {isAndroid ? (
               <>

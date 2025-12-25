@@ -32,13 +32,13 @@ export const BattleMinigamesRouting = ({
   useEffect(() => {
     if (!accountQuery.data) return
     if (accountQuery.data.joinedAt + 3600 > Math.floor(Date.now() / 1000)) {
-      toast.error(`You are newbie`)
+      // toast.error(`You are newbie`)
       return
     }
-    // if (accountQuery.data.time < Math.floor(Date.now() / 1000)) {
-    //   toast.error(`Your account is frozen`)
-    //   return
-    // }
+    if (accountQuery.data.time < Math.floor(Date.now() / 1000)) {
+      // toast.error(`Your account is frozen`)
+      return
+    }
     if (!parsedInitData || !parsedInitData.start_param) return
     if (!parsedInitData.start_param.includes('type=game-battle')) return
     const parsedParams = parseParams(parsedInitData.start_param)
