@@ -10,7 +10,7 @@ import {
   swipeBehavior,
   viewport,
 } from '@tma.js/sdk';
-import useSound from 'use-sound';
+// import useSound from 'use-sound';
 
 import { AppContext } from '@/context/app-context';
 import { useBattle } from '@/hooks/api/use-battle';
