@@ -21,7 +21,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const pathnames = useMatches()
   const { isSocketConnected, forceDisconnect } = useBattle()
   const { currentOnboardingSlide } = useContext(AppContext)
-  const [play] = useSound('/sounds/Button.aac')
+  // const [play] = useSound('/sounds/Button.aac')
   /** ***************************************************************/
   /*                           TWA Init                            */
   /** ***************************************************************/
@@ -118,12 +118,12 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
             }
 
             router.navigate({ to: '/' })
-            play();
+            // play();
           })
         }
       }
     })()
-  }, [pathnames, currentOnboardingSlide, play])
+  }, [pathnames, currentOnboardingSlide])
 
   return children
 }
