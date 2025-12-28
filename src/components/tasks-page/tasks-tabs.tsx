@@ -10,7 +10,11 @@ import { DrawerNft } from '@/components/ui/drawer-nft'
 import { EmptyStateCard } from '@/components/ui/empty-state-card'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
-import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
+import {
+  TaskNames,
+  TasksDailyComboNames,
+  useTasks,
+} from '@/hooks/api/use-tasks'
 import {
   ADSGRAM_APP_ID,
   INSTAGRAM_URL,
@@ -47,6 +51,7 @@ export function TasksTabs({ className }: { className?: string }) {
 
   const handleReward = useCallback(() => {
     completeTask({ taskName: TaskNames.WatchAd })
+    completeTask({ taskName: TasksDailyComboNames.WatchAd })
   }, [completeTask])
 
   const adsConfig = useMemo(
@@ -132,8 +137,8 @@ export function TasksTabs({ className }: { className?: string }) {
             name: 'NYMB - time is money',
           },
         })
+        completeTask({ taskName: TasksDailyComboNames.PostTelegramStory })
       }
-
       completeTask({ taskName: name as TaskNames })
     },
     [progressTasks],
