@@ -5,7 +5,12 @@ import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
 import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
-import { ADSGRAM_BLOCK2_ID, SELF_HOST_URL, TELEGRAM_URL } from '@/lib/constants'
+import {
+  ADSGRAM_APP_ID,
+  SELF_HOST_URL,
+  TELEGRAM_APP_URL,
+  TELEGRAM_URL,
+} from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { formatDurationFromSeconds } from '@/utils'
 
@@ -28,7 +33,7 @@ export function TasksDaily() {
 
   const adsConfig = useMemo(
     () => ({
-      blockId: ADSGRAM_BLOCK2_ID,
+      blockId: ADSGRAM_APP_ID,
       debug: false,
       onReward: handleReward,
     }),
@@ -63,9 +68,9 @@ export function TasksDaily() {
           return
         }
         shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
-          text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
+          text: 'С НАМИ КАЖДАЯ МИНУТА = TON\nФарми время, выполняй задания, участвуй в баттлах\nи конвертируй свои часы в TON.',
           widgetLink: {
-            url: TELEGRAM_URL,
+            url: TELEGRAM_APP_URL,
             name: 'NYMB - time is money',
           },
         })

@@ -269,6 +269,11 @@ const ResultScene = ({
                   setDisableAdsButton(true)
                 }, 30000)
               }}
+              onReward={() => {
+                setTimeout(() => {
+                  window.location.reload()
+                }, 2000)
+              }}
               className="opacity-0 animate-slide-up-fade-swipe-game-6 bg-gradient-to-b from-[#8C35FB] to-[#6602E7] text-white disabled:cursor-not-allowed disabled:from-[#4a1c87] disabled:to-[#3b0188] disabled:text-white/40"
             />
           ) : null}

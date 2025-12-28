@@ -1,12 +1,12 @@
 import { useAdsgram } from '@adsgram/react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { useRouter } from '@tanstack/react-router'
 import { isTMA, openLink, shareStory, shareURL } from '@tma.js/sdk'
 import { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 
 import { Button } from '@/components/ui/button'
+import { DrawerNft } from '@/components/ui/drawer-nft'
 import { EmptyStateCard } from '@/components/ui/empty-state-card'
 import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
@@ -37,7 +37,7 @@ import {
 } from 'react-icons/tb'
 
 export function TasksTabs({ className }: { className?: string }) {
-  const router = useRouter()
+  // const router = useRouter()
 
   const {
     tasksQuery: { data: tasks, isLoading, isError },
@@ -66,7 +66,7 @@ export function TasksTabs({ className }: { className?: string }) {
       .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)) ?? []
 
   const handleTaskAction = useCallback(
-    (name: TaskNames, isDone?: boolean) => {
+    (name: TaskNames) => {
       // Checks
       if (!isTMA()) {
         return toast.error(
@@ -78,12 +78,11 @@ export function TasksTabs({ className }: { className?: string }) {
       }
 
       // Tasks that complete via external actions
-      if (name === TaskNames.MintNFT) {
-        if (!isDone) {
-          router.navigate({ to: '/shop' })
-          return
-        }
-      }
+      // if (name === TaskNames.MintNFT) {
+      //   if (!isDone) {
+      //     return
+      //   }
+      // }
       if (name === TaskNames.WatchAd) {
         // const getRandomInt = (min: number, max: number): number => {
         //   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -398,35 +397,48 @@ const TaskCard = ({
           </span>
         </div>
       </div>
-
       {status === 'completed' ? (
         <div className="mt-2 inline-flex items-center justify-center text-sm rounded-xl bg-[#2b371a] text-[#B6FF00] size-8">
           <FaCheck />
         </div>
       ) : (
-        <Button
-          onClick={() => {
-            if (formatedButtonLabel === 'invite') {
-              if (shareURL.isAvailable()) {
-                shareURL(
-                  `${TELEGRAM_APP_LINK}?startapp=${user?.id}_${myCodes?.[0].code}`,
-                  '🚀 Enter NYMB  -  where TIME turns into tokens!',
-                )
-              }
-              return
-            }
-            if (formatedButtonLabel === 'check') {
-              onClick?.(name as TaskNames, true)
-              return
-            }
-            onClick?.(name as TaskNames)
-          }}
-          disabled={isDisabledActionButton}
-          variant={'nymb-green'}
-          className="text-black text-xs px-2 py-1 rounded-[8px] w-auto h-6 mt-2 uppercase active:opacity-50"
-        >
-          {formatedButtonLabel}
-        </Button>
+        <>
+          {name === TaskNames.MintNFT && formatedButtonLabel !== 'check' ? (
+            <DrawerNft asChild>
+              <Button
+                disabled={isDisabledActionButton}
+                variant={'nymb-green'}
+                className="text-black text-xs px-2 py-1 rounded-[8px] w-auto h-6 mt-2 uppercase active:opacity-50"
+              >
+                {formatedButtonLabel}
+              </Button>
+            </DrawerNft>
+          ) : (
+            <Button
+              onClick={() => {
+                if (formatedButtonLabel === 'invite') {
+                  if (shareURL.isAvailable()) {
+                    shareURL(
+                      `${TELEGRAM_APP_LINK}?startapp=${user?.id}_${myCodes?.[0].code}`,
+                      '🚀 Enter NYMB  -  where TIME turns into tokens!',
+                    )
+                  }
+                  return
+                }
+                if (formatedButtonLabel === 'check') {
+                  onClick?.(name as TaskNames, true)
+                  return
+                }
+                onClick?.(name as TaskNames)
+              }}
+              disabled={isDisabledActionButton}
+              variant={'nymb-green'}
+              className="text-black text-xs px-2 py-1 rounded-[8px] w-auto h-6 mt-2 uppercase active:opacity-50"
+            >
+              {formatedButtonLabel}
+            </Button>
+          )}
+        </>
       )}
     </div>
   )

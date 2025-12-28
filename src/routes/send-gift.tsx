@@ -236,7 +236,15 @@ function RouteComponent() {
             className="text-black from-[#ADFA4B] to-[#B6FF00] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
           />
 
-          <Link onClick={() => play()} to="/frens">
+          <Link
+            onClick={() => {
+              play()
+              setTimeout(() => {
+                window.location.reload()
+              }, 2000)
+            }}
+            to="/frens"
+          >
             <ActionButton className="bg-linear-to-b from-[#FFFFFF] to-[#999999]">
               <span className="font-pixel text-[#121312] font-normal uppercase text-[18px] leading-[24px]">
                 close
