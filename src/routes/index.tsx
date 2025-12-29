@@ -23,7 +23,6 @@ import { ScratchHint } from '@/components/scratch-hint'
 import { StarsCard } from '@/components/stars-card'
 import { SwipeCard } from '@/components/swipe-card'
 import { TransferTonButton } from '@/components/transfer-ton-button'
-import { Button } from '@/components/ui/button'
 import { CardContent } from '@/components/ui/card-content'
 import {
   Drawer,
@@ -48,7 +47,6 @@ import { useShop } from '@/hooks/api/use-shop'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
 import { ITEM_UNFREEZE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { useTonConnectUI } from '@tonconnect/ui-react'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
@@ -79,8 +77,6 @@ const HomeComponent = memo(function HomeComponent() {
   const { dailyRewardsQuery } = useCheckIn()
   const { accountQuery } = useAccountMe()
   const { buyItem } = useShop()
-
-  const tonConnectUI = useTonConnectUI()
 
   const [play] = useSound('/sounds/Button.aac')
 
@@ -266,13 +262,6 @@ const HomeComponent = memo(function HomeComponent() {
 
       <ProgressSection isClaimStart={isClaimStart} />
       <div className="mt-5 px-4">
-        <Button
-          onClick={() => tonConnectUI[0].disconnect()}
-          className="text-black"
-          variant="nymb-green"
-        >
-          Disconnect
-        </Button>
         <StarsCard
           linkTo="/giveaway"
           isPageLink={true}
