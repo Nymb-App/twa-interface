@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'jar-believe-ships-clothes.trycloudflare.com',
+      'utilize-would-advance-caught.trycloudflare.com',
     ],
   },
 

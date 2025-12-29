@@ -137,7 +137,7 @@ export function TasksTabs({ className }: { className?: string }) {
             name: 'NYMB - time is money',
           },
         })
-        completeTask({ taskName: TasksDailyComboNames.PostTelegramStory })
+        // completeTask({ taskName: TasksDailyComboNames.PostTelegramStory })
       }
       completeTask({ taskName: name as TaskNames })
     },

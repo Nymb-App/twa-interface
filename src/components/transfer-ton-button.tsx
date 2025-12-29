@@ -33,7 +33,13 @@ export function TransferTonButton({
   const { open } = useTonConnectModal()
   const { getBalance } = useBalance()
   const [play] = useSound('/sounds/Button.aac')
-  const { transfer, isTransactionLoading, isTransactionSuccess, isTransactionError, hash } = useTransferTon()
+  const {
+    transfer,
+    isTransactionLoading,
+    isTransactionSuccess,
+    isTransactionError,
+    hash,
+  } = useTransferTon()
 
   useEffect(() => {
     if (isTransferTonSuccess) return

@@ -4,11 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
-import {
-  TaskNames,
-  TasksDailyComboNames,
-  useTasks,
-} from '@/hooks/api/use-tasks'
+import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
 import {
   ADSGRAM_APP_ID,
   SELF_HOST_URL,
@@ -33,7 +29,6 @@ export function TasksDaily() {
 
   const handleReward = useCallback(() => {
     completeTask({ taskName: TasksDailyComboNames.WatchAd })
-    completeTask({ taskName: TaskNames.WatchAd })
   }, [completeTask])
 
   const adsConfig = useMemo(
@@ -79,7 +74,6 @@ export function TasksDaily() {
             name: 'NYMB - time is money',
           },
         })
-        completeTask({ taskName: TaskNames.PostTelegramStory })
       }
 
       if (taskName === TasksDailyComboNames.ViewTelegramNews) {
