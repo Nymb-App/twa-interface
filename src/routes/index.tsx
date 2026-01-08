@@ -216,7 +216,7 @@ const HomeComponent = memo(function HomeComponent() {
                 backgroundImage="/frozen-account-bg.jpg" // картинка рисуется ВНУТРИ canvas и стирается
                 backgroundFit="cover"
                 backgroundPosition="center"
-                className="fixed w-full max-w-[450px] min-h-screen z-1000"
+                className="fixed w-full max-w-[450px] min-h-screen z-999"
                 revealThreshold={0.2}
                 brushRadius={34}
                 brushHardness={0.5}
@@ -227,7 +227,7 @@ const HomeComponent = memo(function HomeComponent() {
               />
               <Snowfall
                 style={{
-                  zIndex: 100000,
+                  zIndex: 1000,
                 }}
                 wind={[-0.5, 1]}
                 snowflakeCount={20}
@@ -460,6 +460,7 @@ function UnfreezeAccountDrawer({
             recipient={RECEIVER_ADDRESS}
             amount={value}
             className="py-4 w-full inline-flex justify-center items-center gap-1"
+            onConnect={() => onOpenChange?.(false)}
             onTransferSuccess={onSuccess}
             onError={(e) => {
               onError?.(e)

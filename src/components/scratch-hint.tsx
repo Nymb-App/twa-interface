@@ -20,7 +20,7 @@ export function ScratchHint({
   left = '50%',
   color = '#95D9EF',
   size = 64,
-  zIndex = 100000,
+  zIndex = 1000,
   autoHideOnFirstPointer = true,
   showRipple = true,
 }: ScratchHintProps) {
