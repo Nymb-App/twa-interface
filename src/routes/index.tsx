@@ -50,6 +50,7 @@ import { cn } from '@/lib/utils'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
+import { useTonConnectModal } from '@tonconnect/ui-react'
 
 const HomeComponent = memo(function HomeComponent() {
   const [isClaimStart, setIsClaimStart] = useState(false)
@@ -66,6 +67,10 @@ const HomeComponent = memo(function HomeComponent() {
     setAnimationCountdownCooldownFinished,
   ] = useState<boolean>(false)
   const { login, isAuthenticated } = useAuth()
+
+  const {
+    state: stateTonConnectModal
+  } = useTonConnectModal();
 
   useEffect(() => {
     if (isAuthenticated) return
@@ -210,7 +215,7 @@ const HomeComponent = memo(function HomeComponent() {
       }
       {!accountQuery.isLoading && accountTime < Date.now() && (
         <>
-          {!revealed && (
+          {!revealed && stateTonConnectModal.status !== 'opened' && (
             <>
               <FrostScratchPanel
                 backgroundImage="/frozen-account-bg.jpg" // картинка рисуется ВНУТРИ canvas и стирается
@@ -245,8 +250,14 @@ const HomeComponent = memo(function HomeComponent() {
           <UnfreezeAccountDrawer
             value={ITEM_UNFREEZE}
             open={revealed && !isPurchaseSuccess ? true : false}
+            onConnect={() => setRevealed(false)}
             onOpenChange={(open) => {
-              if (open === false && !isPurchaseSuccess) {
+
+              console.log(stateTonConnectModal.status)
+              if (
+                open === false &&
+                !isPurchaseSuccess
+              ) {
                 setRevealed(false)
               }
             }}
@@ -347,11 +358,13 @@ function UnfreezeAccountDrawer({
   value,
   open,
   onOpenChange,
+  onConnect,
   onSuccess,
   onError,
 }: {
   value: number
   open: boolean
+  onConnect?: () => void
   onOpenChange?: (_open: boolean) => void
   onSuccess?: (hash: string) => void
   onError?: (e: any) => void
@@ -460,8 +473,8 @@ function UnfreezeAccountDrawer({
             recipient={RECEIVER_ADDRESS}
             amount={value}
             className="py-4 w-full inline-flex justify-center items-center gap-1"
-            onConnect={() => onOpenChange?.(false)}
             onTransferSuccess={onSuccess}
+            onConnect={onConnect}
             onError={(e) => {
               onError?.(e)
               if (e.message === 'Insufficient balance') {

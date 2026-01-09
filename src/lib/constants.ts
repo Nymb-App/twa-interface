@@ -62,4 +62,4 @@ export const ITEM_TICKET_5_PRICE = 0.1
 export const ITEM_TICKET_10_PRICE = 0.1
 
 // Unfreeze account price
-export const ITEM_UNFREEZE = 0.1
+export const ITEM_UNFREEZE = 0.3

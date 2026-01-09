@@ -11,7 +11,8 @@ import {
   RECEIVER_ADDRESS,
 } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { isIOS } from 'react-device-detect'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 import { FlickeringGrid } from '../magicui/flickering-grid'
@@ -43,7 +44,7 @@ export function DrawerTime({
   children: React.ReactNode
   asChild?: boolean
 }) {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  // const [isOpen, setIsOpen] = useState<boolean>(false)
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
     if (radioValue === '1 day') return ITEM_TIME_1D_PRICE
@@ -64,13 +65,111 @@ export function DrawerTime({
     return () => stop()
   }, [play])
 
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const scrollYRef = useRef(0)
+  const closeUnlockTimerRef = useRef<number | null>(null)
+
+  const handleOpenChange = (open: boolean) => {
+    if (!isIOS) {
+      setIsOpen(open)
+      return
+    }
+    const body = document.body
+    if (open) {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      scrollYRef.current =
+        window.scrollY ||
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        0
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollYRef.current}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.width = '100%'
+      body.style.touchAction = 'none'
+    } else {
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+      }
+      closeUnlockTimerRef.current = setTimeout(() => {
+        const y =
+          Math.abs(parseInt(body.style.top || '0', 10)) || scrollYRef.current
+        body.style.position = ''
+        body.style.top = ''
+        body.style.left = ''
+        body.style.right = ''
+        body.style.width = ''
+        body.style.touchAction = ''
+        window.scrollTo(0, y)
+        closeUnlockTimerRef.current = null
+      }, 350) as unknown as number
+    }
+    setIsOpen(open)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (!isIOS) return
+      const body = document.body
+      if (closeUnlockTimerRef.current != null) {
+        clearTimeout(closeUnlockTimerRef.current)
+        closeUnlockTimerRef.current = null
+      }
+      const y = scrollYRef.current
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.width = ''
+      body.style.touchAction = ''
+      if (isOpen) requestAnimationFrame(() => window.scrollTo(0, y))
+    }
+  }, [isOpen])
+
+  const preLockOnClickCapture = () => {
+    if (!isIOS) return
+    if (isOpen) return
+    const body = document.body
+    if (body.style.position === 'fixed') return
+    scrollYRef.current =
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      0
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollYRef.current}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.touchAction = 'none'
+    window.scrollTo(0, scrollYRef.current)
+    requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
+  }
+
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen} key="item-time">
-      <DrawerTrigger asChild={asChild} className={className}>
+    <Drawer
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      key="item-time"
+      modal={false}
+    >
+      <DrawerTrigger
+        asChild={asChild}
+        className={className}
+        onClickCapture={preLockOnClickCapture}
+      >
         {children}
       </DrawerTrigger>
 
-      <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
+      <DrawerContent
+        className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         <button
           onClick={() => {
             play()
@@ -137,6 +236,8 @@ export function DrawerTime({
             </div>
           ))}
         </RadioGroup>
+
+
 
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
