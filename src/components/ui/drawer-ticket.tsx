@@ -152,7 +152,7 @@ export function DrawerTicket({
     <Drawer
       modal={false}
       open={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={handleOpenChange}
       key="item-ticket"
     >
       <DrawerTrigger
