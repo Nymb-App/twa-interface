@@ -220,9 +220,9 @@ const ResultScene = ({
                 className={cn(
                   'font-pixel text-[48px] text-white',
                   isMeWinner &&
-                    'text-[#B6FF00] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]',
+                  'text-[#B6FF00] [text-shadow:0px_0px_10px_rgba(182,255,0,1)]',
                   !isMeWinner &&
-                    'bg-gradient-to-b from-[#DA364C] via-[#DA364C] to-[#A51F6D] [background-position:10.42%] bg-clip-text text-transparent',
+                  'bg-gradient-to-b from-[#DA364C] via-[#DA364C] to-[#A51F6D] [background-position:10.42%] bg-clip-text text-transparent',
                 )}
               >
                 {bet?.split(' ')[0]}
@@ -278,7 +278,14 @@ const ResultScene = ({
             />
           ) : null}
           <div className="inline-flex gap-2 w-full">
-            <Link className="w-full" to="/">
+            <Link
+              to="/minigames/battle"
+              className="w-full"
+              search={{
+                bet: undefined as unknown as number,
+                invitedBy: undefined as unknown as number,
+              }}
+            >
               <ActionButton
                 onClick={onNewBattle}
                 disabled={isNewBattleDisabled}
