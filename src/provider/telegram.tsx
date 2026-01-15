@@ -13,13 +13,11 @@ import { useContext, useEffect } from 'react'
 import useSound from 'use-sound'
 
 import { AppContext } from '@/context/app-context'
-import { useBattle } from '@/hooks/api/use-battle'
 import { ENV } from '@/lib/constants'
 
 export const TelegramProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const pathnames = useMatches()
-  const { isSocketConnected, forceDisconnect } = useBattle()
   const { currentOnboardingSlide } = useContext(AppContext)
   const [play] = useSound('/sounds/Button.aac', { interrupt: true })
   /** ***************************************************************/
@@ -100,6 +98,7 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
               currentOnboardingSlide.scrollPrev()
               return
             }
+            play()
           })
         }
 

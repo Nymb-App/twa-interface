@@ -13,6 +13,7 @@ import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
+import { useBattle } from '@/hooks/api/use-battle'
 import { IoChevronBack } from 'react-icons/io5'
 import useSound from 'use-sound'
 // import useSound from 'use-sound'
@@ -106,9 +107,17 @@ export const PageLayout = ({
 }
 
 const BackButton = ({ className }: { className?: string }) => {
+  const { isSocketConnected, forceDisconnect } = useBattle()
+  const [play] = useSound('/sounds/Button.aac', { interrupt: true })
   return (
     <Link
       to="/"
+      onClick={() => {
+        if (isSocketConnected) {
+          forceDisconnect()
+        }
+        play()
+      }}
       className={cn(
         'inline-flex text-white font-semibold text-sm items-center backdrop-blur-md pl-1 pr-3 py-1.5 rounded-full bg-white/10 w-20',
         className,
