@@ -1,3 +1,4 @@
+import { useBattle } from '@/hooks/api/use-battle'
 import { useBuyExtraBoost } from '@/hooks/api/use-shop'
 import { useEffect, useState } from 'react'
 import useSound from 'use-sound'
@@ -31,6 +32,8 @@ export const BattleGameControlsPanel = ({
   )
 
   const [playPushGame] = useSound('/sounds/Button.aac', { volume: 0.4 })
+
+  const { clickBoost } = useBattle()
 
   // Обратный отсчёт
   useEffect(() => {
@@ -99,6 +102,7 @@ export const BattleGameControlsPanel = ({
         fillPercentage={fillPercent1}
         isDisabled={extraBoostCount <= 0 || disabled}
         onClick={() => {
+          clickBoost()
           playBoostGame()
           setIsReversing1(true)
           onBoostActivate?.()

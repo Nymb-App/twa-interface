@@ -1,6 +1,6 @@
 import { useAdsgram } from '@adsgram/react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { isTMA, openLink, shareStory, shareURL } from '@tma.js/sdk'
+import { isTMA, shareStory, shareURL } from '@tma.js/sdk'
 import { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
@@ -103,31 +103,35 @@ export function TasksTabs({ className }: { className?: string }) {
       // Rest of tasks that complete via link opening
       // or other direct actions
       if (name === TaskNames.VisitWebsite) {
-        openLink(WEBSITE_URL, {
-          tryBrowser: 'chrome',
-          tryInstantView: true,
-        })
+        // openLink(WEBSITE_URL, {
+        //   tryBrowser: 'chrome',
+        //   tryInstantView: true,
+        // })
+        window.open(WEBSITE_URL, '_blank')
       }
       if (name === TaskNames.SubscribeTwitter) {
-        openLink(TWITTER_URL, {
-          tryBrowser: 'chrome',
-          tryInstantView: true,
-        })
+        // openLink(TWITTER_URL, {
+        //   tryBrowser: 'chrome',
+        //   tryInstantView: true,
+        // })
+        window.open(TWITTER_URL, '_blank')
       }
       if (name === TaskNames.SubscribeTelegram) {
         window.open(TELEGRAM_URL, '_blank')
       }
       if (name === TaskNames.SubscribeInstagram) {
-        openLink(INSTAGRAM_URL, {
-          tryBrowser: 'chrome',
-          tryInstantView: true,
-        })
+        // openLink(INSTAGRAM_URL, {
+        //   tryBrowser: 'chrome',
+        //   tryInstantView: true,
+        // })
+        window.open(INSTAGRAM_URL, '_blank')
       }
       if (name === TaskNames.SubscribeYoutube) {
-        openLink(YOU_TUBE_URL, {
-          tryBrowser: 'chrome',
-          tryInstantView: true,
-        })
+        // openLink(YOU_TUBE_URL, {
+        //   tryBrowser: 'chrome',
+        //   tryInstantView: true,
+        // })
+        window.open(YOU_TUBE_URL, '_blank')
       }
       if (name === TaskNames.PostTelegramStory) {
         shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {

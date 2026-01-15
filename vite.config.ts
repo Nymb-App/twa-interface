@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'describes-examining-drink-political.trycloudflare.com',
+      'cruise-hybrid-robertson-postings.trycloudflare.com',
     ],
   },
 
