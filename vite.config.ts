@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'cruise-hybrid-robertson-postings.trycloudflare.com',
+      'involvement-dawn-cold-checking.trycloudflare.com',
     ],
   },
 

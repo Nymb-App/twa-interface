@@ -79,15 +79,13 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
           backButton.mount()
         }
 
-        if (
-          (pathnames[1].pathname === '/' ||
-            pathnames[1].pathname === '/minigames/slide') &&
-          backButton.hide.isAvailable()
-        ) {
-          await backButton.hide()
-        } else {
+        if (pathnames[1].pathname === '/onboarding') {
           if (backButton.show.isAvailable()) {
             await backButton.show()
+          }
+        } else {
+          if (backButton.hide.isAvailable()) {
+            await backButton.hide()
           }
         }
 
@@ -102,26 +100,52 @@ export const TelegramProvider = ({ children }: { children: ReactNode }) => {
               currentOnboardingSlide.scrollPrev()
               return
             }
-
-            if (pathnames[1].pathname === '/unlock-gate') {
-              router.navigate({ to: '/gate' })
-              return
-            }
-            if (pathnames[1].pathname === '/send-gift') {
-              router.navigate({ to: '/frens' })
-              return
-            }
-            if (
-              isSocketConnected &&
-              pathnames[1].pathname !== '/minigames/battle'
-            ) {
-              forceDisconnect()
-            }
-
-            router.navigate({ to: '/' })
-            play()
           })
         }
+
+        // if (
+        //   (pathnames[1].pathname === '/' ||
+        //     pathnames[1].pathname === '/minigames/slide') &&
+        //   backButton.hide.isAvailable()
+        // ) {
+        //   await backButton.hide()
+        // } else {
+        //   if (backButton.show.isAvailable()) {
+        //     await backButton.show()
+        //   }
+        // }
+
+        // if (backButton.onClick.isAvailable()) {
+        //   backButton.onClick(() => {
+        //     if (pathnames[1].pathname === '/') return
+        //     if (pathnames[1].pathname === '/onboarding') {
+        //       if (!currentOnboardingSlide) return
+        //       if (currentOnboardingSlide.selectedScrollSnap() === 0) {
+        //         return
+        //       }
+        //       currentOnboardingSlide.scrollPrev()
+        //       return
+        //     }
+
+        //     if (pathnames[1].pathname === '/unlock-gate') {
+        //       router.navigate({ to: '/gate' })
+        //       return
+        //     }
+        //     if (pathnames[1].pathname === '/send-gift') {
+        //       router.navigate({ to: '/frens' })
+        //       return
+        //     }
+        //     if (
+        //       isSocketConnected &&
+        //       pathnames[1].pathname !== '/minigames/battle'
+        //     ) {
+        //       forceDisconnect()
+        //     }
+
+        //     router.navigate({ to: '/' })
+        //     play()
+        //   })
+        // }
       }
     })()
   })

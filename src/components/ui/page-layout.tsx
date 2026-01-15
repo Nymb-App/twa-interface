@@ -13,6 +13,7 @@ import { FriendsIcon } from '@/assets/icons/menu-icons/friends-icon'
 import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
+import { IoChevronBack } from 'react-icons/io5'
 import useSound from 'use-sound'
 // import useSound from 'use-sound'
 
@@ -67,6 +68,12 @@ export const PageLayout = ({
         className,
       )}
     >
+      {pathnames[1].pathname !== '/' &&
+        pathnames[1].pathname !== '/onboarding' && (
+          <div className="fixed max-w-[450px] w-full left-1/2 -translate-x-1/2 top-25 z-1000000">
+            <BackButton className="ml-4" />
+          </div>
+        )}
       <main
         className={cn(
           useFooter && 'pb-[5rem]',
@@ -95,6 +102,20 @@ export const PageLayout = ({
         invert={true}
       />
     </div>
+  )
+}
+
+const BackButton = ({ className }: { className?: string }) => {
+  return (
+    <Link
+      to="/"
+      className={cn(
+        'inline-flex text-white font-semibold text-sm items-center backdrop-blur-md pl-1 pr-3 py-1.5 rounded-full bg-white/10 w-20',
+        className,
+      )}
+    >
+      <IoChevronBack size={18} /> <span className="text-xs mx-auto">Back</span>
+    </Link>
   )
 }
 
