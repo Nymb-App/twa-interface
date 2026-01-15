@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { Link, useMatches } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
-import { isMobile } from 'react-device-detect'
+import { isIOS, isMobile } from 'react-device-detect'
 import type { JSX } from 'react/jsx-runtime'
 import { Toaster } from 'sonner'
 import { SendGiftActionButtons } from './send-gift-action-buttons'
@@ -14,7 +14,7 @@ import { HomeIcon } from '@/assets/icons/menu-icons/home-icon'
 import { StarBoardIcon } from '@/assets/icons/menu-icons/star-board-icon'
 import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
 import { useBattle } from '@/hooks/api/use-battle'
-import { IoChevronBack } from 'react-icons/io5'
+import { IoArrowBack, IoChevronBack } from 'react-icons/io5'
 import useSound from 'use-sound'
 // import useSound from 'use-sound'
 
@@ -71,7 +71,12 @@ export const PageLayout = ({
     >
       {pathnames[1].pathname !== '/' &&
         pathnames[1].pathname !== '/onboarding' && (
-          <div className="fixed max-w-[450px] w-full left-1/2 -translate-x-1/2 top-25 z-1000000">
+          <div
+            className={cn(
+              'fixed max-w-[450px] w-full left-1/2 -translate-x-1/2 top-25 z-1000000',
+              !isIOS && 'top-10 left-[calc(50%-5px)]',
+            )}
+          >
             <BackButton className="ml-4" />
           </div>
         )}
@@ -119,11 +124,13 @@ const BackButton = ({ className }: { className?: string }) => {
         play()
       }}
       className={cn(
-        'inline-flex text-white font-semibold text-sm items-center backdrop-blur-md pl-1 pr-3 py-1.5 rounded-full bg-white/10 w-20',
+        'inline-flex text-white font-semibold text-sm items-center gap-1 justify-between backdrop-blur-md pl-1 pr-3 py-1.5 rounded-full bg-white/10',
+        !isIOS && 'bg-black/30',
         className,
       )}
     >
-      <IoChevronBack size={18} /> <span className="text-xs mx-auto">Back</span>
+      {isIOS ? <IoChevronBack size={18} /> : <IoArrowBack size={20} />}{' '}
+      <span className={cn('text-xs mx-auto', !isIOS && 'text-sm')}>Back</span>
     </Link>
   )
 }
