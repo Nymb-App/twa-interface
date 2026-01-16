@@ -74,7 +74,7 @@ export const PageLayout = ({
           <div
             className={cn(
               'fixed max-w-[450px] w-full left-1/2 -translate-x-1/2 top-25 z-1000000',
-              !isIOS && 'top-10 left-[calc(50%-5px)]',
+              !isIOS && 'top-21 left-[calc(50%-5px)]',
             )}
           >
             <BackButton className="ml-4" />
