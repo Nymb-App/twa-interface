@@ -279,9 +279,6 @@ function RouteComponent() {
           <Link
             onClick={() => {
               play()
-              setTimeout(() => {
-                window.location.reload()
-              }, 2000)
             }}
             to="/frens"
           >

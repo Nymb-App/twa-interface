@@ -111,7 +111,7 @@ export function useTasks() {
         data.name === TasksDailyComboNames.WatchAd ||
         data.name === TaskNames.WatchAd
       ) {
-        window.location.reload()
+    
       }
       // При успешном завершении задачи, мы делаем невалидными (и заново запрашиваем)
       // данные по задачам и дневному комбо, чтобы UI обновился.
