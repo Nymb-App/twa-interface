@@ -53,11 +53,11 @@ export function TasksDaily() {
 
   const handleTaskCompletion = useCallback(
     (taskName: TasksDailyComboNames) => {
-      if (!isTMA()) {
-        return toast.error(
-          'This action is only available in the Telegram Mobile App.',
-        )
-      }
+      // if (!isTMA()) {
+      //   return toast.error(
+      //     'This action is only available in the Telegram Mobile App.',
+      //   )
+      // }
       if (isAllTasksCompleted) {
         return toast.info('All daily combo tasks are already completed.')
       }
@@ -112,12 +112,12 @@ export function TasksDaily() {
     [isAllTasksCompleted, completeTask, show],
   )
 
-  useEffect(() => {
-    if (!isAllTasksCompleted) return
-    completeTask({
-      taskName: TasksDailyComboNames.DailyComboCompleteAllTasks,
-    })
-  }, [isAllTasksCompleted])
+  // useEffect(() => {
+  //   if (!isAllTasksCompleted) return
+  //   completeTask({
+  //     taskName: TasksDailyComboNames.DailyComboCompleteAllTasks,
+  //   })
+  // }, [isAllTasksCompleted])
 
   if (isLoading) {
     return (
