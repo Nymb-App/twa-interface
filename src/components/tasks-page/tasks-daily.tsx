@@ -1,6 +1,6 @@
 import { useAdsgram } from '@adsgram/react'
-import { isTMA, shareStory } from '@tma.js/sdk'
-import { useCallback, useEffect, useMemo } from 'react'
+import { shareStory } from '@tma.js/sdk'
+import { useCallback, useMemo } from 'react'
 import Countdown from 'react-countdown'
 import { toast } from 'sonner'
 
