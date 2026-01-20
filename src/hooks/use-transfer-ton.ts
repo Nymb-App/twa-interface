@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { Cell } from 'ton-core';
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { beginCell, Cell } from 'ton-core';
+
+
+function encodeJsonPayload(data: Record<string, any>) {
+    const json = JSON.stringify(data);
+    const bytes = Buffer.from(json, 'utf-8');
+
+    return beginCell()
+        .storeBuffer(bytes)
+        .endCell();
+}
 
 export const useTransferTon = () => {
     const NANO = 1e9;
@@ -16,7 +26,11 @@ export const useTransferTon = () => {
     const [isTransactionSuccess, setTransactionSuccess] = useState<boolean>(false);
     const [isTransactionError, setTransactionError] = useState<boolean>(false);
 
-    const transfer = async (to: string, amount: number) => {
+    const transfer = async (
+        to: string,
+        amount: number,
+        comment?: string
+    ) => {
         if (!address) {
             open();
             return
@@ -26,12 +40,15 @@ export const useTransferTon = () => {
         setError(false);
         setSuccess(false);
         try {
+            const body = comment === undefined ? undefined : encodeJsonPayload({ comment });
+
             const { boc } = await tonConnectUI.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 3600,
                 messages: [
                     {
                         address: to,
-                        amount: BigInt(amount * NANO).toString(),
+                        amount: BigInt((amount * NANO).toFixed()).toString(),
+                        payload: body?.toBoc().toString('base64'),
                     },
                 ]
             });

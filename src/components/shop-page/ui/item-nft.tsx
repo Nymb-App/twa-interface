@@ -10,7 +10,7 @@ export function ItemNFT({ className }: { className?: string }) {
       )}
     >
       <div className="relative flex items-end gap-2 bg-[#0E140E] rounded-3xl px-6 py-2 h-full">
-        <div className="absolute left-1/2 -translate-x-1/2 w-full h-full top-0 overflow-hidden rounded-3xl">
+        {/* <div className="absolute left-1/2 -translate-x-1/2 w-full h-full top-0 overflow-hidden rounded-3xl">
           <div className="absolute left-[-120px] bottom-[15px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
           <div className="absolute right-[-50px] top-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
           <div className="absolute left-[-105px] top-14 bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
@@ -18,7 +18,7 @@ export function ItemNFT({ className }: { className?: string }) {
           <div className="absolute right-[10px] top-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
           <div className="absolute right-[-50px] bottom-[-45px] bg-[#B6FF00] blur-[30px] w-1/3 h-[50px] rounded-full" />
           <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00]/50 blur-[30px] w-full h-[50px] rounded-full" />
-        </div>
+        </div> */}
 
         <div className="inline-flex justify-between w-full font-pixel">
           <div className="flex flex-col items-start justify-between h-[166px]">
@@ -45,9 +45,9 @@ export function ItemNFT({ className }: { className?: string }) {
             alt="time"
             className="absolute bottom-0 right-2.5 max-w-40 h-auto"
           />
-          <div className="absolute left-0 rounded-3xl bottom-0 overflow-hidden size-full">
+          {/* <div className="absolute left-0 rounded-3xl bottom-0 overflow-hidden size-full">
             <div className="absolute left-[-60px] bottom-[-25px] bg-[#B6FF00]/50 blur-[30px] w-full h-[50px] rounded-full" />
-          </div>
+          </div> */}
         </div>
       </div>
     </DrawerNft>
