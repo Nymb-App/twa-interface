@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     allowedHosts: [
       'nymb-interface.vercel.app',
-      'extend-kevin-films-actions.trycloudflare.com',
+      'beaches-combine-polar-municipality.trycloudflare.com',
     ],
   },
 

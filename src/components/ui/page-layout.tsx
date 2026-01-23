@@ -70,7 +70,8 @@ export const PageLayout = ({
       )}
     >
       {pathnames[1].pathname !== '/' &&
-        pathnames[1].pathname !== '/onboarding' && (
+        pathnames[1].pathname !== '/onboarding' &&
+        pathnames[1].pathname !== '/check-in' && (
           <div
             className={cn(
               'fixed max-w-[450px] w-full left-1/2 -translate-x-1/2 top-25 z-1000000',

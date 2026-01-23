@@ -59,14 +59,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   ] = useState<boolean>(false)
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false)
 
-
   const pathnames = useMatches()
-  
+
   useEffect(() => {
-    if (pathnames[1].pathname !== '/minigames/battle') {
-      setIsGameStarted(true);
+    if (pathnames[1].pathname !== '/') {
+      setIsGameStarted(true)
     }
-  }, [pathnames]);
+  }, [pathnames])
 
   return (
     <AppContext.Provider

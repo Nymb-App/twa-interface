@@ -47,10 +47,10 @@ import { useShop } from '@/hooks/api/use-shop'
 import { useCheckIn } from '@/hooks/use-get-daily-rewards'
 import { ITEM_UNFREEZE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { useTonConnectModal } from '@tonconnect/ui-react'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
-import { useTonConnectModal } from '@tonconnect/ui-react'
 
 const HomeComponent = memo(function HomeComponent() {
   const [isClaimStart, setIsClaimStart] = useState(false)
@@ -68,9 +68,7 @@ const HomeComponent = memo(function HomeComponent() {
   ] = useState<boolean>(false)
   const { login, isAuthenticated } = useAuth()
 
-  const {
-    state: stateTonConnectModal
-  } = useTonConnectModal();
+  const { state: stateTonConnectModal } = useTonConnectModal()
 
   useEffect(() => {
     if (isAuthenticated) return
@@ -252,12 +250,8 @@ const HomeComponent = memo(function HomeComponent() {
             open={revealed && !isPurchaseSuccess ? true : false}
             onConnect={() => setRevealed(false)}
             onOpenChange={(open) => {
-
               console.log(stateTonConnectModal.status)
-              if (
-                open === false &&
-                !isPurchaseSuccess
-              ) {
+              if (open === false && !isPurchaseSuccess) {
                 setRevealed(false)
               }
             }}
