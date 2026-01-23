@@ -67,6 +67,45 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [pathnames])
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('localStorage' in window)) return
+    const CLEANUP_TS_KEY = '__ton_connect_cleanup_ts'
+    const DAY_MS = 24 * 60 * 60 * 1000
+
+    const performCleanup = () => {
+      try {
+        const keysToRemove: Array<string> = []
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i)
+          if (key && key.startsWith('ton-connect')) {
+            keysToRemove.push(key)
+          }
+        }
+        for (const k of keysToRemove) {
+          localStorage.removeItem(k)
+        }
+        localStorage.setItem(CLEANUP_TS_KEY, String(Date.now()))
+      } catch {}
+    }
+
+    const maybeCleanup = () => {
+      try {
+        const last = Number(localStorage.getItem(CLEANUP_TS_KEY) || 0)
+        if (!last || Date.now() - last >= DAY_MS) {
+          performCleanup()
+        }
+      } catch {
+        performCleanup()
+      }
+    }
+
+    maybeCleanup()
+    // const id = window.setInterval(performCleanup, DAY_MS)
+    // return () => {
+    //   window.clearInterval(id)
+    // }
+  }, [])
+
   return (
     <AppContext.Provider
       value={{
