@@ -6,6 +6,11 @@ export const INSTAGRAM_URL = 'https://www.instagram.com/nymb_app'
 export const YOU_TUBE_URL = 'https://www.youtube.com/@NYMB_app'
 export const SELF_HOST_URL = 'https://nymb-preprod.netlify.app'
 
+// Founder socials
+export const FOUNDER_TWITTER_URL = 'https://x.com/mrnymb'
+export const FOUNDER_TELEGRAM_URL = 'https://t.me/nymb_founder'
+export const FOUNDER_INSTAGRAM_URL = 'https://www.instagram.com/igor__ivanov'
+
 // Addresses
 export const RECEIVER_ADDRESS =
   import.meta.env.VITE_PUBLIC_RECEIVER_ADDRESS ??

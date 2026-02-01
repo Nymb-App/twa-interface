@@ -133,6 +133,18 @@ export function TasksTabs({ className }: { className?: string }) {
         // })
         window.open(YOU_TUBE_URL, '_blank')
       }
+
+      if(name === TaskNames.SubscribeTelegramFounder) {
+        window.open(YOU_TUBE_URL, '_blank')
+      }
+      if(name === TaskNames.SubscribeInstagramFounder) {
+        window.open(YOU_TUBE_URL, '_blank')
+      }
+      if(name === TaskNames.SubscribeTwitterFounder) {
+        window.open(YOU_TUBE_URL, '_blank')
+      }
+
+
       if (name === TaskNames.PostTelegramStory) {
         shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
           text: 'Exploring the Nymb ecosystem! 💎 This project is a game-changer for Web3 gaming. Join the movement! 🚀',
@@ -236,13 +248,22 @@ const TaskIcon = ({
   taskName: string
   className?: string
 }) => {
-  if (taskName === TaskNames.SubscribeTwitter) {
+  if (
+    taskName === TaskNames.SubscribeTwitter ||
+    taskName === TaskNames.SubscribeTwitterFounder
+  ) {
     return <TbBrandX className={className} />
   }
-  if (taskName === TaskNames.SubscribeTelegram) {
+  if (
+    taskName === TaskNames.SubscribeTelegram ||
+    taskName === TaskNames.SubscribeTelegramFounder
+  ) {
     return <TbBrandTelegram className={className} />
   }
-  if (taskName === TaskNames.SubscribeInstagram) {
+  if (
+    taskName === TaskNames.SubscribeInstagram ||
+    taskName === TaskNames.SubscribeInstagramFounder
+  ) {
     return <TbBrandInstagram className={className} />
   }
   if (taskName === TaskNames.SubscribeYoutube) {
@@ -336,6 +357,9 @@ const TaskCard = ({
       case TaskNames.SubscribeTelegram:
       case TaskNames.SubscribeInstagram:
       case TaskNames.SubscribeYoutube:
+      case TaskNames.SubscribeInstagramFounder:
+      case TaskNames.SubscribeTelegramFounder:
+      case TaskNames.SubscribeTwitterFounder:
         return 'join'
       case TaskNames.WatchAd:
         return 'watch'
