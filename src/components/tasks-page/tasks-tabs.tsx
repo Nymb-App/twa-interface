@@ -17,6 +17,9 @@ import {
 } from '@/hooks/api/use-tasks'
 import {
   ADSGRAM_APP_ID,
+  FOUNDER_INSTAGRAM_URL,
+  FOUNDER_TELEGRAM_URL,
+  FOUNDER_TWITTER_URL,
   INSTAGRAM_URL,
   SELF_HOST_URL,
   TELEGRAM_APP_LINK,
@@ -135,13 +138,13 @@ export function TasksTabs({ className }: { className?: string }) {
       }
 
       if(name === TaskNames.SubscribeTelegramFounder) {
-        window.open(YOU_TUBE_URL, '_blank')
+        window.open(FOUNDER_TELEGRAM_URL, '_blank')
       }
       if(name === TaskNames.SubscribeInstagramFounder) {
-        window.open(YOU_TUBE_URL, '_blank')
+        window.open(FOUNDER_INSTAGRAM_URL, '_blank')
       }
       if(name === TaskNames.SubscribeTwitterFounder) {
-        window.open(YOU_TUBE_URL, '_blank')
+        window.open(FOUNDER_TWITTER_URL, '_blank')
       }
 
 
