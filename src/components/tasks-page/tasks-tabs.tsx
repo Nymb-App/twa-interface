@@ -1,6 +1,6 @@
 import { useAdsgram } from '@adsgram/react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { isTMA, shareStory, shareURL } from '@tma.js/sdk'
+import { isTMA, miniApp, popup, shareStory, shareURL } from '@tma.js/sdk'
 import { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
@@ -61,6 +61,32 @@ export function TasksTabs({ className }: { className?: string }) {
 
   const { show } = useAdsgram(adsConfig)
 
+  const showAdClick = async () => {
+    try {
+      const result = await show()
+      console.log('Реклама просмотрена:', result)
+    } catch (error: any) {
+      const message = error.message
+      if (
+        message.toLowerCase().includes('session is too long') ||
+        message.toLowerCase().includes('сессия слишком долгая')
+      ) {
+        popup
+          .show({
+            title: 'Session expired',
+            message:
+              'For correct work of ads and rewards, you need to restart the app.',
+            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+          })
+          .then((buttonId) => {
+            if (buttonId === 'close') {
+              miniApp.close()
+            }
+          })
+      }
+    }
+  }
+
   const progressTasks =
     tasks
       ?.filter((task) => task.status !== 'completed')
@@ -92,7 +118,10 @@ export function TasksTabs({ className }: { className?: string }) {
         // const getRandomInt = (min: number, max: number): number => {
         //   return Math.floor(Math.random() * (max - min + 1)) + min
         // }
-        show()
+
+        showAdClick()
+        // show()
+
         // setTimeout(
         //   () => completeTask({ taskName: name }),
         //   getRandomInt(25000, 30000),

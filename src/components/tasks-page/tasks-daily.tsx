@@ -1,5 +1,5 @@
 import { useAdsgram } from '@adsgram/react'
-import { shareStory } from '@tma.js/sdk'
+import { miniApp, popup, shareStory } from '@tma.js/sdk'
 import { useCallback, useMemo } from 'react'
 import Countdown from 'react-countdown'
 import { toast } from 'sonner'
@@ -41,6 +41,32 @@ export function TasksDaily() {
   )
 
   const { show } = useAdsgram(adsConfig)
+
+  const showAdClick = async () => {
+    try {
+      const result = await show()
+      console.log('Реклама просмотрена:', result)
+    } catch (error: any) {
+      const message = error.message
+      if (
+        message.toLowerCase().includes('session is too long') ||
+        message.toLowerCase().includes('сессия слишком долгая')
+      ) {
+        popup
+          .show({
+            title: 'Session expired',
+            message:
+              'For correct work of ads and rewards, you need to restart the app.',
+            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+          })
+          .then((buttonId) => {
+            if (buttonId === 'close') {
+              miniApp.close()
+            }
+          })
+      }
+    }
+  }
 
   const isAllTasksCompleted = useMemo(() => {
     if (!dailyCombo) return false
@@ -87,7 +113,10 @@ export function TasksDaily() {
         // const getRandomInt = (min: number, max: number): number => {
         //   return Math.floor(Math.random() * (max - min + 1)) + min
         // }
-        show()
+
+        showAdClick()
+        // show()
+
         // setTimeout(
         //   () => {
         //     completeTask({ taskName })
