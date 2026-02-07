@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useQueries, useQuery } from '@tanstack/react-query';
-import { useApi, useAuth } from './use-api';
+import { useQueries, useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useApi, useAuth } from './use-api'
 
 export interface GlobalStatisticsParams {
   lvl?: number
@@ -29,18 +29,20 @@ export interface StatisticsData {
 }
 
 const useLvl = () => {
-    return {
-        maxLvl: 12,
-        minLvl: 1,
-        lvls: Array.from({ length: 12 }, (_, i) => i + 1).reverse(),
-    }
+  return {
+    maxLvl: 12,
+    minLvl: 1,
+    lvls: Array.from({ length: 12 }, (_, i) => i + 1).reverse(),
+  }
 }
 
 export const useStatistics = () => {
   const { get } = useApi()
   const { isAuthenticated } = useAuth()
   const { lvls } = useLvl()
-  const [enabledLevels, setEnabledLevels] = useState<Array<number>>([12, 11, 10])
+  const [enabledLevels, setEnabledLevels] = useState<Array<number>>([
+    12, 11, 10,
+  ])
 
   const myStatistics = useQuery<StatisticsData, Error>({
     queryKey: ['myStatistics'],
@@ -67,7 +69,7 @@ export const useStatistics = () => {
       queryKey: ['globalStatistics', lvl],
       queryFn: async () => {
         const response = await get(
-          `/statistics/get_global_statistics?lvl=${lvl}`,
+          `/statistics/get_global_statistics?lvl=${lvl}&limit=100`,
         )
         if (!response) {
           throw new Error(`No response from server for level ${lvl}`)
