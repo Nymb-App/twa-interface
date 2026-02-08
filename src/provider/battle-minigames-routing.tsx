@@ -31,7 +31,7 @@ export const BattleMinigamesRouting = ({
   const navigate = useNavigate()
   useEffect(() => {
     if (!accountQuery.data) return
-    if (accountQuery.data.joinedAt + 3600 > Math.floor(Date.now() / 1000)) {
+    if (accountQuery.data.joinedAt + 60 > Math.floor(Date.now() / 1000)) {
       // toast.error(`You are newbie`)
       return
     }

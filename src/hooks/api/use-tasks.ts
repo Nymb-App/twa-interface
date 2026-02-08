@@ -37,6 +37,11 @@ export enum TaskNames {
 
   // Post telegram story
   PostTelegramStory = 'task-post-telegram-story',
+
+  // Social Media Subscriptions Founder
+  SubscribeTwitterFounder = 'task-subscribe-twitter-nymb-founder',
+  SubscribeTelegramFounder = 'task-subscribe-telegram-nymb-founder',
+  SubscribeInstagramFounder = 'task-subscribe-instagram-nymb-founder',
 }
 
 // --- Интерфейсы для данных (могут потребовать уточнения) ---

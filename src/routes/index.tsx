@@ -157,7 +157,7 @@ const HomeComponent = memo(function HomeComponent() {
     <PageLayout className="top-0 mb-7">
       {
         <>
-          {!isAppStarted && !isGameStarted && (
+          {!isAppStarted && !isGameStarted && accountTime > Date.now() && (
             <AnimationStartOverlay
               className="fixed w-full z-60"
               onStart={() => setAppStarted(true)}
