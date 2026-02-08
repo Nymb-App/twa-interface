@@ -6,6 +6,7 @@ import { useReferrals } from '@/hooks/api/use-referrals'
 import { TaskNames, useTasks } from '@/hooks/api/use-tasks'
 import { useMint } from '@/hooks/use-mint'
 import {
+  ITEM_NFT_PRICE,
   RECEIVER_ADDRESS,
   TELEGRAM_APP_URL,
   TELEGRAM_URL,
@@ -14,7 +15,7 @@ import {
 import { cn } from '@/lib/utils'
 import { shareURL } from '@tma.js/sdk'
 import { useTonConnectUI } from '@tonconnect/ui-react'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FaXTwitter } from 'react-icons/fa6'
 import { RiTelegram2Line } from 'react-icons/ri'
 import { TbReload } from 'react-icons/tb'
@@ -29,12 +30,15 @@ import { CopyButton } from './ui/copy-button'
 
 export function MintSection() {
   const tonConnectUI = useTonConnectUI()
-  const { mintProgress, mint } = useMint()
+  const { mintProgress: mintProgressData } = useMint()
   const { accountQuery } = useAccountMe()
   const { user } = useAccount()
   const { myCodes } = useReferrals()
   const { completeTask, tasksQuery } = useTasks()
   const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const [mintProgress, setMintProgress] = useState(false)
+  const mintIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const code = useMemo(() => {
     return myCodes && myCodes.length > 0
@@ -54,25 +58,37 @@ export function MintSection() {
   }, [accountQuery.data])
 
   const isNftProgressFinished = useMemo(() => {
-    return mintProgress?.progress === 100
-  }, [mintProgress?.progress])
+    return mintProgressData?.progress === 100
+  }, [mintProgressData?.progress])
 
   const isSubscribedTelegram = useMemo(() => {
     return accountQuery.data?.isSubscribed
   }, [accountQuery])
 
   const isMintDisabled = useMemo(() => {
+    if (isMinted) {
+      return true
+    }
+    if (mintProgress) {
+      return true
+    }
     if (!tonConnectUI[0].connected) {
       return false
     }
     if (accountQuery.data) {
       return accountQuery.data.isEarlyAccessMinted
     }
-    if (mintProgress?.progress === 100) {
+    if (mintProgressData?.progress === 100) {
       return true
     }
     return false
-  }, [accountQuery.data, mintProgress?.progress, tonConnectUI[0].connected])
+  }, [
+    accountQuery.data,
+    mintProgress,
+    mintProgressData?.progress,
+    tonConnectUI[0].connected,
+    isMinted,
+  ])
 
   const handleTwitterTaskAction = (taskName: TaskNames) => {
     if (taskName === TaskNames.SubscribeTwitter) {
@@ -90,6 +106,15 @@ export function MintSection() {
   useEffect(() => {
     return () => stop()
   }, [play])
+
+  useEffect(() => {
+    return () => {
+      if (mintIntervalRef.current) {
+        clearInterval(mintIntervalRef.current)
+        mintIntervalRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <section className="relative text-white scroll-mt-45">
@@ -321,13 +346,36 @@ export function MintSection() {
             <TransferTonButton
               disabled={isMintDisabled}
               recipient={RECEIVER_ADDRESS}
-              amount={5}
+              amount={ITEM_NFT_PRICE}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
-              onTransferSuccess={async (hash) => {
-                toast.success('NFT purchased!')
-                await mint(hash)
+              onTransferSuccess={() => {
+                setMintProgress(true)
+
+                if (mintIntervalRef.current) {
+                  clearInterval(mintIntervalRef.current)
+                  mintIntervalRef.current = null
+                }
+
+                const id = setInterval(async () => {
+                  const res = await accountQuery.refetch()
+                  if (res.data?.isEarlyAccessMinted === true) {
+                    clearInterval(id)
+                    mintIntervalRef.current = null
+                    setMintProgress(false)
+                    // toast.success('NFT purchased!')
+                  }
+                }, 2000)
+
+                mintIntervalRef.current = id
+                // await mint(hash)
               }}
+              comment={`nymb.mint?type=nft&telegramId=${user?.id}`}
               onError={(e) => {
+                setMintProgress(false)
+                if (mintIntervalRef.current) {
+                  clearInterval(mintIntervalRef.current)
+                  mintIntervalRef.current = null
+                }
                 if (e.message === 'Insufficient balance') {
                   toast.error(e.message)
                 } else if (e.message === "You can't send to yourself") {
@@ -339,9 +387,11 @@ export function MintSection() {
             >
               {isMinted
                 ? 'ALREADY MINTED'
-                : isNftProgressFinished
-                  ? 'NO NFT LEFT'
-                  : 'MINT FOR 5 TON'}
+                : mintProgress
+                  ? 'Minting...'
+                  : isNftProgressFinished
+                    ? 'NO NFT LEFT'
+                    : `MINT FOR ${ITEM_NFT_PRICE} TON`}
             </TransferTonButton>
           </div>
           <span className="mt-3 text-[#B6FF00]/60 mx-auto">

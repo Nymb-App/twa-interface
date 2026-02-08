@@ -20,18 +20,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useBuyExtraBoost } from '@/hooks/api/use-shop'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
 
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { buyExtraBoost } = useBuyExtraBoost()
+  // const { buyExtraBoost } = useBuyExtraBoost()
+  const { accountQuery } = useAccountMe()
+  const { user } = useAccount()
   const [play] = useSound('/sounds/Button.aac')
+
+  const [buyExtraBoostProgress, setBuyExtraBoostProgress] = useState(false)
+  const buyExtraBoostIntervalRef = useRef<ReturnType<
+    typeof setInterval
+  > | null>(null)
+  const previousExtraBoostRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (buyExtraBoostIntervalRef.current) {
+        clearInterval(buyExtraBoostIntervalRef.current)
+        buyExtraBoostIntervalRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
@@ -123,17 +140,62 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
 
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
+            disabled={buyExtraBoostProgress}
             recipient={RECEIVER_ADDRESS}
             amount={0.1}
+            comment={`nymb.shop?type=extra_boost&telegramId=${user?.id}`}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
-            onTransferSuccess={async (hash) => {
-              toast.success('Extra boost purchase')
-              await buyExtraBoost(hash)
+            onTransferSuccess={() => {
+              setBuyExtraBoostProgress(true)
+
+              previousExtraBoostRef.current =
+                accountQuery.data?.extraBustCount ?? null
+
+              if (buyExtraBoostIntervalRef.current) {
+                clearInterval(buyExtraBoostIntervalRef.current)
+                buyExtraBoostIntervalRef.current = null
+              }
+
+              const pollId = setInterval(async () => {
+                const res = await accountQuery.refetch()
+                const previousExtraBoost = previousExtraBoostRef.current
+                const nextExtraBoost = res.data?.extraBustCount
+
+                if (
+                  typeof nextExtraBoost === 'number' &&
+                  (previousExtraBoost == null ||
+                    nextExtraBoost > previousExtraBoost)
+                ) {
+                  clearInterval(pollId)
+                  buyExtraBoostIntervalRef.current = null
+                  previousExtraBoostRef.current = null
+                  setBuyExtraBoostProgress(false)
+                  // toast.success('Extra boost purchase')
+                }
+              }, 2000)
+
+              buyExtraBoostIntervalRef.current = pollId
+
+              // try {
+              //   await buyExtraBoost(hash)
+              // } catch {
+              //   setBuyExtraBoostProgress(false)
+              //   previousExtraBoostRef.current = null
+              //   clearInterval(pollId)
+              //   buyExtraBoostIntervalRef.current = null
+              //   toast.error('An error occurred during payment')
+              // }
             }}
             onConnect={() => {
               setIsOpen(false)
             }}
             onError={(e) => {
+              setBuyExtraBoostProgress(false)
+              previousExtraBoostRef.current = null
+              if (buyExtraBoostIntervalRef.current) {
+                clearInterval(buyExtraBoostIntervalRef.current)
+                buyExtraBoostIntervalRef.current = null
+              }
               if (e.message === 'Insufficient balance') {
                 toast.error('Insufficient balance')
               } else {
@@ -141,7 +203,7 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
               }
             }}
           >
-            Confirm and pay 0.1 Ton
+            {buyExtraBoostProgress ? 'Waiting...' : 'Confirm and pay 0.1 Ton'}
           </TransferTonButton>
         </DrawerFooter>
       </DrawerContent>

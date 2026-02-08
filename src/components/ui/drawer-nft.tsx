@@ -10,8 +10,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { useAccountMe } from '@/hooks/api/use-account'
-import { useMint } from '@/hooks/use-mint'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { ITEM_NFT_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { useTonConnectUI } from '@tonconnect/ui-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -29,22 +28,36 @@ export function DrawerNft({
   asChild?: boolean
 }) {
   const { accountQuery } = useAccountMe()
+  const { user } = useAccount()
   // const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { mint } = useMint()
+  // const { mint } = useMint()
   const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const [mintProgress, setMintProgress] = useState(false)
+  const mintIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const tonConnectUI = useTonConnectUI()
 
   const isMintDisabled = useMemo(() => {
+    if (mintProgress) return true
     if (!tonConnectUI[0].connected) return false
     if (!accountQuery.data) return true
     if (accountQuery.data.isEarlyAccessMinted === undefined) return false
     return accountQuery.data.isEarlyAccessMinted
-  }, [accountQuery.data, tonConnectUI])
+  }, [accountQuery.data, tonConnectUI, mintProgress])
 
   useEffect(() => {
     return () => stop()
   }, [play])
+
+  useEffect(() => {
+    return () => {
+      if (mintIntervalRef.current) {
+        clearInterval(mintIntervalRef.current)
+        mintIntervalRef.current = null
+      }
+    }
+  }, [])
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const scrollYRef = useRef(0)
@@ -131,7 +144,6 @@ export function DrawerNft({
     requestAnimationFrame(() => window.scrollTo(0, scrollYRef.current))
   }
 
-
   return (
     <Drawer
       open={isOpen}
@@ -192,16 +204,38 @@ export function DrawerNft({
               disabled={isMintDisabled}
               recipient={RECEIVER_ADDRESS}
               amount={ITEM_NFT_PRICE}
+              comment={`nymb.mint?type=nft&telegramId=${user?.id}`}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onConnect={() => {
                 setIsOpen(false)
               }}
-              onTransferSuccess={async (hash) => {
-                toast.success('NFT purchased!')
-                await mint(hash)
-                accountQuery.refetch()
+              onTransferSuccess={() => {
+                setMintProgress(true)
+                // await mint(hash)
+
+                if (mintIntervalRef.current) {
+                  clearInterval(mintIntervalRef.current)
+                  mintIntervalRef.current = null
+                }
+
+                const id = setInterval(async () => {
+                  const res = await accountQuery.refetch()
+                  if (res.data?.isEarlyAccessMinted === true) {
+                    clearInterval(id)
+                    mintIntervalRef.current = null
+                    setMintProgress(false)
+                    // toast.success('NFT purchased!')
+                  }
+                }, 2000)
+
+                mintIntervalRef.current = id
               }}
               onError={(e) => {
+                setMintProgress(false)
+                if (mintIntervalRef.current) {
+                  clearInterval(mintIntervalRef.current)
+                  mintIntervalRef.current = null
+                }
                 if (e.message === 'Insufficient balance') {
                   toast.error('Insufficient balance')
                 } else {
@@ -211,7 +245,9 @@ export function DrawerNft({
             >
               {accountQuery.data?.isEarlyAccessMinted
                 ? 'ALREADY MINTED'
-                : `MINT FOR ${ITEM_NFT_PRICE} TON`}
+                : mintProgress
+                  ? 'Minting...'
+                  : `MINT FOR ${ITEM_NFT_PRICE} TON`}
             </TransferTonButton>
           </div>
           <span className="mt-3 text-[#B6FF00]/60 mx-auto">

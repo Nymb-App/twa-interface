@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { convertTimestampToLargestUnit } from '@/utils'
 import { useAdsgram } from '@adsgram/react'
 import { useMutation } from '@tanstack/react-query'
+import { miniApp, popup } from '@tma.js/sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useSound from 'use-sound'
 import { ActionButton } from '../ui/action-button'
@@ -118,6 +119,32 @@ export const AdsButton = ({
 
   const { show } = useAdsgram(adsConfig)
 
+  const showAdClick = async () => {
+    try {
+      const result = await show()
+      console.log('Реклама просмотрена:', result)
+    } catch (error: any) {
+      const message = error.message
+      if (
+        message.toLowerCase().includes('session is too long') ||
+        message.toLowerCase().includes('сессия слишком долгая')
+      ) {
+        popup
+          .show({
+            title: 'Session expired',
+            message:
+              'For correct work of ads and rewards, you need to restart the app.',
+            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+          })
+          .then((buttonId) => {
+            if (buttonId === 'close') {
+              miniApp.close()
+            }
+          })
+      }
+    }
+  }
+
   return (
     <ActionButton
       disabled={isDisabledButton}
@@ -131,7 +158,8 @@ export const AdsButton = ({
       )}
       onClick={() => {
         play()
-        show()
+        showAdClick()
+        // show()
         onBtnClick?.()
       }}
     >
