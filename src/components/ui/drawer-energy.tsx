@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useShop } from '@/hooks/api/use-shop'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { ITEM_ENERGY_1000_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { useEffect, useRef, useState } from 'react'
 import { isIOS } from 'react-device-detect'
@@ -36,13 +36,20 @@ export function DrawerEnergy({
   asChild?: boolean
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { buyItem } = useShop()
+  const { accountQuery } = useAccountMe()
+  const { user } = useAccount()
   const [play, { stop }] = useSound('/sounds/Button.aac')
-  
-    const scrollYRef = useRef(0)
-    const closeUnlockTimerRef = useRef<number | null>(null)
 
-    const handleOpenChange = (open: boolean) => {
+  const [buyEnergyProgress, setBuyEnergyProgress] = useState(false)
+  const buyEnergyIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  )
+  const previousEnergyRef = useRef<number | null>(null)
+
+  const scrollYRef = useRef(0)
+  const closeUnlockTimerRef = useRef<number | null>(null)
+
+  const handleOpenChange = (open: boolean) => {
     if (!isIOS) {
       setIsOpen(open)
       return
@@ -126,6 +133,15 @@ export function DrawerEnergy({
   useEffect(() => {
     return () => stop()
   }, [play])
+
+  useEffect(() => {
+    return () => {
+      if (buyEnergyIntervalRef.current) {
+        clearInterval(buyEnergyIntervalRef.current)
+        buyEnergyIntervalRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <Drawer
@@ -235,17 +251,52 @@ export function DrawerEnergy({
 
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
+            disabled={buyEnergyProgress}
             recipient={RECEIVER_ADDRESS}
             amount={ITEM_ENERGY_1000_PRICE}
+            comment={`nymb.shop?type=energy&telegramId=${user?.id}`}
             className="py-3 w-full inline-flex justify-center items-center gap-1"
-            onTransferSuccess={async (hash) => {
-              toast.success('Energy restored')
-              await buyItem('energy', hash)
+            onTransferSuccess={(_hash) => {
+              setBuyEnergyProgress(true)
+
+              previousEnergyRef.current = accountQuery.data?.energy ?? null
+
+              if (buyEnergyIntervalRef.current) {
+                clearInterval(buyEnergyIntervalRef.current)
+                buyEnergyIntervalRef.current = null
+              }
+
+              const id = setInterval(async () => {
+                const res = await accountQuery.refetch()
+                const previousEnergy = previousEnergyRef.current
+                const nextEnergy = res.data?.energy
+
+                if (
+                  typeof nextEnergy === 'number' &&
+                  (previousEnergy == null || nextEnergy > previousEnergy)
+                ) {
+                  clearInterval(id)
+                  buyEnergyIntervalRef.current = null
+                  previousEnergyRef.current = null
+                  setBuyEnergyProgress(false)
+                  // toast.success('Energy restored')
+                }
+              }, 2000)
+
+              buyEnergyIntervalRef.current = id
+
+              // await buyItem('energy', hash)
             }}
             onConnect={() => {
               setIsOpen(false)
             }}
             onError={(e) => {
+              setBuyEnergyProgress(false)
+              previousEnergyRef.current = null
+              if (buyEnergyIntervalRef.current) {
+                clearInterval(buyEnergyIntervalRef.current)
+                buyEnergyIntervalRef.current = null
+              }
               if (e.message === 'Insufficient balance') {
                 toast.error('Insufficient balance')
               } else {
@@ -253,8 +304,14 @@ export function DrawerEnergy({
               }
             }}
           >
-            PAY <TonIcon fill="black" />
-            {ITEM_ENERGY_1000_PRICE} RESTORE ENERGY
+            {buyEnergyProgress ? (
+              'Waiting...'
+            ) : (
+              <>
+                PAY <TonIcon fill="black" />
+                {ITEM_ENERGY_1000_PRICE} RESTORE ENERGY
+              </>
+            )}
           </TransferTonButton>
         </DrawerFooter>
       </DrawerContent>

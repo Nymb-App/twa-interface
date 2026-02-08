@@ -1,8 +1,7 @@
 import { CloseIcon } from '@/assets/icons/close'
 import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 import { TonIcon } from '@/assets/icons/ton'
-import type { TShopItem } from '@/hooks/api/use-shop'
-import { useShop } from '@/hooks/api/use-shop'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import {
   ITEM_TIME_1D_PRICE,
   ITEM_TIME_1M_PRICE,
@@ -45,6 +44,7 @@ export function DrawerTime({
   asChild?: boolean
 }) {
   // const [isOpen, setIsOpen] = useState<boolean>(false)
+  const { accountQuery } = useAccountMe()
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
     if (radioValue === '1 day') return ITEM_TIME_1D_PRICE
@@ -58,12 +58,25 @@ export function DrawerTime({
     if (radioValue === '1 month') return 'time_one_month'
     if (radioValue === '1 year') return 'time_one_year'
   }, [radioValue])
-  const { buyItem } = useShop()
+  const { user } = useAccount()
   const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const [buyTimeProgress, setBuyTimeProgress] = useState(false)
+  const buyTimeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const previousAccountTimeRef = useRef<number | null>(null)
 
   useEffect(() => {
     return () => stop()
   }, [play])
+
+  useEffect(() => {
+    return () => {
+      if (buyTimeIntervalRef.current) {
+        clearInterval(buyTimeIntervalRef.current)
+        buyTimeIntervalRef.current = null
+      }
+    }
+  }, [])
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const scrollYRef = useRef(0)
@@ -237,8 +250,6 @@ export function DrawerTime({
           ))}
         </RadioGroup>
 
-
-
         <div className="relative inline-flex justify-around items-center w-full">
           <div className="font-pixel flex flex-col gap-1 w-[98px]">
             <span className="text-[#B6FF00] text-3xl text-center relative bottom-2">
@@ -282,17 +293,52 @@ export function DrawerTime({
 
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
+            disabled={buyTimeProgress}
             recipient={RECEIVER_ADDRESS}
             amount={amount ?? 0.5}
+            comment={`nymb.shop?type=${itemName}&telegramId=${user?.id}`}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
-            onTransferSuccess={async (hash) => {
-              toast.success('Time purchased')
-              await buyItem(itemName as TShopItem, hash)
+            onTransferSuccess={() => {
+              setBuyTimeProgress(true)
+
+              previousAccountTimeRef.current = accountQuery.data?.time ?? null
+
+              if (buyTimeIntervalRef.current) {
+                clearInterval(buyTimeIntervalRef.current)
+                buyTimeIntervalRef.current = null
+              }
+
+              const id = setInterval(async () => {
+                const res = await accountQuery.refetch()
+                const previousTime = previousAccountTimeRef.current
+                const nextTime = res.data?.time
+
+                if (
+                  typeof nextTime === 'number' &&
+                  (previousTime == null || nextTime > previousTime)
+                ) {
+                  clearInterval(id)
+                  buyTimeIntervalRef.current = null
+                  previousAccountTimeRef.current = null
+                  setBuyTimeProgress(false)
+                  // toast.success('Time purchased')
+                }
+              }, 2000)
+
+              buyTimeIntervalRef.current = id
+
+              // await buyItem(itemName as TShopItem, hash)
             }}
             onConnect={() => {
               setIsOpen(false)
             }}
             onError={(e) => {
+              setBuyTimeProgress(false)
+              previousAccountTimeRef.current = null
+              if (buyTimeIntervalRef.current) {
+                clearInterval(buyTimeIntervalRef.current)
+                buyTimeIntervalRef.current = null
+              }
               if (e.message === 'Insufficient balance') {
                 toast.error('Insufficient balance')
               } else {
@@ -300,8 +346,14 @@ export function DrawerTime({
               }
             }}
           >
-            PAY <TonIcon fill="black" />
-            {amount} GET {radioValue}
+            {buyTimeProgress ? (
+              'Waiting...'
+            ) : (
+              <>
+                PAY <TonIcon fill="black" />
+                {amount} GET {radioValue}
+              </>
+            )}
           </TransferTonButton>
         </DrawerFooter>
       </DrawerContent>
