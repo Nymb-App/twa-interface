@@ -20,8 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { TShopItem } from '@/hooks/api/use-shop'
-import { useShop } from '@/hooks/api/use-shop'
+import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import {
   ITEM_TICKET_10_PRICE,
   ITEM_TICKET_5_PRICE,
@@ -57,8 +56,15 @@ export function DrawerTicket({
     if (radioValue === '5 tickets') return 'five_tickets'
     if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
-  const { buyItem } = useShop()
+  const { user } = useAccount()
+  const { accountQuery } = useAccountMe()
   const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const [buyTicketProgress, setBuyTicketProgress] = useState(false)
+  const buyTicketIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  )
+  const previousTicketsRef = useRef<number | null>(null)
 
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
@@ -147,6 +153,15 @@ export function DrawerTicket({
   useEffect(() => {
     return () => stop()
   }, [play])
+
+  useEffect(() => {
+    return () => {
+      if (buyTicketIntervalRef.current) {
+        clearInterval(buyTicketIntervalRef.current)
+        buyTicketIntervalRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <Drawer
@@ -288,20 +303,53 @@ export function DrawerTicket({
 
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
+            disabled={buyTicketProgress}
             recipient={RECEIVER_ADDRESS}
             amount={amount ?? 1}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
-            onTransferSuccess={async (hash) => {
-              toast.success('Ticket purchased')
+            comment={`nymb.shop?type=${itemName}&telegramId=${user?.id}`}
+            onTransferSuccess={(_hash) => {
+              setBuyTicketProgress(true)
 
-              console.log('Ticket', itemName)
+              const currentTickets =
+                (accountQuery.data?.tickets ?? 0) +
+                (accountQuery.data?.ticket ?? 0)
+              previousTicketsRef.current = currentTickets
 
-              await buyItem(itemName as TShopItem, hash)
+              if (buyTicketIntervalRef.current) {
+                clearInterval(buyTicketIntervalRef.current)
+                buyTicketIntervalRef.current = null
+              }
+
+              const id = setInterval(async () => {
+                const res = await accountQuery.refetch()
+                const nextTickets =
+                  (res.data?.tickets ?? 0) + (res.data?.ticket ?? 0)
+
+                if (
+                  previousTicketsRef.current == null ||
+                  nextTickets > previousTicketsRef.current
+                ) {
+                  clearInterval(id)
+                  buyTicketIntervalRef.current = null
+                  previousTicketsRef.current = null
+                  setBuyTicketProgress(false)
+                  // toast.success('Ticket purchased')
+                }
+              }, 2000)
+
+              buyTicketIntervalRef.current = id
             }}
             onConnect={() => {
               setIsOpen(false)
             }}
             onError={(e) => {
+              setBuyTicketProgress(false)
+              previousTicketsRef.current = null
+              if (buyTicketIntervalRef.current) {
+                clearInterval(buyTicketIntervalRef.current)
+                buyTicketIntervalRef.current = null
+              }
               if (e.message === 'Insufficient balance') {
                 toast.error('Insufficient balance')
               } else {
@@ -309,8 +357,14 @@ export function DrawerTicket({
               }
             }}
           >
-            PAY <TonIcon fill="black" />
-            {amount} GET {radioValue}
+            {buyTicketProgress ? (
+              'Waiting...'
+            ) : (
+              <>
+                PAY <TonIcon fill="black" />
+                {amount} GET {radioValue}
+              </>
+            )}
           </TransferTonButton>
         </DrawerFooter>
       </DrawerContent>

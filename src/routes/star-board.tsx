@@ -293,6 +293,7 @@ function StatisticsTop100List({ stats }: { stats: GlobalStatisticsData }) {
       {stats?.users.map((user, index) => (
         <StatisticsCard
           key={index}
+          lvl={user.lvl}
           time={user.time * 1000}
           name={user.nickname ?? user.avatarId.toString()}
           position={index + 1}

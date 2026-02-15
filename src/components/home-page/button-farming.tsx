@@ -4,6 +4,7 @@ import { useFarming as useFarmingApi } from '@/hooks/api/use-farming'
 import { ADSGRAM_APP_ID } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useAdsgram } from '@adsgram/react'
+import { miniApp, popup } from '@tma.js/sdk'
 import confetti from 'canvas-confetti'
 import { LoaderIcon } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -36,6 +37,32 @@ export function FarmingButton({
   const { farmingStatusQuery, startFarming, claimReward } = useFarmingApi()
 
   const { show } = useAdsgram({ blockId: ADSGRAM_APP_ID, debug: false })
+
+  const showAdClick = async () => {
+    try {
+      const result = await show()
+      console.log('Реклама просмотрена:', result)
+    } catch (error: any) {
+      const message = error.message
+      if (
+        message.toLowerCase().includes('session is too long') ||
+        message.toLowerCase().includes('сессия слишком долгая')
+      ) {
+        popup
+          .show({
+            title: 'Session expired',
+            message:
+              'For correct work of ads and rewards, you need to restart the app.',
+            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+          })
+          .then((buttonId) => {
+            if (buttonId === 'close') {
+              miniApp.close()
+            }
+          })
+      }
+    }
+  }
 
   const [playStart] = useSound('/sounds/Farm-Start.aac')
   const [playEnd] = useSound('/sounds/Farm-End.aac')
@@ -86,9 +113,10 @@ export function FarmingButton({
     const next = current + 1
     localStorage.setItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY, String(next))
     if (next === 7) {
-      try {
-        show()
-      } catch {}
+      // try {
+      //   // show()
+      // } catch {}
+      showAdClick()
       localStorage.setItem(NYMB_FARMING_CLAIM_ADS_COUNT_KEY, '0')
     }
     setIsClaiming(false)

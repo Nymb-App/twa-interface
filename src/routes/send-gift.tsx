@@ -14,6 +14,7 @@ import { convertGiftValueToSeconds } from '@/utils'
 import { useAdsgram } from '@adsgram/react'
 import { useRive } from '@rive-app/react-canvas'
 import { Link, createFileRoute } from '@tanstack/react-router'
+import { miniApp, popup } from '@tma.js/sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useSound from 'use-sound'
 
@@ -50,21 +51,17 @@ function RouteComponent() {
     },
   )
 
-
   const handleError = useCallback((): void => {
     console.error('Task error')
   }, [])
 
   const handleReward = useCallback(() => {
     sendGiftToFriend.mutate({
-      friendId: Number(
-        myReferrals?.referrals[winnerIndex].telegramId,
-      ),
+      friendId: Number(myReferrals?.referrals[winnerIndex].telegramId),
       time: 7200,
     })
-    setDisableAdsButton(true);
+    setDisableAdsButton(true)
   }, [])
-
 
   const adsConfig = useMemo(
     () => ({
@@ -77,6 +74,32 @@ function RouteComponent() {
   )
 
   const { show } = useAdsgram(adsConfig)
+
+  const showAdClick = async () => {
+    try {
+      const result = await show()
+      console.log('Реклама просмотрена:', result)
+    } catch (error: any) {
+      const message = error.message
+      if (
+        message.toLowerCase().includes('session is too long') ||
+        message.toLowerCase().includes('сессия слишком долгая')
+      ) {
+        popup
+          .show({
+            title: 'Session expired',
+            message:
+              'For correct work of ads and rewards, you need to restart the app.',
+            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+          })
+          .then((buttonId) => {
+            if (buttonId === 'close') {
+              miniApp.close()
+            }
+          })
+      }
+    }
+  }
 
   useEffect(() => {
     if (!accountQuery.data) return
@@ -167,7 +190,7 @@ function RouteComponent() {
             'pointer-events-none size-126 absolute top-[-94px] z-1 left-[51%] -translate-x-1/2 rotate-[15deg]',
             !isFinishRoulette && 'animate-[wiggle_3s_ease-in-out_infinite]',
             isFinishRoulette &&
-            'delay-2000 transition-all duration-5000 opacity-0',
+              'delay-2000 transition-all duration-5000 opacity-0',
           )}
         />
         <div
@@ -263,15 +286,15 @@ function RouteComponent() {
             variant={'nymb-green'}
             disabled={disableAdsButton}
             onClick={() => {
-              show();
+              showAdClick()
+              // show();
             }}
             className="relative h-[54px] text-black from-[#ADFA4B] to-[#B6FF00] active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed"
           >
             GET +2H REWARD
-
             <AdsLabelSvg
-              className='absolute  top-2 right-2'
-              labelColor='black'
+              className="absolute  top-2 right-2"
+              labelColor="black"
               labelOpacity={1}
             />
           </Button>
@@ -324,8 +347,6 @@ export const AvatarCard = ({
     </span>
   </div>
 )
-
-
 
 const AdsLabelSvg = ({
   labelOpacity,

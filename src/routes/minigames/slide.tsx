@@ -29,6 +29,11 @@ export function RouteComponent() {
     return accountQuery.data.lvl === 12 ? 2 : 12 - accountQuery.data.lvl + 2
   }, [accountQuery.data])
 
+  const energyAmount = useMemo(() => {
+    if (!accountQuery.data) return 1200
+    return accountQuery.data.energy
+  }, [accountQuery.data])
+
   const defaultX2DoubleAmount = defaultMinutesWinAmount * 2
   const defaultX2TimerDuration = 8_000
 
@@ -36,8 +41,8 @@ export function RouteComponent() {
 
   const [minutesWinAmount, setMinutesWinAmount] = useState<number>(2)
   const [minutesWinned, setMinutesWinned] = useState<number>(0)
-  const [energy, setEnergy] = useState<number>(1200)
-  const [energyAtStart, setEnergyAtStart] = useState<number>(1200)
+  const [energy, setEnergy] = useState<number>(energyAmount)
+  const [energyAtStart, setEnergyAtStart] = useState<number>(energyAmount)
 
   // X2 time
   const [isX2Time, setX2Time] = useState<boolean>(false)
@@ -99,9 +104,16 @@ export function RouteComponent() {
 
   useEffect(() => {
     if (accountQuery.data) {
-      const e = accountQuery.data.energy || 1200
-      setEnergy(e)
-      setEnergyAtStart(e)
+      const e = accountQuery.data.energy
+      if (e < 1) {
+        setIsGameFinished(true)
+        setIsGameFinishedForce(true)
+      } else {
+        setEnergy(e)
+        setEnergyAtStart(e)
+      }
+      // setEnergy(e)
+      // setEnergyAtStart(e)
     }
   }, [accountQuery.data])
 
@@ -259,7 +271,7 @@ export function RouteComponent() {
             }
           }}
         />
-        {!isGameStarted && (
+        {!isGameStarted && energy > 0 && (
           <CountdownStartGame onComplete={() => setIsGameStarted(true)} />
         )}
       </div>
@@ -377,23 +389,24 @@ function GameFinished({
             to="/"
             className="w-full"
             // onClick={() =>
-              // setTimeout(() => {
-              //   window.location.reload()
-              // }, 2000)
+            // setTimeout(() => {
+            //   window.location.reload()
+            // }, 2000)
             // }
           >
             <ActionButton className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6">
               CLOSE
             </ActionButton>
           </Link>
-          {useRestart && (
-            <ActionButton
-              onClick={onRestart}
-              className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
-            >
-              PLAY MORE
-            </ActionButton>
-          )}
+          {/* {useRestart && ( */}
+          <ActionButton
+            disabled={!useRestart}
+            onClick={onRestart}
+            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
+          >
+            PLAY MORE
+          </ActionButton>
+          {/* )} */}
         </div>
       </div>
     </div>
