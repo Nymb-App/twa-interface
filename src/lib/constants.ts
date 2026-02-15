@@ -16,7 +16,7 @@ export const RECEIVER_ADDRESS =
   import.meta.env.VITE_PUBLIC_RECEIVER_ADDRESS ??
   'UQA1C5aLqSAbl-1prBGWrocrYm4a-lvXliqEjLkqIrKqjXJu'
 export const TONCONNECT_MANIFEST_URL =
-  'https://nymb-preprod.netlify.app/tonconnect-manifest.json'
+  'https://nymb.netlify.app/tonconnect-manifest.json'
 
 // Environment Variables
 export const BASE_API_URL =
@@ -41,30 +41,23 @@ export const TELEGRAM_APP_URL =
   import.meta.env.VITE_PUBLIC_TELEGRAM_APP_LINK ??
   'https://t.me/nymb_twa_bot/nymb'
 
-// Prices
-// export const ITEM_NFT_PRICE = 5;
-// export const ITEM_ENERGY_1000_PRICE = 1;
-// export const ITEM_TIME_1D_PRICE = 0.87;
-// export const ITEM_TIME_1W_PRICE = 0.5;
-// export const ITEM_TIME_1M_PRICE = 2;
-// export const ITEM_TIME_1Y_PRICE = 8;
 
-export const ITEM_EXTRA_BOOST = 0.1
+export const ITEM_EXTRA_BOOST = ENV === 'production' ? 0.1 : 0.05;
 
-export const ITEM_NFT_PRICE = 5
+export const ITEM_NFT_PRICE = ENV === 'production' ? 5 : 0.05;
 
-export const ITEM_ENERGY_1000_PRICE = 0.39
+export const ITEM_ENERGY_1000_PRICE = ENV === 'production' ? 0.39 : 0.05;
 
 // Time
-export const ITEM_TIME_1D_PRICE = 0.87
-export const ITEM_TIME_1W_PRICE = 1.19
-export const ITEM_TIME_1M_PRICE = 3.49
-export const ITEM_TIME_1Y_PRICE = 16.99
+export const ITEM_TIME_1D_PRICE = ENV === 'production' ? 0.87 : 0.05;
+export const ITEM_TIME_1W_PRICE = ENV === 'production' ? 1.19 : 0.05;
+export const ITEM_TIME_1M_PRICE = ENV === 'production' ? 3.49 : 0.05;
+export const ITEM_TIME_1Y_PRICE = ENV === 'production' ? 16.99 : 0.05;
 
 // Tickets
-export const ITEM_TICKET_PRICE = 0.59
-export const ITEM_TICKET_5_PRICE = 2.69
-export const ITEM_TICKET_10_PRICE = 4.99
+export const ITEM_TICKET_PRICE = ENV === 'production' ? 0.59 : 0.05;
+export const ITEM_TICKET_5_PRICE = ENV === 'production' ? 2.69 : 0.05;
+export const ITEM_TICKET_10_PRICE = ENV === 'production' ? 4.99 : 0.05;
 
 // Unfreeze account price
-export const ITEM_UNFREEZE = 2.5
+export const ITEM_UNFREEZE = ENV === 'production' ? 1 : 0.15;

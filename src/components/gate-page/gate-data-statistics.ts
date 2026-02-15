@@ -79,8 +79,8 @@ export const gateDataStatistics: Record<
     inBattle: 1,
     points: 9,
     maxEnergy: 4500,
-    ticketsRequired: 14,
-    timeRequired: 480,
+    ticketsRequired: 17,
+    timeRequired: 576,
   },
   '4': {
     dailyReward: 9,
@@ -88,8 +88,8 @@ export const gateDataStatistics: Record<
     inBattle: 1,
     points: 10,
     maxEnergy: 5000,
-    ticketsRequired: 16,
-    timeRequired: 620,
+    ticketsRequired: 18,
+    timeRequired: 744,
   },
   '3': {
     dailyReward: 10,
@@ -97,8 +97,8 @@ export const gateDataStatistics: Record<
     inBattle: 1,
     points: 11,
     maxEnergy: 5500,
-    ticketsRequired: 18,
-    timeRequired: 820,
+    ticketsRequired: 20,
+    timeRequired: 984,
   },
   '2': {
     dailyReward: 11,
@@ -106,8 +106,8 @@ export const gateDataStatistics: Record<
     inBattle: 1,
     points: 12,
     maxEnergy: 6000,
-    ticketsRequired: 20,
-    timeRequired: 1048,
+    ticketsRequired: 25,
+    timeRequired: 1258,
   },
   '1': {
     dailyReward: 12,
@@ -115,7 +115,7 @@ export const gateDataStatistics: Record<
     inBattle: 1,
     points: 13,
     maxEnergy: 6500,
-    ticketsRequired: 22,
-    timeRequired: 1500,
+    ticketsRequired: 27,
+    timeRequired: 1800,
   },
 }
