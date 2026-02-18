@@ -1,5 +1,6 @@
 import { BustIcon } from '@/assets/icons/bust'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 import { ExtraBoostDrawer } from './extra-boost-drawer'
 
 export const BattleBustButtons = ({
@@ -9,6 +10,7 @@ export const BattleBustButtons = ({
   className?: string
   onAnimationEnd?: () => void
 }) => {
+  const { t } = useTranslation()
   return (
     <div
       className={cn('flex justify-center gap-4 h-10', className)}
@@ -18,7 +20,7 @@ export const BattleBustButtons = ({
         <span className="ml-1.5">
           <BustIcon />
         </span>
-        <span className="font-semibold">1 Bust</span>
+        <span className="font-semibold">{t('battle.bust.single')}</span>
       </div>
       <ExtraBoostDrawer />
     </div>

@@ -17,6 +17,7 @@ import {
 import { createFileRoute } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { zeroPad } from 'react-countdown'
+import { useTranslation } from 'react-i18next'
 
 export const Route = createFileRoute('/check-in')({
   component: RouteComponent,
@@ -24,6 +25,7 @@ export const Route = createFileRoute('/check-in')({
 
 function RouteComponent() {
   const { dailyRewardsQuery } = useCheckIn()
+  const { t } = useTranslation()
 
   const { data, isLoading, isError, error } = dailyRewardsQuery
 
@@ -38,11 +40,12 @@ function RouteComponent() {
   }
 
   if (isError || !data) {
+    const errorMessage = error?.message || t('check-in.error-fallback')
     return (
       <PageLayout useFooter={false}>
         <div className="flex items-center justify-center h-64">
           <p className="text-xl text-red-500">
-            Error: {error?.message || 'Something went wrong'}
+            {t('check-in.error', { message: errorMessage })}
           </p>
         </div>
       </PageLayout>
@@ -77,20 +80,24 @@ function RouteComponent() {
 }
 
 function CheckInHeader({ currentDay }: { currentDay: number }) {
+  const { t } = useTranslation()
   return (
     <header className="font-pixel mb-20 text-center text-[24px] font-normal text-[#FFFFFF] uppercase">
       <h1 className="mt-6 mb-10 leading-8">
-        your daily <br /> rewards
+        {t('check-in.title.line1')}
+        <br />
+        {t('check-in.title.line2')}
       </h1>
       <div className="font-pixel mb-2 text-[80px] leading-[120%] text-[#B6FF00] [text-shadow:0px_12.0067px_24.0134px_rgba(182,255,0,0.3),_0px_0px_72.0403px_#B6FF00]">
         <span>{zeroPad(currentDay)}</span>
       </div>
-      <h2>day check-in</h2>
+      <h2>{t('check-in.subtitle')}</h2>
     </header>
   )
 }
 
 const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
+  const { t } = useTranslation()
   const displayTime = convertTimestampToLargestUnit(
     rewards.time * 1000,
     false,
@@ -100,7 +107,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
   return (
     <section>
       <div className="font-inter mb-15 flex min-h-[104px] gap-3 px-5 text-center">
-        <CheckInInfoBlockItem label="Energy">
+        <CheckInInfoBlockItem label={t('check-in.labels.energy')}>
           <div className="absolute top-[-15px] left-1/2 -translate-1/2">
             <img src="/power-img.webp" alt="power" />
           </div>
@@ -108,7 +115,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
             <span className="mr-2.5 text-[#A45FFF]">+{rewards.energy}</span>
           </p>
         </CheckInInfoBlockItem>
-        <CheckInInfoBlockItem label="Time">
+        <CheckInInfoBlockItem label={t('check-in.labels.time')}>
           <div className="absolute top-[-15px] left-1/2 -translate-1/2">
             <img src="/clock-img.webp" alt="clock" />
           </div>
@@ -122,7 +129,7 @@ const CheckInInfoBlock = ({ rewards }: { rewards: CheckInRewards }) => {
           </p>
         </CheckInInfoBlockItem>
         {rewards.ticket > 0 && (
-          <CheckInInfoBlockItem label="Ticket">
+          <CheckInInfoBlockItem label={t('check-in.labels.ticket')}>
             <div className="absolute top-[-15px] left-1/2 -translate-1/2">
               <img src="/ticket-img.webp" alt="ticket" />
             </div>

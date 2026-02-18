@@ -340,8 +340,8 @@ export function MintSection() {
               45%
             </h2>
             <div className="flex flex-col text-sm">
-              <span>ALREADY</span>
-              <span>MINTED</span>
+              <span>{t('mint.already')}</span>
+              <span>{t('mint.minted')}</span>
             </div>
           </div>
           <div className="mt-6 px-4 relative">

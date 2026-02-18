@@ -1,14 +1,16 @@
-import { Link } from '@tanstack/react-router';
-import { ActionButton } from './action-button';
+import { Link } from '@tanstack/react-router'
+import { ActionButton } from './action-button'
+import { useTranslation } from 'react-i18next'
 
 export const UnlockGateCloseButton = () => {
+  const { t } = useTranslation()
   return (
     <Link to='/gate'>
       <div className='animate-slide-up-fade-4 fixed bottom-0 z-50 w-full max-w-[450px] bg-[#121312] px-4 pb-12'>
         <ActionButton className='font-pixel rounded-[16px] text-[#121312] uppercase'>
-          <span>Close</span>
+          <span>{t('common.close')}</span>
         </ActionButton>
       </div>
     </Link>
-  );
-};
+  )
+}

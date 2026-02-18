@@ -11,53 +11,7 @@ import { useAccountMe } from '@/hooks/api/use-account'
 import { cn } from '@/lib/utils'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useContext, useEffect, useState } from 'react'
-
-const slides = [
-  {
-    id: 1,
-    title: 'PLAY',
-    subtitle: 'AND EARN',
-    description: 'Get the best deals and benefits along the way',
-    buttonText: 'NEXT',
-    image: '/onboarding/first-slide-img.webp',
-    bgImage: '/onboarding/first-slide-bg.png',
-    highlightWords: ['PLAY', 'EARN'],
-  },
-  {
-    id: 2,
-    title: '2-level',
-    subtitle: 'referral system',
-    description: 'Get the best deals and benefits along the way',
-    buttonText: 'NEXT',
-    image: '/onboarding/second-slide-img.webp',
-    bgImage: '/onboarding/second-slide-bg.png',
-    highlightWords: ['referral'],
-  },
-  {
-    id: 3,
-    title: 'Complete',
-    subtitle: 'Daily tasks',
-    description: 'Earn time and unlock unique rewards!',
-    buttonText: 'NEXT',
-    image: '/onboarding/third-slide-img.webp',
-    bgImage: '/onboarding/third-slide-bg.png',
-    highlightWords: ['daily'],
-  },
-  {
-    id: 4,
-    title: 'Move through',
-    subtitle: 'the gates',
-    subtitle2: 'and get more',
-    description: 'Get the best deals and benefits along the way',
-    buttonText: 'NEXT',
-    image: '/onboarding/fourth-slide-img.webp',
-    bgImage: '/onboarding/fourth-slide-bg.png',
-    highlightWords: ['move', 'gates', 'get', 'more'],
-  },
-  {
-    id: 5,
-  },
-]
+import { useTranslation } from 'react-i18next'
 
 function renderHighlighted(text?: string, highlights: Array<string> = []) {
   if (!text) return null
@@ -85,11 +39,59 @@ export const Route = createFileRoute('/onboarding')({
 
 function OnboardingScreen() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [api, setApi] = useState<CarouselApi | undefined>()
   const [currentIndex, setCurrentIndex] = useState(0)
   const { accountQuery, finishOnboardingMutation } = useAccountMe()
   const { setCurrentOnboardingSlide, setIsOnboardingCompleted } =
     useContext(AppContext)
+
+  const slides = [
+    {
+      id: 1,
+      title: t('onboarding.slides.1.title'),
+      subtitle: t('onboarding.slides.1.subtitle'),
+      image: '/onboarding/first-slide-img.webp',
+      bgImage: '/onboarding/first-slide-bg.png',
+      highlightWords: t('onboarding.slides.1.highlight', {
+        returnObjects: true,
+      }) as string[],
+    },
+    {
+      id: 2,
+      title: t('onboarding.slides.2.title'),
+      subtitle: t('onboarding.slides.2.subtitle'),
+      image: '/onboarding/second-slide-img.webp',
+      bgImage: '/onboarding/second-slide-bg.png',
+      highlightWords: t('onboarding.slides.2.highlight', {
+        returnObjects: true,
+      }) as string[],
+    },
+    {
+      id: 3,
+      title: t('onboarding.slides.3.title'),
+      subtitle: t('onboarding.slides.3.subtitle'),
+      image: '/onboarding/third-slide-img.webp',
+      bgImage: '/onboarding/third-slide-bg.png',
+      highlightWords: t('onboarding.slides.3.highlight', {
+        returnObjects: true,
+      }) as string[],
+    },
+    {
+      id: 4,
+      title: t('onboarding.slides.4.title'),
+      subtitle: t('onboarding.slides.4.subtitle'),
+      subtitle2: t('onboarding.slides.4.subtitle2'),
+      image: '/onboarding/fourth-slide-img.webp',
+      bgImage: '/onboarding/fourth-slide-bg.png',
+      highlightWords: t('onboarding.slides.4.highlight', {
+        returnObjects: true,
+      }) as string[],
+    },
+    {
+      id: 5,
+    },
+  ]
 
   useEffect(() => {
     if (accountQuery.data && !accountQuery.data.isFinishOnboarding)
@@ -229,14 +231,17 @@ function OnboardingScreen() {
                       )}
                     </h1>
                     <p className="text-[#FFFFFF]/60 text-sm">
-                      {/* {slide.description} */}
                       {slide.id === 3 ? (
                         <>
-                          Earn time and unlock <br /> unique rewards!
+                          {t('onboarding.slides.3.description.line1')}
+                          <br />
+                          {t('onboarding.slides.3.description.line2')}
                         </>
                       ) : (
                         <>
-                          Get the best deals and benefits <br /> along the way
+                          {t('onboarding.slides.1.description.line1')}
+                          <br />
+                          {t('onboarding.slides.1.description.line2')}
                         </>
                       )}
                     </p>
@@ -250,7 +255,7 @@ function OnboardingScreen() {
       {slides[currentIndex].id !== 5 && (
         <div className="fixed bottom-0 z-50 w-full max-w-[450px] bg-[#121312] px-4 pb-12 left-1/2 -translate-x-1/2">
           <ActionButton onClick={handleNext} className="text-[#000000]">
-            NEXT
+            {t('common.next')}
           </ActionButton>
         </div>
       )}

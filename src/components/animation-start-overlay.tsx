@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { FlickeringGrid } from './magicui/flickering-grid'
+import { useTranslation } from 'react-i18next'
 
 interface AnimationStartOverlayProps {
   className?: string,
@@ -10,6 +11,7 @@ export function AnimationStartOverlay({
   className,
   onStart,
 }: AnimationStartOverlayProps) {
+  const { t } = useTranslation()
   return (
     <div className={cn("absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#121312]", className)}>
       <FlickeringGrid
@@ -36,9 +38,14 @@ export function AnimationStartOverlay({
             />
           </svg>
           <span className="text-[23px] leading-[96%]">
-            <span className="text-[#B6FF00]">Tap</span> to
+            <span className="text-[#B6FF00]">
+              {t('animation-start-overlay.tap')}
+            </span>{' '}
+            {t('animation-start-overlay.to')}
             <br />
-            <span className="text-[#B6FF00]">start</span>
+            <span className="text-[#B6FF00]">
+              {t('animation-start-overlay.start')}
+            </span>
           </span>
         </span>
         <svg

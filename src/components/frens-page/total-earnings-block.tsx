@@ -61,7 +61,9 @@ export const TotalEarningsBlock = ({
             >
               {displayEarnings}
             </span>
-            <span className="ml-1 text-[#FFFFFF66]">D</span>
+            <span className="ml-1 text-[#FFFFFF66]">
+              {t('time-short.day')}
+            </span>
           </div>
         </div>
       </div>

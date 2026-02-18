@@ -1,5 +1,15 @@
 {
     "back": "Back",
+    "common": {
+        "close": "Close",
+        "next": "Next",
+        "select-value": "Select value"
+    },
+    "currency": {
+        "ton": "Ton",
+        "ton-upper": "TON",
+        "stars": "Stars"
+    },
     "ad-button": {
         "title": "Get +{{amount}} reward"
     },
@@ -160,6 +170,35 @@
                     }
                 }
             }
+        },
+        "legacy": {
+            "title": "Shop",
+            "subtitle": "Buy items to get more rewards",
+            "pagination": "{{current}} of {{count}}",
+            "items": {
+                "energy-drink": {
+                    "title": "ENERGY DRINK",
+                    "description": "+1 energy for 24 hours",
+                    "price": "100 NYM"
+                },
+                "more-swipes": {
+                    "title": "MORE SWIPES",
+                    "description": "+10 swipes",
+                    "price": "100 NYM"
+                },
+                "more-battles": {
+                    "title": "MORE BATTLES",
+                    "description": "+10 battles",
+                    "price": "100 NYM"
+                }
+            },
+            "league": {
+                "title": "LEAGUE",
+                "subtitle": "Upgrade your league to get more rewards",
+                "tier": "BRONZE",
+                "price": "1000 NYM",
+                "bonus": "+1 swipe per hour"
+            }
         }
     },
     "referrals-page": {
@@ -180,6 +219,299 @@
         "button": "Send gift {{amount}} {{value}}",
         "send-gift": {
             "title": "Send a gift\nto fren"
+        }
+    },
+    "onboarding": {
+        "slides": {
+            "1": {
+                "title": "PLAY",
+                "subtitle": "AND EARN",
+                "description": {
+                    "line1": "Get the best deals and benefits",
+                    "line2": "along the way"
+                },
+                "highlight": [
+                    "PLAY",
+                    "EARN"
+                ]
+            },
+            "2": {
+                "title": "2-level",
+                "subtitle": "referral system",
+                "highlight": [
+                    "referral"
+                ]
+            },
+            "3": {
+                "title": "Complete",
+                "subtitle": "Daily tasks",
+                "description": {
+                    "line1": "Earn time and unlock",
+                    "line2": "unique rewards!"
+                },
+                "highlight": [
+                    "daily"
+                ]
+            },
+            "4": {
+                "title": "Move through",
+                "subtitle": "the gates",
+                "subtitle2": "and get more",
+                "highlight": [
+                    "move",
+                    "gates",
+                    "get",
+                    "more"
+                ]
+            }
+        }
+    },
+    "battle": {
+        "errors": {
+            "not-enough-time": "Not enough time for bet"
+        },
+        "vs": "VS",
+        "bust": {
+            "single": "1 Bust"
+        }
+    },
+    "battle-result": {
+        "title": {
+            "winner": {
+                "line1": "ABSOLUTE",
+                "line2": "CHAMPION!"
+            },
+            "loser": "Don't worry!"
+        },
+        "subtitle": {
+            "winner": "You showed everyone how to play!",
+            "loser": "You'll be lucky next time."
+        },
+        "reward": {
+            "winner": "Your reward",
+            "loser": "You lose"
+        },
+        "opponent": {
+            "winner": "Winner",
+            "loser": "Loser"
+        },
+        "buttons": {
+            "close": "Close",
+            "new-battle": "New battle"
+        }
+    },
+    "check-in": {
+        "title": {
+            "line1": "your daily",
+            "line2": "rewards"
+        },
+        "subtitle": "day check-in",
+        "labels": {
+            "energy": "Energy",
+            "time": "Time",
+            "ticket": "Ticket"
+        },
+        "error": "Error: {{message}}",
+        "error-fallback": "Something went wrong"
+    },
+    "auth-error": {
+        "title": "Open App in Telegram",
+        "button": "OPEN APP"
+    },
+    "extra-boost": {
+        "trigger": "Get Extra",
+        "title": "get extra bust",
+        "description": "Increase your chances of winning",
+        "label": "EXTRA BOOST"
+    },
+    "animation-start-overlay": {
+        "tap": "Tap",
+        "to": "to",
+        "start": "start"
+    },
+    "transfer": {
+        "status": {
+            "transferring": "Transferring"
+        },
+        "errors": {
+            "self": "You can't send to yourself",
+            "generic": "Error happened due to transfer"
+        }
+    },
+    "mint": {
+        "already": "ALREADY",
+        "minted": "MINTED"
+    },
+    "tasks": {
+        "tabs": {
+            "new": "NEW TASKS",
+            "completed": "COMPLETED",
+            "title": "TASKS"
+        },
+        "empty": {
+            "all": "All tasks",
+            "none": "No tasks",
+            "completed": "completed"
+        },
+        "errors": {
+            "loading": "Error loading tasks.",
+            "only-telegram": "This action is only available in the Telegram Mobile App."
+        },
+        "info": {
+            "all-completed": "All tasks are already completed."
+        },
+        "ads": {
+            "session-expired": {
+                "title": "Session expired",
+                "message": "For correct work of ads and rewards, you need to restart the app.",
+                "close": "Close app"
+            }
+        }
+    },
+    "daily-combo": {
+        "title": "daily combo",
+        "available-via": "Available via:",
+        "complete-all": "Complete all tasks and get an extra:",
+        "extra-hours": "H",
+        "buttons": {
+            "pending": "pending",
+            "open": "open",
+            "post": "post",
+            "go": "go"
+        },
+        "errors": {
+            "loading": "Error loading daily combo.",
+            "share-not-supported": "Sharing stories is not supported in your browser."
+        },
+        "info": {
+            "all-completed": "All daily combo tasks are already completed."
+        },
+        "session-expired": {
+            "title": "Session expired",
+            "message": "For correct work of ads and rewards, you need to restart the app.",
+            "close": "Close app"
+        }
+    },
+    "time-short": {
+        "week": "1W",
+        "month": "1M",
+        "year": "1Y",
+        "min": "MIN",
+        "day": "D"
+    },
+    "hero": {
+        "swipe": {
+            "card": {
+                "title": "Swipes",
+                "description": "let's see how",
+                "subdescription": "you react"
+            },
+            "drawer": {
+                "title": "SWIPES",
+                "description": {
+                    "line1": "Swipe every day to build your time bank.",
+                    "line2": "Skip bombs, grab multipliers, win big!"
+                }
+            }
+        },
+        "battle": {
+            "card": {
+                "title": "Battle",
+                "description": "are you strong",
+                "subdescription": "enough?"
+            },
+            "drawer": {
+                "title": "BATTLE",
+                "description": {
+                    "line1": "Fight against other players!",
+                    "line2": "Bet time, win big, take it all"
+                }
+            }
+        },
+        "tasks": {
+            "card": {
+                "label": "Tasks"
+            },
+            "drawer": {
+                "title": "TASKS",
+                "description": {
+                    "line1": "Complete daily and special tasks.",
+                    "line2": "Earn time and unlock unique rewards!"
+                }
+            }
+        },
+        "referrals": {
+            "card": {
+                "label": "Referrals"
+            },
+            "drawer": {
+                "title": "REFERRALS",
+                "description": {
+                    "line1": "Get paid for every friend you invite",
+                    "line2": "and every friend they bring!"
+                }
+            }
+        },
+        "star-board": {
+            "card": {
+                "label": "Star Board"
+            },
+            "drawer": {
+                "title": "STAR BOARD",
+                "description": {
+                    "line1": "Multiple leaderboards, multiple chances to shine.",
+                    "line2": "Find your place among the stars!"
+                }
+            }
+        },
+        "stars-giveaway": {
+            "title": "Stars Giveaway",
+            "subtitle": "The giveaway is happening at launch.",
+            "already-joined": "already joined",
+            "cta": "JOIN US"
+        }
+    },
+    "gate": {
+        "jump-next": "JUMP TO THE NEXT GATE",
+        "locked": {
+            "title": "GATE LOCKED",
+            "description": {
+                "line1": "You don't have enough resources to open",
+                "line2": "the next gate."
+            }
+        },
+        "open": {
+            "title": "OPEN GATE",
+            "after": "After opening gate, you'll get:"
+        },
+        "units": {
+            "days": "DAYS",
+            "tickets": "TICKETS",
+            "hours": "HOURS",
+            "minutes": "MINUTES"
+        },
+        "rewards": {
+            "daily": "Daily reward",
+            "farming": "Farming",
+            "max-energy": "Max energy",
+            "in-swap": "In Swap"
+        },
+        "go-to": "GO TO {{lvl}} GATE"
+    },
+    "unfreeze": {
+        "title": {
+            "emphasis": "Unfreeze",
+            "after": "your",
+            "line2": "account"
+        },
+        "description": {
+            "line1": "Swipe every day to build your time bank.",
+            "line2": "Skip bombs, grab multipliers, win big!"
+        },
+        "button": "UNFREEZE",
+        "errors": {
+            "insufficient-balance": "Insufficient balance",
+            "payment": "An error occurred during payment"
         }
     }
 }

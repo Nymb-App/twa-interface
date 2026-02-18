@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
 
 export function ItemTime({ className }: { className?: string }) {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   return (
     <DrawerTime
       className={cn(
@@ -39,11 +39,11 @@ export function ItemTime({ className }: { className?: string }) {
             {t('shop-page.items.time.title')}
           </span>
           <span className="text-[#B6FF00] text-lg inline-flex items-center gap-1">
-            <span>1W</span>
+            <span>{t('time-short.week')}</span>
             <span className="text-[#B6FF00]/40 text-xs">/</span>
-            <span>1M</span>
+            <span>{t('time-short.month')}</span>
             <span className="text-[#B6FF00]/40 text-xs">/</span>
-            <span>1Y</span>
+            <span>{t('time-short.year')}</span>
           </span>
         </div>
       </div>

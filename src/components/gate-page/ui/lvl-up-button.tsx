@@ -19,9 +19,11 @@ import { useMemo } from 'react'
 import { gateDataStatistics } from '../gate-data-statistics'
 import { ItemTicket } from './item-ticket'
 import { ItemTime } from './item-time'
+import { useTranslation } from 'react-i18next'
 
 export function LvlUpButton({ className }: { className?: string }) {
   const { accountQuery, isLoading, lvlUpMutation } = useAccountMe()
+  const { t } = useTranslation()
 
   const accountData = useMemo(() => {
     if (!accountQuery.data) {
@@ -147,7 +149,7 @@ function LvlUpButtonWithShop({
           className,
         )}
       >
-        JUMP TO THE NEXT GATE
+        {t('gate.jump-next')}
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
@@ -156,12 +158,12 @@ function LvlUpButtonWithShop({
         </DrawerClose>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel text-white text-2xl">
-            GATE LOCKED
+            {t('gate.locked.title')}
           </DrawerTitle>
           <DrawerDescription className="text-white/60 font-inter text-sm">
-            You don&apos;t have enough resources to open
+            {t('gate.locked.description.line1')}
             <br />
-            the next gate.
+            {t('gate.locked.description.line2')}
           </DrawerDescription>
         </DrawerHeader>
         <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-0 sm:px-10">
@@ -172,7 +174,9 @@ function LvlUpButtonWithShop({
               <span className="text-white/40 font-inter"> / </span>
               {allowedTime}
             </span>
-            <span className="text-white/40 text-xs">DAYS</span>
+            <span className="text-white/40 text-xs">
+              {t('gate.units.days')}
+            </span>
           </div>
           <div className="flex flex-col gap-1 justify-center items-center">
             <img src="/ticket-img.webp" className="size-10" />
@@ -181,7 +185,9 @@ function LvlUpButtonWithShop({
               <span className="text-white/40 font-inter"> / </span>
               {allowedTickets}
             </span>
-            <span className="text-white/40 text-xs">TICKETS</span>
+            <span className="text-white/40 text-xs">
+              {t('gate.units.tickets')}
+            </span>
           </div>
         </div>
 
@@ -192,7 +198,7 @@ function LvlUpButtonWithShop({
 
         <DrawerFooter className="relative mt-6 mb-4">
           <DrawerClose className="w-full py-4 font-pixel text-black text-xl bg-gradient-to-b from-white to-[#999999] rounded-2xl cursor-pointer">
-            CLOSE
+            {t('common.close')}
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -213,6 +219,7 @@ function LvlUpButtonWithNextGateNavigation({
   ticketAmount?: number
   onClick?: () => void
 }) {
+  const { t } = useTranslation()
   const nextLvl = useMemo(() => {
     if (!lvl) return 11
     return lvl - 1 > 0 ? lvl - 1 : 1
@@ -230,7 +237,7 @@ function LvlUpButtonWithNextGateNavigation({
           className,
         )}
       >
-        JUMP TO THE NEXT GATE
+        {t('gate.jump-next')}
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] !rounded-t-[32px] border-t-2 border-[#2f302e] pt-3">
@@ -248,14 +255,14 @@ function LvlUpButtonWithNextGateNavigation({
         </DrawerClose>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel text-white text-2xl">
-            OPEN GATE
+            {t('gate.open.title')}
           </DrawerTitle>
         </DrawerHeader>
         <div className="relative inline-flex justify-around items-center w-full mt-6 font-pixel text-white px-0 sm:px-10">
           <div className="flex flex-col gap-1 justify-center items-center w-[80px]">
             <img src="/clock-img.webp" className="size-10" />
             <span className="text-2xl">{timeAmount}</span>
-            <span className="text-base">DAYS</span>
+            <span className="text-base">{t('gate.units.days')}</span>
           </div>
 
           <div className="relative flex flex-col gap-1 justify-center items-center rounded-4xl size-[88px] outline-2 outline-[#B6FF00] bg-[#161816] shadow-[0_0_80px_#B6FF00]/60">
@@ -278,12 +285,12 @@ function LvlUpButtonWithNextGateNavigation({
             <span className="text-2xl">
               {ticketAmount > 99 ? '99+' : ticketAmount}
             </span>
-            <span className="text-base">TICKETS</span>
+            <span className="text-base">{t('gate.units.tickets')}</span>
           </div>
         </div>
         <div className="mt-8">
           <h3 className="text-white/60 text-center text-sm">
-            After opening gate, you'll get:
+            {t('gate.open.after')}
           </h3>
 
           <div className="grid grid-cols-2 gap-4 mt-6 px-4">
@@ -292,11 +299,13 @@ function LvlUpButtonWithNextGateNavigation({
                 <span className="text-2xl text-[#B6FF00]">
                   {statistics.dailyReward}
                 </span>
-                <span className="text-sm text-white/40">DAYS</span>
+                <span className="text-sm text-white/40">
+                  {t('gate.units.days')}
+                </span>
               </div>
 
               <span className="text-white text-sm font-inter">
-                Daily reward
+                {t('gate.rewards.daily')}
               </span>
             </div>
 
@@ -305,10 +314,14 @@ function LvlUpButtonWithNextGateNavigation({
                 <span className="text-2xl text-[#B6FF00]">
                   {statistics.mining}
                 </span>
-                <span className="text-sm text-white/40">HOURS</span>
+                <span className="text-sm text-white/40">
+                  {t('gate.units.hours')}
+                </span>
               </div>
 
-              <span className="text-white text-sm font-inter">Farming</span>
+              <span className="text-white text-sm font-inter">
+                {t('gate.rewards.farming')}
+              </span>
             </div>
 
             <div className="w-full flex flex-col gap-1 justify-center items-center font-pixel bg-gradient-to-b from-white/0 to-white/5 rounded-2xl p-4 backdrop-blur-[2px]">
@@ -318,7 +331,9 @@ function LvlUpButtonWithNextGateNavigation({
                 </span>
               </div>
 
-              <span className="text-white text-sm font-inter">Max energy</span>
+              <span className="text-white text-sm font-inter">
+                {t('gate.rewards.max-energy')}
+              </span>
             </div>
 
             <div className="w-full flex flex-col gap-1 justify-center items-center font-pixel bg-gradient-to-b from-white/0 to-white/5 rounded-2xl p-4 backdrop-blur-[2px]">
@@ -326,10 +341,14 @@ function LvlUpButtonWithNextGateNavigation({
                 <span className="text-2xl text-[#B6FF00]">
                   {statistics.points}
                 </span>
-                <span className="text-sm text-white/40">MINUTES</span>
+                <span className="text-sm text-white/40">
+                  {t('gate.units.minutes')}
+                </span>
               </div>
 
-              <span className="text-white text-sm font-inter">In Swap</span>
+              <span className="text-white text-sm font-inter">
+                {t('gate.rewards.in-swap')}
+              </span>
             </div>
           </div>
         </div>
@@ -340,7 +359,7 @@ function LvlUpButtonWithNextGateNavigation({
             onClick={onClick}
             className="w-full py-4 font-pixel text-black text-xl bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] rounded-2xl cursor-pointer text-center"
           >
-            GO TO {nextLvl} GATE
+            {t('gate.go-to', { lvl: nextLvl })}
           </Link>
         </DrawerFooter>
       </DrawerContent>

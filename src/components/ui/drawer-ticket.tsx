@@ -284,7 +284,7 @@ export function DrawerTicket({
             <Select defaultValue="ton">
               <SelectTrigger className="text-[12px] font-pixel uppercase rounded-[8px] text-white/40 border-none starboard-result-block-bg">
                 <div className="flex items-center gap-2">
-                  <SelectValue placeholder="Select value" />
+                  <SelectValue placeholder={t('common.select-value')} />
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-[#121312] border-none !text-white/40 font-pixel">
@@ -293,12 +293,12 @@ export function DrawerTicket({
                   value="ton"
                 >
                   <div className="flex items-center gap-2">
-                    <TonIcon /> <span>Ton</span>
+                    <TonIcon /> <span>{t('currency.ton')}</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="stars" className="" disabled>
                   <div className="flex items-center gap-2">
-                    <TelegramStarIcon /> <span>Stars</span>
+                    <TelegramStarIcon /> <span>{t('currency.stars')}</span>
                   </div>
                 </SelectItem>
               </SelectContent>

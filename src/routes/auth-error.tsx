@@ -1,14 +1,16 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { FlickeringGrid } from '@/components/magicui/flickering-grid';
-import { PageLayout } from '@/components/ui/page-layout';
-import { TELEGRAM_APP_URL } from '@/lib/constants';
-import { Button } from '@/components/ui/button';
+import { FlickeringGrid } from '@/components/magicui/flickering-grid'
+import { PageLayout } from '@/components/ui/page-layout'
+import { TELEGRAM_APP_URL } from '@/lib/constants'
+import { Button } from '@/components/ui/button'
+import { useTranslation } from 'react-i18next'
 
 export const Route = createFileRoute('/auth-error')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const { t } = useTranslation()
   return (
     <PageLayout
       className='top-0 min-h-screen w-full max-w-full relative'
@@ -29,7 +31,7 @@ function RouteComponent() {
 
       <div className='relative top-1/3 -translate-y-1/2 flex flex-col gap-4 items-center justify-center'>
         <h1 className='text-2xl font-bold'>
-          Open App in Telegram
+          {t('auth-error.title')}
         </h1>
         <img
           className='mt-8 size-52 rounded-lg'
@@ -43,10 +45,10 @@ function RouteComponent() {
           target='_blank'
         >
           <Button variant={'nymb-green'} className='w-full h-14'>
-            <span className='mix-blend-difference'>OPEN APP</span>
+            <span className='mix-blend-difference'>{t('auth-error.button')}</span>
           </Button>
         </Link>
       </div>
     </PageLayout>
-  );
+  )
 }

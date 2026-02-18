@@ -372,7 +372,9 @@ function GameFinished({
               )}
             </CountUp>
 
-            <span className="text-sm text-white/50">MIN</span>
+            <span className="text-sm text-white/50">
+              {t('time-short.min')}
+            </span>
           </div>
         </div>
       </div>

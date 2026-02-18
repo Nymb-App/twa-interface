@@ -6,6 +6,7 @@ import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { useBattle } from '@/hooks/api/use-battle'
 import { createFileRoute, useRouter, useSearch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 export const Route = createFileRoute('/minigames/battle')({
@@ -17,6 +18,7 @@ export const Route = createFileRoute('/minigames/battle')({
 })
 
 function RouteComponent() {
+  const { t } = useTranslation()
   const search = useSearch({ from: '/minigames/battle' })
   const [, setIsAnimationsEnd] = useState(false)
 
@@ -69,7 +71,7 @@ function RouteComponent() {
     if (time && time < Math.floor(Date.now() / 1000) + Number(search.bet)) {
       resetGame()
       forceDisconnect(Number(search.invitedBy))
-      toast.error('Not enough time for bet')
+      toast.error(t('battle.errors.not-enough-time'))
       return
     }
 

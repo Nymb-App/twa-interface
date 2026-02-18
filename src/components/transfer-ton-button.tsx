@@ -56,14 +56,14 @@ export function TransferTonButton({
 
   useEffect(() => {
     if (recipient.toLowerCase() === address.toLowerCase()) {
-      onError?.({ message: "You can't send to yourself" })
+      onError?.({ message: t('transfer.errors.self') })
       return
     }
     if (isTransactionError) {
-      onError?.({ message: 'Error happened due to transfer' })
+      onError?.({ message: t('transfer.errors.generic') })
       return
     }
-  }, [address, isTransactionError, onError])
+  }, [address, isTransactionError, onError, t])
 
   useEffect(() => {
     if (!isTransactionLoading) {
@@ -139,7 +139,7 @@ export function TransferTonButton({
       >
         {isTransactionLoading ? (
           <div className="inline-flex justify-center items-center gap-2 mix-blend-difference text-[#B6FF00]">
-            <span>Transferring</span>
+            <span>{t('transfer.status.transferring')}</span>
             <span className="flex items-center text-2xl tracking-tight">
               <span className="animate-bounce [animation-delay:-0.3s]">.</span>
               <span className="animate-bounce [animation-delay:-0.15s]">.</span>

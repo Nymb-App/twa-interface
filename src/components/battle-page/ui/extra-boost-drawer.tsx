@@ -23,6 +23,7 @@ import {
 import { ITEM_EXTRA_BOOST, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
@@ -31,6 +32,7 @@ import { useBuyExtraBoost } from '@/hooks/api/use-shop'
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { buyExtraBoost } = useBuyExtraBoost()
+  const { t } = useTranslation()
   // const { accountQuery } = useAccountMe()
   // const { user } = useAccount()
   const [play] = useSound('/sounds/Button.aac')
@@ -61,7 +63,7 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
         <span className="ml-[6px]">
           <BustIcon strokeColor="#B6FF00" />
         </span>
-        <span className="text-[#B6FF00]">Get Extra</span>
+        <span className="text-[#B6FF00]">{t('extra-boost.trigger')}</span>
       </DrawerTrigger>
 
       <DrawerContent className="bg-[#161714] rounded-t-[32px]! border-t-2 border-[#2f302e] pt-3">
@@ -76,10 +78,10 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
         </button>
         <DrawerHeader className="text-center">
           <DrawerTitle className="font-pixel uppercase text-white text-2xl">
-            get extra bust
+            {t('extra-boost.title')}
           </DrawerTitle>
           <DrawerDescription className="text-white/60 font-inter text-sm">
-            Increase your chances of winning
+            {t('extra-boost.description')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -106,7 +108,9 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
             <span className="text-[#288CFF] text-3xl relative bottom-2 [text-shadow:0px_0px_16px_#288CFF]">
               +1
             </span>
-            <span className="text-white/40 text-xs block">EXTRA BOOST</span>
+            <span className="text-white/40 text-xs block">
+              {t('extra-boost.label')}
+            </span>
           </div>
 
           <span className="font-pixel text-4xl text-white/40">:</span>
@@ -116,7 +120,7 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
             <Select defaultValue="ton">
               <SelectTrigger className="text-[12px] font-pixel uppercase rounded-[8px] text-white/40 border-none starboard-result-block-bg">
                 <div className="flex items-center gap-2">
-                  <SelectValue placeholder="Select value" />
+                  <SelectValue placeholder={t('common.select-value')} />
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-[#121312] border-none !text-white/40 font-pixel">
@@ -125,12 +129,12 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
                   value="ton"
                 >
                   <div className="flex items-center gap-2">
-                    <TonIcon /> <span>Ton</span>
+                    <TonIcon /> <span>{t('currency.ton')}</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="stars" className="" disabled>
                   <div className="flex items-center gap-2">
-                    <TelegramStarIcon /> <span>Stars</span>
+                    <TelegramStarIcon /> <span>{t('currency.stars')}</span>
                   </div>
                 </SelectItem>
               </SelectContent>

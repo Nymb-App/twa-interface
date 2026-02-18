@@ -3,6 +3,7 @@ import { miniApp, popup, shareStory } from '@tma.js/sdk'
 import { useCallback, useMemo } from 'react'
 import Countdown from 'react-countdown'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
 import { TasksDailyComboNames, useTasks } from '@/hooks/api/use-tasks'
 import {
@@ -22,6 +23,7 @@ import { LuTicket } from 'react-icons/lu'
 import { TbBrandTelegram, TbBrandX } from 'react-icons/tb'
 
 export function TasksDaily() {
+  const { t } = useTranslation()
   const {
     dailyComboQuery: { data: dailyCombo, isLoading, isError },
     completeTask,
@@ -54,10 +56,15 @@ export function TasksDaily() {
       ) {
         popup
           .show({
-            title: 'Session expired',
-            message:
-              'For correct work of ads and rewards, you need to restart the app.',
-            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+            title: t('daily-combo.session-expired.title'),
+            message: t('daily-combo.session-expired.message'),
+            buttons: [
+              {
+                id: 'close',
+                type: 'default',
+                text: t('daily-combo.session-expired.close'),
+              },
+            ],
           })
           .then((buttonId) => {
             if (buttonId === 'close') {
@@ -85,12 +92,12 @@ export function TasksDaily() {
       //   )
       // }
       if (isAllTasksCompleted) {
-        return toast.info('All daily combo tasks are already completed.')
+        return toast.info(t('daily-combo.info.all-completed'))
       }
 
       if (taskName === TasksDailyComboNames.PostTelegramStory) {
         if (!shareStory.isAvailable()) {
-          toast.error('Sharing stories is not supported in your browser.')
+          toast.error(t('daily-combo.errors.share-not-supported'))
           return
         }
         shareStory(`${SELF_HOST_URL}/telegram/stories.jpg`, {
@@ -138,7 +145,7 @@ export function TasksDaily() {
 
       completeTask({ taskName })
     },
-    [isAllTasksCompleted, completeTask, show],
+    [isAllTasksCompleted, completeTask, show, t],
   )
 
   // useEffect(() => {
@@ -152,7 +159,7 @@ export function TasksDaily() {
     return (
       <section className="-mt-4">
         <div className="font-pixel mb-3 flex justify-center leading-6 font-[18px] uppercase">
-          <h1 className="ml-4 text-lg">daily combo</h1>
+          <h1 className="ml-4 text-lg">{t('daily-combo.title')}</h1>
         </div>
         <div className="starboard-result-block-bg relative mb-6 rounded-[14px] px-4 py-3">
           <div className="flex justify-evenly gap-2">
@@ -177,10 +184,10 @@ export function TasksDaily() {
     return (
       <section className="-mt-4">
         <div className="font-pixel mb-3 flex justify-center leading-6 font-[18px] uppercase">
-          <h1 className="ml-4 text-lg">daily combo</h1>
+          <h1 className="ml-4 text-lg">{t('daily-combo.title')}</h1>
         </div>
         <div className="starboard-result-block-bg relative mb-6 rounded-[14px] px-4 py-3">
-          Error loading daily combo.
+          {t('daily-combo.errors.loading')}
         </div>
       </section>
     )
@@ -220,7 +227,9 @@ export function TasksDaily() {
             const format = (value: number) => String(value).padStart(2, '0')
             return (
               <div className="text-center text-white">
-                <span className="font-inter text-sm">Available via:</span>
+                <span className="font-inter text-sm">
+                  {t('daily-combo.available-via')}
+                </span>
                 <br />
                 <span className="font-pixel text-xl">
                   {format(totalHours)}:{format(minutes)}:{format(seconds)}
@@ -237,11 +246,11 @@ export function TasksDaily() {
           isAllTasksCompleted && 'hidden',
         )}
       >
-        Complete all tasks and get an extra:
+        {t('daily-combo.complete-all')}
         <span className="font-pixel relative ml-4 leading-[120%] text-[#B6FF00] uppercase">
           <span className="absolute top-px -left-3">+</span>
           <span>12</span>
-          <span className="ml-1.5">H</span>
+          <span className="ml-1.5">{t('daily-combo.extra-hours')}</span>
         </span>
       </p>
     </div>
@@ -280,20 +289,20 @@ const TaskDailyCard = ({
 
   const formatedButtonLabel = useMemo(() => {
     if (status === 'pending') {
-      return status
+      return t('daily-combo.buttons.pending')
     }
 
     switch (name) {
       case TasksDailyComboNames.WatchAd:
       case TasksDailyComboNames.ViewTwitterNews:
       case TasksDailyComboNames.ViewTelegramNews:
-        return 'open'
+        return t('daily-combo.buttons.open')
       case TasksDailyComboNames.PostTelegramStory:
-        return 'post'
+        return t('daily-combo.buttons.post')
       default:
-        return 'go'
+        return t('daily-combo.buttons.go')
     }
-  }, [name, status])
+  }, [name, status, t])
 
   return (
     <div

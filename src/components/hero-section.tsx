@@ -22,6 +22,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from './ui/drawer'
+import { useTranslation } from 'react-i18next'
 
 export function HeroSection() {
   return (
@@ -51,6 +52,7 @@ export function HeroSection() {
 }
 
 function SwipeCardDrawer() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
@@ -167,9 +169,9 @@ function SwipeCardDrawer() {
           <SwipeCard
             className="w-full"
             classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
-            title="Swipes"
-            description={"let's see how"}
-            subdescription="you react"
+            title={t('hero.swipe.card.title')}
+            description={t('hero.swipe.card.description')}
+            subdescription={t('hero.swipe.card.subdescription')}
           />
         ) : (
           <GameCard
@@ -177,9 +179,9 @@ function SwipeCardDrawer() {
             placeholderSrc="/lottie-placeholder/minigames/slide.webp"
             className="w-full"
             classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
-            title="Swipes"
-            description={"let's see how"}
-            subdescription="you react"
+            title={t('hero.swipe.card.title')}
+            description={t('hero.swipe.card.description')}
+            subdescription={t('hero.swipe.card.subdescription')}
             animationData={'/lottie/swipe2.json'}
           />
         )}
@@ -226,16 +228,18 @@ function SwipeCardDrawer() {
         </div>
 
         <div className="p-4">
-          <h3 className="font-pixel text-3xl text-white text-center">SWIPES</h3>
+          <h3 className="font-pixel text-3xl text-white text-center">
+            {t('hero.swipe.drawer.title')}
+          </h3>
           <p className="text-white/60 font-inter text-sm text-center mt-2">
-            Swipe every day to build your time bank.
+            {t('hero.swipe.drawer.description.line1')}
             <br />
-            Skip bombs, grab multipliers, win big!
+            {t('hero.swipe.drawer.description.line2')}
           </p>
         </div>
         <DrawerFooter className="w-full px-5 mb-3">
           <DrawerClose className="cursor-pointer font-pixel text-black text-lg w-full px-8 py-4 bg-gradient-to-b from-white to-[#999999] rounded-2xl">
-            CLOSE
+            {t('common.close')}
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -244,6 +248,7 @@ function SwipeCardDrawer() {
 }
 
 function BattleCardDrawer() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
@@ -340,9 +345,9 @@ function BattleCardDrawer() {
         <BattleCard
           className="w-full"
           classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
-          title="Battle"
-          description="are you strong"
-          subdescription="enough?"
+          title={t('hero.battle.card.title')}
+          description={t('hero.battle.card.description')}
+          subdescription={t('hero.battle.card.subdescription')}
         />
       </DrawerTrigger>
       <DrawerContent
@@ -387,16 +392,18 @@ function BattleCardDrawer() {
         </div>
 
         <div className="p-4">
-          <h3 className="font-pixel text-3xl text-white text-center">BATTLE</h3>
+          <h3 className="font-pixel text-3xl text-white text-center">
+            {t('hero.battle.drawer.title')}
+          </h3>
           <p className="text-white/60 font-inter text-sm text-center mt-2">
-            Fight against other players!
+            {t('hero.battle.drawer.description.line1')}
             <br />
-            Bet time, win big, take it all
+            {t('hero.battle.drawer.description.line2')}
           </p>
         </div>
         <DrawerFooter className="w-full px-5 mb-3">
           <DrawerClose className="cursor-pointer font-pixel text-black text-lg w-full px-8 py-4 bg-gradient-to-b from-white to-[#999999] rounded-2xl">
-            CLOSE
+            {t('common.close')}
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -405,6 +412,7 @@ function BattleCardDrawer() {
 }
 
 function TasksCardDrawer() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
@@ -501,7 +509,9 @@ function TasksCardDrawer() {
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <TasksIcon className="size-8" />
-            <span className="text-xs text-white/60">Tasks</span>
+            <span className="text-xs text-white/60">
+              {t('hero.tasks.card.label')}
+            </span>
           </div>
         </Card>
       </DrawerTrigger>
@@ -547,16 +557,18 @@ function TasksCardDrawer() {
         </div>
 
         <div className="p-4">
-          <h3 className="font-pixel text-3xl text-white text-center">TASKS</h3>
+          <h3 className="font-pixel text-3xl text-white text-center">
+            {t('hero.tasks.drawer.title')}
+          </h3>
           <p className="text-white/60 font-inter text-sm text-center mt-2">
-            Complete daily and special tasks.
+            {t('hero.tasks.drawer.description.line1')}
             <br />
-            Earn time and unlock unique rewards!
+            {t('hero.tasks.drawer.description.line2')}
           </p>
         </div>
         <DrawerFooter className="w-full px-5 mb-3">
           <DrawerClose className="cursor-pointer font-pixel text-black text-lg w-full px-8 py-4 bg-gradient-to-b from-white to-[#999999] rounded-2xl">
-            CLOSE
+            {t('common.close')}
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -565,6 +577,7 @@ function TasksCardDrawer() {
 }
 
 function ReferralsCardDrawer() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
@@ -661,7 +674,9 @@ function ReferralsCardDrawer() {
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <SocialIcon className="size-8" />
-            <span className="text-xs text-white/60">Referrals</span>
+            <span className="text-xs text-white/60">
+              {t('hero.referrals.card.label')}
+            </span>
           </div>
         </Card>
       </DrawerTrigger>
@@ -708,17 +723,17 @@ function ReferralsCardDrawer() {
 
         <div className="p-4">
           <h3 className="font-pixel text-3xl text-white text-center">
-            REFERRALS
+            {t('hero.referrals.drawer.title')}
           </h3>
           <p className="text-white/60 font-inter text-sm text-center mt-2">
-            Get paid for every friend you invite
+            {t('hero.referrals.drawer.description.line1')}
             <br />
-            and every friend they bring!
+            {t('hero.referrals.drawer.description.line2')}
           </p>
         </div>
         <DrawerFooter className="w-full px-5 mb-3">
           <DrawerClose className="cursor-pointer font-pixel text-black text-lg w-full px-8 py-4 bg-gradient-to-b from-white to-[#999999] rounded-2xl">
-            CLOSE
+            {t('common.close')}
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -727,6 +742,7 @@ function ReferralsCardDrawer() {
 }
 
 function StarBoardCardDrawer() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const scrollYRef = useRef(0)
   const closeUnlockTimerRef = useRef<number | null>(null)
@@ -823,7 +839,9 @@ function StarBoardCardDrawer() {
         <Card className="w-full aspect-square flex justify-center">
           <div className="flex flex-col justify-center items-center gap-2 mt-5">
             <StatisticsIcon className="size-8" />
-            <span className="text-xs text-white/60">Star Board</span>
+            <span className="text-xs text-white/60">
+              {t('hero.star-board.card.label')}
+            </span>
           </div>
         </Card>
       </DrawerTrigger>
@@ -870,17 +888,17 @@ function StarBoardCardDrawer() {
 
         <div className="p-4">
           <h3 className="font-pixel text-3xl text-white text-center">
-            STAR BOARD
+            {t('hero.star-board.drawer.title')}
           </h3>
           <p className="text-white/60 font-inter text-sm text-center mt-2">
-            Multiple leaderboards, multiple chances to shine.
+            {t('hero.star-board.drawer.description.line1')}
             <br />
-            Find your place among the stars!
+            {t('hero.star-board.drawer.description.line2')}
           </p>
         </div>
         <DrawerFooter className="w-full px-5 mb-3">
           <DrawerClose className="cursor-pointer font-pixel text-black text-lg w-full px-8 py-4 bg-gradient-to-b from-white to-[#999999] rounded-2xl">
-            CLOSE
+            {t('common.close')}
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -889,6 +907,7 @@ function StarBoardCardDrawer() {
 }
 
 function StarsCard({ className }: { className?: string }) {
+  const { t } = useTranslation()
   const { tasksQuery } = useTasks()
   const { accountQuery } = useAccountMe()
   const [play, { stop }] = useSound('/sounds/Button.aac')
@@ -939,10 +958,10 @@ function StarsCard({ className }: { className?: string }) {
         </span>
 
         <p className="text-center text-white font-pixel text-lg uppercase mt-1">
-          Stars Giveaway
+          {t('hero.stars-giveaway.title')}
         </p>
         <p className="text-center text-xs text-white/40 font-inter font-light">
-          The giveaway is happening at launch.
+          {t('hero.stars-giveaway.subtitle')}
         </p>
 
         <div className="absolute left-1/2 -translate-x-1/2 -bottom-3.5 inline-flex h-[88px] w-[86%] justify-between">
@@ -959,7 +978,7 @@ function StarsCard({ className }: { className?: string }) {
         </div>
         {isCompletedTaskTwitter && isSubscribedTelegram ? (
           <p className="relative top-[-10px] uppercase text-[#FFD930] text-sm font-pixel mt-9">
-            already joined
+            {t('hero.stars-giveaway.already-joined')}
           </p>
         ) : (
           <ScrollLink
@@ -970,7 +989,7 @@ function StarsCard({ className }: { className?: string }) {
             offset={-50} // Optional offset
             className="relative text-black bg-linear-to-b from-[#FFD930] to-[#FFDE4D] px-7 py-2.5 rounded-xl font-pixel text-sm mt-4 transition-transform duration-200 cursor-pointer"
           >
-            JOIN US
+            {t('hero.stars-giveaway.cta')}
           </ScrollLink>
         )}
       </div>

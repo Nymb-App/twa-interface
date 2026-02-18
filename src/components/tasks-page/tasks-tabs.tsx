@@ -4,6 +4,7 @@ import { isTMA, miniApp, popup, shareStory, shareURL } from '@tma.js/sdk'
 import { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import { DrawerNft } from '@/components/ui/drawer-nft'
@@ -45,6 +46,7 @@ import {
 
 export function TasksTabs({ className }: { className?: string }) {
   // const router = useRouter()
+  const { t } = useTranslation()
 
   const {
     tasksQuery: { data: tasks, isLoading, isError },
@@ -76,10 +78,15 @@ export function TasksTabs({ className }: { className?: string }) {
       ) {
         popup
           .show({
-            title: 'Session expired',
-            message:
-              'For correct work of ads and rewards, you need to restart the app.',
-            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+            title: t('tasks.ads.session-expired.title'),
+            message: t('tasks.ads.session-expired.message'),
+            buttons: [
+              {
+                id: 'close',
+                type: 'default',
+                text: t('tasks.ads.session-expired.close'),
+              },
+            ],
           })
           .then((buttonId) => {
             if (buttonId === 'close') {
@@ -104,11 +111,11 @@ export function TasksTabs({ className }: { className?: string }) {
       // Checks
       if (!isTMA()) {
         return toast.error(
-          'This action is only available in the Telegram Mobile App.',
+          t('tasks.errors.only-telegram'),
         )
       }
       if (progressTasks.length === 0) {
-        return toast.info('All tasks are already completed.')
+        return toast.info(t('tasks.info.all-completed'))
       }
 
       // Tasks that complete via external actions
@@ -189,10 +196,10 @@ export function TasksTabs({ className }: { className?: string }) {
       }
       completeTask({ taskName: name as TaskNames })
     },
-    [progressTasks],
+    [progressTasks, t],
   )
 
-  if (isError) return <div>Error loading tasks.</div>
+  if (isError) return <div>{t('tasks.errors.loading')}</div>
 
   return (
     <Tabs
@@ -205,18 +212,20 @@ export function TasksTabs({ className }: { className?: string }) {
           className="font-pixel rounded-full text-xs leading-[120%] px-4 py-2 bg-white/10 text-white data-[state=active]:bg-[#B6FF00] data-[state=active]:text-black"
           value="new-tasks"
         >
-          NEW TASKS
+          {t('tasks.tabs.new')}
         </TabsTrigger>
         <TabsTrigger
           className="font-pixel rounded-full text-xs leading-[120%] px-4 py-2 bg-white/10 text-white data-[state=active]:bg-[#B6FF00] data-[state=active]:text-black"
           value="completed-tasks"
         >
-          COMPLETED
+          {t('tasks.tabs.completed')}
         </TabsTrigger>
       </TabsList>
 
       <TabsContent value="new-tasks" className="mt-7">
-        <h2 className="text-base font-pixel text-white">TASKS</h2>
+        <h2 className="text-base font-pixel text-white">
+          {t('tasks.tabs.title')}
+        </h2>
         <div className="mt-3">
           {isLoading && (
             <>
@@ -227,7 +236,10 @@ export function TasksTabs({ className }: { className?: string }) {
           )}
 
           {!isLoading && progressTasks.length === 0 && (
-            <EmptyStateCard title="All tasks" description="completed" />
+            <EmptyStateCard
+              title={t('tasks.empty.all')}
+              description={t('tasks.empty.completed')}
+            />
           )}
 
           {progressTasks.map((task) => (
@@ -244,7 +256,9 @@ export function TasksTabs({ className }: { className?: string }) {
       </TabsContent>
 
       <TabsContent value="completed-tasks" className="mt-7">
-        <h2 className="text-base font-pixel text-white">TASKS</h2>
+        <h2 className="text-base font-pixel text-white">
+          {t('tasks.tabs.title')}
+        </h2>
         <div className="mt-3">
           {isLoading && (
             <>
@@ -255,7 +269,10 @@ export function TasksTabs({ className }: { className?: string }) {
           )}
 
           {!isLoading && completedTasks.length === 0 && (
-            <EmptyStateCard title="No tasks" description="completed" />
+            <EmptyStateCard
+              title={t('tasks.empty.none')}
+              description={t('tasks.empty.completed')}
+            />
           )}
 
           {completedTasks.map((task) => (

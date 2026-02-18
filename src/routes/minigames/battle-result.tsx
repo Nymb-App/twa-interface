@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { AvatarCard } from '@/routes/send-gift'
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { useContext, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import useSound from 'use-sound'
 import LoosingStartImg from '/minigames/loosing-stars-battle.webp'
 import WinningStarsImg from '/minigames/winning-stars-battle.webp'
@@ -94,6 +95,7 @@ const ResultScene = ({
   isDraw?: boolean
   myId?: number
 }) => {
+  const { t } = useTranslation()
   const rewardTimeValue = bet
 
   const rewardTimeValueToAdd = useMemo(() => {
@@ -187,25 +189,28 @@ const ResultScene = ({
           <div className="relative flex flex-col gap-2 items-center justify-center top-[110px]">
             {isMeWinner ? (
               <h2 className="relative font-pixel text-[24px] text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
-                ABSOLUTE
+                {t('battle-result.title.winner.line1')}
                 <br />
-                CHAMPION!
+                {t('battle-result.title.winner.line2')}
               </h2>
             ) : (
               <h2 className="relative font-pixel text-[24px] text-white text-center uppercase opacity-0 animate-slide-up-fade-swipe-game-3">
-                don't worry!
+                {t('battle-result.title.loser')}
               </h2>
             )}
             <h3 className="relative font-inter text-sm text-white/50 text-center opacity-0 animate-slide-up-fade-swipe-game-4">
               {isMeWinner
-                ? 'You showed everyone how to play!'
-                : "You'll be lucky next time."}
+                ? t('battle-result.subtitle.winner')
+                : t('battle-result.subtitle.loser')}
             </h3>
           </div>
         </header>
         <div className="flex flex-col items-center justify-center opacity-0 animate-slide-up-fade-swipe-game-5">
           <h2 className="font-inter text-sm text-white/50 mb-[-5px]">
-            {isMeWinner ? 'Your reward' : 'You lose'}:
+            {isMeWinner
+              ? t('battle-result.reward.winner')
+              : t('battle-result.reward.loser')}
+            :
           </h2>
           <div className="inline-flex items-center justify-center">
             <WatchesIcon
@@ -236,7 +241,10 @@ const ResultScene = ({
             <div>
               <div className="flex items-center gap-4 mt-[41px]">
                 <span className="font-inter text-sm leading-[140%] text-[#FFFFFF]/60">
-                  {isMeWinner ? 'Loser' : 'Winner'}:
+                  {isMeWinner
+                    ? t('battle-result.opponent.loser')
+                    : t('battle-result.opponent.winner')}
+                  :
                 </span>
                 <AvatarCard
                   className="size-[32px]"
@@ -292,7 +300,7 @@ const ResultScene = ({
                 onAnimationEnd={() => setIsNewBattleDisabled(false)}
                 className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:cursor-not-allowed uppercase opacity-0 animate-slide-up-fade-swipe-game-7"
               >
-                close
+                {t('battle-result.buttons.close')}
               </ActionButton>
             </Link>
             <ActionButton
@@ -301,7 +309,7 @@ const ResultScene = ({
               onAnimationEnd={() => setIsNewBattleDisabled(false)}
               className="text-black bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] uppercase opacity-0 animate-slide-up-fade-swipe-game-7"
             >
-              new battle
+              {t('battle-result.buttons.new-battle')}
             </ActionButton>
           </div>
         </div>
