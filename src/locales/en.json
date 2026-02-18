@@ -3,9 +3,24 @@
     "ad-button": {
         "title": "Get +{{amount}} reward"
     },
+    "nft": {
+        "connect-wallet": "Connect wallet",
+        "mint": "Mint for {{amount}} TON",
+        "description": "One for the wallet",
+        "status": {
+            "already-minted": "Already\nminted",
+            "no-nft-left": "No NFTs left",
+            "transferring": "Transferring...",
+            "minting": "Minting...",
+            "success": "NFT successfully minted",
+            "error": "Error occurred while minting"
+        }
+    },
     "timer-parts": {
         "year": "year",
         "years": "years",
+        "month": "month",
+        "months": "months",
         "week": "week",
         "weeks": "weeks",
         "day": "day",
@@ -66,6 +81,105 @@
                     "close": "Close"
                 }
             }
+        }
+    },
+    "stars-giveaway": {
+        "join-description0": "Join the {{amount}}",
+        "join-description1": "Stars giveaway",
+        "list": {
+            "0": {
+                "title": "Subscribe to Nymb",
+                "description": "To participate in the giveaway,\nyou must be subscribed to social media"
+            },
+            "1": {
+                "title": "Invite your friends",
+                "description": "Increase your chances and receive\ngame bonuses for each friend you refer"
+            },
+            "2": {
+                "title": "Mint Nymb NFT",
+                "description": "Increase your chances and get\nthe best deals and benefits along the way"
+            }
+        }
+    },
+    "star-board-page": {
+        "title": "Star Board",
+        "gate": "Gate",
+        "top-100": "Top 100 users",
+        "no-users": "No users on this gate"
+    },
+    "shop-page": {
+        "title": "Shop",
+        "items": {
+            "nft": {
+                "title": "Nymb NFT",
+                "description": "One for the wallet",
+                "card": {
+                    "title": "Buy NFT",
+                    "description": "Get what you want right now"
+                }
+            },
+            "energy": {
+                "title": "Restore energy",
+                "description": "Use it to play minigames and complete tasks",
+                "card": {
+                    "title": "Restore energy",
+                    "description": "Get what you want right now",
+                    "item": "Energy",
+                    "button": {
+                        "buy.0": "Pay",
+                        "buy.1": "restore energy"
+                    }
+                }
+            },
+            "time": {
+                "title": "Time reserve",
+                "description": "Use it to delay the next farming session",
+                "card": {
+                    "title": "Buy NFT",
+                    "description": "Get what you want right now",
+                    "button": {
+                        "buy.0": "Pay",
+                        "buy.1": "to get {{value}}"
+                    }
+                }
+            },
+            "ticket": {
+                "title": "Ticket reserve",
+                "description": "Use it to participate in the next giveaway",
+                "card": {
+                    "title": "Ticket reserve",
+                    "description": "Get what you want right now",
+                    "ticket-parts": {
+                        "ticket": "ticket",
+                        "tickets": "tickets",
+                        "ticket-gen": "tickets"
+                    },
+                    "button": {
+                        "buy.0": "Pay",
+                        "buy.1": "get {{value}}"
+                    }
+                }
+            }
+        }
+    },
+    "referrals-page": {
+        "title": "Invite frens\nand get more time",
+        "total-earnings": "Total earnings",
+        "claim": "Claim",
+        "for-claiming": "For claiming",
+        "referrals-1": "Referrals 1 lvl",
+        "referrals-2": "Referrals 2 lvl",
+        "referrals-code": "Referrals code",
+        "add-new": "Add new",
+        "friends": "Frens",
+        "send-gift": "Send gift"
+    },
+    "gift-page": {
+        "title": "Enter the\nprize amount",
+        "description": "A friend will be randomly selected",
+        "button": "Send gift {{amount}} {{value}}",
+        "send-gift": {
+            "title": "Send a gift\nto fren"
         }
     }
 }

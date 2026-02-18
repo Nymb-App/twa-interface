@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 import { Skeleton } from '../ui/skeleton'
 import { useReferrals } from '@/hooks/api/use-referrals'
+import { useTranslation } from 'react-i18next';
 
 export const ReferralsLevelsBlock = () => {
+  const {t} = useTranslation();
   const { myReferrals, isLoadingMyReferrals } = useReferrals()
 
   const { countVoucherReferrals0, countVoucherReferrals1 } = useMemo(() => {
@@ -30,8 +32,8 @@ export const ReferralsLevelsBlock = () => {
 
   return (
     <div className="mt-2 grid grid-cols-2 gap-2">
-      <ReferralsBlock count={countVoucherReferrals0} label="Referrals 1 lvl" />
-      <ReferralsBlock count={countVoucherReferrals1} label="Referrals 2 lvl" />
+      <ReferralsBlock count={countVoucherReferrals0} label={t('referrals-page.referrals-1')} />
+      <ReferralsBlock count={countVoucherReferrals1} label={t('referrals-page.referrals-2')} />
     </div>
   )
 }

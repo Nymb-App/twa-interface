@@ -2,6 +2,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/lib/utils'
 import { hapticFeedback } from '@tma.js/sdk'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiMinus, FiPlus } from 'react-icons/fi'
 import useSound from 'use-sound'
 
@@ -27,6 +28,7 @@ export const GiftSelector = ({
   className?: string
   maxDays?: number
 }) => {
+  const {t} = useTranslation();
   const [count, setCount] = useState<number>(value)
   const [currentUnit, setCurrentUnit] = useState<TUnit | string>(unit)
   const [play, { stop }] = useSound('/sounds/Button.aac')
@@ -172,7 +174,11 @@ export const GiftSelector = ({
                     'outline outline-[#8C35FB] text-[#8633F1] bg-gradient-to-b from-[#8C35FB]/0 to-[#8C35FB]/40',
                 )}
               >
-                {option}
+                {option === 'days'
+                  ? t('timer-parts.days')
+                  : option === 'weeks'
+                  ? t('timer-parts.weeks')
+                  : t('timer-parts.year')}
               </label>
             </div>
           )

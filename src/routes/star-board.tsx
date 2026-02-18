@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils'
 import { EmptyStateCard } from '@/components/ui/empty-state-card'
 import { useAccount } from '@/hooks/api/use-account'
 import StarBoardImage from '/starboard-img.webp'
+import { useTranslation } from 'react-i18next'
 
 export const Route = createFileRoute('/star-board')({
   component: RouteComponent,
@@ -71,6 +72,7 @@ function RouteComponent() {
   const [play] = useSound('/sounds/Button.aac', { interrupt: true })
   const { globalStatistics, myStatistics } = useStatistics()
   const { user } = useAccount()
+  const { t } = useTranslation()
 
   const myData = useMemo(() => {
     if (!myStatistics.data) {
@@ -119,7 +121,7 @@ function RouteComponent() {
           height={250}
         />
         <h1 className="font-pixel mb-10 text-center text-2xl uppercase">
-          star board
+          {t('star-board-page.title')}
         </h1>
       </header>
 
@@ -145,7 +147,7 @@ function RouteComponent() {
                     value={String(item)}
                     className="data-[state=active]:bg-[#B6FF00] data-[state=active]:text-black w-full py-2 shrink-0 bg-white/10 rounded-full text-white font-pixel text-xs uppercase text-nowrap"
                   >
-                    {item} gate
+                    {item} {t('star-board-page.gate')}
                   </TabsTrigger>
                 </CarouselItem>
               ))}
@@ -163,7 +165,7 @@ function RouteComponent() {
               lvl={myData.lvl}
             />
             <h2 className="text-lg font-pixel text-white mt-5">
-              TOP 100 USERS
+              {t('star-board-page.top-100')}
             </h2>
             <div className="mt-3">
               {globalStatistics.data && (
@@ -171,8 +173,8 @@ function RouteComponent() {
               )}
 
               <EmptyStateCard
-                title="NO USERS"
-                description="ON THIS GATE"
+                title={t('star-board-page.no-users').toUpperCase()}
+                description={t('star-board-page.on-this-gate').toUpperCase()}
                 className={cn(
                   'mt-10',
                   globalStatistics.data &&
@@ -201,6 +203,7 @@ function StatisticsCard({
   avatarUrl?: string
   lvl?: number
 }) {
+  const { t } = useTranslation();
   const p = position < 1 ? 1 : position
   return (
     <div className="w-full rounded-2xl px-4 py-3 h-auto inline-flex items-center justify-between bg-linear-to-b from-white/0 to-white/5">
@@ -269,8 +272,8 @@ function StatisticsCard({
       </div>
 
       <div className="flex flex-col justify-center items-end">
-        <span className="text-white/60 font-pixel text-xs text-left">
-          {lvl} GATE
+        <span className="text-white/60 font-pixel text-xs text-left uppercase">
+          {lvl} {t('star-board-page.gate')}
         </span>
         <span
           className={cn(

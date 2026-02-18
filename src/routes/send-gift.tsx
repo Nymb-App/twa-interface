@@ -16,6 +16,7 @@ import { useRive } from '@rive-app/react-canvas'
 import { Link, createFileRoute } from '@tanstack/react-router'
 // import { miniApp, popup } from '@tma.js/sdk'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import useSound from 'use-sound'
 
 export const Route = createFileRoute('/send-gift')({
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/send-gift')({
 })
 
 function RouteComponent() {
+  const {t} = useTranslation()
   const [giftValue, setGiftValue] = useState(24)
   const [giftUnits, setGiftUnits] = useState('weeks')
   const [daysLeftCount, setDaysLeftCount] = useState(0)
@@ -170,18 +172,14 @@ function RouteComponent() {
           width={450}
           height={350}
         />
-        <h1 className="font-pixel font-normal text-center text-[24px] leading-[32px] uppercase mb-[115px]">
+        <h1 className="font-pixel font-normal text-center text-[24px] leading-[32px] uppercase mb-[115px] whitespace-pre-wrap">
           {!isStartRoulette ? (
             <>
-              enter the
-              <br />
-              prize amount
+              {t('gift-page.title')}
             </>
           ) : (
             <>
-              send a gift
-              <br />
-              to fren
+              {t('gift-page.send-gift.title')}
             </>
           )}
         </h1>
@@ -272,7 +270,7 @@ function RouteComponent() {
       {!isStartRoulette && (
         <SendGiftButton
           value={giftValue}
-          unit={giftUnits}
+          unit={giftUnits === 'years' ? t('timer-parts.years') : giftUnits === 'weeks' ? t('timer-parts.weeks') : t('timer-parts.days')}
           onClick={() => {
             play()
             setIsStartRoulette(true)
@@ -347,31 +345,3 @@ export const AvatarCard = ({
     </span>
   </div>
 )
-
-// const AdsLabelSvg = ({
-//   labelOpacity,
-//   labelColor,
-//   className,
-// }: {
-//   labelOpacity?: number
-//   labelColor?: string
-//   className?: string
-// }) => {
-//   return (
-//     <svg
-//       className={cn(className)}
-//       width="24"
-//       height="18"
-//       viewBox="0 0 24 18"
-//       fill="none"
-//       xmlns="http://www.w3.org/2000/svg"
-//     >
-//       <g opacity={labelOpacity || '0.5'}>
-//         <path
-//           d="M22 2H20V4H22V2H24V16H22V14H20V16H22V18H2V16H4V14H2V16H0V2H2V4H4V2H2V0H22V2ZM8 5V6H7V8H6V11H5V13H7V12H8V11H10V12H11V13H13V11H12V8H11V6H10V5H8ZM14 5V13H18V12H19V11H20V7H19V6H18V5H14ZM17 7V8H18V10H17V11H16V7H17ZM10 8V9H8V8H10Z"
-//           fill={labelColor || 'white'}
-//         />
-//       </g>
-//     </svg>
-//   )
-// }

@@ -16,6 +16,7 @@ import { ITEM_NFT_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { useTonConnectUI } from '@tonconnect/ui-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { isIOS } from 'react-device-detect'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 
@@ -28,6 +29,7 @@ export function DrawerNft({
   children?: React.ReactNode
   asChild?: boolean
 }) {
+  const {t} = useTranslation();
   const { accountQuery } = useAccountMe()
   // const { user } = useAccount()
   // const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -174,11 +176,11 @@ export function DrawerNft({
           <CloseIcon />
         </button>
         <DrawerHeader className="relative text-center z-10">
-          <DrawerTitle className="font-pixel text-white text-2xl">
-            BUY NFT
+          <DrawerTitle className="font-pixel text-white text-2xl uppercase">
+            {t('shop-page.items.nft.card.title')}
           </DrawerTitle>
           <DrawerDescription className="text-white/60 font-inter text-sm">
-            Get what you want right now
+            {t('shop-page.items.nft.card.description')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -195,9 +197,8 @@ export function DrawerNft({
             <h2 className="text-[32px] text-[#B6FF00] [text-shadow:0px_0px_20px_rgba(182,255,0,1)]">
               45%
             </h2>
-            <div className="flex flex-col text-sm">
-              <span>ALREADY</span>
-              <span>MINTED</span>
+            <div className="flex flex-col text-sm whitespace-pre-line text-left uppercase">
+              {t('nft.status.already-minted')}
             </div>
           </div>
           <div className="mt-6 px-4 relative">
@@ -245,14 +246,14 @@ export function DrawerNft({
               }}
             >
               {accountQuery.data?.isEarlyAccessMinted
-                ? 'ALREADY MINTED'
+                ? t('nft.status.already-minted')
                 : mintProgress
-                  ? 'Minting...'
-                  : `MINT FOR ${ITEM_NFT_PRICE} TON`}
+                  ? t('nft.status.minting')
+                  : t('nft.mint', {amount: ITEM_NFT_PRICE})}
             </TransferTonButton>
           </div>
           <span className="mt-3 text-[#B6FF00]/60 mx-auto">
-            One for the wallet
+            {t('nft.description')}
           </span>
         </Card>
       </DrawerContent>

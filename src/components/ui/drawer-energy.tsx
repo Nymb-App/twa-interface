@@ -22,6 +22,7 @@ import {
 // import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import { useShop } from '@/hooks/api/use-shop'
 import { ITEM_ENERGY_1000_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
+import { t } from 'i18next'
 import { useEffect, useRef, useState } from 'react'
 import { isIOS } from 'react-device-detect'
 import { toast } from 'sonner'
@@ -176,11 +177,11 @@ export function DrawerEnergy({
           <CloseIcon />
         </button>
         <DrawerHeader className="text-center">
-          <DrawerTitle className="font-pixel text-white text-2xl">
-            RESTORE ENERGY
+          <DrawerTitle className="font-pixel text-white text-2xl uppercase">
+            {t('shop-page.items.energy.card.title')}
           </DrawerTitle>
           <DrawerDescription className="text-white/60 font-inter text-sm">
-            Get what you want right now
+            {t('shop-page.items.energy.card.description')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -220,7 +221,9 @@ export function DrawerEnergy({
             <span className="text-[#9137FF] text-3xl relative bottom-2">
               +1000
             </span>
-            <span className="text-white/40 text-xs ml-9">ENERGY</span>
+            <span className="text-white/40 text-xs ml-9 uppercase">
+              {t('shop-page.items.energy.card.item')}
+            </span>
           </div>
           <span className="text-white/40 text-5xl font-pixel">:</span>
           <div className="font-pixel flex flex-col gap-1">
@@ -313,8 +316,8 @@ export function DrawerEnergy({
               'Waiting...'
             ) : (
               <>
-                PAY <TonIcon fill="black" />
-                {ITEM_ENERGY_1000_PRICE} RESTORE ENERGY
+                {t('shop-page.items.energy.card.button.buy.0').toUpperCase()} <TonIcon fill="black" />
+                {ITEM_ENERGY_1000_PRICE} {t('shop-page.items.energy.card.button.buy.1').toUpperCase()}
               </>
             )}
           </TransferTonButton>

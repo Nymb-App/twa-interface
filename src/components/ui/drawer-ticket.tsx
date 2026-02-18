@@ -31,6 +31,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { isIOS } from 'react-device-detect'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 
@@ -61,6 +62,8 @@ export function DrawerTicket({
   // const { accountQuery } = useAccountMe()
   const { buyItem } = useShop();
   const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const { t } = useTranslation()
 
   const [buyTicketProgress, setBuyTicketProgress] = useState(false)
   const buyTicketIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
@@ -199,11 +202,11 @@ export function DrawerTicket({
           <CloseIcon />
         </button>
         <DrawerHeader className="text-center">
-          <DrawerTitle className="font-pixel text-white text-2xl">
-            TICKETS RESERVE
+          <DrawerTitle className="font-pixel text-white text-2xl uppercase">
+            {t('shop-page.items.ticket.card.title')}
           </DrawerTitle>
           <DrawerDescription className="text-white/60 font-inter text-sm">
-            Get what you want right now
+            {t('shop-page.items.ticket.card.description')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -251,7 +254,7 @@ export function DrawerTicket({
                     : 'bg-linear-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
-                {option}
+                {option.split(' ')[0]} {t(`shop-page.items.ticket.card.ticket-parts.${option === '1 ticket' ? 'ticket' : option === '5 tickets' ? 'ticket-gen' : 'ticket-gen'}`)}
               </label>
             </div>
           ))}
@@ -267,12 +270,12 @@ export function DrawerTicket({
                   ? 5
                   : 10}
             </span>
-            <span className="text-white/40 text-xs text-center">
+            <span className="text-white/40 text-xs text-center uppercase">
               {radioValue === '1 ticket'
-                ? 'TICKET'
+                ? t('shop-page.items.ticket.card.ticket-parts.ticket')
                 : radioValue === '5 tickets'
-                  ? 'TICKETS'
-                  : 'TICKETS'}
+                  ? t('shop-page.items.ticket.card.ticket-parts.ticket-gen')
+                  : t('shop-page.items.ticket.card.ticket-parts.ticket-gen')}
             </span>
           </div>
           <span className="text-white/40 text-5xl font-pixel">:</span>
@@ -364,8 +367,8 @@ export function DrawerTicket({
               'Waiting...'
             ) : (
               <>
-                PAY <TonIcon fill="black" />
-                {amount} GET {radioValue}
+                {t('shop-page.items.ticket.card.button.buy.0')} <TonIcon fill="black" />
+                {amount} {t('shop-page.items.ticket.card.button.buy.1', {value: radioValue})}
               </>
             )}
           </TransferTonButton>

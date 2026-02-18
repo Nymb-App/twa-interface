@@ -7,12 +7,14 @@ import {
 } from '@/components/shop-page/index'
 import { PageLayout } from '@/components/ui/page-layout'
 import { createFileRoute } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 
 export const Route = createFileRoute('/shop')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const {t} = useTranslation()
   return (
     <PageLayout
       className="relative flex flex-col top-0"
@@ -28,7 +30,9 @@ function RouteComponent() {
         flickerChance={0.3}
         autoResize={false}
       />
-      <h1 className="font-pixel text-center text-2xl mt-28">SHOP</h1>
+      <h1 className="font-pixel text-center text-2xl mt-28">
+        {t('shop-page.title')}
+      </h1>
 
       <div className="relative flex flex-col gap-8 w-full px-4 mt-6">
         <ItemNFT className="animate-slide-up-fade-0" />

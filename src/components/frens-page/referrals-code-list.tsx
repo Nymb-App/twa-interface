@@ -9,8 +9,10 @@ import useSound from 'use-sound'
 import { Button } from '../ui/button'
 import { CopyButton } from '../ui/copy-button'
 import { Skeleton } from '../ui/skeleton'
+import { useTranslation } from 'react-i18next'
 
 export const ReferralsCodeList = () => {
+  const {t} = useTranslation();
   const { user } = useAccount()
   const { myCodes, generateNewCode, isLoadingMyCodes } = useReferrals()
   const [play, { stop }] = useSound('/sounds/Button.aac')
@@ -40,7 +42,7 @@ export const ReferralsCodeList = () => {
       <div className="font-pixel mb-3 px-3 pt-[40px] pb-4">
         <div className="flex items-center justify-between gap-2 font-normal">
           <h2 className="font-pixel text-[18px] leading-6 uppercase">
-            Referrals code
+            {t('referrals-page.referrals-code')}
           </h2>
           <Button
             className={cn(
@@ -74,7 +76,7 @@ export const ReferralsCodeList = () => {
                 }
               />
             </svg>
-            add new
+            {t('referrals-page.add-new')}
           </Button>
         </div>
       </div>

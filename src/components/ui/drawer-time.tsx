@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from './select'
 import { useShop, type TShopItem } from '@/hooks/api/use-shop'
+import { useTranslation } from 'react-i18next'
 
 export function DrawerTime({
   className,
@@ -43,6 +44,7 @@ export function DrawerTime({
   children: React.ReactNode
   asChild?: boolean
 }) {
+  const {t} = useTranslation();
   // const [isOpen, setIsOpen] = useState<boolean>(false)
   // const { accountQuery } = useAccountMe()
   const [radioValue, setRadioValue] = useState('1 week')
@@ -194,11 +196,11 @@ export function DrawerTime({
           <CloseIcon />
         </button>
         <DrawerHeader className="text-center">
-          <DrawerTitle className="font-pixel text-white text-2xl">
-            TIME RESERVE
+          <DrawerTitle className="font-pixel text-white text-2xl uppercase">
+            {t('shop-page.items.time.card.title')}
           </DrawerTitle>
           <DrawerDescription className="text-white/60 font-inter text-sm">
-            Get what you want right now
+            {t('shop-page.items.time.card.description')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -229,7 +231,7 @@ export function DrawerTime({
           }}
           className="flex gap-3 justify-center mb-5 mt-40 relative"
         >
-          {['1 week', '1 month', '1 year'].map((option) => (
+          {[`1 week`, '1 month', '1 year'].map((option) => (
             <div key={option}>
               <RadioGroupItem
                 value={option}
@@ -245,7 +247,9 @@ export function DrawerTime({
                     : 'bg-gradient-to-b from-[#171816] to-[#1E1F1D] text-white/40',
                 )}
               >
-                {option}
+                1 {
+                  t(`timer-parts.${option.split(' ')[1] || option}`)
+                }
               </label>
             </div>
           ))}
@@ -256,12 +260,12 @@ export function DrawerTime({
             <span className="text-[#B6FF00] text-3xl text-center relative bottom-2">
               +1
             </span>
-            <span className="text-white/40 text-xs text-center">
+            <span className="text-white/40 text-xs text-center uppercase">
               {radioValue === '1 week'
-                ? 'WEEK'
+                ? t('timer-parts.week')
                 : radioValue === '1 month'
-                  ? 'MONTH'
-                  : 'YEAR'}
+                  ? t('timer-parts.month')
+                  : t('timer-parts.year')}
             </span>
           </div>
           <span className="text-white/40 text-5xl font-pixel">:</span>
@@ -351,8 +355,8 @@ export function DrawerTime({
               'Waiting...'
             ) : (
               <>
-                PAY <TonIcon fill="black" />
-                {amount} GET {radioValue}
+                {t('shop-page.items.time.card.button.buy.0')} <TonIcon fill="black" />
+                {amount} {t('shop-page.items.time.card.button.buy.1', { amount, value: radioValue })}
               </>
             )}
           </TransferTonButton>

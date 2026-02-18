@@ -1,6 +1,6 @@
 import { GiftIcon } from '@/assets/icons/gift'
 import { ActionButton } from '@/components/ui/action-button'
-import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export const SendGiftButton = ({
   value = 10,
@@ -11,10 +11,11 @@ export const SendGiftButton = ({
   unit?: string
   onClick?: () => void
 }) => {
+  const {t} = useTranslation();
   return (
     <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 px-4 bg-[#151317]">
       <p className="mb-4 font-[400] text-[14px] leading-[140%] text-center text-[#FFFFFF66]">
-        A frend will be randomly selected
+        {t('gift-page.description')}
       </p>
       <ActionButton
         className="bg-gradient-to-b from-[#8C35FB] to-[#6602E7]"
@@ -22,11 +23,7 @@ export const SendGiftButton = ({
       >
         <GiftIcon fill="white" />
         <span className="ml-3 font-pixel text-[#FFFFFF] font-[400] uppercase text-[18px] leading-[24px]">
-          send gift{' '}
-          <span className={cn(String(value).startsWith('1') && 'mr-2')}>
-            {value}
-          </span>{' '}
-          {unit}
+          {t('gift-page.button', { amount: value, value: unit })}{' '}
         </span>
       </ActionButton>
     </div>

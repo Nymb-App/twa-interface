@@ -6,6 +6,7 @@ import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import FrensImage from '/frens-img.webp'
 import { CountdownTimerDisplay } from '@/components/ui/countdown-timer-display'
 import { useAccountMe } from '@/hooks/api/use-account'
+import { useTranslation } from 'react-i18next'
 
 export const FrensHeader = ({
   isClaimStart,
@@ -16,6 +17,7 @@ export const FrensHeader = ({
   isClaimEnd: boolean
   setIsClaimEnd: (value: boolean) => void
 }) => {
+  const {t} = useTranslation()
   const { accountQuery, isLoading } = useAccountMe()
 
   const accountClaimedTimeMs = useMemo(() => {
@@ -53,13 +55,11 @@ export const FrensHeader = ({
         width={450}
         height={250}
       />
-      <h1 className="mb-6 text-center text-[24px] leading-8 uppercase">
-        Invite frens
-        <br />
-        and get more time
+      <h1 className="mb-6 text-center text-[24px] leading-8 uppercase whitespace-pre-wrap">
+        {t('referrals-page.title')}
       </h1>
       <p className="font-inter mb-2 text-center text-[14px] leading-[140%] text-[#FFFFFF99]">
-        Total Earnings:
+        {t('referrals-page.total-earnings')}
       </p>
       {isLoading && (
         <div className="flex items-center justify-center gap-6">

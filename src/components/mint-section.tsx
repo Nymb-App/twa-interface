@@ -27,10 +27,12 @@ import { StarsCard } from './stars-card'
 import { TaskCompletedSvgIcon } from './tasks-page/task-icons'
 import { TransferTonButton } from './transfer-ton-button'
 import { CopyButton } from './ui/copy-button'
+import { useTranslation } from 'react-i18next'
 
 export function MintSection() {
+  const { t } = useTranslation();
   const tonConnectUI = useTonConnectUI()
-  const { mintProgress: mintProgressData } = useMint()
+  const { mintProgress: mintProgressData, mint } = useMint()
   const { accountQuery } = useAccountMe()
   const { user } = useAccount()
   const { myCodes } = useReferrals()
@@ -147,9 +149,9 @@ export function MintSection() {
         />
       </div>
 
-      <div className="animate-slide-up-fade-0 mb-10 absolute w-full top-28 left-0">
-        <h2 className="font-pixel text-2xl text-center">JOIN THE 1,000,000</h2>
-        <h2 className="font-pixel text-2xl text-center">STARS GIVEAWAY</h2>
+      <div className="animate-slide-up-fade-0 mb-10 absolute w-full top-28 left-0 uppercase">
+        <h2 className="font-pixel text-2xl text-center">{t('stars-giveaway.join-description0', {amount: "1,000,000"})}</h2>
+        <h2 className="font-pixel text-2xl text-center">{t('stars-giveaway.join-description1')}</h2>
       </div>
 
       <NumberedList
@@ -157,11 +159,11 @@ export function MintSection() {
         className="relative flex flex-col gap-3 w-full animate-slide-up-fade-1"
       >
         <NumberedItem className="w-full mb-3">
-          <NumberedItem.Title>Subscribe to Nymb</NumberedItem.Title>
-          <NumberedItem.Description>
-            To participate in the giveaway, you must be
-            <br />
-            subscribed to social media
+          <NumberedItem.Title>
+            {t('stars-giveaway.list.0.title')}
+          </NumberedItem.Title>
+          <NumberedItem.Description className="whitespace-pre-line">
+            {t('stars-giveaway.list.0.description')}
           </NumberedItem.Description>
 
           <div className="w-full mt-3 mb-4 flex flex-col gap-2">
@@ -256,11 +258,11 @@ export function MintSection() {
         </NumberedItem>
 
         <NumberedItem className="w-full mb-3">
-          <NumberedItem.Title>Invite your frens</NumberedItem.Title>
-          <NumberedItem.Description>
-            Increase your chances and receive game
-            <br />
-            bonuses for each friend you refer
+          <NumberedItem.Title>
+            {t('stars-giveaway.list.1.title')}
+          </NumberedItem.Title>
+          <NumberedItem.Description className="whitespace-pre-line">
+            {t('stars-giveaway.list.1.description')}
           </NumberedItem.Description>
 
           <div className="w-full mt-3 mb-4 flex flex-col gap-2">
@@ -310,14 +312,14 @@ export function MintSection() {
         </NumberedItem>
 
         <NumberedItem>
-          <NumberedItem.Title className="relative">
-            Mint Nymb NFT
-            <OptionalSVG className="absolute left-[51%] -top-4" />
+          <NumberedItem.Title className="relative inline-flex gap-2 items-center">
+            <span>{t('stars-giveaway.list.2.title')}</span>
+            <div className="relative">
+              <OptionalSVG className={cn("absolute -top-6", )} />
+            </div>
           </NumberedItem.Title>
-          <NumberedItem.Description>
-            Increase your chances and get the best
-            <br />
-            deals and benefits along the way
+          <NumberedItem.Description className="whitespace-pre-line">
+            {t('stars-giveaway.list.2.description')}
           </NumberedItem.Description>
         </NumberedItem>
       </NumberedList>
@@ -348,28 +350,28 @@ export function MintSection() {
               recipient={RECEIVER_ADDRESS}
               amount={ITEM_NFT_PRICE}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
-              onTransferSuccess={() => {
-                setMintProgress(true)
+              onTransferSuccess={async (hash) => {
+                // setMintProgress(true)
 
-                if (mintIntervalRef.current) {
-                  clearInterval(mintIntervalRef.current)
-                  mintIntervalRef.current = null
-                }
+                // if (mintIntervalRef.current) {
+                //   clearInterval(mintIntervalRef.current)
+                //   mintIntervalRef.current = null
+                // }
 
-                const id = setInterval(async () => {
-                  const res = await accountQuery.refetch()
-                  if (res.data?.isEarlyAccessMinted === true) {
-                    clearInterval(id)
-                    mintIntervalRef.current = null
-                    setMintProgress(false)
-                    // toast.success('NFT purchased!')
-                  }
-                }, 2000)
+                // const id = setInterval(async () => {
+                //   const res = await accountQuery.refetch()
+                //   if (res.data?.isEarlyAccessMinted === true) {
+                //     clearInterval(id)
+                //     mintIntervalRef.current = null
+                //     setMintProgress(false)
+                //     // toast.success('NFT purchased!')
+                //   }
+                // }, 2000)
 
-                mintIntervalRef.current = id
-                // await mint(hash)
+                // mintIntervalRef.current = id
+                await mint(hash)
               }}
-              comment={`nymb.mint?type=nft&telegramId=${user?.id}`}
+              // comment={`nymb.mint?type=nft&telegramId=${user?.id}`}
               onError={(e) => {
                 setMintProgress(false)
                 if (mintIntervalRef.current) {
@@ -386,16 +388,16 @@ export function MintSection() {
               }}
             >
               {isMinted
-                ? 'ALREADY MINTED'
+                ? t('nft.status.already-minted')
                 : mintProgress
-                  ? 'Minting...'
+                  ? t('nft.status.minting')
                   : isNftProgressFinished
-                    ? 'NO NFT LEFT'
-                    : `MINT FOR ${ITEM_NFT_PRICE} TON`}
+                    ? t('nft.status.no-nft-left')
+                    : t('nft.mint', { amount: ITEM_NFT_PRICE })}
             </TransferTonButton>
           </div>
           <span className="mt-3 text-[#B6FF00]/60 mx-auto">
-            One for the wallet
+            {t('nft.description')}
           </span>
         </Card>
       </div>

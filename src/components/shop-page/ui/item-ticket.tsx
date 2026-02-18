@@ -1,5 +1,6 @@
 import { DrawerTicket } from '@/components/ui/drawer-ticket'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export function ItemTicket({
   className,
@@ -8,6 +9,7 @@ export function ItemTicket({
   className?: string
   // onClick?: () => void
 }) {
+  const {t} = useTranslation()
   return (
     <DrawerTicket
       className={cn(
@@ -30,7 +32,7 @@ export function ItemTicket({
         </div>
 
         <div className="relative inline-flex justify-between w-full font-pixel">
-          <span className="text-white text-base">GATE TICKET</span>
+          <span className="text-white text-base uppercase">{t('shop-page.items.ticket.title')}</span>
           <span className="text-[#FBB107] text-lg inline-flex items-center gap-1">
             <span>1</span>
             <span className="text-[#FBB107]/40 text-xs">/</span>

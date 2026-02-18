@@ -1,8 +1,10 @@
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { DrawerTime } from '@/components/ui/drawer-time'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export function ItemTime({ className }: { className?: string }) {
+  const {t} = useTranslation()
   return (
     <DrawerTime
       className={cn(
@@ -33,7 +35,9 @@ export function ItemTime({ className }: { className?: string }) {
         </div>
 
         <div className="inline-flex justify-between w-full font-pixel">
-          <span className="text-white text-base">TIME RESERVE</span>
+          <span className="text-white text-base uppercase">
+            {t('shop-page.items.time.title')}
+          </span>
           <span className="text-[#B6FF00] text-lg inline-flex items-center gap-1">
             <span>1W</span>
             <span className="text-[#B6FF00]/40 text-xs">/</span>

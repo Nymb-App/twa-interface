@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { AdsButton } from '../ads/ads-button'
+// import { AdsButton } from '../ads/ads-button'
 import { ActionButton } from './action-button'
 
 export const SendGiftActionButtons = ({
@@ -9,11 +9,11 @@ export const SendGiftActionButtons = ({
 }) => {
   return (
     <div className="fixed bottom-0 pb-12 w-full max-w-[450px] z-50 px-4 bg-[#151317]">
-      <AdsButton
+      {/* <AdsButton
         time={7200}
         classNameText="font-pixel text-[#121312] font-[400] uppercase text-[18px] leading-[24px]"
         className="bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] mb-2"
-      />
+      /> */}
       {/* <ActionButton
         className="bg-gradient-to-b from-[#ADFA4B] to-[#B6FF00] mb-2"
         onClick={() => {

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import useSound from 'use-sound'
 
 export type TransferTonButtonProps =
@@ -41,6 +42,8 @@ export function TransferTonButton({
     isTransactionError,
   } = useTransferTon()
   const [hash, setHash] = useState<string | null>(null);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isTransferTonSuccess) return
@@ -144,7 +147,7 @@ export function TransferTonButton({
             </span>
           </div>
         ) : !address ? (
-          'CONNECT WALLET'
+          t('nft.connect-wallet')
         ) : (
           children
         )}

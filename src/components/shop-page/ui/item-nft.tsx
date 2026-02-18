@@ -1,7 +1,9 @@
 import { DrawerNft } from '@/components/ui/drawer-nft'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export function ItemNFT({ className }: { className?: string }) {
+  const {t} = useTranslation()
   return (
     <DrawerNft
       className={cn(
@@ -23,9 +25,11 @@ export function ItemNFT({ className }: { className?: string }) {
         <div className="inline-flex justify-between w-full font-pixel">
           <div className="flex flex-col items-start justify-between h-[166px]">
             <div className="flex flex-col items-start mt-9 relative z-10">
-              <span className="text-white text-base uppercase">Nymb NFT</span>
+              <span className="text-white text-base uppercase">
+                {t('shop-page.items.nft.title')}
+              </span>
               <span className="text-white/40 text-xs font-inter">
-                One for the wallet
+                {t('shop-page.items.nft.description')}
               </span>
             </div>
             <div className="inline-flex relative z-20 gap-2 items-center font-pixel mx-auto text-[#B6FF00] -mt-1">
@@ -34,8 +38,9 @@ export function ItemNFT({ className }: { className?: string }) {
                 45%
               </h2>
               <div className="flex flex-col text-sm">
-                <span className="ml-2">ALREADY</span>
-                <span>MINTED</span>
+                <span className="ml-2 uppercase whitespace-pre-line text-left">
+                  {t('nft.status.already-minted')}
+                </span>
               </div>
             </div>
           </div>

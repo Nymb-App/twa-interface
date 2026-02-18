@@ -1,7 +1,9 @@
 import { DrawerEnergy } from '@/components/ui/drawer-energy'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export function ItemEnergy({ className }: { className?: string }) {
+  const {t} = useTranslation()
   return (
     <DrawerEnergy
       className={cn(
@@ -33,7 +35,7 @@ export function ItemEnergy({ className }: { className?: string }) {
         </div>
 
         <div className="inline-flex justify-between w-full font-pixel">
-          <span className="text-white text-base">RESTORE ENERGY</span>
+          <span className="text-white text-base uppercase">{t('shop-page.items.energy.title')}</span>
           <span className="text-[#9137FF] text-lg">+1000</span>
         </div>
       </div>

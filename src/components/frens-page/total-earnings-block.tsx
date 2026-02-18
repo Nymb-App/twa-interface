@@ -6,6 +6,7 @@ import { useEffect, useMemo } from 'react'
 import useSound from 'use-sound'
 import { Button } from '../ui/button'
 import { useCountdown } from './hooks/use-countdown'
+import { useTranslation } from 'react-i18next'
 
 export const TotalEarningsBlock = ({
   value,
@@ -17,6 +18,7 @@ export const TotalEarningsBlock = ({
   setIsClaimStart: (claimValue: boolean) => void
 }) => {
   const [play, { stop }] = useSound('/sounds/Button.aac')
+  const { t } = useTranslation()
   const animatedTotalEarnings = useCountdown(
     value,
     ANIMATION_DURATION_COUNTUP,
@@ -43,7 +45,7 @@ export const TotalEarningsBlock = ({
   return (
     <div className="font-pixel starboard-result-block-bg mt-2 flex items-center justify-between rounded-[14px] p-4 font-[400] backdrop-blur-[8px]">
       <div className="flex basis-1/2 flex-col items-center gap-2">
-        <p className="font-inter text-[14px] leading-[140%]">For Claiming</p>
+        <p className="font-inter text-[14px] leading-[140%]">{t('referrals-page.for-claiming')}</p>
         <div className="flex items-center">
           <WatchesIcon
             className="size-[36px]"
@@ -99,7 +101,7 @@ export const TotalEarningsBlock = ({
               </clipPath>
             </defs>
           </svg>
-          <span className="mt-0.5">claim</span>
+          <span className="mt-0.5 uppercase">{t('referrals-page.claim')}</span>
         </Button>
       </div>
     </div>
