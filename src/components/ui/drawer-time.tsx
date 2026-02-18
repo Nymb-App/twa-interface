@@ -1,7 +1,6 @@
 import { CloseIcon } from '@/assets/icons/close'
 import { TelegramStarIcon } from '@/assets/icons/telegram-star'
 import { TonIcon } from '@/assets/icons/ton'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
 import {
   ITEM_TIME_1D_PRICE,
   ITEM_TIME_1M_PRICE,
@@ -33,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './select'
+import { useShop, type TShopItem } from '@/hooks/api/use-shop'
 
 export function DrawerTime({
   className,
@@ -44,7 +44,7 @@ export function DrawerTime({
   asChild?: boolean
 }) {
   // const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { accountQuery } = useAccountMe()
+  // const { accountQuery } = useAccountMe()
   const [radioValue, setRadioValue] = useState('1 week')
   const amount = useMemo(() => {
     if (radioValue === '1 day') return ITEM_TIME_1D_PRICE
@@ -58,8 +58,9 @@ export function DrawerTime({
     if (radioValue === '1 month') return 'time_one_month'
     if (radioValue === '1 year') return 'time_one_year'
   }, [radioValue])
-  const { user } = useAccount()
+  // const { user } = useAccount()
   const [play, { stop }] = useSound('/sounds/Button.aac')
+  const { buyItem } = useShop();
 
   const [buyTimeProgress, setBuyTimeProgress] = useState(false)
   const buyTimeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -296,38 +297,38 @@ export function DrawerTime({
             disabled={buyTimeProgress}
             recipient={RECEIVER_ADDRESS}
             amount={amount ?? 0.5}
-            comment={`nymb.shop?type=${itemName}&telegramId=${user?.id}`}
+            // comment={`nymb.shop?type=${itemName}&telegramId=${user?.id}`}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
-            onTransferSuccess={() => {
-              setBuyTimeProgress(true)
+            onTransferSuccess={async (hash) => {
+              // setBuyTimeProgress(true)
 
-              previousAccountTimeRef.current = accountQuery.data?.time ?? null
+              // previousAccountTimeRef.current = accountQuery.data?.time ?? null
 
-              if (buyTimeIntervalRef.current) {
-                clearInterval(buyTimeIntervalRef.current)
-                buyTimeIntervalRef.current = null
-              }
+              // if (buyTimeIntervalRef.current) {
+              //   clearInterval(buyTimeIntervalRef.current)
+              //   buyTimeIntervalRef.current = null
+              // }
 
-              const id = setInterval(async () => {
-                const res = await accountQuery.refetch()
-                const previousTime = previousAccountTimeRef.current
-                const nextTime = res.data?.time
+              // const id = setInterval(async () => {
+              //   const res = await accountQuery.refetch()
+              //   const previousTime = previousAccountTimeRef.current
+              //   const nextTime = res.data?.time
 
-                if (
-                  typeof nextTime === 'number' &&
-                  (previousTime == null || nextTime > previousTime)
-                ) {
-                  clearInterval(id)
-                  buyTimeIntervalRef.current = null
-                  previousAccountTimeRef.current = null
-                  setBuyTimeProgress(false)
-                  // toast.success('Time purchased')
-                }
-              }, 2000)
+              //   if (
+              //     typeof nextTime === 'number' &&
+              //     (previousTime == null || nextTime > previousTime)
+              //   ) {
+              //     clearInterval(id)
+              //     buyTimeIntervalRef.current = null
+              //     previousAccountTimeRef.current = null
+              //     setBuyTimeProgress(false)
+              //     // toast.success('Time purchased')
+              //   }
+              // }, 2000)
 
-              buyTimeIntervalRef.current = id
+              // buyTimeIntervalRef.current = id
 
-              // await buyItem(itemName as TShopItem, hash)
+              await buyItem(itemName as TShopItem, hash)
             }}
             onConnect={() => {
               setIsOpen(false)

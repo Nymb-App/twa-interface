@@ -10,7 +10,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+import { useAccountMe } from '@/hooks/api/use-account'
+import { useMint } from '@/hooks/use-mint'
 import { ITEM_NFT_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { useTonConnectUI } from '@tonconnect/ui-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -28,9 +29,9 @@ export function DrawerNft({
   asChild?: boolean
 }) {
   const { accountQuery } = useAccountMe()
-  const { user } = useAccount()
+  // const { user } = useAccount()
   // const [isOpen, setIsOpen] = useState<boolean>(false)
-  // const { mint } = useMint()
+  const { mint } = useMint()
   const [play, { stop }] = useSound('/sounds/Button.aac')
 
   const [mintProgress, setMintProgress] = useState(false)
@@ -204,31 +205,31 @@ export function DrawerNft({
               disabled={isMintDisabled}
               recipient={RECEIVER_ADDRESS}
               amount={ITEM_NFT_PRICE}
-              comment={`nymb.mint?type=nft&telegramId=${user?.id}`}
+              // comment={`nymb.mint?type=nft&telegramId=${user?.id}`}
               className="py-4 w-full inline-flex justify-center items-center gap-1"
               onConnect={() => {
                 setIsOpen(false)
               }}
-              onTransferSuccess={() => {
-                setMintProgress(true)
-                // await mint(hash)
+              onTransferSuccess={async (hash) => {
+                // setMintProgress(true);
+                await mint(hash);
 
-                if (mintIntervalRef.current) {
-                  clearInterval(mintIntervalRef.current)
-                  mintIntervalRef.current = null
-                }
+                // if (mintIntervalRef.current) {
+                //   clearInterval(mintIntervalRef.current)
+                //   mintIntervalRef.current = null
+                // }
 
-                const id = setInterval(async () => {
-                  const res = await accountQuery.refetch()
-                  if (res.data?.isEarlyAccessMinted === true) {
-                    clearInterval(id)
-                    mintIntervalRef.current = null
-                    setMintProgress(false)
-                    // toast.success('NFT purchased!')
-                  }
-                }, 2000)
+                // const id = setInterval(async () => {
+                //   const res = await accountQuery.refetch()
+                //   if (res.data?.isEarlyAccessMinted === true) {
+                //     clearInterval(id)
+                //     mintIntervalRef.current = null
+                //     setMintProgress(false)
+                //     // toast.success('NFT purchased!')
+                //   }
+                // }, 2000)
 
-                mintIntervalRef.current = id
+                // mintIntervalRef.current = id
               }}
               onError={(e) => {
                 setMintProgress(false)

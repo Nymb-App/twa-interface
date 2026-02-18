@@ -67,7 +67,7 @@ export const GateInfoBlockNextLvl = ({
       <div className={className2}>
         <GateStatisticsInfoBlock
           value={mining}
-          description="Mining"
+          description="Farming"
           unit="hours"
           className="text-[#B6FF00] text-shadow-[0px_4.00224px_8.00448px_rgba(182,255,0,0.3),_0px_0px_24.0134px_#B6FF00]"
         />

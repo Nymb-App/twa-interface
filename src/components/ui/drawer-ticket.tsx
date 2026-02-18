@@ -20,7 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+// import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+import { useShop } from '@/hooks/api/use-shop'
 import {
   ITEM_TICKET_10_PRICE,
   ITEM_TICKET_5_PRICE,
@@ -56,8 +57,9 @@ export function DrawerTicket({
     if (radioValue === '5 tickets') return 'five_tickets'
     if (radioValue === '10 tickets') return 'ten_tickets'
   }, [radioValue])
-  const { user } = useAccount()
-  const { accountQuery } = useAccountMe()
+  // const { user } = useAccount()
+  // const { accountQuery } = useAccountMe()
+  const { buyItem } = useShop();
   const [play, { stop }] = useSound('/sounds/Button.aac')
 
   const [buyTicketProgress, setBuyTicketProgress] = useState(false)
@@ -307,38 +309,39 @@ export function DrawerTicket({
             recipient={RECEIVER_ADDRESS}
             amount={amount ?? 1}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
-            comment={`nymb.shop?type=${itemName}&telegramId=${user?.id}`}
-            onTransferSuccess={(_hash) => {
-              setBuyTicketProgress(true)
+            // comment={`nymb.shop?type=${itemName}&telegramId=${user?.id}`}
+            onTransferSuccess={async (_hash) => {
+              await buyItem(itemName!, _hash)
+              // setBuyTicketProgress(true)
 
-              const currentTickets =
-                (accountQuery.data?.tickets ?? 0) +
-                (accountQuery.data?.ticket ?? 0)
-              previousTicketsRef.current = currentTickets
+              // const currentTickets =
+              //   (accountQuery.data?.tickets ?? 0) +
+              //   (accountQuery.data?.ticket ?? 0)
+              // previousTicketsRef.current = currentTickets
 
-              if (buyTicketIntervalRef.current) {
-                clearInterval(buyTicketIntervalRef.current)
-                buyTicketIntervalRef.current = null
-              }
+              // if (buyTicketIntervalRef.current) {
+              //   clearInterval(buyTicketIntervalRef.current)
+              //   buyTicketIntervalRef.current = null
+              // }
 
-              const id = setInterval(async () => {
-                const res = await accountQuery.refetch()
-                const nextTickets =
-                  (res.data?.tickets ?? 0) + (res.data?.ticket ?? 0)
+              // const id = setInterval(async () => {
+              //   const res = await accountQuery.refetch()
+              //   const nextTickets =
+              //     (res.data?.tickets ?? 0) + (res.data?.ticket ?? 0)
 
-                if (
-                  previousTicketsRef.current == null ||
-                  nextTickets > previousTicketsRef.current
-                ) {
-                  clearInterval(id)
-                  buyTicketIntervalRef.current = null
-                  previousTicketsRef.current = null
-                  setBuyTicketProgress(false)
-                  // toast.success('Ticket purchased')
-                }
-              }, 2000)
+              //   if (
+              //     previousTicketsRef.current == null ||
+              //     nextTickets > previousTicketsRef.current
+              //   ) {
+              //     clearInterval(id)
+              //     buyTicketIntervalRef.current = null
+              //     previousTicketsRef.current = null
+              //     setBuyTicketProgress(false)
+              //     // toast.success('Ticket purchased')
+              //   }
+              // }, 2000)
 
-              buyTicketIntervalRef.current = id
+              // buyTicketIntervalRef.current = id
             }}
             onConnect={() => {
               setIsOpen(false)

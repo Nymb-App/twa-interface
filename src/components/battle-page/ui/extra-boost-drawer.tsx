@@ -20,19 +20,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
-import { RECEIVER_ADDRESS } from '@/lib/constants'
+import { ITEM_EXTRA_BOOST, RECEIVER_ADDRESS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
 import BattleDrawerImage from '/minigames/battle-drawer-img.webp'
+import { useBuyExtraBoost } from '@/hooks/api/use-shop'
 
 export function ExtraBoostDrawer({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  // const { buyExtraBoost } = useBuyExtraBoost()
-  const { accountQuery } = useAccountMe()
-  const { user } = useAccount()
+  const { buyExtraBoost } = useBuyExtraBoost()
+  // const { accountQuery } = useAccountMe()
+  // const { user } = useAccount()
   const [play] = useSound('/sounds/Button.aac')
 
   const [buyExtraBoostProgress, setBuyExtraBoostProgress] = useState(false)
@@ -142,42 +142,42 @@ export function ExtraBoostDrawer({ className }: { className?: string }) {
           <TransferTonButton
             disabled={buyExtraBoostProgress}
             recipient={RECEIVER_ADDRESS}
-            amount={0.1}
-            comment={`nymb.shop?type=extra_boost&telegramId=${user?.id}`}
+            amount={ITEM_EXTRA_BOOST}
+            // comment={`nymb.shop?type=extra_boost&telegramId=${user?.id}`}
             className="py-3 w-full inline-flex justify-center items-center gap-1 uppercase"
-            onTransferSuccess={() => {
-              setBuyExtraBoostProgress(true)
+            onTransferSuccess={async (hash) => {
+              // setBuyExtraBoostProgress(true)
 
-              previousExtraBoostRef.current =
-                accountQuery.data?.extraBustCount ?? null
+              // previousExtraBoostRef.current =
+              //   accountQuery.data?.extraBustCount ?? null
 
-              if (buyExtraBoostIntervalRef.current) {
-                clearInterval(buyExtraBoostIntervalRef.current)
-                buyExtraBoostIntervalRef.current = null
-              }
+              // if (buyExtraBoostIntervalRef.current) {
+              //   clearInterval(buyExtraBoostIntervalRef.current)
+              //   buyExtraBoostIntervalRef.current = null
+              // }
 
-              const pollId = setInterval(async () => {
-                const res = await accountQuery.refetch()
-                const previousExtraBoost = previousExtraBoostRef.current
-                const nextExtraBoost = res.data?.extraBustCount
+              // const pollId = setInterval(async () => {
+              //   const res = await accountQuery.refetch()
+              //   const previousExtraBoost = previousExtraBoostRef.current
+              //   const nextExtraBoost = res.data?.extraBustCount
 
-                if (
-                  typeof nextExtraBoost === 'number' &&
-                  (previousExtraBoost == null ||
-                    nextExtraBoost > previousExtraBoost)
-                ) {
-                  clearInterval(pollId)
-                  buyExtraBoostIntervalRef.current = null
-                  previousExtraBoostRef.current = null
-                  setBuyExtraBoostProgress(false)
-                  // toast.success('Extra boost purchase')
-                }
-              }, 2000)
+              //   if (
+              //     typeof nextExtraBoost === 'number' &&
+              //     (previousExtraBoost == null ||
+              //       nextExtraBoost > previousExtraBoost)
+              //   ) {
+              //     clearInterval(pollId)
+              //     buyExtraBoostIntervalRef.current = null
+              //     previousExtraBoostRef.current = null
+              //     setBuyExtraBoostProgress(false)
+              //     // toast.success('Extra boost purchase')
+              //   }
+              // }, 2000)
 
-              buyExtraBoostIntervalRef.current = pollId
+              // buyExtraBoostIntervalRef.current = pollId
 
+              await buyExtraBoost(hash)
               // try {
-              //   await buyExtraBoost(hash)
               // } catch {
               //   setBuyExtraBoostProgress(false)
               //   previousExtraBoostRef.current = null

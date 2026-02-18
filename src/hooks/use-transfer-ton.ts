@@ -43,7 +43,7 @@ export const useTransferTon = () => {
             const body = comment === undefined ? undefined : encodeJsonPayload({ comment });
 
             const { boc } = await tonConnectUI.sendTransaction({
-                validUntil: Math.floor(Date.now() / 1000) + 3600,
+                validUntil: Math.floor(Date.now() / 1000) + 300, // 5 minutes from now
                 messages: [
                     {
                         address: to,
