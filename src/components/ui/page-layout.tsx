@@ -16,6 +16,7 @@ import { TasksIcon } from '@/assets/icons/menu-icons/tasks-icon'
 import { useBattle } from '@/hooks/api/use-battle'
 import { IoArrowBack, IoChevronBack } from 'react-icons/io5'
 import useSound from 'use-sound'
+import { useTranslation } from 'react-i18next'
 // import useSound from 'use-sound'
 
 export const PageLayout = ({
@@ -37,12 +38,13 @@ export const PageLayout = ({
   classNameContent?: string
   setIsShowSendGiftActionButtons?: (value: boolean) => void
 }) => {
+  const { t } = useTranslation()
   const linkItems = [
-    { to: '/star-board', label: 'Star Board', icon: StarBoardIcon },
-    { to: '/tasks', label: 'Tasks', icon: TasksIcon },
-    { to: '/', label: 'Home', icon: HomeIcon },
-    { to: '/frens', label: 'Frens', icon: FriendsIcon },
-    { to: '/locked', label: 'Blured', icon: FriendsIcon, isLocked: true },
+    { to: '/star-board', label: t('navigation.star-board'), icon: StarBoardIcon },
+    { to: '/tasks', label: t('navigation.tasks'), icon: TasksIcon },
+    { to: '/', label: t('navigation.home'), icon: HomeIcon },
+    { to: '/frens', label: t('navigation.friends'), icon: FriendsIcon },
+    { to: '/locked', label: t('navigation.guilds'), icon: FriendsIcon, isLocked: true },
   ]
 
   const pathnames = useMatches()
@@ -113,6 +115,7 @@ export const PageLayout = ({
 }
 
 const BackButton = ({ className }: { className?: string }) => {
+  const { t } = useTranslation();
   const { isSocketConnected, forceDisconnect } = useBattle()
   const [play] = useSound('/sounds/Button.aac', { interrupt: true })
   return (
@@ -131,7 +134,7 @@ const BackButton = ({ className }: { className?: string }) => {
       )}
     >
       {isIOS ? <IoChevronBack size={18} /> : <IoArrowBack size={20} />}{' '}
-      <span className={cn('text-xs mx-auto', !isIOS && 'text-sm')}>Back</span>
+      <span className={cn('text-xs mx-auto', !isIOS && 'text-sm')}>{t('back')}</span>
     </Link>
   )
 }

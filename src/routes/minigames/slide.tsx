@@ -16,12 +16,15 @@ import HeaderBg from '@/assets/svg/header-bg'
 import { AdsButton } from '@/components/ads/ads-button'
 import BombField from '@/components/minigames/playground'
 import useSound from 'use-sound'
+import { useCheckIn } from '@/hooks/use-get-daily-rewards'
+import { useTranslation } from 'react-i18next'
 
 export const Route = createFileRoute('/minigames/slide')({
   component: RouteComponent,
 })
 
 export function RouteComponent() {
+  const { dailyRewardsQuery } = useCheckIn();
   const { accountQuery } = useAccountMe()
 
   const defaultMinutesWinAmount = useMemo(() => {
@@ -33,6 +36,11 @@ export function RouteComponent() {
     if (!accountQuery.data) return 1200
     return accountQuery.data.energy
   }, [accountQuery.data])
+
+  const maxDailyReward = useMemo(() => {
+    if (!dailyRewardsQuery.data) return 1000;
+    return dailyRewardsQuery.data.rewards.energy;
+  }, [dailyRewardsQuery.data])
 
   const defaultX2DoubleAmount = defaultMinutesWinAmount * 2
   const defaultX2TimerDuration = 8_000
@@ -256,7 +264,7 @@ export function RouteComponent() {
               setEnergy(energy - 1)
             } else if (item === 'bomb') {
               playClaimBomb()
-              const newEnergy = Math.floor(energy - energy * 0.1)
+              const newEnergy = Math.floor(energy - maxDailyReward * 0.1)
               setEnergy(newEnergy)
             } else if (item === 'x2') {
               playClaimX2()
@@ -298,6 +306,7 @@ function GameFinished({
   onRestart?: () => void
   className?: string
 }) {
+  const { t } = useTranslation();
   const { user } = useAccount()
 
   const [rewardAdsTime, setRewardAdsTime] = useState(minutesWinned)
@@ -337,19 +346,21 @@ function GameFinished({
         </div>
 
         <div className="relative flex flex-col gap-2 items-center justify-center top-[110px]">
-          <h2 className="relative font-pixel text-xl text-white text-center opacity-0 animate-slide-up-fade-swipe-game-3">
-            ABSOLUTE
+          <h2 className="relative font-pixel text-xl text-white text-center opacity-0 animate-slide-up-fade-swipe-game-3 uppercase">
+            {t('minigames.swipe.victory.title0')}
             <br />
-            CHAMPION!
+            {t('minigames.swipe.victory.title1')}
           </h2>
           <h3 className="relative font-inter text-sm text-white/50 text-center opacity-0 animate-slide-up-fade-swipe-game-4">
-            You showed everyone how to play!
+            {t('minigames.swipe.victory.description')}
           </h3>
         </div>
       </header>
 
       <div className="flex flex-col items-center justify-center gap-1 opacity-0 animate-slide-up-fade-swipe-game-5">
-        <h2 className="font-inter text-sm text-white/50">Your reward:</h2>
+        <h2 className="font-inter text-sm text-white/50">
+          {t('minigames.swipe.victory.label.title')}
+        </h2>
         <div className="inline-flex items-center justify-center">
           <WatchesIcon className="size-10" />
           <div className="inline-flex items-baseline gap-1">
@@ -378,7 +389,7 @@ function GameFinished({
           displayPercent={20}
           isPercent
           time={minutesWinned * 0.2}
-          className="text-white bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white/40 disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6"
+          className="text-white bg-gradient-to-b from-[#8C35FB] to-[#6602E7] disabled:from-[#414241] disabled:to-[#363736] disabled:text-white/40 disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6 uppercase"
           onReward={() => {
             setRewardAdsTime(minutesWinned + minutesWinned * 0.2)
           }}
@@ -394,17 +405,17 @@ function GameFinished({
             // }, 2000)
             // }
           >
-            <ActionButton className="text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6">
-              CLOSE
+            <ActionButton className="uppercase text-black bg-gradient-to-b from-white to-[#999999] active:from-[#999999] active:to-[#535353] disabled:from-[#999999] disabled:to-[#535353] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-6">
+              {t('minigames.swipe.victory.buttons.close')}
             </ActionButton>
           </Link>
           {/* {useRestart && ( */}
           <ActionButton
             disabled={!useRestart}
             onClick={onRestart}
-            className="text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
+            className="uppercase text-black active:from-[#73a531] active:to-[#689100] disabled:from-[#73a531] disabled:to-[#689100] disabled:cursor-not-allowed opacity-0 animate-slide-up-fade-swipe-game-7"
           >
-            PLAY MORE
+            {t('minigames.swipe.victory.buttons.play-again')}
           </ActionButton>
           {/* )} */}
         </div>

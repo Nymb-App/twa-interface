@@ -18,6 +18,7 @@ import {
   useFarming,
 } from '../../context/farming-context'
 import { Button } from '../ui/button'
+import { useTranslation } from 'react-i18next'
 
 const NYMB_FARMING_CLAIM_ADS_COUNT_KEY = 'NYMB_FARMING_CLAIM_ADS_COUNT'
 
@@ -192,6 +193,7 @@ function FarmingDefaultButton({
   onClick?: () => void
   disabled?: boolean
 }) {
+  const { t } = useTranslation()
   return (
     <Button
       variant={'nymb-green'}
@@ -201,7 +203,7 @@ function FarmingDefaultButton({
       disabled={disabled}
     >
       <WatchesIcon className="mix-blend-difference size-9" fill="#B6FF00" />
-      <span className="mix-blend-difference">START FARMING</span>
+      <span className="mix-blend-difference">{t('home-page.farming-statuses.start')}</span>
     </Button>
   )
 }
@@ -217,6 +219,7 @@ function FarmingClaimButton({
   onClick?: () => void
   disabled?: boolean
 }) {
+  const { t } = useTranslation()
   const hours = String(Math.floor(time / 3600000)).padStart(2, '0')
   const minutes = String(Math.floor((time % 3600000) / 60000)).padStart(2, '0')
   const seconds = String(Math.floor((time % 60000) / 1000)).padStart(2, '0')
@@ -264,7 +267,7 @@ function FarmingClaimButton({
           className,
         )}
       >
-        <span className="mix-blend-difference">CLAIM</span>
+        <span className="mix-blend-difference">{t('home-page.farming-statuses.finished')}</span>
         <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
         <span className="mix-blend-difference">{timeStr}</span>
       </button>
@@ -285,6 +288,8 @@ function FarmingProgressButton({
   onComplete?: () => void
   disabled?: boolean
 }) {
+  const { t } = useTranslation()
+
   return (
     <Countdown
       intervalDelay={1000}
@@ -308,7 +313,7 @@ function FarmingProgressButton({
               style={{ width: `${progressPercent}%` }}
             />
             <div className="relative z-10 inline-flex items-center gap-1 active:text-[#B6FF00] mix-blend-difference">
-              <span className="mix-blend-difference">FARMING</span>
+              <span className="mix-blend-difference">{t('home-page.farming-statuses.in-progress')}</span>
               <WatchesIcon className="mix-blend-difference" fill="#B6FF00" />
               <span className="mix-blend-difference">{timeStr}</span>
             </div>
@@ -329,6 +334,8 @@ function FarmingDefaultLoadingButton({
   onClick?: () => void
   disabled?: boolean
 }) {
+  const { t } = useTranslation()
+  
   return (
     <Button
       variant={'nymb-green'}
@@ -343,7 +350,7 @@ function FarmingDefaultLoadingButton({
         className="mix-blend-difference animate-spin"
         fill="#B6FF00"
       />
-      <span className="mix-blend-difference uppercase ml-2">loading</span>
+      <span className="mix-blend-difference uppercase ml-2">{t('home-page.farming-statuses.loading')}</span>
     </Button>
   )
 }

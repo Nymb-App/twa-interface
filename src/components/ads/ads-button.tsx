@@ -9,6 +9,7 @@ import { miniApp, popup } from '@tma.js/sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useSound from 'use-sound'
 import { ActionButton } from '../ui/action-button'
+import { useTranslation } from 'react-i18next'
 
 export const AdsButton = ({
   className,
@@ -46,6 +47,8 @@ export const AdsButton = ({
   const [isAnimationStart, setIsAnimationStart] = useState(true)
   const [isDisabled, setIsDisabled] = useState(disabled)
   const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     return () => stop()
@@ -166,7 +169,7 @@ export const AdsButton = ({
       {children ? (
         children
       ) : (
-        <span className={classNameText}>get +{timeDisplay} reward</span>
+        <span className={classNameText}>{t('ad-button.title', { amount: timeDisplay })}</span>
       )}
       <AdsLabelSvg
         labelOpacity={labelOpacity}

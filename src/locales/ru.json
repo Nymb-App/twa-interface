@@ -1,0 +1,71 @@
+{
+    "back": "Назад",
+    "ad-button": {
+        "title": "Получить +{{amount}} к награде"
+    },
+    "timer-parts": {
+        "year": "год",
+        "years": "лет",
+        "week": "неделя",
+        "weeks": "недели",
+        "day": "день",
+        "days": "дни",
+        "hour": "час",
+        "hours": "часы",
+        "minute": "минута",
+        "minutes": "минуты",
+        "second": "секунда",
+        "seconds": "секунды"
+    },
+    "navigation": {
+        "star-board": "Рейтинг",
+        "tasks": "Задания",
+        "home": "Главная",
+        "friends": "Друзья",
+        "guilds": "Гильдии"
+    },
+    "home-page": {
+        "stars-giveaway": {
+            "description": "Розыгрыш звезд",
+            "button": "Участвовать",
+            "already-joined": "Уже участвуешь"
+        },
+        "slide-game": {
+            "title": "Свайпы",
+            "description": "Проверим твою реакцию"
+        },
+        "battle-game": {
+            "title": "Битва",
+            "description": "Готов проверить свою силу?"
+        },
+        "shop": {
+            "title": "Магазин",
+            "description": "Ускорь свой прогресс"
+        },
+        "coming-soon": {
+            "description": "В процессе..."
+        },
+        "farming-statuses": {
+            "start": "Начать фарминг",
+            "in-progress": "Фарминг",
+            "finished": "Получить",
+            "loading": "Загрузка"
+        }
+    },
+    "minigames": {
+        "swipe": {
+            "victory": {
+                "title0": "Абсолютный",
+                "title1": "Чемпион",
+                "description": "Ты доказал, кто здесь лучший!",
+                "label": {
+                    "title": "Твоя награда:"
+                },
+                "buttons": {
+                    "play-again": "Сыграть ещё",
+                    "close": "Закрыть"
+                }
+            }
+        }
+    }
+}

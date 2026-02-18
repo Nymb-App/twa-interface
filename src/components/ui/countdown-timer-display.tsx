@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { zeroPad } from 'react-countdown'
+import { useTranslation } from 'react-i18next';
 
 interface CountdownTimerProps {
   days: number
@@ -22,14 +23,16 @@ export const CountdownTimerDisplay = ({
     return null
   }
 
+  const { t } = useTranslation();
+
   const getTimeParts = () => {
     if (completed) {
       return [
-        { value: 0, label: 'Weeks' },
-        { value: 0, label: 'Days' },
-        { value: 0, label: 'Hours' },
-        { value: 0, label: 'Minutes' },
-        { value: 0, label: 'Seconds' },
+        { value: 0, label: t('timer-parts.weeks') },
+        { value: 0, label: t('timer-parts.days') },
+        { value: 0, label: t('timer-parts.hours') },
+        { value: 0, label: t('timer-parts.minutes') },
+        { value: 0, label: t('timer-parts.seconds') },
       ]
     }
 
@@ -42,11 +45,11 @@ export const CountdownTimerDisplay = ({
       const finalRemainingDays = remainingDaysAfterYears % 7
 
       return [
-        { value: years, label: 'Years' },
-        { value: weeks, label: 'Weeks' },
-        { value: finalRemainingDays, label: 'Days' },
-        { value: hours, label: 'Hours' },
-        { value: minutes, label: 'Minutes' },
+        { value: years, label: t('timer-parts.years') },
+        { value: weeks, label: t('timer-parts.weeks') },
+        { value: finalRemainingDays, label: t('timer-parts.days') },
+        { value: hours, label: t('timer-parts.hours') },
+        { value: minutes, label: t('timer-parts.minutes') },
       ]
     }
 
@@ -54,11 +57,11 @@ export const CountdownTimerDisplay = ({
     const remainingDays = days % 7
 
     return [
-      { value: weeks, label: 'Weeks' },
-      { value: remainingDays, label: 'Days' },
-      { value: hours, label: 'Hours' },
-      { value: minutes, label: 'Minutes' },
-      { value: seconds, label: 'Seconds' },
+      { value: weeks, label: t('timer-parts.weeks') },
+      { value: remainingDays, label: t('timer-parts.days') },
+      { value: hours, label: t('timer-parts.hours') },
+      { value: minutes, label: t('timer-parts.minutes') },
+      { value: seconds, label: t('timer-parts.seconds') },
     ]
   }
 

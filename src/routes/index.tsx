@@ -51,6 +51,7 @@ import { useTonConnectModal } from '@tonconnect/ui-react'
 import Snowfall from 'react-snowfall'
 import { toast } from 'sonner'
 import useSound from 'use-sound'
+import { useTranslation } from 'react-i18next'
 
 const HomeComponent = memo(function HomeComponent() {
   const [isClaimStart, setIsClaimStart] = useState(false)
@@ -69,6 +70,8 @@ const HomeComponent = memo(function HomeComponent() {
   const { login, isAuthenticated } = useAuth()
 
   const { state: stateTonConnectModal } = useTonConnectModal()
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isAuthenticated) return
@@ -270,7 +273,7 @@ const HomeComponent = memo(function HomeComponent() {
         <StarsCard
           linkTo="/giveaway"
           isPageLink={true}
-          actionTitle="JOIN IN"
+          actionTitle={t('home-page.stars-giveaway.button').toUpperCase()}
           className="mt-5 mb-2"
           classNameStar0="size-[58px] mr-3"
           classNameStar1="size-[75px]"
@@ -294,8 +297,8 @@ const HomeComponent = memo(function HomeComponent() {
                 <SwipeCard
                   className="font-pixel w-full font-normal"
                   classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
-                  title="Swipes"
-                  description={"let's see how you react"}
+                  title={t('home-page.slide-game.title')}
+                  description={t('home-page.slide-game.description')}
                 />
               </>
             ) : (
@@ -304,8 +307,8 @@ const HomeComponent = memo(function HomeComponent() {
                 placeholderSrc="/lottie-placeholder/minigames/slide.webp"
                 className="font-pixel w-full font-[400]"
                 classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(183,_255,_0,_1)_15%,_rgba(183,_255,_0,_0.9)_30%,_rgba(183,_255,_0,_0.4)_50%,_transparent_70%)] w-[120%] h-[130%] -top-[50%] opacity-20"
-                title="Swipes"
-                description={"let's see how you react"}
+                title={t('home-page.slide-game.title')}
+                description={t('home-page.slide-game.description')}
                 animationData={'/lottie/main.json'}
               />
             )}
@@ -323,8 +326,8 @@ const HomeComponent = memo(function HomeComponent() {
             <BattleCard
               className="font-pixel w-full"
               classNameBg="bg-[radial-gradient(ellipse_at_center,_rgba(133,_59,_241,_1)_15%,_rgba(133,_59,_241,_0.9)_30%,_rgba(133,_59,_241,_0.4)_50%,_transparent_70%)] w-[120%] h-[110%] -top-[50%] opacity-30"
-              title="Battle"
-              description="are you strong enough?"
+              title={t('home-page.battle-game.title')}
+              description={t('home-page.battle-game.description')}
             />
           </Link>
         </div>
@@ -336,7 +339,7 @@ const HomeComponent = memo(function HomeComponent() {
         </div>
         <FarmingButton
           onClick={handleClaimClick}
-          className="fixed bottom-23 w-[calc(100%-32px)] max-w-[420px] disabled:cursor-not-allowed disabled:from-white disabled:to-[#999999]"
+          className="uppercase fixed bottom-23 w-[calc(100%-32px)] max-w-[420px] disabled:cursor-not-allowed disabled:from-white disabled:to-[#999999]"
           disabled={accountTime < Date.now()}
         />
       </div>

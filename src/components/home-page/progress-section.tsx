@@ -17,6 +17,8 @@ import EnergyIcon from '@/assets/icons/energy'
 import EnergyEmptyIcon from '@/assets/icons/energy-empty'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { cn } from '@/lib/utils'
+import TicketsIcon from '@/assets/icons/tickets'
+import { LangSwitch } from './lang-switch'
 
 // Types
 interface AnimatedCountdownProps {
@@ -36,6 +38,10 @@ interface UserProfileProps {
 
 interface EnergyCounterProps {
   energy?: string | number
+}
+
+interface TicketsCounterProps {
+  tickets?: string | number
 }
 
 /**
@@ -91,6 +97,33 @@ const EnergyCounter = ({ energy }: EnergyCounterProps) => (
         <EnergyIcon className="size-[28px]" />
         <span className="text-base text-[#A45FFF] [text-shadow:0px_0px_12px_#9C1FFD]">
           {energy ?? '...'}
+        </span>
+      </>
+    )}
+  </div>
+)
+
+
+const TicketsCounter = ({ tickets }: TicketsCounterProps) => (
+  <div
+    className={cn(
+      'inline-flex items-center justify-between bg-[#1d1f1d] rounded-2xl h-[40px] pl-2 pr-3',
+      tickets === 0 && 'pl-0 pr-0 px-2',
+    )}
+  >
+    {tickets === 0 ? (
+      <Link to="/shop" className="inline-flex items-center gap-1">
+        <EnergyEmptyIcon className="size-[16px]" />
+        <div className="relative">
+          <TbReload className="size-5 text-[#FBB107] scale-x-[-1] rounded-full" />
+          <TbReload className="size-5 text-[#FBB107] blur scale-x-[-1] rounded-full absolute left-1/2 top-1/2 -translate-1/2" />
+        </div>
+      </Link>
+    ) : (
+      <>
+        <TicketsIcon className="size-[28px]" />
+        <span className="text-base text-[#FBB107] [text-shadow:0px_0px_12px_#FBB107]">
+          {tickets ?? '...'}
         </span>
       </>
     )}
@@ -234,9 +267,15 @@ export const ProgressSection = ({ isClaimStart }: ProgressSectionProps) => {
       style={headerStyle}
     >
       <div className="inline-flex justify-between w-full">
-        <EnergyCounter energy={account?.energy} />
-        <h1 className="text-2xl">HOME</h1>
-        <UserProfile username={user?.username} photoUrl={user?.photo_url} />
+        <div className='inline-flex gap-2 items-center'>
+          <EnergyCounter energy={account?.energy} />
+          <TicketsCounter tickets={account?.ticket} />
+        </div>
+        
+        <div className='inline-flex gap-2 items-center'>
+          <LangSwitch />
+          <UserProfile username={user?.username} photoUrl={user?.photo_url} />
+        </div>
       </div>
 
       <LevelsList />

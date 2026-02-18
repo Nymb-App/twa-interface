@@ -8,6 +8,8 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
+import "./i18n";
+
 // Create a new router instance
 const router = createRouter({
   routeTree,

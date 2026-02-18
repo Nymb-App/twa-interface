@@ -1,0 +1,71 @@
+{
+    "back": "Back",
+    "ad-button": {
+        "title": "Get +{{amount}} reward"
+    },
+    "timer-parts": {
+        "year": "year",
+        "years": "years",
+        "week": "week",
+        "weeks": "weeks",
+        "day": "day",
+        "days": "days",
+        "hour": "hour",
+        "hours": "hours",
+        "minute": "minute",
+        "minutes": "minutes",
+        "second": "second",
+        "seconds": "seconds"
+    },
+    "navigation": {
+        "star-board": "Star Board",
+        "tasks": "Tasks",
+        "home": "Home",
+        "friends": "Friends",
+        "guilds": "Guilds"
+    },
+    "home-page": {
+        "stars-giveaway": {
+            "description": "Stars Giveaway",
+            "button": "JOIN IN",
+            "already-joined": "ALREADY JOINED"
+        },
+        "slide-game": {
+            "title": "Swipes",
+            "description": "let's see how you react"
+        },
+        "battle-game": {
+            "title": "Battle",
+            "description": "are you strong enough?"
+        },
+        "farming-statuses": {
+            "start": "Start Farming",
+            "in-progress": "Farming",
+            "finished": "Claim",
+            "loading": "Loading"
+        },
+        "shop": {
+            "title": "Shop",
+            "description": "Speed you up"
+        },
+        "coming-soon": {
+            "description": "Coming soon"
+        }
+    },
+    "minigames": {
+        "swipe": {
+            "victory": {
+                "title0": "Absolute",
+                "title1": "Champion",
+                "description": "You showed everyone how to play!",
+                "label": {
+                    "title": "Your reward:"
+                },
+                "buttons": {
+                    "play-again": "Play more",
+                    "close": "Close"
+                }
+            }
+        }
+    }
+}

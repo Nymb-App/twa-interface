@@ -6,6 +6,7 @@ import { useAccountMe } from "@/hooks/api/use-account"
 import { TaskNames, useTasks } from "@/hooks/api/use-tasks"
 import { cn } from "@/lib/utils"
 import { Link } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 
 export function StarsCard({
     linkTo,
@@ -36,6 +37,7 @@ export function StarsCard({
     classNameDescription1?: string,
     classNameAction?: string,
 }) {
+    const { t } = useTranslation();
     const { tasksQuery } = useTasks()
     const { accountQuery } = useAccountMe()
     const [play, { stop }] = useSound('/sounds/Button.aac')
@@ -84,8 +86,8 @@ export function StarsCard({
                     1,000,000
                 </span>
 
-                <p className={cn("text-center text-white font-pixel text-lg uppercase mt-1", classNameDescription0)}>
-                    Stars Giveaway
+                <p className={cn("uppercase text-center text-white font-pixel text-lg mt-1", classNameDescription0)}>
+                    {t('home-page.stars-giveaway.description')}
                 </p>
                 <p className={cn("text-center text-xs text-white/40 font-inter font-light", classNameDescription1)}>
                     The giveaway is happening at launch.
@@ -115,7 +117,7 @@ export function StarsCard({
                     )
                     : isCompletedTaskTwitter && isSubscribedTelegram ? (
                         <p className={cn("relative -top-2.5 uppercase text-[#FFD930] text-sm font-pixel mt-9", classNameAction)}>
-                            already joined
+                            {t('home-page.stars-giveaway.already-joined')}
                         </p>
                     ) : (
                         <ScrollLink

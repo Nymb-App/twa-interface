@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { Card } from './card'
 
 export const CardContent = ({ isLocked = false }: { isLocked?: boolean }) => {
+  const { t } = useTranslation();
+
   return (
     <Card className="px-4 py-2 min-h-[104px] flex flex-col justify-center">
       <div className="flex flex-col items-center gap-2">
@@ -46,7 +49,7 @@ export const CardContent = ({ isLocked = false }: { isLocked?: boolean }) => {
           </h2>
         )}
         <p className="text-[12px] font-inter tracking-[0.3px] font-[300] text-[#FFFFFF66] leading-[16px]">
-          {!isLocked ? 'Speed you up' : 'Coming soon'}
+          {!isLocked ? t('home-page.shop.description') : t('home-page.coming-soon.description')}
         </p>
       </div>
     </Card>
