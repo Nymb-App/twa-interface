@@ -308,7 +308,7 @@ function LvlUpButtonWithNextGateNavigation({
                 <span className="text-sm text-white/40">HOURS</span>
               </div>
 
-              <span className="text-white text-sm font-inter">Mining</span>
+              <span className="text-white text-sm font-inter">Farming</span>
             </div>
 
             <div className="w-full flex flex-col gap-1 justify-center items-center font-pixel bg-gradient-to-b from-white/0 to-white/5 rounded-2xl p-4 backdrop-blur-[2px]">
@@ -326,7 +326,7 @@ function LvlUpButtonWithNextGateNavigation({
                 <span className="text-2xl text-[#B6FF00]">
                   {statistics.points}
                 </span>
-                <span className="text-sm text-white/40">POINTS</span>
+                <span className="text-sm text-white/40">MINUTES</span>
               </div>
 
               <span className="text-white text-sm font-inter">In Swap</span>

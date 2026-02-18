@@ -2,20 +2,20 @@ import { GiftSelector } from '@/components/frens-page/gift-selector'
 import { SendGiftButton } from '@/components/frens-page/ui/gift-button'
 import { FlickeringGrid } from '@/components/magicui/flickering-grid'
 import { ActionButton } from '@/components/ui/action-button'
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button'
 import { ElectricLines } from '@/components/ui/electric-lines'
 import { PageLayout } from '@/components/ui/page-layout'
 import { RussianRoulette } from '@/components/ui/russian-roullete'
 import { useAccountMe } from '@/hooks/api/use-account'
 import { useReferrals } from '@/hooks/api/use-referrals'
-import { ADSGRAM_APP_ID } from '@/lib/constants'
+// import { ADSGRAM_APP_ID } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { convertGiftValueToSeconds } from '@/utils'
-import { useAdsgram } from '@adsgram/react'
+// import { useAdsgram } from '@adsgram/react'
 import { useRive } from '@rive-app/react-canvas'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { miniApp, popup } from '@tma.js/sdk'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+// import { miniApp, popup } from '@tma.js/sdk'
+import { useEffect, useState } from 'react'
 import useSound from 'use-sound'
 
 export const Route = createFileRoute('/send-gift')({
@@ -29,7 +29,7 @@ function RouteComponent() {
 
   const [isStartRoulette, setIsStartRoulette] = useState(false)
   const [isFinishRoulette, setIsFinishRoulette] = useState(false)
-  const [disableAdsButton, setDisableAdsButton] = useState(false)
+  // const [disableAdsButton, setDisableAdsButton] = useState(false)
 
   const { sendGiftToFriend, myReferrals } = useReferrals()
 
@@ -51,55 +51,55 @@ function RouteComponent() {
     },
   )
 
-  const handleError = useCallback((): void => {
-    console.error('Task error')
-  }, [])
+  // const handleError = useCallback((): void => {
+  //   console.error('Task error')
+  // }, [])
 
-  const handleReward = useCallback(() => {
-    sendGiftToFriend.mutate({
-      friendId: Number(myReferrals?.referrals[winnerIndex].telegramId),
-      time: 7200,
-    })
-    setDisableAdsButton(true)
-  }, [])
+  // const handleReward = useCallback(() => {
+  //   sendGiftToFriend.mutate({
+  //     friendId: Number(myReferrals?.referrals[winnerIndex].telegramId),
+  //     time: 7200,
+  //   })
+  //   // setDisableAdsButton(true)
+  // }, [])
 
-  const adsConfig = useMemo(
-    () => ({
-      blockId: ADSGRAM_APP_ID,
-      debug: false,
-      onReward: handleReward,
-      onError: handleError,
-    }),
-    [handleReward, handleError],
-  )
+  // const adsConfig = useMemo(
+  //   () => ({
+  //     blockId: ADSGRAM_APP_ID,
+  //     debug: false,
+  //     onReward: handleReward,
+  //     onError: handleError,
+  //   }),
+  //   [handleReward, handleError],
+  // )
 
-  const { show } = useAdsgram(adsConfig)
+  // const { show } = useAdsgram(adsConfig)
 
-  const showAdClick = async () => {
-    try {
-      const result = await show()
-      console.log('Реклама просмотрена:', result)
-    } catch (error: any) {
-      const message = error.message
-      if (
-        message.toLowerCase().includes('session is too long') ||
-        message.toLowerCase().includes('сессия слишком долгая')
-      ) {
-        popup
-          .show({
-            title: 'Session expired',
-            message:
-              'For correct work of ads and rewards, you need to restart the app.',
-            buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
-          })
-          .then((buttonId) => {
-            if (buttonId === 'close') {
-              miniApp.close()
-            }
-          })
-      }
-    }
-  }
+  // const showAdClick = async () => {
+  //   try {
+  //     const result = await show()
+  //     console.log('Реклама просмотрена:', result)
+  //   } catch (error: any) {
+  //     const message = error.message
+  //     if (
+  //       message.toLowerCase().includes('session is too long') ||
+  //       message.toLowerCase().includes('сессия слишком долгая')
+  //     ) {
+  //       popup
+  //         .show({
+  //           title: 'Session expired',
+  //           message:
+  //             'For correct work of ads and rewards, you need to restart the app.',
+  //           buttons: [{ id: 'close', type: 'default', text: 'Close app' }],
+  //         })
+  //         .then((buttonId) => {
+  //           if (buttonId === 'close') {
+  //             miniApp.close()
+  //           }
+  //         })
+  //     }
+  //   }
+  // }
 
   useEffect(() => {
     if (!accountQuery.data) return
@@ -282,7 +282,7 @@ function RouteComponent() {
       {isFinishRoulette && (
         <div className="fixed w-full bottom-0 flex flex-col gap-2 px-4 mb-6 max-w-[450px]">
           {/* <ShareButton time={7200} /> */}
-          <Button
+          {/* <Button
             variant={'nymb-green'}
             disabled={disableAdsButton}
             onClick={() => {
@@ -297,7 +297,7 @@ function RouteComponent() {
               labelColor="black"
               labelOpacity={1}
             />
-          </Button>
+          </Button> */}
 
           <Link
             onClick={() => {
@@ -348,30 +348,30 @@ export const AvatarCard = ({
   </div>
 )
 
-const AdsLabelSvg = ({
-  labelOpacity,
-  labelColor,
-  className,
-}: {
-  labelOpacity?: number
-  labelColor?: string
-  className?: string
-}) => {
-  return (
-    <svg
-      className={cn(className)}
-      width="24"
-      height="18"
-      viewBox="0 0 24 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g opacity={labelOpacity || '0.5'}>
-        <path
-          d="M22 2H20V4H22V2H24V16H22V14H20V16H22V18H2V16H4V14H2V16H0V2H2V4H4V2H2V0H22V2ZM8 5V6H7V8H6V11H5V13H7V12H8V11H10V12H11V13H13V11H12V8H11V6H10V5H8ZM14 5V13H18V12H19V11H20V7H19V6H18V5H14ZM17 7V8H18V10H17V11H16V7H17ZM10 8V9H8V8H10Z"
-          fill={labelColor || 'white'}
-        />
-      </g>
-    </svg>
-  )
-}
+// const AdsLabelSvg = ({
+//   labelOpacity,
+//   labelColor,
+//   className,
+// }: {
+//   labelOpacity?: number
+//   labelColor?: string
+//   className?: string
+// }) => {
+//   return (
+//     <svg
+//       className={cn(className)}
+//       width="24"
+//       height="18"
+//       viewBox="0 0 24 18"
+//       fill="none"
+//       xmlns="http://www.w3.org/2000/svg"
+//     >
+//       <g opacity={labelOpacity || '0.5'}>
+//         <path
+//           d="M22 2H20V4H22V2H24V16H22V14H20V16H22V18H2V16H4V14H2V16H0V2H2V4H4V2H2V0H22V2ZM8 5V6H7V8H6V11H5V13H7V12H8V11H10V12H11V13H13V11H12V8H11V6H10V5H8ZM14 5V13H18V12H19V11H20V7H19V6H18V5H14ZM17 7V8H18V10H17V11H16V7H17ZM10 8V9H8V8H10Z"
+//           fill={labelColor || 'white'}
+//         />
+//       </g>
+//     </svg>
+//   )
+// }

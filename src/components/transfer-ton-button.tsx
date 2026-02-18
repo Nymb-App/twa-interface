@@ -29,8 +29,7 @@ export function TransferTonButton({
   comment,
   ...props
 }: TransferTonButtonProps) {
-  const [isTransferTonSuccess, setIsTransferTonSuccess] =
-    useState<boolean>(false)
+  const [isTransferTonSuccess, setIsTransferTonSuccess] = useState<boolean>(false)
   const address = useTonAddress()
   const { open } = useTonConnectModal()
   const { getBalance } = useBalance()
@@ -40,16 +39,17 @@ export function TransferTonButton({
     isTransactionLoading,
     isTransactionSuccess,
     isTransactionError,
-    hash,
   } = useTransferTon()
+  const [hash, setHash] = useState<string | null>(null);
 
   useEffect(() => {
     if (isTransferTonSuccess) return
     if (hash && isTransactionSuccess) {
       onTransferSuccess?.(hash)
       setIsTransferTonSuccess(true)
+      setHash(null);
     }
-  }, [onTransferSuccess, isTransactionSuccess])
+  }, [onTransferSuccess, isTransactionSuccess, hash])
 
   useEffect(() => {
     if (recipient.toLowerCase() === address.toLowerCase()) {
@@ -108,7 +108,9 @@ export function TransferTonButton({
       return
     }
     setIsTransferTonSuccess(false)
-    await transfer(recipient, amount, comment)
+    const hash = await transfer(recipient, amount, comment);
+    console.log('Transfer hash:', hash);
+    setHash(hash ?? null);
   }, [
     address,
     amount,

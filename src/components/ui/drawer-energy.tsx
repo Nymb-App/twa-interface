@@ -19,7 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+// import { useAccount, useAccountMe } from '@/hooks/api/use-account'
+import { useShop } from '@/hooks/api/use-shop'
 import { ITEM_ENERGY_1000_PRICE, RECEIVER_ADDRESS } from '@/lib/constants'
 import { useEffect, useRef, useState } from 'react'
 import { isIOS } from 'react-device-detect'
@@ -36,9 +37,11 @@ export function DrawerEnergy({
   asChild?: boolean
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { accountQuery } = useAccountMe()
-  const { user } = useAccount()
+  // const { accountQuery } = useAccountMe()
+  // const { user } = useAccount()
   const [play, { stop }] = useSound('/sounds/Button.aac')
+
+  const { buyItem } = useShop();
 
   const [buyEnergyProgress, setBuyEnergyProgress] = useState(false)
   const buyEnergyIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
@@ -251,46 +254,48 @@ export function DrawerEnergy({
 
         <DrawerFooter className="relative mt-6 mb-4">
           <TransferTonButton
-            disabled={buyEnergyProgress}
+            // disabled={buyEnergyProgress}
             recipient={RECEIVER_ADDRESS}
             amount={ITEM_ENERGY_1000_PRICE}
-            comment={`nymb.shop?type=energy&telegramId=${user?.id}`}
+            // comment={`nymb.shop?type=energy&telegramId=${user?.id}`}
             className="py-3 w-full inline-flex justify-center items-center gap-1"
-            onTransferSuccess={(_hash) => {
-              setBuyEnergyProgress(true)
+            onTransferSuccess={async (hash) => {
+              // console.log('Transfer successful with hash:', hash)
+              // setBuyEnergyProgress(true)
 
-              previousEnergyRef.current = accountQuery.data?.energy ?? null
+              // previousEnergyRef.current = accountQuery.data?.energy ?? null
 
-              if (buyEnergyIntervalRef.current) {
-                clearInterval(buyEnergyIntervalRef.current)
-                buyEnergyIntervalRef.current = null
-              }
+              // if (buyEnergyIntervalRef.current) {
+              //   clearInterval(buyEnergyIntervalRef.current)
+              //   buyEnergyIntervalRef.current = null
+              // }
 
-              const id = setInterval(async () => {
-                const res = await accountQuery.refetch()
-                const previousEnergy = previousEnergyRef.current
-                const nextEnergy = res.data?.energy
+              // const id = setInterval(async () => {
+              //   const res = await accountQuery.refetch()
+              //   const previousEnergy = previousEnergyRef.current
+              //   const nextEnergy = res.data?.energy
 
-                if (
-                  typeof nextEnergy === 'number' &&
-                  (previousEnergy == null || nextEnergy > previousEnergy)
-                ) {
-                  clearInterval(id)
-                  buyEnergyIntervalRef.current = null
-                  previousEnergyRef.current = null
-                  setBuyEnergyProgress(false)
-                  // toast.success('Energy restored')
-                }
-              }, 2000)
+              //   if (
+              //     typeof nextEnergy === 'number' &&
+              //     (previousEnergy == null || nextEnergy > previousEnergy)
+              //   ) {
+              //     clearInterval(id)
+              //     buyEnergyIntervalRef.current = null
+              //     previousEnergyRef.current = null
+              //     setBuyEnergyProgress(false)
+              //     // toast.success('Energy restored')
+              //   }
+              // }, 2000)
 
-              buyEnergyIntervalRef.current = id
+              // buyEnergyIntervalRef.current = id
 
-              // await buyItem('energy', hash)
+              await buyItem('energy', hash)
             }}
             onConnect={() => {
               setIsOpen(false)
             }}
             onError={(e) => {
+              console.log(e)
               setBuyEnergyProgress(false)
               previousEnergyRef.current = null
               if (buyEnergyIntervalRef.current) {

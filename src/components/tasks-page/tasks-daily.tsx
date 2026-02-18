@@ -240,8 +240,8 @@ export function TasksDaily() {
         Complete all tasks and get an extra:
         <span className="font-pixel relative ml-4 leading-[120%] text-[#B6FF00] uppercase">
           <span className="absolute top-px -left-3">+</span>
-          <span>4</span>
-          <span className="ml-1.5">D</span>
+          <span>12</span>
+          <span className="ml-1.5">H</span>
         </span>
       </p>
     </div>

@@ -57,18 +57,18 @@ export function GateStatistics() {
             />
             <GateStatisticsInfoBlock
               value={statistics.mining}
-              description="Mining"
+              description="Farming"
               unit="h"
             />
             <GateStatisticsInfoBlock
-              value={statistics.inBattle}
-              description="in Battle"
+              value={statistics.maxEnergy}
+              description="Energy"
               unit="/ day"
             />
             <GateStatisticsInfoBlock
               value={statistics.points}
               description="In Swipe"
-              unit="points"
+              unit="MINUTES"
             />
           </>
         )}
