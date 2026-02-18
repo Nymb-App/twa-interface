@@ -44,8 +44,8 @@ export const CardContent = ({ isLocked = false }: { isLocked?: boolean }) => {
           </svg>
         )}
         {!isLocked && (
-          <h2 className="font-pixel text-[#FFFFFF] font-[400] text-[18px] leading-[24px]">
-            shop
+          <h2 className="uppercase font-pixel text-[#FFFFFF] font-[400] text-[18px] leading-[24px]">
+            {t('home-page.shop.title')}
           </h2>
         )}
         <p className="text-[12px] font-inter tracking-[0.3px] font-[300] text-[#FFFFFF66] leading-[16px]">
