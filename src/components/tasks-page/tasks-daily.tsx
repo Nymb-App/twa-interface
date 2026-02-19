@@ -272,6 +272,7 @@ const TaskDailyCard = ({
   className?: string
   onClick?: (name: string) => void
 }) => {
+  const { t } = useTranslation()
   const formattedReward = useMemo(() => {
     if (reward.type === 'time') {
       const data = formatDurationFromSeconds(reward.value).split(' ')

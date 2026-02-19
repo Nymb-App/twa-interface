@@ -23,7 +23,6 @@ import { useTranslation } from 'react-i18next'
 
 export function LvlUpButton({ className }: { className?: string }) {
   const { accountQuery, isLoading, lvlUpMutation } = useAccountMe()
-  const { t } = useTranslation()
 
   const accountData = useMemo(() => {
     if (!accountQuery.data) {
@@ -113,6 +112,7 @@ function LvlUpButtonWithShop({
   lvl?: number
   className?: string
 }) {
+  const { t } = useTranslation()
   const isTicketsEnough = useMemo(() => {
     if (!ticketAmount) return false
     if (ticketAmount === 0) return false

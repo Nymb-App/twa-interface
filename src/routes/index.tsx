@@ -366,6 +366,7 @@ function UnfreezeAccountDrawer({
   onSuccess?: (hash: string) => void
   onError?: (e: any) => void
 }) {
+  const {t} = useTranslation()
   // const [isOpen, setIsOpen] = useState<boolean>(open)
   const [isOpen] = useState<boolean>(open)
 
